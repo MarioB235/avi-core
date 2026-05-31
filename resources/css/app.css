@@ -5,10 +5,17 @@
 @source '../../storage/framework/views/*.php';
 @source '../views/**/*.blade.php';
 
+/*
+ * AviCore design tokens
+ * Base: awesome-design-skills "clean" (8pt grid, WCAG, estados explícitos)
+ * Layout: patrones "enterprise" (jerarquía, datos operativos)
+ * Paleta: docs/03-guia-visual-ui.md (verde/agro — no reemplazar por skills genéricos)
+ */
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
+    /* Marca */
     --color-avicore-primary: #1f5e3b;
     --color-avicore-secondary: #3a7d44;
     --color-avicore-soft: #eaf5ec;
@@ -16,13 +23,91 @@
     --color-avicore-card: #ffffff;
     --color-avicore-text: #1f2933;
     --color-avicore-muted: #667085;
+    --color-avicore-border: #e4e7ec;
+    --color-avicore-border-strong: #d0d5dd;
+
+    /* Semánticos */
     --color-avicore-warning: #f59e0b;
     --color-avicore-danger: #dc2626;
     --color-avicore-info: #2563eb;
+    --color-avicore-success: #16a34a;
+
+    /* Tipografía (escala 12/14/16/20/24/32) */
+    --text-avicore-xs: 0.75rem;
+    --text-avicore-sm: 0.875rem;
+    --text-avicore-base: 1rem;
+    --text-avicore-lg: 1.25rem;
+    --text-avicore-xl: 1.5rem;
+    --text-avicore-2xl: 2rem;
+
+    /* Espaciado — rejilla 8pt */
+    --spacing-avicore-1: 0.25rem;
+    --spacing-avicore-2: 0.5rem;
+    --spacing-avicore-3: 0.75rem;
+    --spacing-avicore-4: 1rem;
+    --spacing-avicore-5: 1.25rem;
+    --spacing-avicore-6: 1.5rem;
+    --spacing-avicore-8: 2rem;
+
+    /* Radio y elevación */
+    --radius-avicore-sm: 0.5rem;
+    --radius-avicore-md: 0.75rem;
+    --radius-avicore-lg: 1rem;
+    --radius-avicore-xl: 1.25rem;
+    --shadow-avicore-card: 0 1px 2px rgb(16 24 40 / 0.06), 0 1px 3px rgb(16 24 40 / 0.1);
+    --shadow-avicore-header: 0 1px 2px rgb(16 24 40 / 0.05);
+
+    /* Touch mínimo operario (WCAG) */
+    --min-height-avicore-touch: 2.75rem;
 }
 
 @layer base {
     body {
         @apply bg-avicore-surface text-avicore-text antialiased;
+        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    }
+
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-avicore-primary;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+@layer components {
+    .avicore-page-title {
+        @apply text-xl font-semibold tracking-tight text-avicore-text sm:text-2xl;
+    }
+
+    .avicore-page-subtitle {
+        @apply mt-1 text-sm text-avicore-muted;
+    }
+
+    .avicore-nav-link {
+        @apply flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-avicore-muted transition-colors;
+    }
+
+    .avicore-nav-link:hover {
+        @apply bg-avicore-soft text-avicore-primary;
+    }
+
+    .avicore-nav-link--active {
+        @apply bg-avicore-soft text-avicore-primary;
+    }
+
+    .avicore-nav-link--disabled {
+        @apply cursor-default opacity-60 hover:bg-transparent hover:text-avicore-muted;
+    }
+
+    .avicore-kpi-value {
+        @apply text-2xl font-semibold tabular-nums tracking-tight text-avicore-text;
     }
 }

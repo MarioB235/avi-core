@@ -1,7 +1,7 @@
 <x-layouts.admin title="Panel · AviCore" heading="Base administrativa" subheading="Componentes UI iniciales">
     <div class="grid gap-4 lg:grid-cols-3">
         <x-ui.card title="Producción hoy">
-            <p class="text-3xl font-semibold text-avicore-primary">12.480</p>
+            <p class="avicore-kpi-value text-avicore-primary">12.480</p>
             <p class="mt-1 text-sm text-avicore-muted">Huevos registrados</p>
         </x-ui.card>
 

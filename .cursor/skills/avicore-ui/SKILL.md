@@ -10,7 +10,9 @@ El usuario indica **Modo: web** o **Modo: operario**.
 
 ## Documentación común
 
-`docs/02-pantallas-y-flujos.md` · `docs/03-guia-visual-ui.md` · `docs/06-roles-y-permisos.md`
+`docs/02-pantallas-y-flujos.md` · `docs/03-guia-visual-ui.md` · `docs/06-roles-y-permisos.md` · `docs/reference/sistema-diseno.md`
+
+Cambios transversales de tokens/layouts: skill interno `avicore-design-system`.
 
 ## Modo web
 

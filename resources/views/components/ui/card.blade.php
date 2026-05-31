@@ -1,10 +1,19 @@
 @props([
     'title' => null,
+    'padding' => 'default',
 ])
 
-<div {{ $attributes->merge(['class' => 'rounded-xl border border-gray-200 bg-avicore-card p-5 shadow-sm']) }}>
+@php
+    $paddingClass = match ($padding) {
+        'compact' => 'p-4',
+        'none' => 'p-0',
+        default => 'p-5 sm:p-6',
+    };
+@endphp
+
+<div {{ $attributes->merge(['class' => "rounded-xl border border-avicore-border bg-avicore-card shadow-avicore-card {$paddingClass}"]) }}>
     @if ($title)
-        <h3 class="mb-3 text-sm font-medium text-avicore-muted">{{ $title }}</h3>
+        <h3 class="mb-3 text-xs font-semibold uppercase tracking-wide text-avicore-muted">{{ $title }}</h3>
     @endif
 
     {{ $slot }}

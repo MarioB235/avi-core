@@ -11,6 +11,7 @@
 | [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md) | **Árbol del repo y carpetas Laravel** |
 | [`reference/arranque-local.md`](reference/arranque-local.md) | **Entorno local** — PostgreSQL, `.env`, migrate, serve |
 | [`reference/estandares-codigo.md`](reference/estandares-codigo.md) | **Estándares de código** (auditoría y desarrollo) |
+| [`reference/sistema-diseno.md`](reference/sistema-diseno.md) | **Sistema de diseño** — tokens Tailwind, componentes UI, accesibilidad |
 | [`CHANGELOG.md`](CHANGELOG.md) | Cambios de contrato documental |
 
 Raíz del repo: [`AGENTS.md`](../AGENTS.md) (resumen para Cursor/CLI).

@@ -1,4 +1,4 @@
-<div class="w-full max-w-md space-y-8">
+<div class="space-y-8">
     <x-ui.logo subtitle="Iniciar sesión" class="justify-center" />
 
     <x-ui.card>
@@ -20,11 +20,11 @@
                 required
             />
 
-            <label class="flex items-center gap-2 text-sm text-avicore-muted">
+            <label class="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-avicore-muted">
                 <input
                     type="checkbox"
                     wire:model="remember"
-                    class="size-4 rounded border-gray-300 text-avicore-primary focus:ring-avicore-primary/30"
+                    class="size-4 rounded border-avicore-border-strong text-avicore-primary focus:ring-2 focus:ring-avicore-primary/30"
                 />
                 Recordarme en este equipo
             </label>
