@@ -59,7 +59,7 @@ erDiagram
 | last_login_at | timestamp | Sí | |
 | created_at, updated_at | timestamp | No | |
 
-**Índice:** `(empresa_id, documento)` único.
+**Índices:** `(empresa_id, documento)` único; `users_documento_admin_unique` parcial en `documento` donde `empresa_id IS NULL` (Admin AviCore).
 
 ### `granjas`
 

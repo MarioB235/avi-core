@@ -7,7 +7,7 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ## 2026-05-31
 
-- **[docs]** Alineación post Bloque 2 auth: usuarios demo en `10`, flujos login/cambio en `02`, reglas throttling/contraseña en `05`, rutas por rol en `06`, middleware y `EmpresaContextService` en `07`/`estructura-proyecto`, criterio documento admin en `04`. — `docs/02`, `04`, `05`, `06`, `07`, `10`, `reference/estructura-proyecto.md`
+- **[docs]** Alineación post Bloque 2 auth: usuarios demo en `10`, flujos login/cambio en `02`, reglas throttling/contraseña en `05`, rutas por rol en `06`, middleware y `EmpresaContextService` en `07`/`estructura-proyecto`, criterio documento admin e índice parcial en `04`/`estructura-base-datos`. — `docs/02`, `04`, `05`, `06`, `07`, `10`, `reference/`
 - **[cursor]** Mensajes 1–5: bloque «Referencias agente» (skills, docs, CHANGELOG, evolución tooling); índice `02-avicore-mensajes-reutilizables.md`. — `docs/cursor/`, skills auditoria, cierre-tarea, git-pr
 - **[cursor]** Mensajes 2–3 auditoría: tabla clasificadora con brechas en fila; mensaje 3 corrige según tabla (sin lista de 5 mejoras). — `02-avicore-mensajes-reutilizables.html`, skill `avicore-auditoria`
 - **[cursor]** Mensajes reutilizables: sin referencias cruzadas «pegar en mensaje 5» en textos copiables; flujo en hint del HTML. — `02-avicore-mensajes-reutilizables.html`
