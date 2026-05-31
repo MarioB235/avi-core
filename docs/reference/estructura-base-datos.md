@@ -193,6 +193,7 @@ erDiagram
 | registros_operativos | `galpon_id`, `created_at`, `tipo` |
 | lotes | `estado` |
 | users | `(empresa_id, documento)` único |
+| users | `documento` único parcial (`empresa_id IS NULL`, Admin AviCore) |
 
 ---
 

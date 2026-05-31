@@ -26,7 +26,7 @@ Detalle de columnas en [`reference/estructura-base-datos.md`](reference/estructu
 | Entidad | Reglas clave |
 |---------|----------------|
 | **empresas** | Cliente multiempresa; estados activa/suspendida/inactiva |
-| **users** | Login por documento; único por `empresa_id`; contraseña temporal obliga cambio |
+| **users** | Login por documento; único por `(empresa_id, documento)`; documento único global si `empresa_id` null (Admin AviCore); contraseña temporal obliga cambio |
 | **granjas / galpones / lotes** | Jerarquía empresa → granja → galpón → lote; carga por galpón |
 | **registros_operativos** | Fecha/hora = `created_at`; anulación lógica con motivo |
 | **movimientos_aves** | Traslados, ajustes, cierres; impactan aves vivas |

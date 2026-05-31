@@ -4,21 +4,20 @@
 
         <x-ui.card>
             <p class="text-sm text-avicore-muted">
-                Base del proyecto lista. El stack principal está configurado: Laravel, Livewire, Tailwind, Alpine (vía Livewire) y PostgreSQL.
+                Ingresá con documento y contraseña. Los usuarios de prueba se cargan con
+                <code class="text-xs">php artisan db:seed</code> (ver documentación de arranque local).
             </p>
         </x-ui.card>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <x-ui.button href="{{ route('dev.admin-layout') }}" class="w-full sm:w-auto">
-                Ver layout admin
+            <x-ui.button href="{{ route('login') }}" class="w-full sm:w-auto">
+                Iniciar sesión
             </x-ui.button>
-            <x-ui.button href="{{ route('dev.operario-layout') }}" variant="secondary" class="w-full sm:w-auto">
-                Ver layout operario
-            </x-ui.button>
+            @auth
+                <x-ui.button href="{{ route(auth()->user()->homeRouteName()) }}" variant="secondary" class="w-full sm:w-auto">
+                    Ir a mi panel
+                </x-ui.button>
+            @endauth
         </div>
-
-        <p class="text-xs text-avicore-muted">
-            Próximo módulo: login y cambio obligatorio de contraseña.
-        </p>
     </div>
 </x-layouts.public>

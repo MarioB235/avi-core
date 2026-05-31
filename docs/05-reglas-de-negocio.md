@@ -12,11 +12,16 @@
 ## 2. Usuarios
 
 1. El login se realiza con documento y contraseña.
-2. El documento es único dentro de cada empresa.
-3. Los usuarios son creados por administrador o perfil autorizado.
-4. Todo usuario nuevo puede tener contraseña temporal.
-5. El primer ingreso exige cambio obligatorio de contraseña.
-6. La recuperación de contraseña en MVP la realiza administrador o encargado autorizado.
+2. El documento es único dentro de cada empresa (`empresa_id` + `documento`).
+3. Admin AviCore (`empresa_id` null) tiene documento único a nivel global.
+4. Los usuarios son creados por administrador o perfil autorizado.
+5. Todo usuario nuevo puede tener contraseña temporal (`must_change_password`).
+6. El primer ingreso exige cambio obligatorio de contraseña antes de usar el sistema.
+7. La nueva contraseña debe cumplir política mínima: 8+ caracteres, letras, mayúsculas/minúsculas y números; no puede repetir la actual.
+8. Tras 5 intentos fallidos de login por documento e IP en 60 segundos, se bloquea temporalmente el acceso.
+9. Si un documento resuelve más de una cuenta activa con credenciales válidas, se rechaza el login (ambigüedad).
+10. Usuario inactivo o empresa no activa impiden el acceso (Admin AviCore exceptuado de validación de empresa).
+11. La recuperación de contraseña en MVP la realiza administrador o encargado autorizado.
 
 ---
 

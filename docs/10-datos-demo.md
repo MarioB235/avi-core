@@ -53,16 +53,21 @@ Avícola Demo
 
 ---
 
-## 6. Usuarios demo
+## 6. Usuarios demo (auth — Bloque 2)
 
-| Rol | Documento | Nombre |
-|---|---|---|
-| Dueño | 10000001 | Dueño Demo |
-| Administrativo | 10000002 | Administrativo Demo |
-| Encargado | 10000003 | Encargado Demo |
-| Operario | 10000004 | Operario Demo |
+Cargados con `AvicoreAuthSeeder` (`php artisan db:seed`). Empresa: **Avícola Demo** (`DEMO`).
 
-Todos con contraseña temporal inicial que exige cambio.
+| Rol | Documento | Contraseña inicial | Cambio obligatorio |
+|---|---|---|---|
+| Admin AviCore | `900000001` | `Avicore2026!` | No |
+| Dueño | `100000001` | `Avicore2026!` | No |
+| Administrativo | `300000001` | `Avicore2026!` | No |
+| Encargado | `400000001` | `Avicore2026!` | No |
+| Operario | `200000001` | `Temporal2026!` | Sí (primer ingreso) |
+
+Credenciales para probar login en local: [`reference/arranque-local.md`](reference/arranque-local.md) § «Datos de prueba (login)».
+
+Los usuarios de granjas/galpones/lotes (sección 3) se cargarán en fases posteriores del plan; hoy solo existe el seed de auth.
 
 ---
 

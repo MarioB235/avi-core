@@ -8,6 +8,8 @@ disable-model-invocation: true
 
 ## Modo revisar (mensaje 2) — SOLO LECTURA
 
+Mensaje usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html` (mensaje 2) · índice: `docs/cursor/02-avicore-mensajes-reutilizables.md`.
+
 **No modificar código.** No aplicar correcciones. Solo analizar.
 
 1. Leer base: `docs/reference/estandares-codigo.md` + docs del mensaje (`05`, `06`, `02`, `03`, `04`, `reference`, `07`, `08`, `11` según alcance).
@@ -20,20 +22,18 @@ disable-model-invocation: true
 ## Resumen ejecutivo
 [2–4 líneas]
 
-## Tabla de cumplimiento
+## Tabla clasificadora de cumplimiento
 | Archivo | Cumplimiento % | Negocio | Permisos | Código/UI | Brecha principal |
 |---------|----------------|---------|----------|-----------|------------------|
-| ruta/archivo | 85 | OK | OK | Parcial | [una línea] |
-
-## Plan sugerido (máx. 5 ítems, sin ejecutar)
-1. ...
+| ruta/archivo | 85 | OK | OK | Parcial | [recomendación concreta para esa fila] |
 ```
 
-- Los % por dimensión (Negocio, Permisos, Código/UI) pueden ser: OK / Parcial / No / N/A.
+- Los % por dimensión (Negocio, Permisos, Código/UI): OK / Parcial / No / N/A.
+- **Toda recomendación accionable** va en **Brecha principal**; no agregar lista aparte de «mejoras sugeridas».
 - Si falta un archivo en la lista del usuario, pedirlo solo si bloquea el análisis.
 
 ## Modo aplicar-correcciones (mensaje 3)
 
-Ahí sí modificar: solo archivos y hallazgos indicados. Prioridad: bugs → seguridad → multiempresa → validaciones → auditoría → responsive. Sin refactors grandes.
+Modificar según la **tabla clasificadora** del mensaje 2: filas con Parcial/No y lo indicado en Brecha principal. Prioridad: bugs → seguridad → multiempresa → validaciones → auditoría → responsive. Sin refactors fuera de la tabla.
 
-**Salida:** cambios aplicados, archivos, verificación.
+**Salida:** cambios aplicados, archivos, verificación · **resumen breve del trabajo** al cerrar.

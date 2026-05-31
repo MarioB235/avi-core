@@ -63,11 +63,16 @@ Ver árbol completo y convenciones en [`reference/estructura-proyecto.md`](refer
 
 Toda consulta debe filtrar por empresa_id salvo Admin AviCore en modo soporte.
 
-Recomendación:
+Implementado (Bloque 2):
 
-- Middleware de empresa activa.
-- Scope global o helper de contexto.
-- Policies que validen empresa_id.
+- **`EmpresaContextService`:** resuelve `empresa_id` de la sesión; Admin AviCore puede override en sesión (`avicore.empresa_context_id`) para modo soporte futuro.
+- **Login:** validación de empresa activa vía `Empresa::permiteLogin()` (solo estado `activa`).
+- **Middleware auth:** `EnsurePasswordChanged`, `EnsureAdminPanelAccess`, `EnsureOperarioAccess`, `RedirectIfAuthenticated`.
+
+Pendiente en módulos siguientes:
+
+- Scope global en modelos operativos.
+- Policies que validen empresa_id en CRUD.
 
 ---
 
