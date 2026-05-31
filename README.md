@@ -8,12 +8,33 @@ Permite registrar y consultar producción diaria por galpón: huevos, mortalidad
 
 | Fase | Contenido |
 |------|-----------|
-| **Actual** | Documentación de producto, referencias (BD, arquitectura, estándares) y configuración del agente en Cursor |
-| **Siguiente** | Código Laravel según [`docs/12-plan-de-desarrollo.md`](docs/12-plan-de-desarrollo.md) |
+| **Hecho** | Bloque 1: Laravel 13, Livewire 4, Tailwind 4, layouts, UI base, PostgreSQL con migraciones iniciales |
+| **Siguiente** | Login + cambio obligatorio de contraseña — [`docs/12-plan-de-desarrollo.md`](docs/12-plan-de-desarrollo.md) |
 
-## Stack previsto
+## Stack
 
-Laravel · PostgreSQL · Livewire · Tailwind CSS · Alpine.js · PWA · Laravel Reverb · Echo
+Laravel 13 · PostgreSQL · Livewire 4 · Tailwind CSS 4 · Alpine.js (Livewire) · PWA · Reverb · Echo *(últimos tres en fases posteriores)*
+
+## Arranque local
+
+Guía completa: [`docs/reference/arranque-local.md`](docs/reference/arranque-local.md)
+
+```bash
+composer install
+cp .env.example .env   # si no tenés .env
+php artisan key:generate
+npm install && npm run build
+```
+
+**PostgreSQL:** crear base `avicore` en pgAdmin. En `.env`, completar `DB_PASSWORD` del usuario `postgres` (pgAdmin puede guardar la clave; Laravel necesita la misma en `.env`).
+
+```bash
+php artisan migrate
+php artisan serve
+npm run dev   # otra terminal, opcional
+```
+
+URL: `http://localhost:8000` · previews: `/dev/admin-layout`, `/dev/operario-layout`
 
 ## Empezar aquí
 
@@ -21,6 +42,7 @@ Laravel · PostgreSQL · Livewire · Tailwind CSS · Alpine.js · PWA · Laravel
 |---------------|---------|
 | Contexto del proyecto | [`docs/00-contexto.md`](docs/00-contexto.md) |
 | Índice de documentación | [`docs/README.md`](docs/README.md) |
+| Entorno local (PG, migrate) | [`docs/reference/arranque-local.md`](docs/reference/arranque-local.md) |
 | Agente / Cursor | [`docs/cursor/01-indice-agente.md`](docs/cursor/01-indice-agente.md) |
 | Comando del arquitecto | `/avicore-architect-direct` → [`.cursor/commands/avicore-architect-direct.md`](.cursor/commands/avicore-architect-direct.md) |
 | Instrucciones para el agente | [`AGENTS.md`](AGENTS.md) |
@@ -34,16 +56,16 @@ Seleccionar galpón → cargar dato operativo → guardar → dashboard / report
 ## Estructura principal
 
 ```text
+app/            Actions, Services, Livewire, Policies, Events
+resources/      Layouts, componentes UI, assets (Vite + Tailwind)
 docs/           Documentación de producto (01–12) y referencias
 .cursor/        Reglas, skills y comando del arquitecto AviCore
-AGENTS.md       Entrada rápida para el agente
 ```
 
 ## Desarrollo con Cursor
 
 1. Abrí este workspace en Cursor.
 2. Usá `/avicore-architect-direct` y las plantillas en [`docs/cursor/02-avicore-mensajes-reutilizables.html`](docs/cursor/02-avicore-mensajes-reutilizables.html).
-3. Cuando exista código Laravel: `composer install`, `npm install`, `php artisan migrate --seed` (ver `docs/00-contexto.md`).
 
 ## Licencia
 

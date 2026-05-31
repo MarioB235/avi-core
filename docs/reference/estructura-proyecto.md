@@ -5,30 +5,25 @@ Principios y stack: `docs/07-arquitectura-tecnica.md`.
 
 ---
 
-## Repositorio actual (documentación + Cursor)
+## Repositorio actual
 
 ```text
 avi-core/
-├── AGENTS.md                 # Entrada Cursor/CLI (enlaza a docs/00-contexto.md)
-├── docs/
-│   ├── README.md             # Índice y gobernanza
-│   ├── 00-contexto.md        # Contexto del proyecto
-│   ├── CHANGELOG.md          # Cambios de contrato documental
-│   ├── 01-producto-avicore.md … 12-plan-de-desarrollo.md
-│   ├── reference/
-│   │   ├── estructura-base-datos.md
-│   │   └── estructura-proyecto.md   # (este archivo)
-│   └── cursor/               # Tooling agente (no negocio)
-├── .cursor/
-│   ├── rules/                # Reglas .mdc
-│   ├── skills/               # Skills por escenario
-│   └── commands/             # Slash commands
-├── app/                      # (futuro) Laravel
-├── database/
-├── resources/
-├── routes/
-└── tests/
+├── app/                      # Laravel — Actions, Services, Livewire, Policies, Events
+├── resources/views/          # layouts (público, admin, operario), components/ui
+├── docs/                     # Documentación de producto + referencias
+├── .cursor/                  # Reglas, skills, comando del arquitecto
+├── AGENTS.md
+└── …                         # Rutas, migraciones, tests (estándar Laravel)
 ```
+
+**Stack instalado (Bloque 1):** Laravel 13 · Livewire 4 · Tailwind 4 · PostgreSQL · Alpine (vía Livewire).
+
+**Migraciones Laravel aplicadas:** `users`, `cache`, `jobs` (+ tablas auxiliares del skeleton). Tablas de negocio AviCore: pendientes (módulos 3+).
+
+**Layout Livewire (oficial):** `resources/views/layouts/app.blade.php` — usado por componentes de página completa (`config/livewire.php` → `layouts::app`).
+
+Reverb, Echo y PWA quedan para fases posteriores del plan.
 
 ---
 
@@ -74,11 +69,14 @@ app/
 ```text
 resources/
 ├── views/
-│   ├── layouts/          # público, admin, operario-móvil
-│   ├── livewire/
-│   └── components/
-├── css/
-└── js/                   # Echo, PWA
+│   ├── layouts/
+│   │   └── app.blade.php     # layout Livewire (páginas completas)
+│   ├── components/
+│   │   ├── layouts/          # público, admin, operario-móvil (Blade)
+│   │   └── ui/               # botón, input, card, badge, alert, logo
+│   └── pages/                # home, previews /dev/*
+├── css/                      # Tailwind 4 + tema AviCore (`app.css`)
+└── js/                       # Vite entry
 ```
 
 ---

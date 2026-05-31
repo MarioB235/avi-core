@@ -1,6 +1,6 @@
 # Documentación AviCore
 
-Índice del repositorio de especificación del MVP. El código Laravel vivirá en la raíz; la verdad de contrato está en `docs/`.
+Índice del repositorio. El **código Laravel** vive en la raíz del repo; la verdad de contrato (negocio, BD, pantallas) está en `docs/`.
 
 ## Punto de entrada (agentes y humanos)
 
@@ -9,6 +9,7 @@
 | [`00-contexto.md`](00-contexto.md) | **Contexto del proyecto** — stack, mapa de lectura, principios |
 | [`reference/estructura-base-datos.md`](reference/estructura-base-datos.md) | **Esquema BD** — tablas, campos, relaciones (mantener al día) |
 | [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md) | **Árbol del repo y carpetas Laravel** |
+| [`reference/arranque-local.md`](reference/arranque-local.md) | **Entorno local** — PostgreSQL, `.env`, migrate, serve |
 | [`reference/estandares-codigo.md`](reference/estandares-codigo.md) | **Estándares de código** (auditoría y desarrollo) |
 | [`CHANGELOG.md`](CHANGELOG.md) | Cambios de contrato documental |
 
@@ -29,7 +30,7 @@ Raíz del repo: [`AGENTS.md`](../AGENTS.md) (resumen para Cursor/CLI).
 | [09-reportes-exportaciones.md](09-reportes-exportaciones.md) | PDF/Excel MVP | Reportes | Medio |
 | [10-datos-demo.md](10-datos-demo.md) | Seeders y escenarios demo | Demo | Medio |
 | [11-checklist-modulos.md](11-checklist-modulos.md) | Definición de “módulo terminado” | Proceso | Bajo |
-| [12-plan-de-desarrollo.md](12-plan-de-desarrollo.md) | Orden de implementación | Roadmap | Bajo (hitos) |
+| [12-plan-de-desarrollo.md](12-plan-de-desarrollo.md) | Orden de implementación y estado de bloques | Roadmap | Medio (hitos) |
 
 ## Regla de una sola fuente maestra
 
@@ -42,6 +43,7 @@ Raíz del repo: [`AGENTS.md`](../AGENTS.md) (resumen para Cursor/CLI).
 | Permiso por rol | `06-roles-y-permisos.md` | `02` si oculta acciones |
 | Evento WebSocket | `08-tiempo-real-eventos.md` | `07` si cambia patrón técnico |
 | Carpeta/clase estándar | `reference/estructura-proyecto.md` | `07` si cambia principio |
+| Entorno local (PG, migrate, serve) | `reference/arranque-local.md` | README raíz resume; `07` enlaza |
 
 ## Cursor (tooling, no negocio)
 

@@ -13,7 +13,9 @@ Plataforma de **gestión operativa** para avícolas de gallinas ponedoras (MVP).
 Seleccionar galpón → cargar dato operativo → guardar → dashboard/reportes (tiempo real si aplica)
 ```
 
-Stack: **Laravel, PostgreSQL, Livewire, Tailwind, Alpine.js, PWA, Laravel Reverb, Echo**.
+Stack: **Laravel 13, PostgreSQL, Livewire 4, Tailwind 4, Alpine.js (Livewire), PWA, Reverb, Echo** *(últimos tres en fases posteriores)*.
+
+**Estado código:** Bloque 1 completado (base + migraciones Laravel en PostgreSQL). Siguiente módulo: login — [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md).
 
 ---
 
@@ -23,6 +25,7 @@ Stack: **Laravel, PostgreSQL, Livewire, Tailwind, Alpine.js, PWA, Laravel Reverb
 |-----------|---------|
 | Esquema BD | [`reference/estructura-base-datos.md`](reference/estructura-base-datos.md) |
 | Árbol Laravel | [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md) |
+| Arranque local | [`reference/arranque-local.md`](reference/arranque-local.md) |
 | Estándares código | [`reference/estandares-codigo.md`](reference/estandares-codigo.md) |
 | Gobernanza docs | [`README.md`](README.md) · [`CHANGELOG.md`](CHANGELOG.md) |
 
@@ -76,13 +79,18 @@ Pantalla OK · datos persisten · validaciones · permisos · sin fuga entre emp
 
 ---
 
-## Comandos locales (cuando exista código)
+## Comandos locales
+
+Ver [`reference/arranque-local.md`](reference/arranque-local.md). Resumen:
 
 ```bash
-composer install && npm install && php artisan migrate --seed
-npm run dev && php artisan serve && php artisan reverb:start
+composer install && npm install && php artisan migrate
+npm run dev    # terminal 1 de assets
+php artisan serve
 php artisan test && npm run build
 ```
+
+Reverb (cuando aplique): `php artisan reverb:start`
 
 ---
 

@@ -5,6 +5,12 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-05-31
+
+- **[código]** Bloque 1 — base Laravel: Livewire 4, Tailwind 4 (tema AviCore), layouts público/admin/operario, componentes UI base, PostgreSQL en `.env.example`. — `app/`, `resources/`, `routes/web.php`, `.env.example`, `docs/reference/estructura-proyecto.md`
+- **[arquitectura]** Bloque 1 cerrado en entorno local: PostgreSQL `avicore`, migraciones Laravel OK; versiones stack en `07`; estado de bloques en `12`. — `docs/07-arquitectura-tecnica.md`, `docs/12-plan-de-desarrollo.md`, `docs/00-contexto.md`, `README.md`
+- **[referencia]** Nueva fuente maestra entorno local (PostgreSQL, pgAdmin, `.env`, migrate, serve). — `docs/reference/arranque-local.md`, `docs/README.md`
+
 ## 2026-05-30
 
 - **[estructura]** Reorganización documental: contexto (`00-contexto.md`), referencias BD/proyecto, README, CHANGELOG. — `docs/`, `AGENTS.md`, `.cursor/rules/`
