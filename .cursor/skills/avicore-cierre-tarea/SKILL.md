@@ -14,7 +14,7 @@ El usuario completa la sección **«Archivos modificados en esta sesión»** del
 
 - `docs/README.md` — tabla «Regla de una sola fuente maestra» (mapa canónico negocio→05, pantallas→02, etc.)
 - `docs/CHANGELOG.md` — si cambió contrato documental
-- Mensaje usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html` (mensaje 4) · índice: `docs/cursor/02-avicore-mensajes-reutilizables.md`
+- Mensaje usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html` (mensaje 4) · catálogo: `docs/cursor/03-skills-avicore.md`
 
 ## Qué documento actualizar
 

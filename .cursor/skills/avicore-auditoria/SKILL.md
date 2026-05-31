@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 ## Modo revisar (mensaje 2) — SOLO LECTURA
 
-Mensaje usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html` (mensaje 2) · índice: `docs/cursor/02-avicore-mensajes-reutilizables.md`.
+Mensaje usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html` (mensaje 2) · catálogo: `docs/cursor/03-skills-avicore.md`.
 
 **No modificar código.** No aplicar correcciones. Solo analizar.
 
