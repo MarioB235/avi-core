@@ -62,11 +62,38 @@ El rol `postgres` es del **servidor**, no de una base concreta; puede usarse en 
 php artisan migrate
 ```
 
-Tablas iniciales del skeleton: `users`, `cache`, `jobs`, `migrations`, etc. Las tablas de negocio AviCore se agregan en módulos posteriores (ver [`estructura-base-datos.md`](estructura-base-datos.md)).
+Tablas: skeleton Laravel + `empresas` + `users` (esquema AviCore). Ver [`estructura-base-datos.md`](estructura-base-datos.md).
+
+### Datos de prueba (login)
+
+Usuarios y contraseñas demo: [`10-datos-demo.md`](../10-datos-demo.md) § 6. Tras migrar, cargarlos con:
+
+```bash
+php artisan db:seed
+```
+
+| Perfil | Documento | Contraseña | Notas |
+|--------|-----------|------------|--------|
+| Admin AviCore | `900000001` | `Avicore2026!` | Panel `/admin` |
+| Dueño demo | `100000001` | `Avicore2026!` | Empresa «Avícola Demo» |
+| Administrativo demo | `300000001` | `Avicore2026!` | Panel `/admin` |
+| Encargado demo | `400000001` | `Avicore2026!` | Panel `/admin` |
+| Operario demo | `200000001` | `Temporal2026!` tras seed; si ya cambió en tu PC: `Actual2026!` | Primer ingreso obliga cambio; luego `/operario` |
+
+Rutas: `/login`, `/password/change`, `/admin`, `/operario`.
 
 ---
 
 ## Servidor de desarrollo
+
+En local hacen falta **dos procesos** (dos terminales). No son dos “versiones” de la app.
+
+| URL | Qué es | ¿Abrís el navegador ahí? |
+|-----|--------|---------------------------|
+| `http://127.0.0.1:8000` o `http://localhost:8000` | **Laravel** (`php artisan serve`) — pantallas, login, API | **Sí** — esta es AviCore |
+| `http://localhost:5173` | **Vite** (`npm run dev` / `pnpm run dev`) — compila CSS/JS en caliente | **No** — verás solo la página informativa de Vite |
+
+La app carga estilos y scripts desde Vite en segundo plano cuando abrís el puerto **8000**. Si cerrás la terminal de Vite, la app puede verse sin estilos o sin recarga automática; el login y las rutas siguen en **8000**.
 
 Terminal 1:
 
@@ -74,15 +101,19 @@ Terminal 1:
 php artisan serve
 ```
 
-Terminal 2 (assets en caliente):
+Terminal 2 (assets en caliente; dejarla abierta):
 
 ```bash
 npm run dev
 ```
 
-URL: `http://localhost:8000`
+(o `pnpm run dev` si usás pnpm)
 
-Rutas de preview del Bloque 1: `/`, `/dev/admin-layout`, `/dev/operario-layout`.
+**Entrada recomendada:** `http://localhost:8000` → home `/` → botón **Iniciar sesión** → `/login`.
+
+Usuarios demo: tabla de la sección «Datos de prueba (login)» más arriba.
+
+Previews de layout (requieren sesión): `/dev/admin-layout`, `/dev/operario-layout`.
 
 Atajo Composer (servidor + cola + logs + Vite):
 

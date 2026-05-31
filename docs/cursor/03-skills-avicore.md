@@ -1,6 +1,6 @@
 # AviCore — Skills (12 internos · 5 mensajes usuario)
 
-**Usuario:** solo los **5 mensajes** en [`02-avicore-mensajes-reutilizables.html`](02-avicore-mensajes-reutilizables.html) + `/avicore-architect-direct`.
+**Usuario:** solo los **5 mensajes** en [`02-avicore-mensajes-reutilizables.html`](02-avicore-mensajes-reutilizables.html) + `/avicore-architect-direct`. Índice con refs por mensaje: [`02-avicore-mensajes-reutilizables.md`](02-avicore-mensajes-reutilizables.md).
 
 **Agente:** aplica los `SKILL.md` según el mensaje y el detalle del usuario.
 

@@ -59,7 +59,7 @@ erDiagram
 | last_login_at | timestamp | Sí | |
 | created_at, updated_at | timestamp | No | |
 
-**Índice:** `(empresa_id, documento)` único.
+**Índices:** `(empresa_id, documento)` único; `users_documento_admin_unique` parcial en `documento` donde `empresa_id IS NULL` (Admin AviCore).
 
 ### `granjas`
 
@@ -193,6 +193,7 @@ erDiagram
 | registros_operativos | `galpon_id`, `created_at`, `tipo` |
 | lotes | `estado` |
 | users | `(empresa_id, documento)` único |
+| users | `documento` único parcial (`empresa_id IS NULL`, Admin AviCore) |
 
 ---
 

@@ -19,7 +19,9 @@ avi-core/
 
 **Stack instalado (Bloque 1):** Laravel 13 · Livewire 4 · Tailwind 4 · PostgreSQL · Alpine (vía Livewire).
 
-**Migraciones Laravel aplicadas:** `users`, `cache`, `jobs` (+ tablas auxiliares del skeleton). Tablas de negocio AviCore: pendientes (módulos 3+).
+**Migraciones:** skeleton Laravel + `empresas` + `users` (esquema AviCore, índice único parcial documento admin). Resto de tablas operativas: pendientes (módulos 3+).
+
+**Auth (Bloque 2):** Livewire `Auth/Login`, `Auth/ChangePassword`; middleware en `bootstrap/app.php`; rutas `/dev/*` solo en entorno `local`.
 
 **Layout Livewire (oficial):** `resources/views/layouts/app.blade.php` — usado por componentes de página completa (`config/livewire.php` → `layouts::app`).
 
@@ -32,10 +34,13 @@ Reverb, Echo y PWA quedan para fases posteriores del plan.
 ```text
 app/
 ├── Actions/
+│   ├── Auth/                 # AttemptLoginAction, ChangePasswordAction
 │   ├── Operacion/
 │   ├── Lotes/
 │   ├── Galpones/
 │   └── Auditoria/
+├── Http/
+│   └── Middleware/           # EnsurePasswordChanged, EnsureAdminPanelAccess, EnsureOperarioAccess, RedirectIfAuthenticated
 ├── Services/
 │   ├── DashboardService.php
 │   ├── AuditoriaService.php
@@ -49,6 +54,7 @@ app/
 │   ├── RegistroOperativo.php
 │   └── Auditoria.php
 ├── Livewire/
+│   ├── Auth/
 │   ├── Dashboard/
 │   ├── Operario/
 │   ├── Galpones/
@@ -97,7 +103,7 @@ resources/
 
 | Módulo MVP | Livewire (sugerido) | Tablas principales |
 |------------|---------------------|-------------------|
-| Login / contraseña | Auth (layout público) | users |
+| Login / contraseña | `Livewire/Auth/` (layout público) | `empresas`, `users` |
 | Usuarios | `Usuarios/` | users |
 | Empresas | Admin | empresas |
 | Granjas | `Galpones/` o dedicado | granjas |

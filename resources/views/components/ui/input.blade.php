@@ -20,5 +20,9 @@
 
     @if ($error)
         <p class="text-sm text-avicore-danger">{{ $error }}</p>
+    @elseif ($name)
+        @error($name)
+            <p class="text-sm text-avicore-danger">{{ $message }}</p>
+        @enderror
     @endif
 </div>

@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Enums;
+
+enum UserRole: string
+{
+    case AdminAvicore = 'admin_avicore';
+    case Dueno = 'dueno';
+    case Administrativo = 'administrativo';
+    case Encargado = 'encargado';
+    case Operario = 'operario';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::AdminAvicore => 'Admin AviCore',
+            self::Dueno => 'Dueño',
+            self::Administrativo => 'Administrativo',
+            self::Encargado => 'Encargado',
+            self::Operario => 'Operario',
+        };
+    }
+
+    public function isOperario(): bool
+    {
+        return $this === self::Operario;
+    }
+
+    public function usesAdminPanel(): bool
+    {
+        return ! $this->isOperario();
+    }
+}

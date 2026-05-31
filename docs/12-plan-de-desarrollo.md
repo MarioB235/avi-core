@@ -5,7 +5,7 @@
 | Bloque | Estado | Notas |
 |--------|--------|-------|
 | **1 — Base** | **Hecho** | Laravel 13, Livewire 4, Tailwind 4, layouts, UI base, PostgreSQL + `migrate` OK |
-| **2 — Seguridad** | Pendiente | Siguiente: login + cambio obligatorio de contraseña |
+| **2 — Seguridad** | **En curso** | Login + cambio obligatorio implementados; roles/CRUD usuarios pendiente |
 | 3–7 | Pendiente | Según orden de la sección 2 |
 
 Detalle técnico del Bloque 1: [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md) · entorno local: [`reference/arranque-local.md`](reference/arranque-local.md).
@@ -108,12 +108,13 @@ Dashboard refleja la carga
 
 ## 6. Bloque 2 — Seguridad
 
-- Login.
-- Contraseña temporal.
-- Cambio obligatorio.
-- Roles.
-- Redirección por rol.
-- Usuario activo/inactivo.
+- [x] Login (documento + contraseña, empresa activa, usuario activo).
+- [x] Contraseña temporal + cambio obligatorio.
+- [x] Redirección por rol (admin vs operario).
+- [x] Usuario activo/inactivo y empresa suspendida bloquean acceso.
+- [x] Tabla `empresas` + `users` alineados al esquema AviCore.
+- [x] Seeder demo (`AvicoreAuthSeeder`).
+- [ ] CRUD usuarios y asignación de roles (módulo 5 del plan).
 
 ---
 

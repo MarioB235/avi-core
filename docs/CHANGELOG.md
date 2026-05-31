@@ -7,6 +7,20 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ## 2026-05-31
 
+- **[docs]** Alineación post Bloque 2 auth: usuarios demo en `10`, flujos login/cambio en `02`, reglas throttling/contraseña en `05`, rutas por rol en `06`, middleware y `EmpresaContextService` en `07`/`estructura-proyecto`, criterio documento admin e índice parcial en `04`/`estructura-base-datos`. — `docs/02`, `04`, `05`, `06`, `07`, `10`, `reference/`
+- **[cursor]** Mensajes 1–5: bloque «Referencias agente» (skills, docs, CHANGELOG, evolución tooling); índice `02-avicore-mensajes-reutilizables.md`. — `docs/cursor/`, skills auditoria, cierre-tarea, git-pr
+- **[cursor]** Mensajes 2–3 auditoría: tabla clasificadora con brechas en fila; mensaje 3 corrige según tabla (sin lista de 5 mejoras). — `02-avicore-mensajes-reutilizables.html`, skill `avicore-auditoria`
+- **[cursor]** Mensajes reutilizables: sin referencias cruzadas «pegar en mensaje 5» en textos copiables; flujo en hint del HTML. — `02-avicore-mensajes-reutilizables.html`
+- **[cursor]** Mensajes 3–5: cierre con resumen breve para PR; sin «pegá @rutas abajo»; mensaje 5 recibe resúmenes pegados. — `02-avicore-mensajes-reutilizables.html`, skills cierre-tarea, auditoria, git-pr
+- **[cursor]** Mensaje 5 reutilizable: PR desde chat actual + bloque opcional resumen de otros chats. — `02-avicore-mensajes-reutilizables.html`, skill `avicore-git-pr`
+- **[cursor]** Mensaje 4 reutilizable: alinear docs según @rutas adjuntas de la sesión actual. — `02-avicore-mensajes-reutilizables.html`, skill `avicore-cierre-tarea`
+- **[cursor]** Mensajes reutilizables HTML: botón Copiar lee `textContent` del `<pre>` (no atributo vacío); fallback portapapeles. — `docs/cursor/02-avicore-mensajes-reutilizables.html`
+- **[cursor]** Mensajes reutilizables HTML: sin placeholders `-` en listas de archivos; mensaje 3 sin bloque de hallazgos. — `docs/cursor/02-avicore-mensajes-reutilizables.html`
+- **[cursor]** Acordeón usuarios demo (login local) en mensajes reutilizables HTML; operario `Actual2026!`. — `docs/cursor/02-avicore-mensajes-reutilizables.html`, `docs/reference/arranque-local.md`
+- **[referencia]** Arranque local: aclarar puerto 8000 (Laravel) vs 5173 (Vite, no abrir en el navegador). — `docs/reference/arranque-local.md`
+- **[pantalla]** Login y cambio obligatorio de contraseña (Livewire, layout público, redirección por rol). — `app/Livewire/Auth/`, `app/Actions/Auth/`, `routes/web.php`
+- **[bd]** Tabla `empresas` y campos AviCore en `users` (documento, rol, activo, must_change_password). — `database/migrations/2026_05_31_*`, `app/Models/`
+- **[auth]** Endurecimiento post-auditoría: throttling login, contraseña segura, índice único documento admin, contexto empresa, rutas `/dev` solo local, seeder Administrativo/Encargado, tests ampliados. — `app/Actions/Auth/`, `app/Services/EmpresaContextService.php`, `database/migrations/2026_05_31_100002_*`, `tests/Feature/Auth/`
 - **[código]** Bloque 1 — base Laravel: Livewire 4, Tailwind 4 (tema AviCore), layouts público/admin/operario, componentes UI base, PostgreSQL en `.env.example`. — `app/`, `resources/`, `routes/web.php`, `.env.example`, `docs/reference/estructura-proyecto.md`
 - **[arquitectura]** Bloque 1 cerrado en entorno local: PostgreSQL `avicore`, migraciones Laravel OK; versiones stack en `07`; estado de bloques en `12`. — `docs/07-arquitectura-tecnica.md`, `docs/12-plan-de-desarrollo.md`, `docs/00-contexto.md`, `README.md`
 - **[referencia]** Nueva fuente maestra entorno local (PostgreSQL, pgAdmin, `.env`, migrate, serve). — `docs/reference/arranque-local.md`, `docs/README.md`

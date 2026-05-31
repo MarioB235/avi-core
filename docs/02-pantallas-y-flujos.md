@@ -24,22 +24,31 @@ Permitir el acceso seguro al sistema.
 
 - Documento.
 - Contraseña.
+- Recordarme (opcional).
 
 ### Acciones
 
 - Iniciar sesión.
+- Cerrar sesión (`POST /logout`).
 
 ### Validaciones
 
-- Documento obligatorio.
+- Documento obligatorio (máx. 50 caracteres).
 - Contraseña obligatoria.
 - Usuario activo.
-- Empresa activa.
+- Empresa activa (estado `activa`; no aplica a Admin AviCore).
 - Credenciales válidas.
+- Máximo 5 intentos fallidos por documento e IP en 60 segundos; luego mensaje con tiempo de espera.
+- Si el documento coincide en más de una cuenta activa con la misma contraseña, se rechaza el acceso (contactar administrador).
 
 ### Comportamiento
 
-Si el usuario tiene contraseña temporal, se redirige a cambio obligatorio de contraseña.
+Tras login exitoso:
+
+1. Si `must_change_password` → `/password/change`.
+2. Si no → home según rol: operario → `/operario`; resto (Dueño, Administrativo, Encargado, Admin AviCore) → `/admin`.
+
+Usuario autenticado que visita `/login` se redirige a su home correspondiente.
 
 ---
 
@@ -62,9 +71,16 @@ Forzar al usuario a cambiar la contraseña temporal.
 ### Validaciones
 
 - Contraseña actual correcta.
-- Nueva contraseña segura.
+- Nueva contraseña segura: mínimo 8 caracteres, letras, mayúsculas y minúsculas, números.
+- Nueva contraseña distinta a la actual.
 - Confirmación coincidente.
 - No permitir seguir sin cambiarla.
+
+### Comportamiento
+
+Mientras `must_change_password` sea verdadero, el middleware bloquea el acceso a `/admin`, `/operario` y demás rutas protegidas excepto esta pantalla.
+
+Tras guardar: `must_change_password` pasa a falso y redirección al home del rol (`/admin` o `/operario`).
 
 ---
 

@@ -104,7 +104,20 @@ Puede:
 
 ---
 
-## 7. Operario
+## 7. Acceso post-login (Bloque 2)
+
+| Rol | Home tras login | Rutas protegidas |
+|---|---|---|
+| Operario | `/operario` | Solo `/operario`; `/admin` redirige a `/operario` |
+| Dueño, Administrativo, Encargado, Admin AviCore | `/admin` | Solo `/admin`; `/operario` redirige a `/admin` |
+
+Si `must_change_password`, todas las rutas autenticadas excepto `/password/change` redirigen al cambio obligatorio.
+
+Valores de rol en BD: `admin_avicore`, `dueno`, `administrativo`, `encargado`, `operario` (enum `UserRole`).
+
+---
+
+## 8. Operario
 
 Usa vista móvil simplificada.
 

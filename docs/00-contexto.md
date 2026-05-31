@@ -15,7 +15,7 @@ Seleccionar galpón → cargar dato operativo → guardar → dashboard/reportes
 
 Stack: **Laravel 13, PostgreSQL, Livewire 4, Tailwind 4, Alpine.js (Livewire), PWA, Reverb, Echo** *(últimos tres en fases posteriores)*.
 
-**Estado código:** Bloque 1 completado (base + migraciones Laravel en PostgreSQL). Siguiente módulo: login — [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md).
+**Estado código:** Bloque 1 completado. Bloque 2 (login + cambio obligatorio de contraseña) implementado en rama de trabajo; pendiente CRUD usuarios — [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md).
 
 ---
 

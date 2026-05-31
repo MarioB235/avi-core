@@ -8,6 +8,8 @@ disable-model-invocation: true
 
 **Requiere autorización explícita** (mensaje 5 del usuario).
 
+Mensaje usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html` (mensaje 5) · índice: `docs/cursor/02-avicore-mensajes-reutilizables.md` · auth: `docs/cursor/00-configuracion-cursor.md`.
+
 ## Flujo completo
 
 ### A — Revisión local
@@ -26,6 +28,8 @@ disable-model-invocation: true
 7. `git push -u origin [rama]`
 
 ### C — Pull Request
+
+**Redacción del cuerpo:** basar resumen y objetivos en el **chat actual** (diff + conversación). Si el usuario completó «Resumen adicional (opcional)» en el mensaje 5, integrarlo sin contradecir el diff ni este chat.
 
 **Antes de crear la PR:** `gh auth status` y comparar la cuenta activa con el `owner` del remoto (`git remote get-url origin`). El push puede funcionar con credenciales de Git distintas a las de `gh` — si no coinciden, `gh pr create` fallará aunque el push haya salido bien.
 
