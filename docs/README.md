@@ -47,15 +47,17 @@ Raíz del repo: [`AGENTS.md`](../AGENTS.md) (resumen para Cursor/CLI).
 
 | Ruta | Contenido |
 |------|-----------|
-| [cursor/00-configuracion-cursor.md](cursor/00-configuracion-cursor.md) | Setup Cursor, flujo del agente |
+| [cursor/00-configuracion-cursor.md](cursor/00-configuracion-cursor.md) | Setup Cursor, flujo del agente, reglas |
 | [cursor/01-indice-agente.md](cursor/01-indice-agente.md) | Índice de enlaces del agente |
 | [cursor/02-avicore-mensajes-reutilizables.html](cursor/02-avicore-mensajes-reutilizables.html) | 5 mensajes naturales (acordeón + copiar) |
 | [cursor/02-avicore-mensajes-reutilizables.md](cursor/02-avicore-mensajes-reutilizables.md) | Índice de los 5 mensajes |
-| [cursor/03-skills-avicore.md](cursor/03-skills-avicore.md) | Catálogo de skills |
+| [cursor/03-skills-avicore.md](cursor/03-skills-avicore.md) | Catálogo de skills **internos** |
+| [cursor/04-modo-respuesta-caverman.md](cursor/04-modo-respuesta-caverman.md) | Modo respuesta corto (opcional) |
 | [cursor/05-evolucion-skills-y-docs.md](cursor/05-evolucion-skills-y-docs.md) | Cuándo crear/actualizar skills y docs |
-| [cursor/06-modo-respuesta-clara.md](cursor/06-modo-respuesta-clara.md) | Chat conciso y entendible (no técnico) |
+| [cursor/06-modo-respuesta-clara.md](cursor/06-modo-respuesta-clara.md) | Chat en prosa natural (default) |
+| `../.cursor/commands/avicore-architect-direct.md` | Flujo canónico del slash |
 | `../.cursor/rules/` | Reglas always-apply y por glob |
-| `../.cursor/skills/` | Workflows invocables |
+| `../.cursor/skills/` | Workflows **internos** (el arquitecto los elige) |
 
 ## Orden de lectura por tipo de tarea
 

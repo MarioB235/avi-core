@@ -1,38 +1,26 @@
 # AviCore — Instrucciones para el agente
 
-**Entrada rápida.** Contexto completo: [`docs/00-contexto.md`](docs/00-contexto.md).
+**Entrada rápida.** Contrato y mapa completos: [`docs/00-contexto.md`](docs/00-contexto.md).
 
-## Referencias estructurales (consultar según tarea)
+## Flujo del usuario
+
+`/avicore-architect-direct` + uno de los 5 mensajes en [`docs/cursor/02-avicore-mensajes-reutilizables.html`](docs/cursor/02-avicore-mensajes-reutilizables.html). El arquitecto elige skills internos; el usuario **no** usa `@skill`.
+
+Flujo del slash: [`.cursor/commands/avicore-architect-direct.md`](.cursor/commands/avicore-architect-direct.md) · Índice: [`docs/cursor/01-indice-agente.md`](docs/cursor/01-indice-agente.md)
+
+## Referencias (consultar según tarea)
 
 | Necesidad | Archivo |
 |-----------|---------|
 | Contexto y mapa de lectura | `docs/00-contexto.md` |
-| Esquema de base de datos | `docs/reference/estructura-base-datos.md` |
-| Árbol del proyecto / Laravel | `docs/reference/estructura-proyecto.md` |
-| Índice y fuentes maestras | `docs/README.md` |
+| Fuente maestra por cambio | `docs/README.md` |
+| Esquema BD | `docs/reference/estructura-base-datos.md` |
+| Árbol Laravel | `docs/reference/estructura-proyecto.md` |
 
-## Documentación de producto (orden habitual)
+## Documentación de producto
 
-1. `docs/05-reglas-de-negocio.md`
-2. `docs/06-roles-y-permisos.md`
-3. `docs/02-pantallas-y-flujos.md`
-4. `docs/03-guia-visual-ui.md`
-5. `docs/07-arquitectura-tecnica.md`
-6. `docs/01-producto-avicore.md`, `docs/12-plan-de-desarrollo.md` (alcance/prioridad)
+Orden habitual y mapa por tarea: sección correspondiente en `docs/00-contexto.md` y tabla en `docs/README.md`.
 
-Ver mapa por tipo de tarea en `docs/00-contexto.md`.
+## Cierre
 
-## Tooling
-
-- `/avicore-architect-direct` — flujo completo en `.cursor/commands/avicore-architect-direct.md`
-- Índice: `docs/cursor/01-indice-agente.md` · Skills: `docs/cursor/03-skills-avicore.md` · Plantillas: `docs/cursor/02-avicore-mensajes-reutilizables.html`
-
-## Principios
-
-Multiempresa (`empresa_id`) · Policies · negocio en Services/Actions · anulación lógica · auditoría crítica · tiempo real selectivo · UI verde/agro · español.
-
-## Cierre de tarea
-
-Resumen · Archivos modificados · Verificación · Documentación · Siguiente paso.
-
-Al cambiar contrato: fuente maestra según `docs/README.md` + línea en `docs/CHANGELOG.md`.
+Último párrafo en prosa natural. Al cambiar contrato: fuente maestra según `docs/README.md` + línea en `docs/CHANGELOG.md`. Guía de tono: [`docs/cursor/06-modo-respuesta-clara.md`](docs/cursor/06-modo-respuesta-clara.md).

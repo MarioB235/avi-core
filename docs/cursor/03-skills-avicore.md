@@ -6,11 +6,11 @@
 
 | Mensaje | Skills que puede activar |
 |---------|-------------------------|
-| 1 Cualquier tarea | `nuevo-modulo`, `ui`, `modelo-datos`, `tiempo-real`, `datos-demo`, `reportes`, `pwa` |
-| 2 Auditoría | `avicore-auditoria` (revisar) |
-| 3 Aplicar mejoras | `avicore-auditoria` (aplicar-correcciones) |
-| 4 Documentación | `avicore-cierre-tarea` |
-| 5 Commit / PR | `avicore-git-pr` |
+| 1 Pedir una tarea | `nuevo-modulo`, `ui`, `modelo-datos`, `tiempo-real`, `datos-demo`, `reportes`, `pwa` |
+| 2 Revisar calidad | `avicore-auditoria` (revisar) |
+| 3 Corregir auditoría | `avicore-auditoria` (aplicar-correcciones) |
+| 4 Alinear documentación | `avicore-cierre-tarea` (pasada dedicada; mapa en `docs/README.md`) |
+| 5 Subir cambios / PR | `avicore-git-pr` |
 | (interno) Evolución tooling | `avicore-evolucion-tooling` — crear/actualizar skills y reglas |
 
 Gobernanza: [`05-evolucion-skills-y-docs.md`](05-evolucion-skills-y-docs.md)

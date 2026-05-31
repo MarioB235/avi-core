@@ -99,16 +99,10 @@ Plantillas: `docs/cursor/02-avicore-mensajes-reutilizables.html`
 
 **MCP:** Context7 (`user-context7`) para dudas de API/stack tras docs del proyecto; GitHub (`user-github`) solo mensaje 5 / `avicore-git-pr`.
 
-**Chat:** respuestas concisas y en lenguaje llano (`docs/cursor/06-modo-respuesta-clara.md`).
+**Chat:** respuestas en prosa natural, lenguaje llano (`docs/cursor/06-modo-respuesta-clara.md`).
 
 ---
 
 ## Cierre de tarea (agente)
 
-```text
-Resumen:
-Archivos modificados:
-Verificación:
-Documentación:
-Siguiente paso:
-```
+Último párrafo del chat: qué quedó listo, documentación/tooling si cambió, siguiente paso concreto. Sin bloque etiquetado `Resumen:`/`Archivos:` salvo que el usuario pida informe estructurado.

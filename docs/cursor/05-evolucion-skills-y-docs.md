@@ -41,15 +41,9 @@ Tras crear:
 
 ## Cuándo actualizar documentación de producto
 
-| Cambio | Fuente maestra (`docs/README.md`) |
-|--------|-----------------------------------|
-| Regla de negocio | `05` |
-| Pantalla / flujo | `02` |
-| Esquema | `reference/estructura-base-datos.md` |
-| Permisos | `06` |
-| Arquitectura / carpetas | `reference/estructura-proyecto.md`, `07` |
+Mapa canónico: tabla **«Regla de una sola fuente maestra»** en `docs/README.md`.
 
-Proactivo al cerrar **cualquier** tarea con cambio de contrato, no solo con mensaje 4.
+Proactivo al cerrar **cualquier** tarea con cambio de contrato (paso 5 del architect), no solo con mensaje 4. El mensaje 4 = revisión dedicada o verificación de gaps.
 
 ---
 
@@ -65,13 +59,13 @@ Proactivo al cerrar **cualquier** tarea con cambio de contrato, no solo con mens
 | Señal | Acción |
 |-------|--------|
 | Nuevo skill enrutable desde mensaje 1–5 | Tabla paso 3 |
-| Nuevo paso obligatorio del flujo | Renumerar y reflejar en `avicore-architect/SKILL.md` |
+| Nuevo paso obligatorio del flujo | Renumerar en `.cursor/commands/avicore-architect-direct.md` |
 | Nueva política MCP (Context7, GitHub) | Paso 2 o 3 + `00-configuracion-cursor.md` |
 | Cambió tono o audiencia del chat | `avicore-modo-respuesta-clara.mdc` + `06-modo-respuesta-clara.md` + sección Modo chat del comando |
-| Conflicto comando vs regla vs `00-contexto` | Unificar; comando = fuente del slash |
+| Conflicto comando vs regla vs `00-contexto` | Unificar; **comando** = flujo slash · **00-contexto** = contrato producto · **agente-permanente** = puntero |
 
 ## Checklist del arquitecto (fin de tarea)
 
 - [ ] ¿Cambió contrato? → doc maestra + `CHANGELOG`
-- [ ] ¿Cambió flujo del agente? → skill(s) + `03-skills` + **comando architect-direct** si aplica
+- [ ] ¿Desvío real del flujo documentado? → skill(s) + `03-skills` + comando architect-direct si aplica
 - [ ] ¿Workflow nuevo recurrente? → crear skill o documentar por qué no
