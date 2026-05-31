@@ -48,6 +48,18 @@ DB_PASSWORD=
 
 Completar `DB_PASSWORD` con la contraseña del rol `postgres`.
 
+### Base de datos para tests (`php artisan test`)
+
+Los tests usan **PostgreSQL** (misma extensión `pdo_pgsql` que la app; no SQLite). Crear una base separada **`avicore_test`** (pgAdmin: **Create** → **Database**, owner `postgres`).
+
+Copiar el entorno de prueba y completar la clave:
+
+```bash
+cp .env.testing.example .env.testing
+```
+
+En `.env.testing`, usar la misma `DB_PASSWORD` que en `.env`. Los tests ejecutan migraciones sobre `avicore_test` con `RefreshDatabase`; no mezclan datos con la base `avicore` de desarrollo.
+
 ### Contraseña y pgAdmin
 
 - pgAdmin puede **guardar** la contraseña del servidor; Laravel **no** la lee desde pgAdmin.
