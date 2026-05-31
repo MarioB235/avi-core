@@ -11,4 +11,4 @@ alwaysApply: false
 - Botones grandes en móvil; tablas limpias en web; cards KPI claras.
 - Layouts: público (login), web administrativo, móvil operario (carga en campo).
 
-Consultar `docs/03-guia-visual-ui.md` y `docs/02-pantallas-y-flujos.md` antes de cambiar pantallas.
+Consultar `docs/03-guia-visual-ui.md`, `docs/reference/sistema-diseno.md` y `docs/02-pantallas-y-flujos.md` antes de cambiar pantallas.

@@ -1,5 +1,10 @@
 # 03 — Guía visual UI
 
+**Implementación técnica (tokens, componentes, quality gates):** [`reference/sistema-diseno.md`](reference/sistema-diseno.md).  
+Guía externa base: [awesome-design-skills](https://github.com/bergside/awesome-design-skills) — skill **clean** + patrones **enterprise**; la paleta verde/agro de esta página tiene prioridad.
+
+---
+
 ## 1. Identidad visual
 
 AviCore usará una identidad:

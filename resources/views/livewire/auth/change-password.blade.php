@@ -1,4 +1,4 @@
-<div class="w-full max-w-md space-y-8">
+<div class="space-y-6">
     <x-ui.logo subtitle="Cambio obligatorio de contraseña" class="justify-center" />
 
     <x-ui.alert variant="warning">

@@ -1,4 +1,4 @@
-# AviCore — Skills (12 internos · 5 mensajes usuario)
+# AviCore — Skills (13 internos · 5 mensajes usuario)
 
 **Usuario:** solo los **5 mensajes** en [`02-avicore-mensajes-reutilizables.html`](02-avicore-mensajes-reutilizables.html) + `/avicore-architect-direct`.
 
@@ -6,7 +6,7 @@
 
 | Mensaje | Skills que puede activar |
 |---------|-------------------------|
-| 1 Pedir una tarea | `nuevo-modulo`, `ui`, `modelo-datos`, `tiempo-real`, `datos-demo`, `reportes`, `pwa` |
+| 1 Pedir una tarea | `nuevo-modulo`, `ui`, `design-system`, `modelo-datos`, `tiempo-real`, `datos-demo`, `reportes`, `pwa` |
 | 2 Revisar calidad | `avicore-auditoria` (revisar) |
 | 3 Corregir auditoría | `avicore-auditoria` (aplicar-correcciones) |
 | 4 Alinear documentación | `avicore-cierre-tarea` (pasada dedicada; mapa en `docs/README.md`) |
