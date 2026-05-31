@@ -23,6 +23,7 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 - **[cursor]** Respuesta natural: prosa en párrafos, sin tablas/listas de resumen ni bloque `Resumen:`/`Archivos:`; ejemplo antes/después en `06`; cierre integrado en architect, agente-permanente, AGENTS. — `.cursor/`, `docs/cursor/`, `docs/00-contexto.md`
 - **[cursor]** Mensajes reutilizables HTML/MD reescritos en lenguaje natural; títulos y placeholders alineados con modo respuesta clara. — `02-avicore-mensajes-reutilizables.*`
 - **[cursor]** Optimización flujo agente: jerarquía de fuentes (contrato en 00-contexto + comando; agente-permanente/AGENTS punteros); mermaid sin @skill; inventario 7 reglas y docs 00–06; enrutamiento skills paso 3; mensaje 4 vs paso 5; mapa doc maestra solo en docs/README; architect skill reducido a puntero. — `.cursor/`, `docs/cursor/`, `docs/README.md`
+- **[cursor]** Skill `avicore-git-pr`: verificación `gh auth` vs remoto, orden MCP → gh → token Git credential; notas de seguridad. — `.cursor/skills/avicore-git-pr/`, `00-configuracion-cursor.md`
 
 ---
 
