@@ -16,6 +16,7 @@ Flujo del slash: [`.cursor/commands/avicore-architect-direct.md`](.cursor/comman
 | Fuente maestra por cambio | `docs/README.md` |
 | Esquema BD | `docs/reference/estructura-base-datos.md` |
 | Árbol Laravel | `docs/reference/estructura-proyecto.md` |
+| Arranque local | `docs/reference/arranque-local.md` |
 
 ## Documentación de producto
 

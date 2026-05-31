@@ -1,5 +1,17 @@
 # 12 — Plan de desarrollo
 
+## 0. Estado de avance (2026-05-31)
+
+| Bloque | Estado | Notas |
+|--------|--------|-------|
+| **1 — Base** | **Hecho** | Laravel 13, Livewire 4, Tailwind 4, layouts, UI base, PostgreSQL + `migrate` OK |
+| **2 — Seguridad** | Pendiente | Siguiente: login + cambio obligatorio de contraseña |
+| 3–7 | Pendiente | Según orden de la sección 2 |
+
+Detalle técnico del Bloque 1: [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md) · entorno local: [`reference/arranque-local.md`](reference/arranque-local.md).
+
+---
+
 ## 1. Estrategia
 
 Desarrollar módulo por módulo.
@@ -82,15 +94,15 @@ Dashboard refleja la carga
 
 ---
 
-## 5. Bloque 1 — Base
+## 5. Bloque 1 — Base ✅
 
-- Crear proyecto.
-- Configurar PostgreSQL.
-- Configurar Tailwind.
-- Configurar Livewire.
-- Configurar Alpine.
-- Crear layout base.
-- Crear componentes UI básicos.
+- [x] Crear proyecto Laravel en el repo.
+- [x] Configurar PostgreSQL (base `avicore`, `.env`).
+- [x] Configurar Tailwind 4 + Vite.
+- [x] Configurar Livewire 4 (+ Alpine vía Livewire).
+- [x] Crear layouts base (público, admin, operario + `layouts/app` para Livewire).
+- [x] Crear componentes UI básicos (botón, input, card, badge, alert).
+- [x] Migraciones iniciales Laravel (`php artisan migrate`).
 
 ---
 

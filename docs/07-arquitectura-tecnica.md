@@ -8,9 +8,23 @@
 Laravel + PostgreSQL + Livewire + Tailwind CSS + Alpine.js + PWA + Laravel Reverb + Echo
 ```
 
-No se fijan versiones. Las versiones se instalarán según documentación oficial vigente.
+### Versiones instaladas (Bloque 1, 2026-05-31)
+
+| Componente | Versión |
+|------------|---------|
+| Laravel | 13.x |
+| Livewire | 4.x |
+| Tailwind CSS | 4.x (Vite plugin) |
+| PHP | 8.3+ |
+| PostgreSQL | Según instalación local (ej. 18) |
+
+Reverb, Echo y PWA: pendientes (Bloques 6–7 del plan).
 
 ---
+
+## 1b. Entorno local
+
+Procedimiento completo (PostgreSQL, pgAdmin, `.env`, migrate, serve): [`reference/arranque-local.md`](reference/arranque-local.md).
 
 ## 2. Función de cada tecnología
 
