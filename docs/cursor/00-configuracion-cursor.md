@@ -6,97 +6,95 @@
 
 ```mermaid
 flowchart TD
-    A[Abrir workspace avi-core] --> B[AGENTS.md + regla always-apply]
-    B --> C{Tipo de tarea}
-    C -->|General| D["@avicore-architect o /avicore-architect-direct"]
-    C -->|Específica| E["@skill según 02-mensajes o 03-skills"]
-    D --> F[docs/00-contexto.md + mapa de lectura]
-    E --> F
-    F --> G{¿Toca datos o código?}
-    G -->|BD| H[reference/estructura-base-datos.md]
-    G -->|Carpetas| I[reference/estructura-proyecto.md]
-    G -->|No| J[Docs 01-12 según tabla en 00-contexto]
-    H --> J
-    I --> J
-    J --> K[Implementar]
-    K --> K2{¿Duda API/stack?}
-    K2 -->|Sí y docs AviCore no bastan| K3[MCP user-context7]
-    K2 -->|No| L
-    K3 --> L{¿Cambió contrato?}
-    L -->|Sí| M[Fuente maestra + CHANGELOG.md]
-    L -->|No| N[Cierre estándar]
-    M --> T[Tooling: skills/regla/comando]
-    T --> N
-    N --> O{¿PR?}
-    O -->|Sí| P["@avicore-cierre-tarea + @avicore-git-pr si autorizado"]
-    O -->|No| Q[Fin]
-    P --> Q
+    A[Workspace avi-core] --> B[AGENTS.md + reglas always-apply]
+    B --> C["/avicore-architect-direct + mensaje HTML 1-5"]
+    C --> D[docs/00-contexto.md + mapa de lectura]
+    D --> E{¿Datos o código?}
+    E -->|BD| F[reference/estructura-base-datos.md]
+    E -->|Carpetas| G[reference/estructura-proyecto.md]
+    E -->|No| H[Docs según mapa 00-contexto]
+    F --> H
+    G --> H
+    H --> I[Skill interno + implementar]
+    I --> J{¿Duda API/stack?}
+    J -->|Sí| K[MCP user-context7]
+    J -->|No| L{¿Cambió contrato?}
+    K --> L
+    L -->|Sí| M[Fuente maestra docs/README + CHANGELOG]
+    L -->|No| N[Cierre en prosa natural]
+    M --> O{¿Desvío de skill/flujo?}
+    O -->|Sí| P[evolucion-tooling]
+    O -->|No| N
+    P --> N
+    N --> Q{¿Mensaje 5 autorizado?}
+    Q -->|Sí| R[avicore-git-pr]
+    Q -->|No| S[Fin]
+    R --> S
 ```
+
+**Usuario:** solo `/avicore-architect-direct` + plantillas HTML. **Skills:** internos; el arquitecto los elige (`disable-model-invocation: true`).
 
 ## Punto de entrada
 
 | Prioridad | Archivo |
 |-----------|---------|
-| 1 | [`docs/00-contexto.md`](../00-contexto.md) |
-| 2 | [`AGENTS.md`](../../AGENTS.md) |
-| 3 | [`docs/reference/`](../reference/) si aplica |
+| 1 | [`docs/00-contexto.md`](../00-contexto.md) — contrato y producto |
+| 2 | [`.cursor/commands/avicore-architect-direct.md`](../../.cursor/commands/avicore-architect-direct.md) — flujo slash |
+| 3 | [`AGENTS.md`](../../AGENTS.md) — puntero rápido |
+| 4 | [`docs/reference/`](../reference/) si aplica |
 
-## Inventario verificado
+## Inventario
 
-| Capa | Cantidad | Estado |
-|------|----------|--------|
-| Docs producto `01`–`12` | 12 | Correcto |
-| Contexto + referencias + README + CHANGELOG | 5 | Correcto |
-| Cursor docs `00`–`05` + `01-indice-agente` | 6 | Correcto |
-| Skills | 12 internos · 5 mensajes usuario · evolución automática | Alineado |
-| Reglas `.mdc` | 6 | Correcto |
-| Comando slash | 1 | Correcto |
+| Capa | Cantidad |
+|------|----------|
+| Docs producto `01`–`12` | 12 |
+| Contexto + referencias + README + CHANGELOG | 5 |
+| Cursor docs `00`–`06` + `01-indice` | 8 |
+| Skills internos | 12 |
+| Mensajes usuario (HTML) | 5 |
+| Reglas `.mdc` | 7 |
+| Comando slash | 1 |
 
 ## Reglas `.cursor/rules/`
 
 | Regla | Cuándo |
 |-------|--------|
-| `avicore-agente-permanente.mdc` | Siempre (contrato resumido) |
-| `avicore-laravel-livewire.mdc` | Archivos `*.php`, `*.blade.php` |
+| `avicore-agente-permanente.mdc` | Siempre — puntero al contrato |
+| `avicore-modo-respuesta-clara.mdc` | Siempre — chat en prosa natural |
+| `avicore-modo-caverman.mdc` | Opcional (`alwaysApply: false`) — no usar junto con Clara |
+| `avicore-laravel-livewire.mdc` | `*.php`, `*.blade.php` |
 | `avicore-ui-tailwind.mdc` | `resources/views`, css, js |
-| `avicore-docs-referencia.mdc` | Editar `docs/reference/**` |
+| `avicore-estandares-codigo.mdc` | `app/`, `resources/`, etc. |
+| `avicore-docs-referencia.mdc` | `docs/reference/**` |
 
-La regla always-apply **no sustituye** `00-contexto.md`; repite lo mínimo para cada chat sin cargar el archivo completo.
+La regla always-apply **no sustituye** `00-contexto.md`.
 
 ## Skills (12 internos)
 
-Catálogo: [`03-skills-avicore.md`](03-skills-avicore.md) · Plantillas HTML: [`02-avicore-mensajes-reutilizables.html`](02-avicore-mensajes-reutilizables.html)
+Catálogo: [`03-skills-avicore.md`](03-skills-avicore.md) · Plantillas: [`02-avicore-mensajes-reutilizables.html`](02-avicore-mensajes-reutilizables.html)
 
 ## Uso diario
 
-1. Elegir skill o `/avicore-architect-direct` (plantillas en el HTML de mensajes).
-2. Leer solo docs del mapa (`00-contexto`).
-3. Cambio de esquema → `reference/estructura-base-datos.md` + `CHANGELOG.md`.
-4. Commitear `.cursor/`, `docs/`, `AGENTS.md`.
+1. `/avicore-architect-direct` + mensaje del HTML.
+2. Leer docs del mapa en `00-contexto` (no todo el repo).
+3. Esquema nuevo → `reference/estructura-base-datos.md` + CHANGELOG.
+4. Publicar → mensaje **5** (autorización explícita).
 
-## MCP (orden de uso)
+## MCP
 
 | Prioridad | Uso | MCP |
 |-----------|-----|-----|
-| 1 | Negocio, pantallas, permisos AviCore | `docs/` del proyecto |
-| 2 | API, versión o sintaxis de librería del stack | Context7 `user-context7`: `resolve-library-id` → `query-docs` (máx. 3/pregunta) |
-| 3 | Commit / PR | GitHub `user-github` (mensaje **5** + autorización) |
-
-El paso 2 del comando `/avicore-architect-direct` obliga Context7 **solo cuando** las docs AviCore no resuelven la duda técnica. Git local: terminal.
-
-## Estándares de código
-
-`docs/reference/estandares-codigo.md` — regla `avicore-estandares-codigo.mdc` al editar `app/`, `resources/`, etc.
+| 1 | Negocio AviCore | `docs/` |
+| 2 | API/sintaxis stack | Context7 `user-context7` |
+| 3 | PR | GitHub `user-github` (mensaje **5**) |
 
 ## Modo respuesta en chat
 
-| Modo | Uso | Regla |
-|------|-----|-------|
-| **Clara** (default) | Conciso + lenguaje llano; no técnico / estudiante | `avicore-modo-respuesta-clara.mdc` · [`06-modo-respuesta-clara.md`](06-modo-respuesta-clara.md) |
-| **Caverman** (opcional) | Prosa aún más corta; no sacrificar claridad si ambos activos | [`04-modo-respuesta-caverman.md`](04-modo-respuesta-caverman.md) |
+| Modo | Recomendación | Regla |
+|------|---------------|-------|
+| **Clara** (default) | Prosa natural, entendible | `avicore-modo-respuesta-clara.mdc` · [`06`](06-modo-respuesta-clara.md) |
+| **Caverman** (opcional) | Solo uno: Clara **o** Caverman | [`04-modo-respuesta-caverman.md`](04-modo-respuesta-caverman.md) |
 
-Global: **Settings → Features → Rules for AI** (afecta todos los proyectos).
+## Evolución del tooling
 
-## Evolución automática (skills y docs)
-
-El arquitecto, al cerrar tareas, aplica `avicore-evolucion-tooling`: actualiza skills desactualizados, crea skills solo para workflows recurrentes nuevos, mantiene `03-skills`, `CHANGELOG` y docs maestras. Ver [`05-evolucion-skills-y-docs.md`](05-evolucion-skills-y-docs.md).
+Solo ante desvío real del flujo documentado: [`05-evolucion-skills-y-docs.md`](05-evolucion-skills-y-docs.md) · skill `avicore-evolucion-tooling`.

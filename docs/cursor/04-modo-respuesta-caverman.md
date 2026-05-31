@@ -25,7 +25,9 @@ Para AviCore, preferir la **Opción B** (excepciones de auditoría y PR).
 2. Cambiar `alwaysApply: false` → `alwaysApply: true`
 3. Commitear `.cursor/rules/` para el equipo
 
-Incluye excepciones: tablas de auditoría, plantilla PR, código completo, cierre en bullets cortos.
+Incluye excepciones: tablas de auditoría, plantilla PR, código completo, cierre en una oración natural.
+
+**Recomendación:** usar **Clara o Caverman**, no ambos con `alwaysApply: true`. Default del repo: solo Clara.
 
 ---
 
@@ -37,4 +39,4 @@ Algunas versiones leen un archivo `.cursorrules` en la raíz. En este repo la fu
 
 ## Convivencia con `/avicore-architect-direct`
 
-El arquitecto sigue el flujo completo (docs, skills, MCP). **Por defecto** usa modo **respuesta clara** (`06-modo-respuesta-clara.md`). Caverman es opcional y no debe sacrificar claridad si ambos están activos.
+El arquitecto sigue el flujo completo (docs, skills, MCP). **Por defecto** usa modo **respuesta clara** (`06-modo-respuesta-clara.md`): prosa natural, sin tablas de resumen ni bloque `Resumen:`/`Archivos:`. Caverman es opcional y no debe volver a listas estructuradas si ambos están activos.

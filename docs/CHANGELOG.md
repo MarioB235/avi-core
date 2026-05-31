@@ -20,6 +20,9 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 - **[cursor]** Gobernanza evolución skills/docs (`05-evolucion-skills-y-docs.md`, skill `avicore-evolucion-tooling`). Architect pasos 5–7: docs producto + tooling + cierre. — `.cursor/`, `docs/cursor/`
 - **[cursor]** Context7 en paso 2 del architect-direct; fila actualizar comando en paso 6; MCP ordenado en `00-configuracion-cursor`. — architect, agente-permanente, `00-contexto`
 - **[cursor]** Modo respuesta clara en chat (`avicore-modo-respuesta-clara.mdc`, `06-modo-respuesta-clara.md`); architect-direct obliga lenguaje llano; Caverman opcional de nuevo (`alwaysApply: false`). — `.cursor/rules/`, architect
+- **[cursor]** Respuesta natural: prosa en párrafos, sin tablas/listas de resumen ni bloque `Resumen:`/`Archivos:`; ejemplo antes/después en `06`; cierre integrado en architect, agente-permanente, AGENTS. — `.cursor/`, `docs/cursor/`, `docs/00-contexto.md`
+- **[cursor]** Mensajes reutilizables HTML/MD reescritos en lenguaje natural; títulos y placeholders alineados con modo respuesta clara. — `02-avicore-mensajes-reutilizables.*`
+- **[cursor]** Optimización flujo agente: jerarquía de fuentes (contrato en 00-contexto + comando; agente-permanente/AGENTS punteros); mermaid sin @skill; inventario 7 reglas y docs 00–06; enrutamiento skills paso 3; mensaje 4 vs paso 5; mapa doc maestra solo en docs/README; architect skill reducido a puntero. — `.cursor/`, `docs/cursor/`, `docs/README.md`
 
 ---
 

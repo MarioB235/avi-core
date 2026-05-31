@@ -45,10 +45,4 @@ disable-model-invocation: true
 - Tooling: `00-configuracion-cursor.md`, `00-contexto.md`, reglas `.cursor/rules/*.mdc`.
 - Referencias nuevas: `docs/reference/` + regla `avicore-docs-referencia.mdc` si aplica.
 
-## Salida en cierre de tarea del arquitecto
-
-Incluir línea si hubo cambios de tooling:
-
-```text
-Tooling: [skill X actualizado / skill Y creado / regla Z / no aplica]
-```
+Incluir en el cierre natural del chat (1 oración) si hubo cambios de tooling — p. ej. «También actualicé el skill X».

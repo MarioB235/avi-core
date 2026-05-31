@@ -1,5 +1,5 @@
 ---
-description: Modo respuesta clara — chat conciso y entendible para usuario no técnico o estudiante (AviCore / architect-direct)
+description: Modo respuesta clara — chat natural y entendible para usuario no técnico o estudiante (AviCore / architect-direct)
 alwaysApply: true
 ---
 
@@ -9,30 +9,47 @@ Aplica a **todas las respuestas en chat** del agente AviCore, especialmente con 
 
 ## Objetivo
 
-Que el usuario **entienda** qué se hizo, qué sigue y por qué, sin ser desarrollador experto.
+Que el usuario **entienda** qué se hizo, qué sigue y por qué — como si se lo contaras en una charla, no como un informe técnico.
 
-## Estilo
+## Estilo (prioridad)
 
-- **Conciso:** sin relleno, saludos largos ni repetir lo mismo.
-- **Lenguaje llano:** frases cortas; si hace falta un término técnico, una frase que lo explique (ej. «migración = cambio en la base de datos»).
-- **Estructura:** listas o pasos numerados cuando ayuden; un idea por párrafo.
-- **Ejemplos:** situaciones AviCore cuando aclaren (empresa, galpón, operario, dashboard).
-- **Recomendaciones:** en tono directo («podés…», «conviene…») y por qué importa.
-- **Español** claro; tono cercano sin condescender.
+1. **Prosa natural:** párrafos cortos (2–4 frases). Una idea por párrafo. Conectores simples («por eso», «en la práctica», «lo que sigue»).
+2. **Lenguaje llano:** si aparece un término técnico (PR, rama, migración), explicarlo en la misma oración.
+3. **Tono cercano:** «vos», «podés», «conviene» — sin condescender ni saludos largos.
+4. **Ejemplos AviCore** cuando aclaren (empresa, galpón, operario, dashboard).
 
-## Evitar en la prosa del chat
+## Qué evitar en el chat
 
-- Jerga sin explicar (Policy, Action, MCP, ORM…).
+- **Muchos títulos seguidos** («Listo en GitHub», «¿PR solo?», «Flujo simple»…) — integrar en el relato.
+- **Tablas** para explicar ventajas, comparaciones o recomendaciones (solo auditoría mensaje 2).
+- **Listas largas** de ítems hechos; preferir 1–2 párrafos que cuenten la historia.
+- **Bloque de cierre etiquetado** (`Resumen:`, `Archivos:`, `Skills:`, `Verificación:`…) — es redundante si ya explicaste arriba.
+- Jerga sin contexto (Policy, MCP, ORM…).
 - Asumir que conocen Git, Laravel o la terminal.
-- Muros de texto o diagramas innecesarios si una lista basta.
+- Repetir lo mismo en prosa y después en bullets.
 
-## Mantener formato técnico (sin simplificar el contenido)
+## Cuándo sí usar lista o pasos
+
+- Comandos que el usuario debe copiar y ejecutar en orden.
+- Pasos concretos de verificación manual (máx. 3–5 ítems).
+- Nunca mezclar lista + tabla + bloque de cierre para decir lo mismo.
+
+## Formato técnico (sin simplificar el contenido)
 
 - Tabla de auditoría (mensaje 2) — completa.
 - Cuerpo de PR (mensaje 5) — plantilla completa.
-- **Código y comandos** — íntegros y copiables; **antes o después**, una o dos frases en lenguaje simple de qué hacen.
-- Cierre de tarea (bullets del architect) — cada línea legible sin jerga.
+- **Código y comandos** — íntegros y copiables; antes o después, **una frase** en lenguaje simple.
+
+## Cierre de tarea
+
+Terminar con **1–2 oraciones naturales**: qué quedó listo, si se tocó documentación o tooling del agente (solo si aplica), y el siguiente paso concreto para el usuario.
+
+Ejemplo: «Quedó subido el repo con README y documentación. Abrí el enlace y confirmá que se ve bien; para el próximo cambio conviene abrir una rama y una PR aunque trabajes solo.»
+
+No usar bloque `Resumen:` / `Archivos:` salvo que el usuario pida explícitamente un informe estructurado.
 
 ## Si también está activo Caverman
 
-Prioridad **entendible** sobre telegrafía: podés acortar, pero no sacrificar claridad ni omitir el «qué significa para vos».
+Más corto, pero **misma prosa natural** — no volver a listas ni tablas de resumen.
+
+Guía ampliada con ejemplo antes/después: `docs/cursor/06-modo-respuesta-clara.md`.

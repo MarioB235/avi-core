@@ -110,14 +110,15 @@
 </head>
 <body>
   <header>
-    <h1>AviCore — 5 mensajes reutilizables</h1>
+    <h1>AviCore — 5 mensajes para copiar y pegar</h1>
     <p class="lead">
-      Usá <strong>/avicore-architect-direct</strong> + el mensaje que corresponda.
-      El arquitecto elige el skill interno; vos solo completá <em>«Aquí detallo…»</em>.
+      Escribí <strong>/avicore-architect-direct</strong>, pegá el mensaje que corresponda y completá solo la parte final
+      (<em>«Lo que necesito»</em>, archivos con <em>@ruta</em>, etc.). El agente elige el skill por vos.
     </p>
     <p class="hint">
-      <strong>1</strong> sirve para casi todo (módulo, UI, BD, tiempo real, demo, reportes, PWA).
-      Los demás son para auditoría, correcciones, documentación y publicar cambios.
+      El <strong>1</strong> alcanza para casi todo (pantalla nueva, arreglo, base de datos, demo, reportes…).
+      Usá el <strong>2</strong>–<strong>5</strong> cuando quieras revisar calidad, corregir hallazgos, alinear docs o publicar en GitHub.
+      Las respuestas del agente van en prosa clara, no en informes con muchas listas.
     </p>
     <div class="toolbar">
       <button type="button" class="btn" id="expand-all">Expandir todos</button>
@@ -128,64 +129,48 @@
   <div class="accordion" id="accordion">
 
     <details open>
-      <summary>1 — Cualquier tarea <span class="badge">uso habitual</span></summary>
+      <summary>1 — Pedir una tarea <span class="badge">el más usado</span></summary>
       <div class="panel">
-        <p class="when">Nueva feature, fix, módulo, pantalla, modelo de datos, tiempo real, demo, reportes, PWA, etc.</p>
-        <pre data-copy>Vamos a trabajar en AviCore.
+        <p class="when">Feature, fix, módulo, pantalla, datos, tiempo real, demo, reportes, PWA…</p>
+        <pre data-copy>Quiero trabajar en AviCore. Al terminar, contame en lenguaje claro qué hiciste y qué conviene hacer después.
 
-Si es el inicio de la tarea: prepará el repositorio (rama actual, actualizar base si corresponde, crear rama nueva descriptiva). No hagas commit ni push sin que lo pida explícitamente otro mensaje.
+Si estamos arrancando: mirá en qué rama estamos, actualizá main si hace falta y creá una rama nueva con nombre descriptivo (por ejemplo feature/galpones). No hagas commit ni push hasta que yo use el mensaje 5.
 
-Analizá el contexto necesario según docs/00-contexto.md y la documentación del módulo. Después implementá de punta a punta respetando reglas de negocio, permisos y multiempresa.
+Leé lo que necesites de docs/00-contexto.md y la documentación del módulo, e implementá de punta a punta respetando reglas de negocio, permisos y multiempresa.
 
-Aquí detallo la tarea:</pre>
+Lo que necesito:</pre>
         <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
       </div>
     </details>
 
     <details>
-      <summary>2 — Auditoría <span class="badge">revisar calidad</span></summary>
+      <summary>2 — Revisar calidad <span class="badge">solo mirar, no tocar</span></summary>
       <div class="panel">
-        <p class="when">Solo análisis — no modificar código. Tabla con % de cumplimiento por archivo.</p>
-        <pre data-copy>Realizá una auditoría técnica en AviCore en modo SOLO LECTURA.
+        <p class="when">Antes de corregir: el agente analiza y te devuelve una tabla con % por archivo.</p>
+        <pre data-copy>Necesito que revises la calidad de AviCore en modo solo lectura: no modifiques ningún archivo ni apliques correcciones todavía.
 
-No modifiques ningún archivo. No apliques correcciones. Solo analizá.
+Tomá como referencia docs/reference/estandares-codigo.md y las fuentes maestras que correspondan según lo que revises (05 negocio, 06 permisos, 02 pantallas, 03 UI, 04/reference datos, 07 arquitectura, 08 tiempo real, 11 checklist).
 
-Base de reglas (consultar):
-- docs/reference/estandares-codigo.md
-- docs/05-reglas-de-negocio.md
-- docs/06-roles-y-permisos.md
-- docs/02-pantallas-y-flujos.md (si hay UI)
-- docs/03-guia-visual-ui.md (si hay UI)
-- docs/04-modelo-de-datos.md y docs/reference/estructura-base-datos.md (si hay datos)
-- docs/07-arquitectura-tecnica.md
-- docs/08-tiempo-real-eventos.md (si hay WebSockets)
-- docs/11-checklist-modulos.md
+Archivos a revisar (adjuntá @rutas o listá acá):
+-
+-
 
-Archivos a auditar (adjuntá @rutas o listá):
-- 
-- 
-
-Devolvé:
-1. Resumen ejecutivo breve
-2. Tabla: Archivo | Cumplimiento % | Negocio | Permisos | Código/UI | Brecha principal
-3. Plan sugerido (máx. 5 ítems, sin ejecutar)
-
-Para aplicar correcciones después, usaré el mensaje 3 «Aplicar mejoras».</pre>
+Cuando termines: explicame en pocas líneas qué encontraste, la tabla con % de cumplimiento por archivo (Negocio, Permisos, Código/UI y brecha principal) y hasta 5 mejoras sugeridas sin ejecutarlas. Si después quiero que las corrijas, usaré el mensaje 3.</pre>
         <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
       </div>
     </details>
 
     <details>
-      <summary>3 — Aplicar mejoras (post-auditoría) <span class="badge">corregir hallazgos</span></summary>
+      <summary>3 — Corregir lo de la auditoría <span class="badge">después del mensaje 2</span></summary>
       <div class="panel">
-        <p class="when">Después de una auditoría; cerrar bugs y gaps seguros sin refactors grandes.</p>
-        <pre data-copy>En AviCore, aplicá las correcciones menores y seguras según la auditoría realizada.
+        <p class="when">Aplica arreglos chicos y seguros según lo que salió en la revisión.</p>
+        <pre data-copy>Según la auditoría, aplicá en AviCore las correcciones menores y seguras. Sin refactors grandes: solo lo que está en los hallazgos.
 
-Misma base de reglas que en la auditoría (docs/05, 06, 02, 03, 04, reference, 07, 08, 11 según aplique).
+Mismas reglas de referencia que en la auditoría (05, 06, 02, 03, 04, reference, 07, 08, 11 según aplique).
 
-Archivos a corregir (adjuntá @rutas o listá):
-- 
-- 
+Archivos (@rutas o listá):
+-
+-
 
 Hallazgos o tabla de la auditoría:</pre>
         <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
@@ -193,52 +178,34 @@ Hallazgos o tabla de la auditoría:</pre>
     </details>
 
     <details>
-      <summary>4 — Actualizar documentación <span class="badge">alinear docs</span></summary>
+      <summary>4 — Alinear la documentación <span class="badge">después de cambiar código</span></summary>
       <div class="panel">
-        <p class="when">Tras cambios de código; una sola fuente maestra + CHANGELOG si cambió el contrato.</p>
-        <pre data-copy>Verificá y actualizá la documentación de AviCore según los cambios realizados.
+        <p class="when">Revisión dedicada de docs. Si en la misma sesión el agente ya actualizó la fuente maestra al implementar, esto solo verifica que no falte nada.</p>
+        <pre data-copy>Revisá que la documentación de AviCore refleje los cambios que hicimos. Usá la tabla de fuentes maestras en docs/README.md y anotá en CHANGELOG si cambió alguna regla acordada.
 
-Base de gobernanza (obligatorio):
-- docs/README.md (tabla «una sola fuente maestra»)
-- docs/CHANGELOG.md (registrar si cambió el contrato)
+Si en esta sesión ya actualizaste la doc al implementar, solo verificá que no falte nada — no repitas el mismo trabajo.
 
-Revisar según el tipo de cambio:
-- Regla de negocio → docs/05-reglas-de-negocio.md
-- Pantalla/flujo → docs/02-pantallas-y-flujos.md
-- UI → docs/03-guia-visual-ui.md
-- Esquema BD → docs/reference/estructura-base-datos.md (+ docs/04 si aplica)
-- Permisos → docs/06-roles-y-permisos.md
-- Arquitectura/carpetas → docs/reference/estructura-proyecto.md, docs/07-arquitectura-tecnica.md
-- Tiempo real → docs/08-tiempo-real-eventos.md
-- Reportes / demo / producto → docs/09, 10, 01, 12 si aplica
+Archivos de código o módulo que motivan la revisión (@rutas o listá):
+-
+-
 
-Archivos de código o módulo que motivan la revisión (adjuntá @rutas o listá):
-- 
-- 
-
-Qué cambió (resumen breve):</pre>
+En pocas palabras, qué cambió:</pre>
         <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
       </div>
     </details>
 
     <details>
-      <summary>5 — Commit, push y PR <span class="badge">requiere autorización</span></summary>
+      <summary>5 — Subir cambios y abrir PR <span class="badge">vos autorizás</span></summary>
       <div class="panel">
-        <p class="when">Cuando querés publicar la rama; incluye verificaciones y PR.</p>
-        <pre data-copy>Autorizo explícitamente en AviCore: commit, push y creación de pull request.
+        <p class="when">Commit, push y pull request en GitHub. Solo cuando vos lo pidas explícitamente.</p>
+        <pre data-copy>Te autorizo a hacer commit, push y crear la pull request en AviCore.
 
-Seguí el skill avicore-git-pr. Flujo:
+Seguí avicore-git-pr: confirmá que no se sube nada sensible (.env), corré php artisan test y npm run build si hay código Laravel, commit con Conventional Commits (feat, fix, refactor, docs, chore…), push de la rama y PR con MCP user-github (o gh pr create si falla). El cuerpo de la PR con la plantilla completa del skill.
 
-1. Revisión local: git status, git diff, confirmar que no hay secretos (.env).
-2. Verificaciones: php artisan test y npm run build (si aplica).
-3. Commit Conventional Commits (feat/fix/refactor/chore/docs/test/style) y git push -u origin [rama].
-4. Crear la PR con MCP user-github (herramienta create_pull_request). Si MCP no está disponible, usar gh pr create.
-5. Cuerpo de la PR con la plantilla del proyecto (Resumen, Objetivos, Cambios técnicos, Criterios AviCore, Verificación, Documentación).
-
-Repositorio (owner/repo) si lo conocés:
-Rama (si ya existe):
-Base de la PR (main u otra):
-Resumen para título y descripción:</pre>
+Repo owner/repo (si lo sabés):
+Rama:
+Base (main u otra):
+De qué trata el cambio (para título y descripción):</pre>
         <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
       </div>
     </details>
