@@ -80,13 +80,15 @@ Catálogo: [`03-skills-avicore.md`](03-skills-avicore.md) · Plantillas: [`02-av
 3. Esquema nuevo → `reference/estructura-base-datos.md` + CHANGELOG.
 4. Publicar → mensaje **5** (autorización explícita).
 
-## MCP
+## MCP y Git / PR
 
-| Prioridad | Uso | MCP |
-|-----------|-----|-----|
+| Prioridad | Uso | Herramienta |
+|-----------|-----|-------------|
 | 1 | Negocio AviCore | `docs/` |
 | 2 | API/sintaxis stack | Context7 `user-context7` |
-| 3 | PR | GitHub `user-github` (mensaje **5**) |
+| 3 | Crear PR (mensaje **5**) | MCP `user-github` → `gh pr create` → fallback token Git (ver skill `avicore-git-pr`) |
+
+**Auth GitHub:** `gh auth status` debe coincidir con el dueño del remoto (`MarioB235/avi-core`, etc.). Si `gh` usa otra cuenta, el push puede funcionar igual pero la PR no — el skill `avicore-git-pr` documenta el fallback. Alinear con `gh auth login` evita fricción.
 
 ## Modo respuesta en chat
 
