@@ -1,0 +1,11 @@
+---
+description: Estándares de código AviCore — PHP, Tailwind, Livewire, sin important ni inline
+globs: "{app/**/*,resources/**/*,routes/**/*,database/**/*,tests/**/*}"
+alwaysApply: false
+---
+
+# Estándares de código
+
+Ver `docs/reference/estandares-codigo.md`.
+
+Resumen: negocio en Services/Actions · `empresa_id` · Policies · Tailwind sin `!important` ni estilos inline · APIs oficiales del stack · anulación lógica.

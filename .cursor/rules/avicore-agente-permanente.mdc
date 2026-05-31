@@ -1,0 +1,73 @@
+---
+description: Agente permanente AviCore — flujo, contrato de ejecución y fuentes maestras
+alwaysApply: true
+---
+
+# AviCore — Agente permanente
+
+## Contrato de ejecución
+
+Ejecutar de punta a punta sin pedir confirmaciones intermedias ("¿procedo?", "¿aplico el cambio?").
+
+Preguntar solo si: falta dato crítico bloqueante, operación destructiva no autorizada, conflicto entre documentos fuente, la tarea contradice reglas del proyecto, o afecta seguridad/datos reales sin contexto.
+
+Si la documentación del proyecto resuelve la decisión, aplicarla.
+
+**Dudas de librería/API (Laravel, Livewire, Tailwind, Reverb, etc.):** tras leer docs AviCore, consultar MCP **`user-context7`** (`resolve-library-id` → `query-docs`). No sustituye `docs/05`, `02` ni referencias; no usar para negocio AviCore.
+
+## Contexto y estructura
+
+- Entrada: `docs/00-contexto.md`
+- Esquema BD: `docs/reference/estructura-base-datos.md`
+- Árbol código: `docs/reference/estructura-proyecto.md`
+- Gobernanza: `docs/README.md` · cambios: `docs/CHANGELOG.md`
+
+## Fuentes maestras (orden habitual)
+
+`docs/05-reglas-de-negocio.md` → `docs/06-roles-y-permisos.md` → `docs/02-pantallas-y-flujos.md` → (`docs/reference/estructura-base-datos.md` si hay datos) → `docs/03-guia-visual-ui.md` → `docs/07-arquitectura-tecnica.md` → (`docs/08-tiempo-real-eventos.md` si aplica)
+
+Un cambio conceptual → una fuente maestra (ver `docs/README.md`). Plantillas: `docs/cursor/02-avicore-mensajes-reutilizables.html` · Skills: `docs/cursor/03-skills-avicore.md`
+
+## Stack
+
+Laravel + PostgreSQL + Livewire + Tailwind + Alpine.js + PWA + Reverb + Echo. No fijar versiones en docs funcionales.
+
+## Reglas técnicas
+
+1. Sin lógica de negocio en vistas; usar Services/Actions.
+2. Form Requests o validaciones Livewire claras.
+3. Policies/Gates para permisos.
+4. `empresa_id` en consultas operativas.
+5. Auditoría en acciones críticas.
+6. Anulación lógica con motivo (no delete físico).
+7. Operario: vista móvil; dashboard/alertas: tiempo real cuando corresponda.
+8. No Reverb/Echo en CRUD simples sin valor.
+9. PWA MVP: instalación y móvil; sin offline completo.
+10. Reportes PDF/Excel manuales en MVP.
+
+## Clasificación de tareas
+
+`feature/` `fix/` `refactor/` `docs/` `style/` `chore/` `hotfix/`
+
+## Flujo por módulo
+
+Revisar docs → implementar → probar → actualizar doc maestra si cambió contrato → evaluar skills/reglas (`docs/cursor/05-evolucion-skills-y-docs.md`): actualizar skill existente o crear uno nuevo si el workflow es recurrente y no encaja en los actuales.
+
+## Modo chat (respuestas)
+
+Conciso y entendible para no técnicos o estudiantes (`avicore-modo-respuesta-clara.mdc`). Código y plantillas PR completos; prosa alrededor en lenguaje llano.
+
+## Cierre de respuesta
+
+```text
+Resumen: ...
+Archivos modificados: ...
+Verificación: ...
+Documentación: actualizada / no aplica
+Tooling: skill/regla creado o actualizado / no aplica
+Siguiente paso: ...
+```
+
+## Prohibiciones
+
+Implementar sin leer docs relacionadas; lógica crítica en Blade; saltar multiempresa; delete físico cuando debe anular; Reverb en CRUD innecesario; módulos fuera del MVP sin justificación; cambiar reglas sin actualizar docs; estilos fuera de guía UI; ignorar vista móvil del operario.

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AviCore — Mensajes reutilizables</title>
+  <style>
+    :root {
+      --green-900: #1a3d2e;
+      --green-700: #2d6a4f;
+      --green-500: #40916c;
+      --green-100: #d8f3dc;
+      --green-50: #f1f8f4;
+      --border: #c7e2d0;
+      --text: #1b4332;
+      --muted: #52796f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.55;
+      color: var(--text);
+      background: var(--green-50);
+      margin: 0;
+      padding: 1.5rem;
+      max-width: 48rem;
+      margin-inline: auto;
+    }
+    header {
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--green-500);
+    }
+    h1 { font-size: 1.4rem; margin: 0 0 0.5rem; color: var(--green-900); }
+    .lead { font-size: 0.92rem; color: var(--muted); margin: 0; }
+    .lead strong { color: var(--green-900); }
+    .hint {
+      background: #fff;
+      border-left: 4px solid var(--green-500);
+      padding: 0.7rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+      border-radius: 0 6px 6px 0;
+    }
+    .toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn {
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--green-700);
+      background: #fff;
+      color: var(--green-700);
+    }
+    .btn:hover { background: var(--green-100); }
+    .btn-primary { background: var(--green-700); color: #fff; }
+    .btn-primary:hover { background: var(--green-900); }
+    .accordion { display: flex; flex-direction: column; gap: 0.6rem; }
+    details {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    details[open] { border-color: var(--green-500); }
+    summary {
+      cursor: pointer;
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "▸"; color: var(--green-700); }
+    details[open] summary::after { transform: rotate(90deg); }
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--green-100);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .panel { padding: 0 1rem 1rem; border-top: 1px solid var(--border); }
+    .when { font-size: 0.85rem; color: var(--muted); margin: 0.75rem 0 0; }
+    pre {
+      margin: 0.5rem 0 0;
+      padding: 1rem;
+      background: #f8faf9;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      color: var(--green-900);
+    }
+    .copy-row { display: flex; justify-content: flex-end; margin-top: 0.5rem; }
+    .toast {
+      position: fixed; bottom: 1.5rem; right: 1.5rem;
+      padding: 0.65rem 1rem; background: var(--green-900); color: #fff;
+      border-radius: 8px; opacity: 0; transition: opacity 0.2s; z-index: 100;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AviCore — 5 mensajes reutilizables</h1>
+    <p class="lead">
+      Usá <strong>/avicore-architect-direct</strong> + el mensaje que corresponda.
+      El arquitecto elige el skill interno; vos solo completá <em>«Aquí detallo…»</em>.
+    </p>
+    <p class="hint">
+      <strong>1</strong> sirve para casi todo (módulo, UI, BD, tiempo real, demo, reportes, PWA).
+      Los demás son para auditoría, correcciones, documentación y publicar cambios.
+    </p>
+    <div class="toolbar">
+      <button type="button" class="btn" id="expand-all">Expandir todos</button>
+      <button type="button" class="btn" id="collapse-all">Colapsar todos</button>
+    </div>
+  </header>
+
+  <div class="accordion" id="accordion">
+
+    <details open>
+      <summary>1 — Cualquier tarea <span class="badge">uso habitual</span></summary>
+      <div class="panel">
+        <p class="when">Nueva feature, fix, módulo, pantalla, modelo de datos, tiempo real, demo, reportes, PWA, etc.</p>
+        <pre data-copy>Vamos a trabajar en AviCore.
+
+Si es el inicio de la tarea: prepará el repositorio (rama actual, actualizar base si corresponde, crear rama nueva descriptiva). No hagas commit ni push sin que lo pida explícitamente otro mensaje.
+
+Analizá el contexto necesario según docs/00-contexto.md y la documentación del módulo. Después implementá de punta a punta respetando reglas de negocio, permisos y multiempresa.
+
+Aquí detallo la tarea:</pre>
+        <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>2 — Auditoría <span class="badge">revisar calidad</span></summary>
+      <div class="panel">
+        <p class="when">Solo análisis — no modificar código. Tabla con % de cumplimiento por archivo.</p>
+        <pre data-copy>Realizá una auditoría técnica en AviCore en modo SOLO LECTURA.
+
+No modifiques ningún archivo. No apliques correcciones. Solo analizá.
+
+Base de reglas (consultar):
+- docs/reference/estandares-codigo.md
+- docs/05-reglas-de-negocio.md
+- docs/06-roles-y-permisos.md
+- docs/02-pantallas-y-flujos.md (si hay UI)
+- docs/03-guia-visual-ui.md (si hay UI)
+- docs/04-modelo-de-datos.md y docs/reference/estructura-base-datos.md (si hay datos)
+- docs/07-arquitectura-tecnica.md
+- docs/08-tiempo-real-eventos.md (si hay WebSockets)
+- docs/11-checklist-modulos.md
+
+Archivos a auditar (adjuntá @rutas o listá):
+- 
+- 
+
+Devolvé:
+1. Resumen ejecutivo breve
+2. Tabla: Archivo | Cumplimiento % | Negocio | Permisos | Código/UI | Brecha principal
+3. Plan sugerido (máx. 5 ítems, sin ejecutar)
+
+Para aplicar correcciones después, usaré el mensaje 3 «Aplicar mejoras».</pre>
+        <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>3 — Aplicar mejoras (post-auditoría) <span class="badge">corregir hallazgos</span></summary>
+      <div class="panel">
+        <p class="when">Después de una auditoría; cerrar bugs y gaps seguros sin refactors grandes.</p>
+        <pre data-copy>En AviCore, aplicá las correcciones menores y seguras según la auditoría realizada.
+
+Misma base de reglas que en la auditoría (docs/05, 06, 02, 03, 04, reference, 07, 08, 11 según aplique).
+
+Archivos a corregir (adjuntá @rutas o listá):
+- 
+- 
+
+Hallazgos o tabla de la auditoría:</pre>
+        <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>4 — Actualizar documentación <span class="badge">alinear docs</span></summary>
+      <div class="panel">
+        <p class="when">Tras cambios de código; una sola fuente maestra + CHANGELOG si cambió el contrato.</p>
+        <pre data-copy>Verificá y actualizá la documentación de AviCore según los cambios realizados.
+
+Base de gobernanza (obligatorio):
+- docs/README.md (tabla «una sola fuente maestra»)
+- docs/CHANGELOG.md (registrar si cambió el contrato)
+
+Revisar según el tipo de cambio:
+- Regla de negocio → docs/05-reglas-de-negocio.md
+- Pantalla/flujo → docs/02-pantallas-y-flujos.md
+- UI → docs/03-guia-visual-ui.md
+- Esquema BD → docs/reference/estructura-base-datos.md (+ docs/04 si aplica)
+- Permisos → docs/06-roles-y-permisos.md
+- Arquitectura/carpetas → docs/reference/estructura-proyecto.md, docs/07-arquitectura-tecnica.md
+- Tiempo real → docs/08-tiempo-real-eventos.md
+- Reportes / demo / producto → docs/09, 10, 01, 12 si aplica
+
+Archivos de código o módulo que motivan la revisión (adjuntá @rutas o listá):
+- 
+- 
+
+Qué cambió (resumen breve):</pre>
+        <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>5 — Commit, push y PR <span class="badge">requiere autorización</span></summary>
+      <div class="panel">
+        <p class="when">Cuando querés publicar la rama; incluye verificaciones y PR.</p>
+        <pre data-copy>Autorizo explícitamente en AviCore: commit, push y creación de pull request.
+
+Seguí el skill avicore-git-pr. Flujo:
+
+1. Revisión local: git status, git diff, confirmar que no hay secretos (.env).
+2. Verificaciones: php artisan test y npm run build (si aplica).
+3. Commit Conventional Commits (feat/fix/refactor/chore/docs/test/style) y git push -u origin [rama].
+4. Crear la PR con MCP user-github (herramienta create_pull_request). Si MCP no está disponible, usar gh pr create.
+5. Cuerpo de la PR con la plantilla del proyecto (Resumen, Objetivos, Cambios técnicos, Criterios AviCore, Verificación, Documentación).
+
+Repositorio (owner/repo) si lo conocés:
+Rama (si ya existe):
+Base de la PR (main u otra):
+Resumen para título y descripción:</pre>
+        <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
+      </div>
+    </details>
+
+  </div>
+
+  <div class="toast" id="toast">Copiado al portapapeles</div>
+
+  <script>
+    const toast = document.getElementById("toast");
+    let t;
+    document.querySelectorAll(".btn-copy").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const text = (e.target.closest(".panel").querySelector("pre[data-copy]").getAttribute("data-copy") || "").trim();
+        try { await navigator.clipboard.writeText(text); } catch {
+          const ta = document.createElement("textarea");
+          ta.value = text; ta.style.position = "fixed"; ta.style.left = "-9999px";
+          document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+          document.body.removeChild(ta);
+        }
+        toast.classList.add("show"); clearTimeout(t); t = setTimeout(() => toast.classList.remove("show"), 2000);
+      });
+    });
+    document.getElementById("expand-all").onclick = () =>
+      document.querySelectorAll("#accordion details").forEach((d) => (d.open = true));
+    document.getElementById("collapse-all").onclick = () =>
+      document.querySelectorAll("#accordion details").forEach((d) => (d.open = false));
+  </script>
+</body>
+</html>

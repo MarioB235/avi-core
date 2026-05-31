@@ -1,0 +1,14 @@
+---
+description: Guía UI AviCore — Tailwind, identidad verde/agro, responsive
+globs: "{resources/views/**/*,resources/css/**/*,resources/js/**/*}"
+alwaysApply: false
+---
+
+# AviCore — UI
+
+- Identidad verde/agro moderna; claridad antes que decoración.
+- Tailwind CSS; sin estilos inline; reutilizar componentes y tokens.
+- Botones grandes en móvil; tablas limpias en web; cards KPI claras.
+- Layouts: público (login), web administrativo, móvil operario (carga en campo).
+
+Consultar `docs/03-guia-visual-ui.md` y `docs/02-pantallas-y-flujos.md` antes de cambiar pantallas.

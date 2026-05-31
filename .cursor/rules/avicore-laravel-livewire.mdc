@@ -1,0 +1,33 @@
+---
+description: Convenciones Laravel/Livewire/PHP para AviCore
+globs: "**/*.{php,blade.php}"
+alwaysApply: false
+---
+
+# AviCore — Código Laravel
+
+## Estructura
+
+- `app/Actions/` por dominio (Operacion, Lotes, Galpones, Auditoria).
+- `app/Services/` para Dashboard, Auditoria, Reportes, EmpresaContext.
+- `app/Livewire/` por módulo (Dashboard, Operario, Galpones, Lotes, Reportes, Usuarios).
+- `app/Events/` para tiempo real; `app/Policies/` para permisos.
+
+## Patrones
+
+- Scope o middleware de empresa activa; filtrar `empresa_id` en consultas.
+- Livewire para dashboard, vista operario y formularios dinámicos.
+- Eventos con canales privados y payload mínimo; nunca cruzar datos entre empresas.
+
+## Comandos locales habituales
+
+```bash
+composer install && npm install
+php artisan migrate --seed
+npm run dev
+php artisan serve
+php artisan reverb:start
+php artisan test
+```
+
+Ver `docs/reference/estructura-proyecto.md`, `docs/07-arquitectura-tecnica.md`, `docs/08-tiempo-real-eventos.md`.

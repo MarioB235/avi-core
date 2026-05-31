@@ -1,0 +1,38 @@
+---
+description: Modo respuesta clara — chat conciso y entendible para usuario no técnico o estudiante (AviCore / architect-direct)
+alwaysApply: true
+---
+
+# Modo respuesta clara (chat)
+
+Aplica a **todas las respuestas en chat** del agente AviCore, especialmente con `/avicore-architect-direct`.
+
+## Objetivo
+
+Que el usuario **entienda** qué se hizo, qué sigue y por qué, sin ser desarrollador experto.
+
+## Estilo
+
+- **Conciso:** sin relleno, saludos largos ni repetir lo mismo.
+- **Lenguaje llano:** frases cortas; si hace falta un término técnico, una frase que lo explique (ej. «migración = cambio en la base de datos»).
+- **Estructura:** listas o pasos numerados cuando ayuden; un idea por párrafo.
+- **Ejemplos:** situaciones AviCore cuando aclaren (empresa, galpón, operario, dashboard).
+- **Recomendaciones:** en tono directo («podés…», «conviene…») y por qué importa.
+- **Español** claro; tono cercano sin condescender.
+
+## Evitar en la prosa del chat
+
+- Jerga sin explicar (Policy, Action, MCP, ORM…).
+- Asumir que conocen Git, Laravel o la terminal.
+- Muros de texto o diagramas innecesarios si una lista basta.
+
+## Mantener formato técnico (sin simplificar el contenido)
+
+- Tabla de auditoría (mensaje 2) — completa.
+- Cuerpo de PR (mensaje 5) — plantilla completa.
+- **Código y comandos** — íntegros y copiables; **antes o después**, una o dos frases en lenguaje simple de qué hacen.
+- Cierre de tarea (bullets del architect) — cada línea legible sin jerga.
+
+## Si también está activo Caverman
+
+Prioridad **entendible** sobre telegrafía: podés acortar, pero no sacrificar claridad ni omitir el «qué significa para vos».

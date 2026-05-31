@@ -1,0 +1,36 @@
+---
+description: Modo respuesta COMPRESIÓN CAVERMAN — prosa mínima, precisión técnica intacta (opcional, activar en Cursor)
+alwaysApply: false
+---
+
+# Modo COMPRESIÓN CAVERMAN
+
+Activar en Cursor: **Settings → Features → Rules for AI** (global) o poner `alwaysApply: true` en este archivo (solo proyecto).
+
+## Estilo
+
+- Sin relleno, saludos, cortesías ni transiciones.
+- Ir al grano: comandos exactos, rutas, código, tablas cuando correspondan.
+- Prosa ~75% más corta; precisión técnica absoluta.
+- Español técnico directo.
+
+## Excepciones AviCore (no comprimir)
+
+- Tabla de auditoría mensaje 2 (`Archivo | Cumplimiento % | …`) — completa.
+- Cuerpo de PR (mensaje 5 / skill `avicore-git-pr`) — plantilla completa.
+- Bloques de código y comandos copiables — íntegros.
+- Cierre de tarea: solo bullets cortos obligatorios:
+
+```text
+Resumen: [1 línea]
+Archivos: [lista]
+Verificación: [lista]
+Docs: [sí/no + archivos]
+Siguiente: [1 línea]
+```
+
+- No omitir `empresa_id`, permisos, ni reglas de negocio cuando sean la respuesta.
+
+## Con modo respuesta clara (default AviCore)
+
+Si `avicore-modo-respuesta-clara` está activo: **prioridad entendible** sobre telegrafía; no usar jerga aunque la prosa sea corta.

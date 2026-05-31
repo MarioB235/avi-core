@@ -1,0 +1,7 @@
+# AviCore — redirige a reglas modernas
+
+Las reglas del proyecto están en `.cursor/rules/` y `AGENTS.md`.
+
+Modo COMPRESIÓN CAVERMAN (opcional): ver `.cursor/rules/avicore-modo-caverman.mdc` y `docs/cursor/04-modo-respuesta-caverman.md`.
+
+Para activar caverman en este proyecto, editá `avicore-modo-caverman.mdc` y poné `alwaysApply: true` en el frontmatter.
