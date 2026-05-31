@@ -100,6 +100,9 @@
       color: var(--green-900);
     }
     .copy-row { display: flex; justify-content: flex-end; margin-top: 0.5rem; }
+    .cmd-block { margin-top: 0.85rem; }
+    .cmd-block:first-of-type { margin-top: 0.75rem; }
+    .cmd-block .when { margin-top: 0; font-weight: 600; color: var(--green-900); }
     .cred-table {
       width: 100%;
       margin: 0.75rem 0 0;
@@ -132,7 +135,7 @@
     <p class="hint">
       El <strong>1</strong> alcanza para casi todo (pantalla nueva, arreglo, base de datos, demo, reportes…).
       Usá el <strong>2</strong>–<strong>5</strong> cuando quieras revisar calidad, corregir hallazgos, alinear docs o publicar en GitHub.
-      El acordeón de <strong>usuarios demo</strong> es solo consulta (no se pega al agente).
+      Los acordeones de <strong>comandos locales</strong> y <strong>usuarios demo</strong> son solo consulta (no se pegan al agente).
       Los mensajes 3 y 4 piden un <strong>resumen breve al cerrar</strong>; si lo necesitás para la PR, lo pegás vos al copiar el mensaje 5 (sección «Resumen adicional»).
       Índice skills y docs por mensaje: <code>docs/cursor/02-avicore-mensajes-reutilizables.md</code>.
       Las respuestas del agente van en prosa clara, no en informes con muchas listas.
@@ -244,6 +247,69 @@ Título sugerido (opcional):</pre>
     </details>
 
     <details>
+      <summary>Comandos locales — terminal <span class="badge">referencia, no mensaje</span></summary>
+      <div class="panel">
+        <p class="when">
+          <strong>Dónde:</strong> siempre desde la <strong>raíz del repo</strong> — la carpeta donde están
+          <code>artisan</code>, <code>composer.json</code> y <code>package.json</code>
+          (en este proyecto suele ser <code>avi-core</code>).
+          <strong>Terminal:</strong> <strong>cmd</strong> de Windows (no hace falta PowerShell ni Git Bash).
+          Abrí cmd, andá ahí con <code>cd</code> y recién ahí pegá los comandos de abajo.
+        </p>
+        <pre data-copy>cd c:\Proyectos\proyectos-2026\Proyectos de prueba\avi-core</pre>
+        <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar ruta (cd)</button></div>
+        <p class="when" style="margin-top: 0.75rem;">
+          Guía completa: <code>docs/reference/arranque-local.md</code>.
+          App en <strong>http://localhost:8000</strong> (Laravel); Vite en <code>:5173</code> solo compila assets — no abras el navegador ahí.
+        </p>
+
+        <div class="cmd-block">
+          <p class="when">Primera vez en el proyecto</p>
+          <pre data-copy>composer install
+copy .env.example .env
+php artisan key:generate
+npm install
+npm run build</pre>
+          <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar comandos</button></div>
+        </div>
+
+        <div class="cmd-block">
+          <p class="when">Base de datos (PostgreSQL <code>avicore</code> creada y <code>.env</code> configurado)</p>
+          <pre data-copy>php artisan migrate
+php artisan db:seed</pre>
+          <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar comandos</button></div>
+        </div>
+
+        <div class="cmd-block">
+          <p class="when">Desarrollo — dos ventanas de cmd (o atajo <code>composer dev</code> en una sola)</p>
+        </div>
+        <div class="cmd-block">
+          <p class="when">Terminal 1 — servidor Laravel (abrí el navegador en <code>localhost:8000</code>)</p>
+          <pre data-copy>php artisan serve</pre>
+          <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar comando</button></div>
+        </div>
+        <div class="cmd-block">
+          <p class="when">Terminal 2 — assets en caliente (otra ventana cmd, misma carpeta raíz)</p>
+          <pre data-copy>npm run dev</pre>
+          <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar comando</button></div>
+        </div>
+
+        <div class="cmd-block">
+          <p class="when">Atajo — servidor + cola + logs + Vite en un solo comando</p>
+          <pre data-copy>composer dev</pre>
+          <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar comando</button></div>
+        </div>
+
+        <div class="cmd-block">
+          <p class="when">Verificación antes de PR o tras cambios</p>
+          <pre data-copy>php artisan test
+npm run build</pre>
+          <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar comandos</button></div>
+        </div>
+      </div>
+    </details>
+
+    <details>
       <summary>Usuarios demo — login local <span class="badge">referencia, no mensaje</span></summary>
       <div class="panel">
         <p class="when">
@@ -346,7 +412,9 @@ Título sugerido (opcional):</pre>
     document.querySelectorAll(".btn-copy").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         e.preventDefault();
-        const pre = btn.closest(".panel")?.querySelector("pre[data-copy]");
+        const pre =
+          btn.closest(".cmd-block")?.querySelector("pre[data-copy]") ??
+          btn.closest(".panel")?.querySelector("pre[data-copy]");
         const text = (pre?.textContent ?? "").trim();
         if (!text) {
           showToast("No se encontró el texto del mensaje.", true);

@@ -7,6 +7,7 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ## 2026-05-31
 
+- **[cursor]** Acordeón comandos locales en mensajes reutilizables HTML (`serve`, `test`, migrate, seed, Vite, `composer dev`); raíz del repo y cmd Windows; índice `02-avicore-mensajes-reutilizables.md`. — `docs/cursor/02-avicore-mensajes-reutilizables.*`
 - **[docs]** Alineación post Bloque 2 auth: usuarios demo en `10`, flujos login/cambio en `02`, reglas throttling/contraseña en `05`, rutas por rol en `06`, middleware y `EmpresaContextService` en `07`/`estructura-proyecto`, criterio documento admin e índice parcial en `04`/`estructura-base-datos`. — `docs/02`, `04`, `05`, `06`, `07`, `10`, `reference/`
 - **[cursor]** Mensajes 1–5: bloque «Referencias agente» (skills, docs, CHANGELOG, evolución tooling); índice `02-avicore-mensajes-reutilizables.md`. — `docs/cursor/`, skills auditoria, cierre-tarea, git-pr
 - **[cursor]** Mensajes 2–3 auditoría: tabla clasificadora con brechas en fila; mensaje 3 corrige según tabla (sin lista de 5 mejoras). — `02-avicore-mensajes-reutilizables.html`, skill `avicore-auditoria`
