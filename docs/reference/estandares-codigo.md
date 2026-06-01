@@ -41,6 +41,19 @@
 - No fijar versiones en docs funcionales; en código respetar `composer.lock` / `package-lock.json`.
 - No agregar dependencias nuevas sin justificación en la tarea.
 
+## Tests (PHPUnit / Feature)
+
+- Comportamiento crítico con **Feature tests** en `tests/Feature/` (auth, permisos, multiempresa, reglas de negocio, flujos documentados en `docs/02`).
+- Al auditar código de aplicación, revisar también el **test correspondiente** en `tests/` (o marcar gap si falta).
+- Tests significativos: flujos reales, no asserts triviales. PostgreSQL vía `avicore_test` (ver `docs/reference/arranque-local.md`).
+- Tras correcciones post-auditoría: `php artisan test` debe quedar en verde antes de la PR.
+
+## Escalabilidad y mantenibilidad
+
+- Capas claras (Actions/Services/Policies); sin acoplar UI a consultas pesadas.
+- Consultas con scope `empresa_id`; evitar N+1 evidentes en listados.
+- Componentes y CSS reutilizables; sin duplicar lógica entre admin y operario si puede compartirse.
+
 ## Git y PR
 
 - Conventional Commits: `tipo(scope): descripción`.
@@ -48,4 +61,9 @@
 
 ## Auditoría
 
-Al auditar, contrastar cada archivo contra este documento y la documentación maestra del módulo (`05`, `06`, `02`, etc.).
+Al auditar, contrastar cada archivo contra este documento y la documentación maestra del módulo (`05`, `06`, `02`, `03`, `04`, `07`, `08`, `11`, `reference/` según aplique).
+
+**Dimensiones de la tabla (mensaje 2):** Negocio · Permisos · Código · UI · Tests · Arquitectura — cada una: OK / Parcial / No / N/A.
+
+- **Tests:** para código de app, verificar par en `tests/`; brecha si falta cobertura de reglas críticas del archivo.
+- **Arquitectura:** capas, multiempresa, Policies, escalabilidad según `07-arquitectura-tecnica.md`.

@@ -7,13 +7,13 @@
   <style>
     :root {
       --green-900: #1a3d2e;
-      --green-700: #2d6a4f;
-      --green-500: #40916c;
-      --green-100: #d8f3dc;
-      --green-50: #f1f8f4;
-      --border: #c7e2d0;
-      --text: #1b4332;
-      --muted: #52796f;
+      --green-700: #1f5e3b;
+      --green-500: #3a7d44;
+      --green-100: #eaf5ec;
+      --green-50: #f5f7fa;
+      --border: #e4e7ec;
+      --text: #1f2933;
+      --muted: #667085;
     }
     * { box-sizing: border-box; }
     body {
@@ -137,11 +137,11 @@
       (<em>«Lo que necesito»</em>, archivos con <em>@ruta</em>, etc.). El agente elige el skill por vos.
     </p>
     <p class="hint">
-      El <strong>1</strong> alcanza para casi todo (pantalla nueva, arreglo, base de datos, demo, reportes…).
+      Flujo de cierre recomendado: <strong>2</strong> (auditar, solo lectura) → <strong>3</strong> (corregir según tabla) → <strong>4</strong> (docs, skills y tooling) → <strong>5</strong> (PR con resúmenes del 3 y 4).
       Usá el <strong>2</strong>–<strong>5</strong> cuando quieras revisar calidad, corregir hallazgos, alinear docs o publicar en GitHub.
       Los acordeones de <strong>comandos locales</strong> y <strong>usuarios demo</strong> son solo consulta (no se pega al agente).
       Comandos detallados: <code>docs/reference/arranque-local.md</code>.
-      Los mensajes 3 y 4 piden un <strong>resumen breve al cerrar</strong>; si lo necesitás para la PR, lo pegás vos al copiar el mensaje 5 (sección «Resumen adicional»).
+      Los mensajes <strong>3</strong> y <strong>4</strong> cierran con un <strong>resumen copiable</strong> de lo realizado — pegalo en el mensaje <strong>5</strong>, sección «Resumen adicional», al abrir la PR.
       Catálogo skills y docs por mensaje: <code>docs/cursor/03-skills-avicore.md</code>.
       Las respuestas del agente van en prosa clara, no en informes con muchas listas.
     </p>
@@ -161,11 +161,11 @@
         </p>
         <pre data-copy>Quiero trabajar en AviCore. Al terminar, contame en lenguaje claro qué hiciste y qué conviene hacer después.
 
-Referencias agente: .cursor/commands/avicore-architect-direct.md · docs/cursor/03-skills-avicore.md (elegir skill interno) · docs/00-contexto.md · docs/README.md (mapa de lectura y fuente maestra) · docs/CHANGELOG.md si cambia contrato · docs/cursor/05-evolucion-skills-y-docs.md si cambia tooling, skills o este HTML.
+Seguí .cursor/commands/avicore-architect-direct.md y elegí el skill interno según docs/cursor/03-skills-avicore.md.
 
 Si estamos arrancando: mirá en qué rama estamos, actualizá main si hace falta y creá una rama nueva con nombre descriptivo (por ejemplo feature/galpones). No hagas commit ni push hasta que yo autorice subir cambios.
 
-Lectura según módulo: docs/05-reglas-de-negocio.md, docs/06-roles-y-permisos.md, docs/02-pantallas-y-flujos.md, docs/03-guia-visual-ui.md, docs/04-modelo-de-datos.md, docs/reference/estructura-base-datos.md, docs/reference/estructura-proyecto.md, docs/11-checklist-modulos.md (y docs/07, 08, 09, 10, 12 si aplica). Implementá de punta a punta respetando reglas de negocio, permisos y multiempresa.
+Lectura: docs/00-contexto.md y el mapa en docs/README.md según el módulo; docs/reference/estructura-base-datos.md o estructura-proyecto.md si hay datos o código. Implementá de punta a punta respetando reglas de negocio, permisos y multiempresa.
 
 Lo que necesito:</pre>
         <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
@@ -173,55 +173,74 @@ Lo que necesito:</pre>
     </details>
 
     <details>
-      <summary>2 — Revisar calidad <span class="badge">solo mirar, no tocar</span></summary>
+      <summary>2 — Revisar calidad <span class="badge">solo lectura · inicio del cierre</span></summary>
       <div class="panel">
         <p class="when">
-          Skill: <code>avicore-auditoria</code> (revisar) · tono tabla: <code>docs/cursor/06-modo-respuesta-clara.md</code>
+          Skill: <code>avicore-auditoria</code> (revisar) · base: <code>docs/reference/estandares-codigo.md</code> · tabla obligatoria.
         </p>
         <pre data-copy>Necesito que revises la calidad de AviCore en modo solo lectura: no modifiques ningún archivo ni apliques correcciones todavía.
 
-Referencias agente: .cursor/skills/avicore-auditoria/SKILL.md (modo revisar) · docs/reference/estandares-codigo.md · docs/README.md · según archivos: docs/05-reglas-de-negocio.md, docs/06-roles-y-permisos.md, docs/02-pantallas-y-flujos.md, docs/03-guia-visual-ui.md, docs/04-modelo-de-datos.md, docs/reference/estructura-base-datos.md, docs/07-arquitectura-tecnica.md, docs/08-tiempo-real-eventos.md, docs/11-checklist-modulos.md.
+Seguí /avicore-architect-direct y el skill avicore-auditoria (modo revisar). Base: docs/reference/estandares-codigo.md y docs de producto según cada archivo (mapa en docs/README.md).
+
+Alcance por archivo — solo lo que aplique:
+- Negocio: docs/05-reglas-de-negocio.md, flujos docs/02-pantallas-y-flujos.md
+- Permisos: docs/06-roles-y-permisos.md, Policies/Gates
+- Código: estandares-codigo.md, capas Actions/Services, validaciones, multiempresa
+- UI: docs/03-guia-visual-ui.md, docs/reference/sistema-diseno.md
+- Datos: docs/04-modelo-de-datos.md, docs/reference/estructura-base-datos.md
+- Tests: tests/ relacionados al código auditado; cobertura de comportamiento crítico
+- Arquitectura y escalabilidad: docs/07-arquitectura-tecnica.md, docs/11-checklist-modulos.md, docs/08-tiempo-real-eventos.md si aplica
+
+Si listo código de app, incluí en la revisión (o en la tabla) los tests Feature correspondientes en tests/.
 
 Archivos a revisar:
 
 
-Cuando termines: un resumen ejecutivo breve y la tabla clasificadora de cumplimiento por archivo (archivo, cumplimiento %, Negocio, Permisos, Código/UI, brecha principal). Las recomendaciones van en la columna brecha principal; no listas aparte de mejoras.</pre>
+Al terminar: resumen ejecutivo breve (2–4 líneas) y esta tabla por archivo:
+
+| Archivo | Cumplimiento % | Negocio | Permisos | Código | UI | Tests | Arquitectura | Brecha principal |
+
+Cada dimensión: OK / Parcial / No / N/A. Toda recomendación accionable va en Brecha principal; no listas aparte de mejoras. Esta tabla es la base del mensaje 3.</pre>
         <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
       </div>
     </details>
 
     <details>
-      <summary>3 — Corregir lo de la auditoría <span class="badge">después del mensaje 2</span></summary>
+      <summary>3 — Corregir lo de la auditoría <span class="badge">tests en verde · listo para PR</span></summary>
       <div class="panel">
         <p class="when">
-          Skill: <code>avicore-auditoria</code> (aplicar) · parte de la tabla del mensaje 2 en este chat.
+          Skill: <code>avicore-auditoria</code> (aplicar) · usa la tabla del mensaje 2 en este chat.
         </p>
-        <pre data-copy>Según la auditoría, aplicá en AviCore las correcciones que surgen de la tabla clasificadora y sus brechas principales. Priorizá archivos y dimensiones marcadas como Parcial o No; optimizá según lo que la tabla recomienda en cada fila. Sin refactors grandes fuera de esos hallazgos.
+        <pre data-copy>Según la auditoría de este chat, aplicá en AviCore las correcciones para subir el cumplimiento de cada fila auditada lo máximo posible según la tabla y sus brechas — no un parche mínimo.
 
-Referencias agente: .cursor/skills/avicore-auditoria/SKILL.md (modo aplicar-correcciones) · mismas docs de producto que en el mensaje 2 (estandares-codigo, README, 05, 06, 02, 03, 04, reference, 07, 08, 11 según archivos tocados). Si el cambio altera contrato: fuente maestra en docs/README.md + docs/CHANGELOG.md.
+Seguí /avicore-architect-direct y el skill avicore-auditoria (modo aplicar-correcciones). Corregí todas las dimensiones Parcial o No; implementá o ampliá tests cuando Tests lo requiera o la brecha lo pida (tests significativos, no triviales). Prioridad: bugs → seguridad → multiempresa → validaciones → tests críticos → UI/responsive.
 
-Al terminar, enviame un breve resumen del trabajo realizado.</pre>
+Verificación obligatoria antes de cerrar: php artisan test (todo en verde; corregí fallos hasta pasar), npm run build si tocaste front o CSS, vendor/bin/pint si tocaste PHP. Sin commit, push ni PR — dejá todo listo para el mensaje 5.
+
+Si alguna corrección altera contrato documental, anotarlo para el mensaje 4. Si el flujo aplicado difirió del skill, seguí docs/cursor/05-evolucion-skills-y-docs.md.
+
+Al terminar, enviame un resumen breve y copiable: qué corregiste por archivo, % estimado tras corrección, verificaciones corridas (test/build) y pendientes. Lo pegaré en el mensaje 5, sección «Resumen adicional».</pre>
         <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
       </div>
     </details>
 
     <details>
-      <summary>4 — Alinear la documentación <span class="badge">archivos de esta sesión</span></summary>
+      <summary>4 — Alinear documentación y tooling <span class="badge">cierre · resumen para PR</span></summary>
       <div class="panel">
         <p class="when">
-          Skill: <code>avicore-cierre-tarea</code> · mapa: <code>docs/README.md</code>.
+          Skill: <code>avicore-cierre-tarea</code> · mapa: <code>docs/README.md</code> · evolución: <code>docs/cursor/05-evolucion-skills-y-docs.md</code>.
           Completá <strong>Archivos modificados</strong> con <code>@ruta</code>.
         </p>
-        <pre data-copy>Revisá la documentación de AviCore según lo que cambiamos en esta sesión.
+        <pre data-copy>Pasada de cierre: alineá documentación de producto y tooling del agente (skills, comando architect-direct) con lo que cambiamos en esta sesión.
 
-Referencias agente: .cursor/skills/avicore-cierre-tarea/SKILL.md · docs/README.md (tabla «Regla de una sola fuente maestra») · docs/CHANGELOG.md si cambió contrato · docs/00-contexto.md si aplica al alcance.
+Seguí /avicore-architect-direct y el skill avicore-cierre-tarea. Mapa de fuentes maestras: docs/README.md. docs/CHANGELOG.md si cambió contrato. Si hubo desvío de flujo o convenciones: docs/cursor/05-evolucion-skills-y-docs.md, .cursor/skills/ y docs/cursor/03-skills-avicore.md.
 
 Archivos modificados en esta sesión:
 
 
-Con esos archivos como base, comprobá si la documentación sigue alineada; si no, actualizá la fuente maestra según docs/README.md. No repitas doc ya actualizada en esta misma sesión al implementar.
+Comprobá alineación según la tabla de fuente maestra en docs/README.md; actualizá solo lo necesario. Revisá coherencia de skills y mensajes HTML si cambió el flujo. No dupliques doc ya actualizada en la misma sesión al implementar.
 
-Al terminar, enviame un breve resumen del trabajo realizado.</pre>
+Al terminar: tabla documento | alineado (sí/no) | acción, más un resumen copiable (docs y skills tocados, gaps pendientes) para el mensaje 5, sección «Resumen adicional».</pre>
         <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
       </div>
     </details>
@@ -230,17 +249,18 @@ Al terminar, enviame un breve resumen del trabajo realizado.</pre>
       <summary>5 — Subir a Git y abrir PR <span class="badge">vos autorizás</span></summary>
       <div class="panel">
         <p class="when">
-          Skill: <code>avicore-git-pr</code> · auth GitHub: <code>docs/cursor/00-configuracion-cursor.md</code>
+          Skill: <code>avicore-git-pr</code> · auth GitHub: <code>docs/cursor/00-configuracion-cursor.md</code>.
+          Pegá en «Resumen adicional» el cierre de los mensajes <strong>3</strong> y/o <strong>4</strong> si los usaste.
         </p>
         <pre data-copy>Te autorizo a hacer commit, push y crear la pull request en AviCore.
 
-Referencias agente: .cursor/skills/avicore-git-pr/SKILL.md (flujo y plantilla PR) · docs/cursor/00-configuracion-cursor.md (auth GitHub / MCP) · docs/cursor/03-skills-avicore.md · si la PR documenta contrato: docs/CHANGELOG.md.
+Seguí /avicore-architect-direct y el skill avicore-git-pr (plantilla PR completa). Auth GitHub: docs/cursor/00-configuracion-cursor.md.
 
-Seguí avicore-git-pr: revisá git status y diff, confirmá que no se sube nada sensible (.env), corré php artisan test y npm run build si hay código Laravel, commit con Conventional Commits (feat, fix, refactor, docs, chore…), push de la rama y PR con MCP user-github (o gh pr create si falla). Cuerpo de la PR con la plantilla completa del skill.
+Revisá git status y diff, confirmá que no se sube nada sensible (.env), corré php artisan test y npm run build si hay código Laravel, commit con Conventional Commits (feat, fix, refactor, docs, chore…), push de la rama y PR con MCP user-github (o gh pr create si falla).
 
 Redactá título y descripción según lo que hicimos y acordamos en esta conversación (archivos tocados, módulo, verificaciones).
 
-Resumen adicional (opcional):
+Resumen adicional (pegá acá el resumen copiable del mensaje 3 y/o 4, si aplica):
 
 
 Datos del repositorio:
@@ -256,7 +276,7 @@ Título sugerido (opcional):</pre>
       <div class="panel">
         <p class="when">
           Ejecutá en la carpeta donde está <code>artisan</code> (PowerShell, CMD o bash).
-          App en <strong>http://localhost:8000</strong> — no abras <code>:5173</code> en el navegador (es solo Vite).
+          App en <strong>http://localhost:8000</strong> (redirige a <code>/login</code>) — no abras <code>:5173</code> en el navegador (es solo Vite).
           Fuente maestra: <code>docs/reference/arranque-local.md</code>.
           <strong>Git:</strong> <code>vendor/</code>, <code>node_modules/</code>, <code>public/build/</code> y <code>.vite/</code> no se suben al repo — si el IDE muestra miles de cambios, revisá que la carpeta abierta sea la raíz de AviCore (donde está <code>artisan</code>) y que no esté activado «mostrar ignorados» en control de código.
         </p>
@@ -303,7 +323,7 @@ Título sugerido (opcional):</pre>
             <tr>
               <td>Levantar todo en una terminal</td>
               <td><code>composer dev</code></td>
-              <td>Serve + cola + logs + <code>npm run dev</code></td>
+              <td>Serve + cola + <code>npm run dev</code> (Pail solo Linux/macOS)</td>
             </tr>
             <tr>
               <td>Solo Laravel (terminal 1)</td>
@@ -503,8 +523,8 @@ npm run dev</pre>
     document.querySelectorAll(".btn-copy").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         e.preventDefault();
-        const pre = btn.closest(".panel")?.querySelector("pre[data-copy]");
-        const text = (pre?.textContent ?? "").trim();
+        const pre = btn.closest(".copy-row")?.previousElementSibling;
+        const text = (pre?.matches?.("pre[data-copy]") ? pre.textContent : btn.closest(".panel")?.querySelector("pre[data-copy]")?.textContent ?? "").trim();
         if (!text) {
           showToast("No se encontró el texto del mensaje.", true);
           return;

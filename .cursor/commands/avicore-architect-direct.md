@@ -47,9 +47,9 @@ Plantillas usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html`
 | Mensaje | Skill(s) |
 |---------|----------|
 | **1 — Pedir una tarea** | Ver enrutamiento abajo |
-| **2 — Revisar calidad** | `avicore-auditoria` (solo lectura; tabla %; **sin modificar**) |
-| **3 — Corregir auditoría** | `avicore-auditoria` (aplicar-correcciones) |
-| **4 — Alinear documentación** | `avicore-cierre-tarea` — pasada **dedicada** de docs (ver paso 5) |
+| **2 — Revisar calidad** | `avicore-auditoria` (solo lectura; tabla % con Negocio/Permisos/Código/UI/Tests/Arquitectura; **sin modificar**) |
+| **3 — Corregir auditoría** | `avicore-auditoria` (maximizar cumplimiento; tests en verde; listo para PR; **sin commit**) |
+| **4 — Alinear documentación y tooling** | `avicore-cierre-tarea` — docs, skills y coherencia del flujo (ver paso 5 y `05-evolucion-skills-y-docs.md`) |
 | **5 — Subir cambios / PR** | `avicore-git-pr` (**solo** con autorización explícita) |
 
 **Enrutamiento mensaje 1** (elegir **uno** principal; combinar solo si la tarea lo pide):

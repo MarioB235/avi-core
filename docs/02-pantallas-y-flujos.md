@@ -31,6 +31,13 @@ Permitir el acceso seguro al sistema.
 - Iniciar sesión.
 - Cerrar sesión (`POST /logout`).
 
+### Presentación (MVP implementado)
+
+- Layout público en **split** (≥1024px): panel de marca a la izquierda, tarjeta de login a la derecha; en móvil, logo arriba y tarjeta debajo.
+- Inputs con icono (`documento`, `contraseña`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
+- Checkbox «Recordarme» con foco visible.
+- Recuperación de contraseña: **texto informativo** («contactá a tu administrador»); sin enlace ni flujo automático en MVP (ver regla de negocio en `05`).
+
 ### Validaciones
 
 - Documento obligatorio (máx. 50 caracteres).
@@ -49,6 +56,8 @@ Tras login exitoso:
 2. Si no → home según rol: operario → `/operario`; resto (Dueño, Administrativo, Encargado, Admin AviCore) → `/admin`.
 
 Usuario autenticado que visita `/login` se redirige a su home correspondiente.
+
+La raíz `/` redirige: sin sesión → `/login`; con sesión → home del rol (o `/password/change` si aplica).
 
 ---
 

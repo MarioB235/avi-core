@@ -54,14 +54,18 @@
     --radius-avicore-md: 0.75rem;
     --radius-avicore-lg: 1rem;
     --radius-avicore-xl: 1.25rem;
-    --shadow-avicore-card: 0 1px 2px rgb(16 24 40 / 0.06), 0 1px 3px rgb(16 24 40 / 0.1);
-    --shadow-avicore-header: 0 1px 2px rgb(16 24 40 / 0.05);
+    --shadow-avicore-card: 0 0 0 0 transparent;
+    --shadow-avicore-header: 0 0 0 0 transparent;
 
     /* Touch mínimo operario (WCAG) */
     --min-height-avicore-touch: 2.75rem;
 }
 
 @layer base {
+    [x-cloak] {
+        display: none !important;
+    }
+
     body {
         @apply bg-avicore-surface text-avicore-text antialiased;
         font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
@@ -69,6 +73,28 @@
 
     :focus-visible {
         @apply outline-2 outline-offset-2 outline-avicore-primary;
+    }
+
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+        @apply outline-none;
+    }
+
+    /* Un solo toggle de contraseña — ocultar controles nativos (Edge/Chrome en Windows) */
+    .avicore-password-input::-ms-reveal,
+    .avicore-password-input::-ms-clear {
+        display: none;
+    }
+
+    .avicore-password-input::-webkit-textfield-decoration-container {
+        display: none !important;
+        pointer-events: none;
+    }
+
+    .avicore-password-input::-webkit-credentials-auto-fill-button,
+    .avicore-password-input::-webkit-strong-password-auto-fill-button {
+        display: none !important;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -109,5 +135,144 @@
 
     .avicore-kpi-value {
         @apply text-2xl font-semibold tabular-nums tracking-tight text-avicore-text;
+    }
+
+    .avicore-kpi-label {
+        @apply text-xs font-medium uppercase tracking-wide text-avicore-muted;
+    }
+
+    .avicore-section-title {
+        @apply text-sm font-semibold text-avicore-text;
+    }
+
+    .avicore-section-subtitle {
+        @apply mt-0.5 text-sm text-avicore-muted;
+    }
+
+    .avicore-divider {
+        @apply border-t border-avicore-border;
+    }
+
+    .avicore-table-wrap {
+        @apply overflow-x-auto rounded-lg border border-avicore-border bg-avicore-card;
+    }
+
+    .avicore-table {
+        @apply w-full min-w-[640px] border-collapse text-left text-sm;
+    }
+
+    .avicore-table thead {
+        @apply border-b border-avicore-border bg-avicore-surface/80;
+    }
+
+    .avicore-table th {
+        @apply px-4 py-3 text-xs font-semibold uppercase tracking-wide text-avicore-muted;
+    }
+
+    .avicore-table td {
+        @apply border-b border-avicore-border px-4 py-3 text-avicore-text;
+    }
+
+    .avicore-table tbody tr:last-child td {
+        @apply border-b-0;
+    }
+
+    .avicore-table tbody tr:hover {
+        @apply bg-avicore-soft/40;
+    }
+
+    .avicore-sidebar-panel {
+        @apply flex h-full w-64 shrink-0 flex-col border-r border-avicore-border bg-avicore-card;
+    }
+
+    .avicore-sidebar-backdrop {
+        @apply fixed inset-0 z-40 bg-avicore-text/30 lg:hidden;
+    }
+
+    /* Fondos de marca — rutas relativas para Vite (dev + build) */
+    .avicore-brand-background {
+        @apply min-h-screen bg-cover bg-center bg-no-repeat;
+        background-image: url('../images/brand/background-mobile.jpg');
+    }
+
+    @media (min-width: 1024px) {
+        .avicore-brand-background {
+            background-image: url('../images/brand/background-desktop.jpg');
+        }
+    }
+
+    .avicore-auth-shell {
+        @apply relative z-10 grid min-h-screen lg:grid-cols-[1.2fr_0.8fr];
+    }
+
+    .avicore-auth-brand {
+        @apply flex items-center lg:py-12;
+    }
+
+    .avicore-auth-brand__inner {
+        @apply mx-auto w-full max-w-xl px-6 py-10 lg:mx-0 lg:max-w-3xl lg:px-12 xl:px-20 xl:py-16;
+    }
+
+    .avicore-brand-name {
+        @apply font-extrabold tracking-tight text-avicore-primary;
+    }
+
+    /* Login escritorio: relieve legible sobre foto — estático, sin animación */
+    .avicore-auth-brand .avicore-brand-name--hero {
+        text-shadow:
+            0 1px 0 rgb(255 255 255 / 0.75),
+            0 2px 8px rgb(31 94 59 / 0.35),
+            0 10px 28px rgb(31 94 59 / 0.22);
+        -webkit-text-stroke: 0.6px rgb(255 255 255 / 0.45);
+        paint-order: stroke fill;
+    }
+
+    .avicore-auth-brand__identity {
+        @apply pb-0;
+    }
+
+    .avicore-auth-brand__copy {
+        @apply max-w-md pt-6 lg:max-w-lg lg:pt-8;
+    }
+
+    .avicore-auth-brand__headline {
+        @apply text-lg font-medium leading-snug text-avicore-primary sm:text-xl lg:text-[1.375rem];
+    }
+
+    .avicore-auth-brand__lead {
+        @apply mt-3 text-sm leading-relaxed text-avicore-muted sm:text-base lg:mt-4;
+    }
+
+    .avicore-auth-main {
+        @apply flex items-center justify-center px-4 py-10 sm:px-6 lg:px-10 lg:py-12;
+    }
+
+    .avicore-checkbox {
+        @apply size-4 shrink-0 rounded border border-avicore-border-strong bg-avicore-card outline-none transition-colors;
+        accent-color: var(--color-avicore-primary);
+    }
+
+    .avicore-checkbox:focus-visible {
+        @apply outline-2 outline-offset-2 outline-avicore-primary;
+    }
+
+    .avicore-auth-form-wrap {
+        @apply w-full max-w-md;
+    }
+
+    .avicore-auth-card {
+        @apply rounded-2xl border border-avicore-border/80 bg-avicore-card p-6 shadow-lg sm:p-8;
+    }
+
+    .avicore-auth-card__header {
+        @apply mb-6 text-center;
+    }
+
+    .avicore-auth-card__title {
+        @apply text-xl font-semibold text-avicore-primary;
+    }
+
+    .avicore-auth-card__subtitle {
+        @apply mt-1 text-sm text-avicore-muted;
     }
 }

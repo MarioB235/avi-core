@@ -1,30 +1,25 @@
-<x-layouts.admin title="Panel · AviCore" heading="Base administrativa" subheading="Componentes UI iniciales">
-    <div class="grid gap-4 lg:grid-cols-3">
-        <x-ui.card title="Producción hoy">
-            <p class="avicore-kpi-value text-avicore-primary">12.480</p>
-            <p class="mt-1 text-sm text-avicore-muted">Huevos registrados</p>
-        </x-ui.card>
+<x-layouts.admin title="Panel · AviCore" heading="Componentes UI" subheading="Referencia visual — skill clean">
+    <div class="grid gap-4 sm:grid-cols-3">
+        <x-ui.kpi-card label="Producción hoy" value="12.480" hint="Huevos registrados" />
+        <x-ui.kpi-card label="Muertes hoy" value="18" hint="Registros validados" />
+        <x-ui.kpi-card label="Galpones activos" value="6" hint="Empresa demo" />
+    </div>
 
-        <x-ui.card title="Estado">
-            <div class="flex flex-wrap gap-2">
-                <x-ui.badge variant="success">Activo</x-ui.badge>
-                <x-ui.badge variant="warning">Alerta</x-ui.badge>
-            </div>
-        </x-ui.card>
-
-        <x-ui.card title="Acciones">
+    <div class="mt-8 grid gap-6 lg:grid-cols-2">
+        <x-ui.card title="Botones">
             <div class="flex flex-wrap gap-2">
                 <x-ui.button>Guardar</x-ui.button>
                 <x-ui.button variant="secondary">Cancelar</x-ui.button>
+                <x-ui.button variant="danger">Anular</x-ui.button>
             </div>
+        </x-ui.card>
+
+        <x-ui.card title="Formulario">
+            <x-ui.input label="Documento" name="documento" placeholder="Ej. 12345678" class="mt-0" />
         </x-ui.card>
     </div>
 
-    <div class="mt-6 max-w-xl space-y-4">
-        <x-ui.alert variant="warning" title="Ejemplo de alerta">
-            Este galpón tiene más de un lote activo. La producción se registrará sobre el galpón completo.
-        </x-ui.alert>
-
-        <x-ui.input label="Documento" name="documento" placeholder="Ej. 12345678" />
-    </div>
+    <x-ui.alert variant="warning" class="mt-8" title="Alerta">
+        Este galpón tiene más de un lote activo.
+    </x-ui.alert>
 </x-layouts.admin>

@@ -53,7 +53,7 @@ Debe evitar:
 | Crítico | #DC2626 |
 | Información | #2563EB |
 
-Los colores exactos podrán ajustarse al logo final de AviCore.
+El isotipo oficial (`logo-avicore.svg`) usa el verde principal `#1F5E3B` sobre fondo transparente.
 
 ---
 
@@ -234,19 +234,8 @@ Prioridades:
 
 ## 13. Iconos
 
-Usar iconos simples y funcionales.
+Usar iconos simples y funcionales vía **`x-ui.icon`** (SVG inline, trazo `currentColor`).
 
-Recomendados:
+Nombres ya disponibles en el componente: `home`, `users`, `warehouse`, `egg`, `chart`, `document`, `lock`, `menu`, `logout`, `eye`, `eye-off`, entre otros.
 
-- Home.
-- Users.
-- Building.
-- Warehouse.
-- Egg.
-- AlertTriangle.
-- BarChart.
-- FileText.
-- Settings.
-- LogOut.
-
-No abusar de iconos decorativos.
+No abusar de iconos decorativos; no importar librerías externas de iconos salvo decisión explícita en arquitectura.

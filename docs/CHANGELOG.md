@@ -5,6 +5,24 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-06-01
+
+- **[cursor]** Auditoría ampliada: dimensiones Tests y Arquitectura; mensaje 3 maximiza cumplimiento y exige test/build en verde antes de PR. — `02-avicore-mensajes-reutilizables.html`, skill auditoria, `docs/reference/estandares-codigo.md`
+- **[cursor]** Mensajes 2–4: flujo de cierre (auditoría → corrección → docs/skills → PR); alcance, tests y tabla de alineación. — `docs/cursor/02-avicore-mensajes-reutilizables.html`, `.cursor/commands/avicore-architect-direct.md`, skills auditoria/cierre-tarea, `03-skills-avicore.md`
+- **[cursor]** Mensaje 1: una sola plantilla (eliminada versión corta duplicada). — `docs/cursor/02-avicore-mensajes-reutilizables.html`
+- **[cursor]** Mensajes HTML: versión corta del 1 (con slash), referencias acotadas en 2–5, ejemplo @ruta en 4, paleta alineada a tokens. — `docs/cursor/02-avicore-mensajes-reutilizables.html`
+- **[docs]** Alineación post-sesión UI: login (presentación MVP), árbol `resources/` y `scripts/`, componente `x-ui.icon`, partials de layout y logo `#1F5E3B` en guía visual. — `docs/02`, `docs/03`, `docs/reference/estructura-proyecto.md`, `docs/reference/sistema-diseno.md`, skill design-system
+- **[ui]** Logo SVG actualizado (verde marca `#1F5E3B` / paleta AviCore) en `public/images/brand/logo-avicore.svg`. — `public/images/brand/logo-avicore.svg`
+- **[ui]** Logo de marca unificado: `public/images/brand/logo-avicore.svg` (fondo transparente) para `x-ui.logo`; se deja de usar PNG derivado. — `public/images/brand/`, `resources/views/components/ui/logo.blade.php`, `docs/reference/sistema-diseno.md`
+- **[fix/ui]** Correcciones post-auditoría: un solo toggle de contraseña (CSS Chromium + Alpine), checkbox con `focus-visible`, login sin enlace falso de recuperación, fondos JPEG comprimidos, `.gitignore` para `fonts-manifest.dev.json`, tests de rate limit y redirect desde login. — `resources/`, `tests/`, `.gitignore`, `scripts/optimize-brand-assets.py`, `docs/reference/sistema-diseno.md`
+- **[chore]** Metadatos `composer.json` (`avicore/app`) y script de optimización de assets de marca. — `composer.json`, `scripts/`
+- **[ui]** Entrada `/` redirige a login (eliminada pantalla intermedia de bienvenida). — `routes/web.php`, `docs/02-pantallas-y-flujos.md`, `docs/reference/arranque-local.md`
+- **[ui]** Logo de marca en SVG: `public/images/brand/logo-avicore.svg` para `x-ui.logo`. — `public/images/brand/`, `docs/reference/sistema-diseno.md`
+- **[ui]** Pulido visual: nav móvil con drawer Alpine en layout admin, iconos SVG, componente `kpi-card`, utilidades tabla/sección en `app.css`, sidebar con sesión y logout, páginas demo refinadas. — `resources/views/`, `resources/css/app.css`, `docs/reference/sistema-diseno.md`
+- **[ui]** Login alineado a maqueta: layout split (marca + tarjeta), inputs con iconos, toggle contraseña, copy de bienvenida. — `resources/views/`, `resources/css/app.css`
+- **[chore]** `composer dev` compatible con Windows: omite Pail si no hay ext-pcntl; script `scripts/dev.php`. — `composer.json`, `docs/reference/arranque-local.md`
+- **[chore]** Vite en Windows: `server.host: 127.0.0.1` para que `public/hot` no use `[::1]` y el CSS cargue al abrir `:8000`. — `vite.config.js`, `docs/reference/arranque-local.md`
+
 ## 2026-05-31
 
 - **[chore]** `.gitignore`: carpeta caché `/.vite/` (Vite en desarrollo). — `.gitignore`

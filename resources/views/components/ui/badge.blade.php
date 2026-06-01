@@ -4,10 +4,10 @@
 
 @php
     $classes = match ($variant) {
-        'success' => 'bg-green-100 text-green-800 ring-1 ring-inset ring-green-600/20',
-        'warning' => 'bg-amber-100 text-amber-900 ring-1 ring-inset ring-amber-600/20',
-        'danger' => 'bg-red-100 text-red-800 ring-1 ring-inset ring-red-600/20',
-        'info' => 'bg-blue-100 text-blue-800 ring-1 ring-inset ring-blue-600/20',
+        'success' => 'bg-green-50 text-green-800 ring-1 ring-inset ring-avicore-success/25',
+        'warning' => 'bg-amber-50 text-amber-900 ring-1 ring-inset ring-avicore-warning/30',
+        'danger' => 'bg-red-50 text-red-800 ring-1 ring-inset ring-avicore-danger/25',
+        'info' => 'bg-blue-50 text-blue-800 ring-1 ring-inset ring-avicore-info/25',
         'primary' => 'bg-avicore-soft text-avicore-primary ring-1 ring-inset ring-avicore-primary/15',
         default => 'bg-gray-100 text-gray-700 ring-1 ring-inset ring-gray-500/10',
     };

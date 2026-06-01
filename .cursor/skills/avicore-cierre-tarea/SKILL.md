@@ -20,8 +20,10 @@ El usuario completa la sección **«Archivos modificados en esta sesión»** del
 
 Usar **solo** la tabla en `docs/README.md` § «Regla de una sola fuente maestra». Revisar docs pertinentes a los archivos listados por el usuario.
 
+Si hubo desvío de flujo o convenciones: `docs/cursor/05-evolucion-skills-y-docs.md`, `.cursor/skills/` afectados, `docs/cursor/03-skills-avicore.md` y coherencia con `02-avicore-mensajes-reutilizables.html` / comando architect-direct.
+
 ## Salida
 
-Tabla `documento | alineado | acción` · docs tocados · **resumen breve del trabajo** al cerrar (sin referencias cruzadas a otros mensajes en el texto copiable del usuario).
+Tabla `documento | alineado (sí/no) | acción` · docs y skills tocados · **resumen copiable para PR** (mensaje 5, «Resumen adicional»).
 
 Un cambio conceptual → **un** documento maestra; no duplicar.

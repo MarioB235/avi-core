@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Models\Empresa;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -74,6 +75,47 @@ class LoginFlowTest extends TestCase
             ->set('password', 'Temporal2026!')
             ->call('login')
             ->assertRedirect(route('password.change'));
+    }
+
+    public function test_login_is_rate_limited_after_five_failed_attempts(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+
+        User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'documento' => '11111111',
+            'password' => 'Secret123!',
+        ]);
+
+        RateLimiter::clear('11111111|127.0.0.1');
+
+        for ($i = 0; $i < 5; $i++) {
+            Livewire::test(\App\Livewire\Auth\Login::class)
+                ->set('documento', '11111111')
+                ->set('password', 'WrongPassword!')
+                ->call('login')
+                ->assertHasErrors('documento');
+        }
+
+        $component = Livewire::test(\App\Livewire\Auth\Login::class)
+            ->set('documento', '11111111')
+            ->set('password', 'WrongPassword!')
+            ->call('login')
+            ->assertHasErrors('documento');
+
+        $message = $component->errors()->first('documento') ?? '';
+        $this->assertStringContainsString('Demasiados intentos', $message);
+    }
+
+    public function test_authenticated_user_is_redirected_from_login(): void
+    {
+        $user = User::factory()->create([
+            'must_change_password' => false,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('login'))
+            ->assertRedirect(route($user->homeRouteName()));
     }
 
     public function test_inactive_user_cannot_login(): void

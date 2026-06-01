@@ -19,12 +19,15 @@ Usar junto con `avicore-ui` cuando el cambio sea transversal (tokens, componente
 
 - Tokens `avicore-*` en Tailwind; sin inline styles
 - WCAG 2.2 AA: `focus-visible`, contraste, touch ≥ 44px en operario
-- Estados explícitos en botones/inputs (default, hover, focus-visible, active, disabled, error)
-- No adoptar temas oscuros, neón, glassmorphism ni paletas moradas/teal de otros skills
+- Estados explícitos en botones/inputs (default, hover, focus-visible, disabled, error)
+- **Clean:** whitespace, paleta limitada, sin motion decorativo, sin gradientes/sombras fuertes
+- No adoptar temas oscuros, neón, glassmorphism, bento grids ni paletas de otros skills
 
 ## Componentes
 
-`button`, `input`, `card`, `alert`, `badge`, `logo`, `nav-link` — extender variantes aquí antes de duplicar clases en vistas.
+`button`, `input`, `card`, `alert`, `badge`, `logo`, `icon`, `kpi-card`, `nav-link` — extender variantes aquí antes de duplicar clases en vistas.
+
+Layouts reutilizan partials en `components/layouts/partials/` (`auth-brand-panel`, `admin-sidebar-inner`, `admin-nav`). Assets de marca: `public/images/brand/`; fondos desde `resources/images/brand/` + `scripts/optimize-brand-assets.py`.
 
 ## Entrada
 

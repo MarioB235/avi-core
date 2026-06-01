@@ -17,6 +17,8 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
+        // Windows: evitar [::1]:5173 en public/hot — el navegador en 127.0.0.1 no carga el CSS
+        host: '127.0.0.1',
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },

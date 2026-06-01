@@ -11,9 +11,9 @@
     };
 @endphp
 
-<div {{ $attributes->merge(['class' => "rounded-xl border border-avicore-border bg-avicore-card shadow-avicore-card {$paddingClass}"]) }}>
+<div {{ $attributes->merge(['class' => "rounded-lg border border-avicore-border bg-avicore-card {$paddingClass}"]) }}>
     @if ($title)
-        <h3 class="mb-3 text-xs font-semibold uppercase tracking-wide text-avicore-muted">{{ $title }}</h3>
+        <h3 class="mb-3 text-xs font-medium uppercase tracking-wide text-avicore-muted">{{ $title }}</h3>
     @endif
 
     {{ $slot }}
