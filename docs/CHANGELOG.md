@@ -7,6 +7,8 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ## 2026-05-31
 
+- **[chore]** `.gitignore`: carpeta caché `/.vite/` (Vite en desarrollo). — `.gitignore`
+- **[cursor]** Mensajes HTML: acordeón «Comandos locales» (setup, migrate, test, build, composer dev, Pint, caché). — `docs/cursor/02-avicore-mensajes-reutilizables.html`
 - **[ui]** Sistema de diseño: tokens ampliados en `app.css`, componentes UI con estados WCAG, layouts admin/público/operario refinados; guía `reference/sistema-diseno.md` (base awesome-design-skills **clean** + enterprise, paleta verde/agro). — `resources/`, `docs/03`, `docs/reference/`, `.cursor/skills/avicore-design-system/`
 - **[cursor]** Eliminado índice duplicado `02-avicore-mensajes-reutilizables.md`; tabla docs por mensaje en `03-skills-avicore.md`; HTML como única plantilla usuario. — `docs/cursor/`, skills auditoria, cierre-tarea, git-pr
 - **[referencia]** Tests PHPUnit con PostgreSQL (`avicore_test`) en lugar de SQLite; plantilla `.env.testing.example` y pasos en arranque local. — `phpunit.xml`, `.env.testing.example`, `docs/reference/arranque-local.md`
