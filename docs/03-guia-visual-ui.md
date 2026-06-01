@@ -55,6 +55,10 @@ Debe evitar:
 
 El isotipo oficial (`logo-avicore.svg`) usa el verde principal `#1F5E3B` sobre fondo transparente.
 
+**Wordmark «AviCore»** (texto junto al isotipo en `x-ui.logo`): `font-semibold`, color primario; **sin** uppercase, tracking amplio ni tipografía decorativa. Tamaños por contexto: `hero` en panel de marca (escritorio), `auth-mobile` + `stacked` en login móvil. Detalle técnico: [`reference/sistema-diseno.md`](reference/sistema-diseno.md).
+
+**Auth (login y cambio de contraseña):** escritorio en split marca + tarjeta; móvil con fondo de marca, logo apilado y tarjeta tipo bottom sheet — ver [`02-pantallas-y-flujos.md`](02-pantallas-y-flujos.md) § Login.
+
 ---
 
 ## 4. Tipografía
@@ -236,6 +240,6 @@ Prioridades:
 
 Usar iconos simples y funcionales vía **`x-ui.icon`** (SVG inline, trazo `currentColor`).
 
-Nombres ya disponibles en el componente: `home`, `users`, `warehouse`, `egg`, `chart`, `document`, `lock`, `menu`, `logout`, `eye`, `eye-off`, entre otros.
+Nombres ya disponibles en el componente: `home`, `users`, `warehouse`, `egg`, `chart`, `id-card`, `lock-keyhole`, `document`, `lock`, `menu`, `logout`, `eye`, `eye-off`, entre otros. Auth usa `id-card`, `lock-keyhole`, `eye` / `eye-off` (Lucide, vía `x-ui.icon`).
 
 No abusar de iconos decorativos; no importar librerías externas de iconos salvo decisión explícita en arquitectura.

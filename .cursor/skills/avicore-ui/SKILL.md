@@ -17,6 +17,7 @@ Cambios transversales de tokens/layouts: skill interno `avicore-design-system`.
 ## Modo web
 
 - Identidad verde/agro; Tailwind; sin inline; componentes reutilizables; responsive.
+- Auth (login, cambio de contraseña): layout público — split escritorio, bottom sheet móvil (`docs/02` § Login); `x-ui.logo` / `x-ui.input` / `x-ui.icon`.
 - Si persiste datos: validaciones, permisos, `empresa_id`, auditoría si crítico.
 - Datos reales (no hardcode salvo demo).
 

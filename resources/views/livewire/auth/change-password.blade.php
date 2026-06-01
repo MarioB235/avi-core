@@ -1,8 +1,4 @@
 <div>
-    <div class="mb-6 lg:hidden">
-        <x-ui.logo subtitle="Gestión operativa avícola" />
-    </div>
-
     <div class="avicore-auth-card">
         <header class="avicore-auth-card__header">
             <h2 class="avicore-auth-card__title">Nueva contraseña</h2>
@@ -17,7 +13,7 @@
             <x-ui.input
                 label="Contraseña actual"
                 name="current_password"
-                icon="lock"
+                icon="lock-keyhole"
                 toggle-password
                 wire:model="current_password"
                 autocomplete="current-password"
@@ -27,7 +23,7 @@
             <x-ui.input
                 label="Nueva contraseña"
                 name="password"
-                icon="lock"
+                icon="lock-keyhole"
                 toggle-password
                 wire:model="password"
                 autocomplete="new-password"
@@ -37,7 +33,7 @@
             <x-ui.input
                 label="Confirmar nueva contraseña"
                 name="password_confirmation"
-                icon="lock"
+                icon="lock-keyhole"
                 toggle-password
                 wire:model="password_confirmation"
                 autocomplete="new-password"

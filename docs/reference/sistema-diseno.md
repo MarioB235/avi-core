@@ -64,7 +64,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.card` | Borde simple, sin sombra; `padding`: `default`, `compact`, `none` |
 | `x-ui.alert` | `info`, `success`, `warning`, `danger` |
 | `x-ui.badge` | Estados semánticos |
-| `x-ui.logo` | Marca — `public/images/brand/logo-avicore.svg` (verde `#1F5E3B`) + subtítulo opcional |
+| `x-ui.logo` | Marca — `public/images/brand/logo-avicore.svg` (verde `#1F5E3B`) + subtítulo opcional; `stacked` + `size="auth-mobile"` en login móvil |
 | `x-ui.icon` | SVG inline por nombre (`menu`, `document`, `lock`, `eye`, …) — nav, inputs, acciones |
 | `x-ui.kpi-card` | Label + valor + hint; para dashboard |
 | `x-ui.nav-link` | Sidebar admin |
@@ -73,7 +73,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 
 | Layout | Archivo | Uso |
 |--------|---------|-----|
-| Público | `components/layouts/public.blade.php` | Login, cambio de contraseña — split marca + tarjeta (≥1024px); partial `auth-brand-panel` |
+| Público | `components/layouts/public.blade.php` | Login, cambio de contraseña — split marca + tarjeta (≥1024px); móvil: logo apilado + bottom sheet (`.avicore-auth-mobile-brand`, `.avicore-auth-card`); partial `auth-brand-panel` |
 | Admin | `components/layouts/admin.blade.php` | Sidebar fija (desktop) + drawer Alpine (móvil); partials `admin-sidebar-inner`, `admin-nav` |
 | Operario | `components/layouts/operario-mobile.blade.php` | Vista móvil — fondo marca responsive |
 

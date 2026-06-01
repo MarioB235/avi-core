@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Enums\EmpresaEstado;
 use App\Enums\UserRole;
+use App\Livewire\Auth\Login;
 use App\Models\Empresa;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,7 +29,7 @@ class LoginFlowTest extends TestCase
             'must_change_password' => false,
         ]);
 
-        Livewire::test(\App\Livewire\Auth\Login::class)
+        Livewire::test(Login::class)
             ->set('documento', '900000002')
             ->set('password', 'Avicore2026!')
             ->call('login')
@@ -49,7 +50,7 @@ class LoginFlowTest extends TestCase
             'must_change_password' => false,
         ]);
 
-        Livewire::test(\App\Livewire\Auth\Login::class)
+        Livewire::test(Login::class)
             ->set('documento', '55555555')
             ->set('password', 'Secret123!')
             ->call('login')
@@ -70,7 +71,7 @@ class LoginFlowTest extends TestCase
             'must_change_password' => true,
         ]);
 
-        Livewire::test(\App\Livewire\Auth\Login::class)
+        Livewire::test(Login::class)
             ->set('documento', '77777777')
             ->set('password', 'Temporal2026!')
             ->call('login')
@@ -90,14 +91,14 @@ class LoginFlowTest extends TestCase
         RateLimiter::clear('11111111|127.0.0.1');
 
         for ($i = 0; $i < 5; $i++) {
-            Livewire::test(\App\Livewire\Auth\Login::class)
+            Livewire::test(Login::class)
                 ->set('documento', '11111111')
                 ->set('password', 'WrongPassword!')
                 ->call('login')
                 ->assertHasErrors('documento');
         }
 
-        $component = Livewire::test(\App\Livewire\Auth\Login::class)
+        $component = Livewire::test(Login::class)
             ->set('documento', '11111111')
             ->set('password', 'WrongPassword!')
             ->call('login')
@@ -118,6 +119,36 @@ class LoginFlowTest extends TestCase
             ->assertRedirect(route($user->homeRouteName()));
     }
 
+    public function test_duplicate_document_with_same_password_is_rejected(): void
+    {
+        $empresaA = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $empresaB = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $password = 'Secret123!';
+
+        User::factory()->create([
+            'empresa_id' => $empresaA->id,
+            'documento' => '33333333',
+            'password' => $password,
+        ]);
+
+        User::factory()->create([
+            'empresa_id' => $empresaB->id,
+            'documento' => '33333333',
+            'password' => $password,
+        ]);
+
+        $component = Livewire::test(Login::class)
+            ->set('documento', '33333333')
+            ->set('password', $password)
+            ->call('login')
+            ->assertHasErrors('documento');
+
+        $message = $component->errors()->first('documento') ?? '';
+        $this->assertStringContainsString('administrador', $message);
+
+        $this->assertGuest();
+    }
+
     public function test_inactive_user_cannot_login(): void
     {
         $empresa = Empresa::factory()->create();
@@ -129,7 +160,7 @@ class LoginFlowTest extends TestCase
             'activo' => false,
         ]);
 
-        Livewire::test(\App\Livewire\Auth\Login::class)
+        Livewire::test(Login::class)
             ->set('documento', '88888888')
             ->set('password', 'Secret123!')
             ->call('login')
@@ -146,7 +177,7 @@ class LoginFlowTest extends TestCase
             'password' => 'Secret123!',
         ]);
 
-        Livewire::test(\App\Livewire\Auth\Login::class)
+        Livewire::test(Login::class)
             ->set('documento', '66666666')
             ->set('password', 'Secret123!')
             ->call('login')
@@ -163,7 +194,7 @@ class LoginFlowTest extends TestCase
             'password' => 'Secret123!',
         ]);
 
-        Livewire::test(\App\Livewire\Auth\Login::class)
+        Livewire::test(Login::class)
             ->set('documento', '99999999')
             ->set('password', 'Secret123!')
             ->call('login')

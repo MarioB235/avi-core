@@ -1,8 +1,4 @@
 <div>
-    <div class="mb-6 lg:hidden">
-        <x-ui.logo subtitle="Gestión operativa avícola" />
-    </div>
-
     <div class="avicore-auth-card">
         <header class="avicore-auth-card__header">
             <h2 class="avicore-auth-card__title">Bienvenido</h2>
@@ -13,7 +9,7 @@
             <x-ui.input
                 label="Documento"
                 name="documento"
-                icon="document"
+                icon="id-card"
                 wire:model="documento"
                 autocomplete="username"
                 placeholder="Ingresá tu número de documento"
@@ -23,7 +19,7 @@
             <x-ui.input
                 label="Contraseña"
                 name="password"
-                icon="lock"
+                icon="lock-keyhole"
                 toggle-password
                 wire:model="password"
                 autocomplete="current-password"

@@ -12,10 +12,11 @@ avi-core/
 ├── app/                      # Laravel — Actions, Services, Livewire, Policies, Events
 ├── resources/views/          # layouts (público, admin, operario), components/ui
 ├── scripts/                  # dev.php (composer dev), optimize-brand-assets.py
+├── tests/Feature/            # Auth/, Ui/ (componentes x-ui), …
 ├── docs/                     # Documentación de producto + referencias
 ├── .cursor/                  # Reglas, skills, comando del arquitecto
 ├── AGENTS.md
-└── …                         # Rutas, migraciones, tests (estándar Laravel)
+└── …                         # Rutas, migraciones (estándar Laravel)
 ```
 
 **Stack instalado (Bloque 1):** Laravel 13 · Livewire 4 · Tailwind 4 · PostgreSQL · Alpine (vía Livewire).

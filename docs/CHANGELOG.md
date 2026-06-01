@@ -7,6 +7,9 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ## 2026-06-01
 
+- **[docs]** Pasada cierre (mensaje 4): wordmark/logo y auth en `03`, presentación cambio de contraseña en `02`, árbol `tests/Feature/Ui` y criterio tests UI en `estandares-codigo.md`. — `docs/02`, `docs/03`, `docs/reference/`
+- **[ui]** Login móvil tipo bottom sheet: logo apilado sobre `background-mobile.jpg`, tarjeta anclada abajo; `x-ui.logo` con `stacked` y tamaño `auth-mobile`; padding de inputs con icono sin conflicto Tailwind; autofill Chrome unificado. — `resources/views/`, `resources/css/app.css`, `docs/02-pantallas-y-flujos.md`, `docs/reference/sistema-diseno.md`
+- **[ui]** Nuevo fondo móvil de marca (`background-mobile`) — fuente PNG en `resources/images/brand/`, JPEG optimizado en `public/` vía `optimize-brand-assets.py`. — `resources/images/brand/`, `public/images/brand/`
 - **[cursor]** Auditoría ampliada: dimensiones Tests y Arquitectura; mensaje 3 maximiza cumplimiento y exige test/build en verde antes de PR. — `02-avicore-mensajes-reutilizables.html`, skill auditoria, `docs/reference/estandares-codigo.md`
 - **[cursor]** Mensajes 2–4: flujo de cierre (auditoría → corrección → docs/skills → PR); alcance, tests y tabla de alineación. — `docs/cursor/02-avicore-mensajes-reutilizables.html`, `.cursor/commands/avicore-architect-direct.md`, skills auditoria/cierre-tarea, `03-skills-avicore.md`
 - **[cursor]** Mensaje 1: una sola plantilla (eliminada versión corta duplicada). — `docs/cursor/02-avicore-mensajes-reutilizables.html`

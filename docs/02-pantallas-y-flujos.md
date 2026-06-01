@@ -33,8 +33,9 @@ Permitir el acceso seguro al sistema.
 
 ### Presentación (MVP implementado)
 
-- Layout público en **split** (≥1024px): panel de marca a la izquierda, tarjeta de login a la derecha; en móvil, logo arriba y tarjeta debajo.
-- Inputs con icono (`documento`, `contraseña`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
+- Layout público en **split** (≥1024px): panel de marca a la izquierda, tarjeta de login a la derecha.
+- En **móvil** (<1024px): fondo `background-mobile.jpg`, logo apilado centrado sobre la foto y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
+- Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
 - Recuperación de contraseña: **texto informativo** («contactá a tu administrador»); sin enlace ni flujo automático en MVP (ver regla de negocio en `05`).
 
@@ -84,6 +85,10 @@ Forzar al usuario a cambiar la contraseña temporal.
 - Nueva contraseña distinta a la actual.
 - Confirmación coincidente.
 - No permitir seguir sin cambiarla.
+
+### Presentación
+
+Mismo **layout público** que login: split en escritorio (≥1024px) y bottom sheet en móvil; inputs con iconos y toggle de contraseña donde aplique.
 
 ### Comportamiento
 
