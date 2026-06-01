@@ -114,6 +114,13 @@
     }
     .cred-table th { background: var(--green-100); font-weight: 600; }
     .cred-table code { font-size: 0.8rem; }
+    .cmd-group { margin: 1rem 0 0; }
+    .cmd-group h3 {
+      font-size: 0.9rem;
+      margin: 0 0 0.35rem;
+      color: var(--green-900);
+    }
+    .cmd-group p { font-size: 0.82rem; color: var(--muted); margin: 0 0 0.35rem; }
     .toast {
       position: fixed; bottom: 1.5rem; right: 1.5rem;
       padding: 0.65rem 1rem; background: var(--green-900); color: #fff;
@@ -132,7 +139,8 @@
     <p class="hint">
       El <strong>1</strong> alcanza para casi todo (pantalla nueva, arreglo, base de datos, demo, reportes…).
       Usá el <strong>2</strong>–<strong>5</strong> cuando quieras revisar calidad, corregir hallazgos, alinear docs o publicar en GitHub.
-      El acordeón de <strong>usuarios demo</strong> es solo consulta (no se pega al agente).
+      Los acordeones de <strong>comandos locales</strong> y <strong>usuarios demo</strong> son solo consulta (no se pega al agente).
+      Comandos detallados: <code>docs/reference/arranque-local.md</code>.
       Los mensajes 3 y 4 piden un <strong>resumen breve al cerrar</strong>; si lo necesitás para la PR, lo pegás vos al copiar el mensaje 5 (sección «Resumen adicional»).
       Catálogo skills y docs por mensaje: <code>docs/cursor/03-skills-avicore.md</code>.
       Las respuestas del agente van en prosa clara, no en informes con muchas listas.
@@ -240,6 +248,155 @@ Rama (dejar vacío para usar la actual):
 Base (main u otra):
 Título sugerido (opcional):</pre>
         <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Comandos locales — raíz del proyecto <span class="badge">referencia, no mensaje</span></summary>
+      <div class="panel">
+        <p class="when">
+          Ejecutá en la carpeta donde está <code>artisan</code> (PowerShell, CMD o bash).
+          App en <strong>http://localhost:8000</strong> — no abras <code>:5173</code> en el navegador (es solo Vite).
+          Fuente maestra: <code>docs/reference/arranque-local.md</code>.
+          <strong>Git:</strong> <code>vendor/</code>, <code>node_modules/</code>, <code>public/build/</code> y <code>.vite/</code> no se suben al repo — si el IDE muestra miles de cambios, revisá que la carpeta abierta sea la raíz de AviCore (donde está <code>artisan</code>) y que no esté activado «mostrar ignorados» en control de código.
+        </p>
+
+        <table class="cred-table" aria-label="Comandos frecuentes desde la raíz">
+          <thead>
+            <tr>
+              <th>Qué querés hacer</th>
+              <th>Comando</th>
+              <th>Notas</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Primera vez / dejar listo el repo</td>
+              <td><code>composer setup</code></td>
+              <td>Instala deps, <code>.env</code>, key, migrate, <code>npm run build</code></td>
+            </tr>
+            <tr>
+              <td>Instalar dependencias PHP</td>
+              <td><code>composer install</code></td>
+              <td>Tras clonar o cambiar <code>composer.lock</code></td>
+            </tr>
+            <tr>
+              <td>Instalar dependencias front</td>
+              <td><code>npm install</code></td>
+              <td>Tras clonar o cambiar <code>package-lock.json</code></td>
+            </tr>
+            <tr>
+              <td>Variables de entorno</td>
+              <td><code>cp .env.example .env</code> · <code>php artisan key:generate</code></td>
+              <td>Solo si no tenés <code>.env</code></td>
+            </tr>
+            <tr>
+              <td>Base de datos (desarrollo)</td>
+              <td><code>php artisan migrate</code></td>
+              <td>PostgreSQL <code>avicore</code> en <code>.env</code></td>
+            </tr>
+            <tr>
+              <td>Usuarios demo (login)</td>
+              <td><code>php artisan db:seed</code></td>
+              <td>Después de migrate; ver acordeón usuarios demo</td>
+            </tr>
+            <tr>
+              <td>Levantar todo en una terminal</td>
+              <td><code>composer dev</code></td>
+              <td>Serve + cola + logs + <code>npm run dev</code></td>
+            </tr>
+            <tr>
+              <td>Solo Laravel (terminal 1)</td>
+              <td><code>php artisan serve</code></td>
+              <td>Puerto 8000</td>
+            </tr>
+            <tr>
+              <td>Solo assets en caliente (terminal 2)</td>
+              <td><code>npm run dev</code></td>
+              <td>Dejar abierto mientras desarrollás</td>
+            </tr>
+            <tr>
+              <td>Compilar CSS/JS para producción</td>
+              <td><code>npm run build</code></td>
+              <td>Antes de PR o si no corrés Vite</td>
+            </tr>
+            <tr>
+              <td>Tests automatizados</td>
+              <td><code>php artisan test</code> o <code>composer test</code></td>
+              <td>Base <code>avicore_test</code> — ver bloque tests abajo</td>
+            </tr>
+            <tr>
+              <td>Formatear PHP (Pint)</td>
+              <td><code>vendor/bin/pint</code></td>
+              <td>Windows: <code>vendor\bin\pint</code></td>
+            </tr>
+            <tr>
+              <td>Limpiar caché de config</td>
+              <td><code>php artisan config:clear</code></td>
+              <td>Si cambiaste <code>.env</code> y no se refleja</td>
+            </tr>
+            <tr>
+              <td>Limpiar caché de app</td>
+              <td><code>php artisan cache:clear</code></td>
+              <td>Si algo “viejo” persiste en local</td>
+            </tr>
+            <tr>
+              <td>Ver rutas registradas</td>
+              <td><code>php artisan route:list</code></td>
+              <td>Depurar URLs</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="cmd-group">
+          <h3>Arranque manual (equivalente a primera vez)</h3>
+          <p>Si preferís paso a paso en lugar de <code>composer setup</code>:</p>
+          <pre data-copy>composer install
+cp .env.example .env
+php artisan key:generate
+npm install
+php artisan migrate
+php artisan db:seed
+npm run build</pre>
+          <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar bloque</button></div>
+        </div>
+
+        <div class="cmd-group">
+          <h3>Verificar antes de PR</h3>
+          <pre data-copy>php artisan test
+npm run build</pre>
+          <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar bloque</button></div>
+        </div>
+
+        <div class="cmd-group">
+          <h3>Corregir / refrescar el proyecto local</h3>
+          <p>Cuando fallan deps, estilos rotos o config desactualizada:</p>
+          <pre data-copy>composer install
+npm install
+php artisan migrate
+php artisan config:clear
+php artisan cache:clear
+npm run build</pre>
+          <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar bloque</button></div>
+        </div>
+
+        <div class="cmd-group">
+          <h3>Tests con PostgreSQL</h3>
+          <p>Crear base <code>avicore_test</code> en pgAdmin; luego:</p>
+          <pre data-copy>cp .env.testing.example .env.testing
+php artisan test</pre>
+          <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar bloque</button></div>
+        </div>
+
+        <div class="cmd-group">
+          <h3>Desarrollo diario (dos terminales)</h3>
+          <pre data-copy># Terminal 1
+php artisan serve
+
+# Terminal 2
+npm run dev</pre>
+          <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar bloque</button></div>
+        </div>
       </div>
     </details>
 
