@@ -2,27 +2,92 @@
     'name',
 ])
 
-@php
-    $paths = match ($name) {
-        'home' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
-        'chart' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
-        'warehouse' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
-        'menu' => 'M4 6h16M4 12h16M4 18h16',
-        'close' => 'M6 18L18 6M6 6l12 12',
-        'logout' => 'M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1',
-        'egg' => 'M12 2c-3.5 0-6 3.5-6 7.5a6 6 0 0012 0C18 5.5 15.5 2 12 2z',
-        'users' => 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75',
-        'shield' => 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
-        'document' => 'M9 12h6m-6 4h6M9 8h1m-9 8V6a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2z',
-        'lock' => 'M7 11V7a5 5 0 0110 0v4M5 11h14v10H5V11z',
-        'eye' => 'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z M12 15a3 3 0 100-6 3 3 0 000 6z',
-        'eye-off' => 'M3 3l18 18M10.58 10.58A3 3 0 0012 15a3 3 0 002.42-4.42M9.88 4.24A10.48 10.48 0 0112 4c7 0 10 7 10 7a18.82 18.82 0 01-4.11 5.06M6.11 6.11A18.8 18.8 0 002 12s3 7 10 7a10.45 10.45 0 005.88-1.76',
-        default => 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
-    };
-@endphp
-
 <svg
-    {{ $attributes->merge(['class' => 'size-5 shrink-0', 'viewBox' => '0 0 24 24', 'fill' => 'none', 'stroke' => 'currentColor', 'stroke-width' => '1.75', 'stroke-linecap' => 'round', 'stroke-linejoin' => 'round', 'aria-hidden' => 'true']) }}
+    {{ $attributes->merge(['class' => 'size-5 shrink-0', 'viewBox' => '0 0 24 24', 'fill' => 'none', 'stroke' => 'currentColor', 'stroke-width' => '2', 'stroke-linecap' => 'round', 'stroke-linejoin' => 'round', 'aria-hidden' => 'true']) }}
 >
-    <path d="{{ $paths }}" />
+    @switch($name)
+        @case('id-card')
+        @case('document')
+            <path d="M16 10h2" />
+            <path d="M16 14h2" />
+            <path d="M6.17 15a3 3 0 0 1 5.66 0" />
+            <circle cx="9" cy="11" r="2" />
+            <rect x="2" y="5" width="20" height="14" rx="2" />
+            @break
+
+        @case('lock-keyhole')
+        @case('lock')
+            <circle cx="12" cy="16" r="1" />
+            <rect x="3" y="10" width="18" height="12" rx="2" />
+            <path d="M7 10V7a5 5 0 0 1 10 0v3" />
+            @break
+
+        @case('eye')
+            <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+            <circle cx="12" cy="12" r="3" />
+            @break
+
+        @case('eye-off')
+            <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
+            <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+            <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
+            <path d="m2 2 20 20" />
+            @break
+
+        @case('home')
+            <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+            <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            @break
+
+        @case('chart')
+            <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+            <path d="M18 17V9" />
+            <path d="M13 17V5" />
+            <path d="M8 17v-3" />
+            @break
+
+        @case('warehouse')
+            <path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z" />
+            <path d="M6 18h12" />
+            <path d="M6 14h12" />
+            <path d="M6 10h12" />
+            @break
+
+        @case('menu')
+            <path d="M4 12h16" />
+            <path d="M4 18h16" />
+            <path d="M4 6h16" />
+            @break
+
+        @case('close')
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+            @break
+
+        @case('logout')
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <path d="m16 17 5-5-5-5" />
+            <path d="M21 12H9" />
+            @break
+
+        @case('egg')
+            <path d="M12 22c6.23-.05 7.87-5.43 7.8-10.5C19.78 6.55 16.54 2 12 2S4.22 6.55 4.2 11.5C4.13 16.57 5.77 21.95 12 22Z" />
+            @break
+
+        @case('users')
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            @break
+
+        @case('shield')
+            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+            @break
+
+        @default
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4" />
+            <path d="M12 8h.01" />
+    @endswitch
 </svg>

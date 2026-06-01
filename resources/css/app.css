@@ -62,13 +62,13 @@
 }
 
 @layer base {
+    /* Excepción !important: Alpine x-cloak debe ocultar antes de hidratar (Livewire/Alpine). */
     [x-cloak] {
         display: none !important;
     }
 
     body {
         @apply bg-avicore-surface text-avicore-text antialiased;
-        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     }
 
     :focus-visible {
@@ -81,12 +81,24 @@
         @apply outline-none;
     }
 
+    /* Autofill (Chrome): mismo fondo que el input y sin pisar el padding lateral */
+    .avicore-input:-webkit-autofill,
+    .avicore-input:-webkit-autofill:hover,
+    .avicore-input:-webkit-autofill:focus,
+    .avicore-input:-webkit-autofill:active {
+        -webkit-text-fill-color: var(--color-avicore-text);
+        caret-color: var(--color-avicore-text);
+        box-shadow: 0 0 0 1000px var(--color-avicore-card) inset;
+        transition: background-color 99999s ease-out;
+    }
+
     /* Un solo toggle de contraseña — ocultar controles nativos (Edge/Chrome en Windows) */
     .avicore-password-input::-ms-reveal,
     .avicore-password-input::-ms-clear {
         display: none;
     }
 
+    /* Excepción !important: pseudo-elementos WebKit no se ocultan con display:none sin forzar. */
     .avicore-password-input::-webkit-textfield-decoration-container {
         display: none !important;
         pointer-events: none;
@@ -97,6 +109,7 @@
         display: none !important;
     }
 
+    /* Excepción !important: anular animaciones del usuario (prefers-reduced-motion). */
     @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -109,6 +122,28 @@
 }
 
 @layer components {
+    .avicore-input--plain {
+        @apply px-3;
+    }
+
+    .avicore-input--leading-icon {
+        @apply pr-3;
+        padding-left: var(--min-height-avicore-touch);
+    }
+
+    .avicore-input--trailing-action {
+        padding-right: var(--min-height-avicore-touch);
+    }
+
+    .avicore-input--leading-icon.avicore-input--trailing-action {
+        padding-left: var(--min-height-avicore-touch);
+        padding-right: var(--min-height-avicore-touch);
+    }
+
+    .avicore-input--trailing-action:not(.avicore-input--leading-icon) {
+        @apply pl-3;
+    }
+
     .avicore-page-title {
         @apply text-xl font-semibold tracking-tight text-avicore-text sm:text-2xl;
     }
@@ -205,26 +240,36 @@
         @apply relative z-10 grid min-h-screen lg:grid-cols-[1.2fr_0.8fr];
     }
 
+    @media (max-width: 1023px) {
+        .avicore-auth-shell {
+            @apply flex min-h-dvh flex-col;
+        }
+
+        .avicore-auth-mobile-brand {
+            @apply flex shrink-0 flex-col items-center px-6 pb-4;
+            padding-top: max(3rem, calc(env(safe-area-inset-top, 0px) + 2rem));
+        }
+
+        .avicore-auth-main {
+            @apply mt-auto shrink-0 items-stretch justify-end p-0;
+        }
+
+        .avicore-auth-form-wrap {
+            @apply max-w-none;
+        }
+
+        .avicore-auth-card {
+            @apply rounded-t-[1.75rem] rounded-b-none border-x-0 border-b-0 px-6 pt-6 shadow-xl;
+            padding-bottom: max(1.75rem, env(safe-area-inset-bottom, 0px));
+        }
+    }
+
     .avicore-auth-brand {
         @apply flex items-center lg:py-12;
     }
 
     .avicore-auth-brand__inner {
         @apply mx-auto w-full max-w-xl px-6 py-10 lg:mx-0 lg:max-w-3xl lg:px-12 xl:px-20 xl:py-16;
-    }
-
-    .avicore-brand-name {
-        @apply font-extrabold tracking-tight text-avicore-primary;
-    }
-
-    /* Login escritorio: relieve legible sobre foto — estático, sin animación */
-    .avicore-auth-brand .avicore-brand-name--hero {
-        text-shadow:
-            0 1px 0 rgb(255 255 255 / 0.75),
-            0 2px 8px rgb(31 94 59 / 0.35),
-            0 10px 28px rgb(31 94 59 / 0.22);
-        -webkit-text-stroke: 0.6px rgb(255 255 255 / 0.45);
-        paint-order: stroke fill;
     }
 
     .avicore-auth-brand__identity {
@@ -236,7 +281,7 @@
     }
 
     .avicore-auth-brand__headline {
-        @apply text-lg font-medium leading-snug text-avicore-primary sm:text-xl lg:text-[1.375rem];
+        @apply text-lg font-medium leading-snug text-avicore-primary sm:text-xl lg:text-xl;
     }
 
     .avicore-auth-brand__lead {

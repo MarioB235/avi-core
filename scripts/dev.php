@@ -6,7 +6,6 @@ declare(strict_types=1);
  * Arranque de desarrollo multi-proceso (serve + queue + Vite; + Pail si hay pcntl).
  * Pail requiere ext-pcntl (Linux/macOS). En Windows se omite sin tumbar el resto.
  */
-
 $hasPcntl = function_exists('pcntl_fork');
 
 $processes = [
@@ -24,7 +23,7 @@ $names = $hasPcntl ? 'server,queue,logs,vite' : 'server,queue,vite';
 $colors = $hasPcntl ? '#93c5fd,#c4b5fd,#fb7185,#fdba74' : '#93c5fd,#c4b5fd,#fdba74';
 
 $quotedProcesses = array_map(
-    static fn (string $command): string => '"' . str_replace('"', '\\"', $command) . '"',
+    static fn (string $command): string => '"'.str_replace('"', '\\"', $command).'"',
     $processes
 );
 

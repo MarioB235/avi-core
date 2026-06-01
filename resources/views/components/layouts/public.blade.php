@@ -22,7 +22,15 @@
             @include('components.layouts.partials.auth-brand-panel')
         </aside>
 
-        <main class="avicore-auth-main">
+        <div class="avicore-auth-mobile-brand lg:hidden">
+            <x-ui.logo
+                subtitle="Gestión operativa avícola"
+                size="auth-mobile"
+                stacked
+            />
+        </div>
+
+        <main id="main-content" class="avicore-auth-main">
             <div class="avicore-auth-form-wrap">
                 {{ $slot }}
             </div>
