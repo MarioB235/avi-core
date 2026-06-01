@@ -11,6 +11,7 @@ Principios y stack: `docs/07-arquitectura-tecnica.md`.
 avi-core/
 ├── app/                      # Laravel — Actions, Services, Livewire, Policies, Events
 ├── resources/views/          # layouts (público, admin, operario), components/ui
+├── scripts/                  # dev.php (composer dev), optimize-brand-assets.py
 ├── docs/                     # Documentación de producto + referencias
 ├── .cursor/                  # Reglas, skills, comando del arquitecto
 ├── AGENTS.md
@@ -79,8 +80,13 @@ resources/
 │   │   └── app.blade.php     # layout Livewire (páginas completas)
 │   ├── components/
 │   │   ├── layouts/          # público, admin, operario-móvil (Blade)
-│   │   └── ui/               # botón, input, card, badge, alert, logo
-│   └── pages/                # home, previews /dev/*
+│   │   │   └── partials/     # admin-nav, admin-sidebar-inner, auth-brand-panel
+│   │   └── ui/               # button, input, card, badge, alert, logo, icon, kpi-card, nav-link
+│   └── pages/
+│       ├── admin/home.blade.php
+│       ├── operario/home.blade.php
+│       └── dev/              # previews /dev/* (solo local)
+├── images/brand/             # fuente fondos JPEG (copia optimizada en public/)
 ├── css/                      # Tailwind 4 + tema AviCore (`app.css`)
 └── js/                       # Vite entry
 ```

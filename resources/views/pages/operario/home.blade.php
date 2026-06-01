@@ -1,12 +1,12 @@
-<x-layouts.operario-mobile title="Operario" galpon="Galpón demo">
+<x-layouts.operario-mobile title="Operario">
     @if (session('status'))
         <x-ui.alert variant="success">{{ session('status') }}</x-ui.alert>
     @endif
 
     <x-ui.card>
-        <p class="text-sm leading-relaxed text-avicore-muted">
-            Hola, <strong class="text-avicore-text">{{ auth()->user()->name }}</strong>.
-            La carga operativa en campo (huevos, muertes, alimento) llega en el Bloque 5 del plan.
+        <p class="text-sm text-avicore-muted">
+            Hola, <span class="font-medium text-avicore-text">{{ auth()->user()->name }}</span>.
+            La carga en campo llega en el Bloque 5.
         </p>
     </x-ui.card>
 

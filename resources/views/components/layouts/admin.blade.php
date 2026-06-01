@@ -12,45 +12,54 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="min-h-screen bg-avicore-surface">
-    <div class="flex min-h-screen">
-        <aside class="hidden w-64 shrink-0 flex-col border-r border-avicore-border bg-avicore-card lg:flex">
-            <div class="border-b border-avicore-border px-5 py-5">
-                <x-ui.logo />
-                <p class="mt-2 text-xs text-avicore-muted">Panel administrativo</p>
-            </div>
-            <nav class="flex-1 space-y-1 px-3 py-4" aria-label="Navegación principal">
-                <x-ui.nav-link :href="route('home')" :active="request()->routeIs('home')">
-                    Inicio
-                </x-ui.nav-link>
-                <x-ui.nav-link disabled>Dashboard (próximo)</x-ui.nav-link>
-                <x-ui.nav-link disabled>Galpones (próximo)</x-ui.nav-link>
-            </nav>
-            <div class="border-t border-avicore-border px-5 py-4">
-                <p class="truncate text-xs text-avicore-muted">Sesión</p>
-                @auth
-                    <p class="truncate text-sm font-medium text-avicore-text">{{ auth()->user()->name }}</p>
-                @endauth
+<body class="min-h-screen bg-avicore-surface font-sans">
+    <div x-data="{ sidebarOpen: false }" x-on:keydown.escape.window="sidebarOpen = false" class="flex min-h-screen">
+        <div
+            x-show="sidebarOpen"
+            x-cloak
+            class="avicore-sidebar-backdrop"
+            x-on:click="sidebarOpen = false"
+            aria-hidden="true"
+        ></div>
+
+        <aside
+            x-show="sidebarOpen"
+            x-cloak
+            class="fixed inset-y-0 left-0 z-50 lg:hidden"
+            aria-label="Menú de navegación"
+        >
+            <div class="avicore-sidebar-panel h-full border-r border-avicore-border">
+                @include('components.layouts.partials.admin-sidebar-inner')
             </div>
         </aside>
 
+        <aside class="avicore-sidebar-panel hidden lg:flex">
+            @include('components.layouts.partials.admin-sidebar-inner')
+        </aside>
+
         <div class="flex min-w-0 flex-1 flex-col">
-            <header class="sticky top-0 z-10 border-b border-avicore-border bg-avicore-card/95 px-4 py-4 shadow-avicore-header backdrop-blur-sm sm:px-6">
-                <div class="flex flex-wrap items-center justify-between gap-4">
-                    <div>
-                        <h1 class="avicore-page-title">{{ $heading ?? 'Panel' }}</h1>
+            <header class="border-b border-avicore-border bg-avicore-card">
+                <div class="flex items-center gap-3 px-4 py-4 sm:px-6">
+                    <button
+                        type="button"
+                        class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-avicore-border text-avicore-text hover:bg-avicore-soft lg:hidden"
+                        x-on:click="sidebarOpen = true"
+                        aria-label="Abrir menú"
+                    >
+                        <x-ui.icon name="menu" />
+                    </button>
+
+                    <div class="min-w-0 flex-1">
+                        <h1 class="avicore-page-title truncate">{{ $heading ?? 'Panel' }}</h1>
                         @isset($subheading)
-                            <p class="avicore-page-subtitle">{{ $subheading }}</p>
+                            <p class="avicore-page-subtitle truncate">{{ $subheading }}</p>
                         @endisset
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <x-ui.badge variant="primary">Empresa demo</x-ui.badge>
                     </div>
                 </div>
             </header>
 
             <main class="flex-1 p-4 sm:p-6 lg:p-8">
-                <div class="mx-auto max-w-6xl">
+                <div class="mx-auto max-w-5xl">
                     {{ $slot }}
                 </div>
             </main>

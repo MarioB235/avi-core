@@ -1,3 +1,7 @@
+@props([
+    'title' => null,
+])
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -12,18 +16,18 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="min-h-screen bg-avicore-surface">
-    <div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--color-avicore-soft)_0%,_transparent_55%)]" aria-hidden="true"></div>
+<body class="avicore-brand-background font-sans">
+    <div class="avicore-auth-shell">
+        <aside class="avicore-auth-brand hidden lg:block">
+            @include('components.layouts.partials.auth-brand-panel')
+        </aside>
 
-    <main class="flex min-h-screen flex-col items-center justify-center px-4 py-10 sm:py-14">
-        <div class="w-full max-w-md">
-            {{ $slot }}
-        </div>
-    </main>
-
-    <footer class="pb-6 text-center text-xs text-avicore-muted">
-        {{ config('app.name') }} — gestión operativa avícola
-    </footer>
+        <main class="avicore-auth-main">
+            <div class="avicore-auth-form-wrap">
+                {{ $slot }}
+            </div>
+        </main>
+    </div>
 
     @livewireScripts
 </body>

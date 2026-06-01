@@ -1,32 +1,43 @@
-<div class="space-y-8">
-    <x-ui.logo subtitle="Iniciar sesión" class="justify-center" />
+<div>
+    <div class="mb-6 lg:hidden">
+        <x-ui.logo subtitle="Gestión operativa avícola" />
+    </div>
 
-    <x-ui.card>
+    <div class="avicore-auth-card">
+        <header class="avicore-auth-card__header">
+            <h2 class="avicore-auth-card__title">Bienvenido</h2>
+            <p class="avicore-auth-card__subtitle">Iniciá sesión para continuar</p>
+        </header>
+
         <form wire:submit="login" class="space-y-5">
             <x-ui.input
                 label="Documento"
                 name="documento"
+                icon="document"
                 wire:model="documento"
                 autocomplete="username"
+                placeholder="Ingresá tu número de documento"
                 required
             />
 
             <x-ui.input
                 label="Contraseña"
                 name="password"
-                type="password"
+                icon="lock"
+                toggle-password
                 wire:model="password"
                 autocomplete="current-password"
+                placeholder="Ingresá tu contraseña"
                 required
             />
 
-            <label class="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-avicore-muted">
+            <label class="flex min-h-11 cursor-pointer items-center gap-2 text-sm text-avicore-muted">
                 <input
                     type="checkbox"
                     wire:model="remember"
-                    class="size-4 rounded border-avicore-border-strong text-avicore-primary focus:ring-2 focus:ring-avicore-primary/30"
+                    class="avicore-checkbox"
                 />
-                Recordarme en este equipo
+                Recordarme
             </label>
 
             <x-ui.button type="submit" class="w-full" wire:loading.attr="disabled">
@@ -34,5 +45,9 @@
                 <span wire:loading wire:target="login">Ingresando…</span>
             </x-ui.button>
         </form>
-    </x-ui.card>
+
+        <p class="mt-6 text-center text-xs leading-relaxed text-avicore-muted">
+            Si olvidaste tu contraseña, contactá a tu administrador.
+        </p>
+    </div>
 </div>

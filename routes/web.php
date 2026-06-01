@@ -32,7 +32,19 @@ Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
         ->name('operario.home');
 });
 
-Route::view('/', 'pages.home')->name('home');
+Route::get('/', function () {
+    if (Auth::check()) {
+        $user = Auth::user();
+
+        if ($user->must_change_password) {
+            return redirect()->route('password.change');
+        }
+
+        return redirect()->route($user->homeRouteName());
+    }
+
+    return redirect()->route('login');
+})->name('home');
 
 if (app()->environment('local')) {
     Route::prefix('dev')->name('dev.')->middleware(['auth', EnsurePasswordChanged::class])->group(function () {

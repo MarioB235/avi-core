@@ -107,6 +107,8 @@ En local hacen falta **dos procesos** (dos terminales). No son dos “versiones�
 
 La app carga estilos y scripts desde Vite en segundo plano cuando abrís el puerto **8000**. Si cerrás la terminal de Vite, la app puede verse sin estilos o sin recarga automática; el login y las rutas siguen en **8000**.
 
+**Windows — pantalla sin estilos (elementos amontonados):** Vite puede escribir `public/hot` con `[::1]:5173` (IPv6) y el navegador no carga el CSS. En `vite.config.js` está `server.host: '127.0.0.1'`. Tras cambiar eso: detené `composer dev`, volvé a arrancarlo y recargá con Ctrl+F5. Si persiste, borrá `public/hot`, ejecutá `npm run build` y recargá (usa assets compilados sin Vite en caliente).
+
 Terminal 1:
 
 ```bash
@@ -121,17 +123,23 @@ npm run dev
 
 (o `pnpm run dev` si usás pnpm)
 
-**Entrada recomendada:** `http://localhost:8000` → home `/` → botón **Iniciar sesión** → `/login`.
+**Entrada recomendada:** `http://localhost:8000` o `http://localhost:8000/login` — la raíz `/` redirige al login si no hay sesión.
 
 Usuarios demo: tabla de la sección «Datos de prueba (login)» más arriba.
 
 Previews de layout (requieren sesión): `/dev/admin-layout`, `/dev/operario-layout`.
 
-Atajo Composer (servidor + cola + logs + Vite):
+Atajo Composer (servidor + cola + Vite vía `npx concurrently`; logs en vivo con Pail solo en Linux/macOS):
 
 ```bash
 composer dev
 ```
+
+En **Windows**, Pail no corre (requiere `pcntl`); el resto sí. Los logs quedan en `storage/logs/laravel.log`. Alternativa manual: dos terminales con `php artisan serve` y `npm run dev` (tabla más arriba).
+
+Artefactos de fuentes en desarrollo (`public/fonts-manifest.dev.json`) se generan con Vite y **no** se versionan (ver `.gitignore`).
+
+**Assets de marca:** tras reemplazar fondos en `resources/images/brand/`, ejecutar `python scripts/optimize-brand-assets.py` (requiere Pillow: `pip install pillow`).
 
 ---
 
