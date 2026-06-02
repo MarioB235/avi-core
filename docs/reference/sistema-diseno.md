@@ -33,7 +33,11 @@ Registro: [awesome-design-skills](https://github.com/bergside/awesome-design-ski
 
 Tras cambiar fondos JPEG/PNG: `python scripts/optimize-brand-assets.py` (comprime y sincroniza `public/`). El logo SVG se edita o reemplaza solo en `public/images/brand/`.
 
-Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card`. Fondos referenciados desde Vite en `resources/css/app.css`.
+**Iconos Lucide:** fuente preferida en `resources/images/icons/` (nombres kebab-case); `App\Support\IconSvg` carga el SVG del disco cuando existe y, si no, usa fallback inline en `components/ui/icons/inline.blade.php`. En pantalla: `x-ui.icon` con `stroke="currentColor"` (color vía Tailwind).
+
+Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card` (elevación `shadow-sm`/`shadow-md`, excepción documentada frente a cards KPI). Panel de marca escritorio: `.avicore-auth-brand` alinea logo (`x-ui.logo` size `hero`) y copy en columna (`auth-brand-panel`). Fondos referenciados desde Vite en `resources/css/app.css`.
+
+**Recuperación MVP:** `config/avicore.php` (`.env` → `AVICORE_SUPPORT_*`) + `App\Services\SupportContactService` (valida WhatsApp/correo, construye `wa.me`/`mailto` con mensaje prefijado). Vista compuesta `x-auth.support-contact-dialog` sobre `x-ui.dialog`.
 
 **Input contraseña:** `x-ui.input` con `toggle-password`; clase `.avicore-password-input` oculta el reveal nativo del navegador (un solo icono ojo).
 
@@ -60,14 +64,16 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | Componente | Variantes / notas |
 |------------|-------------------|
 | `x-ui.button` | `primary`, `secondary`, `danger`, `ghost` — min-h 44px, `focus-visible` |
-| `x-ui.input` | `aria-invalid`, estados error, `hint`, `toggle-password` (un solo toggle visible) |
+| `x-ui.input` | `aria-invalid`, estados error, `hint`, `toggle-password` (un solo toggle visible); icono leading en `avicore-primary`, toggle ojo en `avicore-muted` |
 | `x-ui.card` | Borde simple, sin sombra; `padding`: `default`, `compact`, `none` |
 | `x-ui.alert` | `info`, `success`, `warning`, `danger` |
 | `x-ui.badge` | Estados semánticos |
 | `x-ui.logo` | Marca — `public/images/brand/logo-avicore.svg` (verde `#1F5E3B`) + subtítulo opcional; `stacked` + `size="auth-mobile"` en login móvil |
-| `x-ui.icon` | SVG inline por nombre (`menu`, `document`, `lock`, `eye`, …) — nav, inputs, acciones |
+| `x-ui.icon` | SVG inline por nombre (`menu`, `document`, `lock`, `eye`, `circle-x`, `mail`, `message-circle-check`, …) — nav, inputs, acciones; fuente Lucide en `resources/images/icons/` |
 | `x-ui.kpi-card` | Label + valor + hint; para dashboard |
 | `x-ui.nav-link` | Sidebar admin |
+| `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger`; telón `.avicore-dialog__backdrop` (`bg-avicore-text/65`, fade sin scale), panel centrado, focus trap (Tab/Escape), restauración de foco al cerrar, bloquea scroll del body |
+| `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
 
 ## Layouts
 

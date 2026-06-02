@@ -9,7 +9,7 @@
 ])
 
 @php
-    $hasError = $error || ($name && $errors->has($name));
+    $hasError = $error || ($name && isset($errors) && $errors->has($name));
     $inputType = $type;
 
     $inputModifiers = trim(collect([
@@ -28,7 +28,7 @@
 
     <div class="relative" @if($togglePassword) x-data="{ show: false }" @endif>
         @if ($icon)
-            <span class="pointer-events-none absolute inset-y-0 left-0 flex w-10 items-center justify-center text-avicore-muted">
+            <span class="pointer-events-none absolute inset-y-0 left-0 flex w-10 items-center justify-center text-avicore-primary">
                 <x-ui.icon :name="$icon" class="size-5" />
             </span>
         @endif
@@ -71,7 +71,7 @@
 
     @if ($error)
         <p class="text-sm text-avicore-danger" role="alert">{{ $error }}</p>
-    @elseif ($name)
+    @elseif ($name && isset($errors))
         @error($name)
             <p class="text-sm text-avicore-danger" role="alert">{{ $message }}</p>
         @enderror

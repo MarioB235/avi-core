@@ -238,8 +238,14 @@ Prioridades:
 
 ## 13. Iconos
 
-Usar iconos simples y funcionales vía **`x-ui.icon`** (SVG inline, trazo `currentColor`).
+Usar iconos simples y funcionales vía **`x-ui.icon`**.
 
-Nombres ya disponibles en el componente: `home`, `users`, `warehouse`, `egg`, `chart`, `id-card`, `lock-keyhole`, `document`, `lock`, `menu`, `logout`, `eye`, `eye-off`, entre otros. Auth usa `id-card`, `lock-keyhole`, `eye` / `eye-off` (Lucide, vía `x-ui.icon`).
+**Fuente:** archivos Lucide en `resources/images/icons/` (kebab-case) cargados por `App\Support\IconSvg`; si falta el archivo, fallback inline en `components/ui/icons/inline.blade.php`.
 
-No abusar de iconos decorativos; no importar librerías externas de iconos salvo decisión explícita en arquitectura.
+**Color:** trazo `stroke="currentColor"` en el SVG — **no** colorear al exportar desde Lucide. En pantalla, aplicar Tailwind sobre el componente: `text-avicore-primary` en inputs auth y diálogo de soporte; `text-avicore-muted` en toggles (ojo). El verde de marca es `#1F5E3B` (`avicore-primary`).
+
+**Auth y diálogo de contacto:** `id-card`, `lock-keyhole`, `key-round`, `shield-check`, `eye`, `eye-off`, `mail`, `message-circle-check`, `circle-x` (cerrar modal).
+
+**Nav y dashboard:** `home`, `users`, `warehouse`, `egg`, `chart`, `document`, `lock`, `menu`, `logout`, entre otros.
+
+No abusar de iconos decorativos; no importar librerías de iconos en runtime salvo esta convención Lucide + `IconSvg`.

@@ -17,26 +17,30 @@
                 toggle-password
                 wire:model="current_password"
                 autocomplete="current-password"
+                placeholder="Ingresá tu contraseña temporal"
                 required
             />
 
             <x-ui.input
                 label="Nueva contraseña"
                 name="password"
-                icon="lock-keyhole"
+                icon="key-round"
                 toggle-password
                 wire:model="password"
                 autocomplete="new-password"
+                placeholder="Mínimo 8 caracteres"
+                hint="8+ caracteres, mayúsculas, minúsculas y números."
                 required
             />
 
             <x-ui.input
                 label="Confirmar nueva contraseña"
                 name="password_confirmation"
-                icon="lock-keyhole"
+                icon="shield-check"
                 toggle-password
                 wire:model="password_confirmation"
                 autocomplete="new-password"
+                placeholder="Repetí la nueva contraseña"
                 required
             />
 
@@ -45,5 +49,10 @@
                 <span wire:loading wire:target="save">Guardando…</span>
             </x-ui.button>
         </form>
+
+        <x-auth.support-contact-dialog
+            trigger="¿Problemas con tu contraseña temporal?"
+            intro="Si no recordás la contraseña temporal o no podés ingresar, contactá a tu administrador o a soporte indicando tu documento registrado."
+        />
     </div>
 </div>

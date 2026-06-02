@@ -9,46 +9,66 @@
     $imageClass = match ($size) {
         'sm' => 'size-8',
         'auth-mobile' => 'size-20 sm:size-24',
-        'hero' => 'size-20 sm:size-24 lg:size-32',
+        'hero' => 'size-24 sm:size-28 lg:size-36 xl:size-40',
         'lg' => 'size-14',
         default => 'size-10',
     };
 
     $nameClass = match ($size) {
-        'auth-mobile', 'hero' => 'text-xl font-semibold leading-tight text-avicore-primary sm:text-2xl',
+        'auth-mobile' => 'text-3xl font-semibold leading-tight tracking-tight text-avicore-primary sm:text-4xl',
+        'hero' => 'text-4xl font-semibold leading-tight tracking-tight text-avicore-primary sm:text-5xl lg:text-6xl',
         'lg' => 'text-xl font-semibold text-avicore-primary',
         default => 'text-base font-semibold text-avicore-primary',
     };
 
     $subtitleClass = match ($size) {
-        'auth-mobile', 'hero' => 'mt-1 text-sm font-medium text-avicore-primary/80 sm:text-base',
+        'auth-mobile' => 'mt-0.5 text-sm font-medium text-avicore-primary/80 sm:text-base',
+        'hero' => 'mt-1 text-sm font-medium text-avicore-primary/80 sm:text-base lg:text-lg',
         default => 'text-sm text-avicore-muted',
     };
 
+    $logoClass = match ($size) {
+        'hero' => 'avicore-logo avicore-logo--hero',
+        'auth-mobile' => 'avicore-logo avicore-logo--auth-mobile'.($stacked ? ' avicore-logo--stacked' : ''),
+        default => 'avicore-logo',
+    };
+
     $gapClass = match (true) {
-        $stacked && $size === 'auth-mobile' => 'gap-1.5',
+        $stacked && $size === 'auth-mobile' => 'gap-0.5',
         $stacked => 'gap-3',
+        $size === 'hero' => 'gap-4 sm:gap-5 lg:gap-6',
         default => 'gap-3',
     };
 
-    $wrapperClass = $stacked
-        ? "flex flex-col items-center text-center {$gapClass}"
-        : "flex items-center {$gapClass}";
+    $wrapperClass = match (true) {
+        $stacked => "flex flex-col items-center text-center {$gapClass}",
+        default => "flex items-center {$gapClass}",
+    };
+
+    $textWrapperClass = match (true) {
+        $stacked => 'min-w-0',
+        $size === 'hero' => 'flex min-w-0 flex-col justify-center text-left',
+        default => 'min-w-0 text-left',
+    };
 
     $imageDimensions = match ($size) {
         'auth-mobile' => ['width' => 96, 'height' => 96],
-        'hero' => ['width' => 128, 'height' => 128],
+        'hero' => ['width' => 160, 'height' => 160],
         'lg' => ['width' => 56, 'height' => 56],
         'sm' => ['width' => 32, 'height' => 32],
         default => ['width' => 40, 'height' => 40],
     };
 @endphp
 
-<div {{ $attributes->merge(['class' => $wrapperClass]) }}>
+<div
+    {{ $attributes->merge(['class' => trim("{$logoClass} {$wrapperClass}")]) }}
+    @unless($showName) role="img" aria-label="AviCore" @endunless
+>
     <img
         src="{{ asset('images/brand/logo-avicore.svg') }}"
         alt=""
-        class="shrink-0 object-contain {{ $imageClass }}"
+        @if($showName) aria-hidden="true" @endif
+        class="shrink-0 self-center object-contain {{ $imageClass }}"
         width="{{ $imageDimensions['width'] }}"
         height="{{ $imageDimensions['height'] }}"
         decoding="async"
@@ -56,7 +76,7 @@
     />
 
     @if ($showName)
-        <div @class(['min-w-0', 'text-left' => ! $stacked])>
+        <div class="{{ $textWrapperClass }}">
             <p class="{{ $nameClass }}">AviCore</p>
             @if ($subtitle)
                 <p class="{{ $subtitleClass }}">{{ $subtitle }}</p>

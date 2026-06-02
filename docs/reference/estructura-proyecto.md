@@ -23,7 +23,7 @@ avi-core/
 
 **Migraciones:** skeleton Laravel + `empresas` + `users` (esquema AviCore, índice único parcial documento admin). Resto de tablas operativas: pendientes (módulos 3+).
 
-**Auth (Bloque 2):** Livewire `Auth/Login`, `Auth/ChangePassword`; middleware en `bootstrap/app.php`; rutas `/dev/*` solo en entorno `local`.
+**Auth (Bloque 2):** Livewire `Auth/Login`, `Auth/ChangePassword`; middleware en `bootstrap/app.php`; rutas `/dev/*` solo en entorno `local`. Contacto de recuperación MVP: `config/avicore.php` + `SupportContactService` + `x-auth.support-contact-dialog`.
 
 **Layout Livewire (oficial):** `resources/views/layouts/app.blade.php` — usado por componentes de página completa (`config/livewire.php` → `layouts::app`).
 
@@ -47,7 +47,10 @@ app/
 │   ├── DashboardService.php
 │   ├── AuditoriaService.php
 │   ├── ReporteService.php
-│   └── EmpresaContextService.php
+│   ├── EmpresaContextService.php
+│   └── SupportContactService.php   # URLs de soporte auth (config/avicore.php)
+├── Support/
+│   └── IconSvg.php                 # Carga SVG Lucide desde disco o fallback inline
 ├── Models/
 │   ├── Empresa.php
 │   ├── Granja.php
@@ -80,14 +83,18 @@ resources/
 │   ├── layouts/
 │   │   └── app.blade.php     # layout Livewire (páginas completas)
 │   ├── components/
+│   │   ├── auth/             # support-contact-dialog (recuperación MVP)
 │   │   ├── layouts/          # público, admin, operario-móvil (Blade)
 │   │   │   └── partials/     # admin-nav, admin-sidebar-inner, auth-brand-panel
-│   │   └── ui/               # button, input, card, badge, alert, logo, icon, kpi-card, nav-link
+│   │   └── ui/               # button, input, card, badge, alert, logo, icon, dialog, kpi-card, nav-link
+│   │       └── icons/        # inline.blade.php — fallback SVG cuando no hay archivo Lucide
 │   └── pages/
 │       ├── admin/home.blade.php
 │       ├── operario/home.blade.php
 │       └── dev/              # previews /dev/* (solo local)
-├── images/brand/             # fuente fondos JPEG (copia optimizada en public/)
+├── images/
+│   ├── brand/             # fuente fondos JPEG (copia optimizada en public/)
+│   └── icons/             # fuente SVG Lucide (referencia; render en x-ui.icon)
 ├── css/                      # Tailwind 4 + tema AviCore (`app.css`)
 └── js/                       # Vite entry
 ```

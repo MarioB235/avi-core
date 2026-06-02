@@ -7,6 +7,9 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ## 2026-06-01
 
+- **[docs]** Pasada cierre (mensaje 4): árbol `SupportContactService`/`IconSvg`/`config/avicore`, vars soporte en arranque local, regla recuperación MVP ampliada en `05`, iconos Lucide híbridos y color `currentColor` en `03`, componentes auth/dialog en `sistema-diseno`, alineación panel marca en `02`, skills ui/design-system. — `docs/02`, `docs/03`, `docs/05`, `docs/reference/`, `.cursor/skills/`
+- **[fix/ui]** Post-auditoría auth: `SupportContactService` (URLs validadas), `x-ui.dialog` con focus trap y fade sin scale, iconos híbridos (`IconSvg` + `resources/images/icons/`), sombras suaves en tarjetas auth, tests Feature ampliados. — `app/Services/`, `app/Support/`, `resources/views/`, `resources/css/app.css`, `tests/Feature/`
+- **[ui]** Login: enlace «¿Olvidaste tu contraseña?» con diálogo de contacto (WhatsApp y correo vía `config/avicore.php`); componente `x-ui.dialog`; iconos Lucide en `resources/images/icons/`. — `resources/views/`, `config/avicore.php`, `docs/02-pantallas-y-flujos.md`, `docs/reference/sistema-diseno.md`
 - **[docs]** Pasada cierre (mensaje 4): wordmark/logo y auth en `03`, presentación cambio de contraseña en `02`, árbol `tests/Feature/Ui` y criterio tests UI en `estandares-codigo.md`. — `docs/02`, `docs/03`, `docs/reference/`
 - **[ui]** Login móvil tipo bottom sheet: logo apilado sobre `background-mobile.jpg`, tarjeta anclada abajo; `x-ui.logo` con `stacked` y tamaño `auth-mobile`; padding de inputs con icono sin conflicto Tailwind; autofill Chrome unificado. — `resources/views/`, `resources/css/app.css`, `docs/02-pantallas-y-flujos.md`, `docs/reference/sistema-diseno.md`
 - **[ui]** Nuevo fondo móvil de marca (`background-mobile`) — fuente PNG en `resources/images/brand/`, JPEG optimizado en `public/` vía `optimize-brand-assets.py`. — `resources/images/brand/`, `public/images/brand/`
