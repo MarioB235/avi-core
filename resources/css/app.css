@@ -258,8 +258,9 @@
             @apply max-w-none;
         }
 
+        /* Elevación ligera en bottom sheet móvil (excepción auth; ver sistema-diseno.md) */
         .avicore-auth-card {
-            @apply rounded-t-[1.75rem] rounded-b-none border-x-0 border-b-0 px-6 pt-6 shadow-xl;
+            @apply rounded-t-[1.75rem] rounded-b-none border-x-0 border-b-0 px-6 pt-6 shadow-md;
             padding-bottom: max(1.75rem, env(safe-area-inset-bottom, 0px));
         }
     }
@@ -274,6 +275,14 @@
 
     .avicore-auth-brand__identity {
         @apply pb-0;
+    }
+
+    .avicore-logo--hero {
+        @apply items-center;
+    }
+
+    .avicore-logo--auth-mobile.avicore-logo--stacked {
+        @apply gap-0.5;
     }
 
     .avicore-auth-brand__copy {
@@ -305,8 +314,9 @@
         @apply w-full max-w-md;
     }
 
+    /* Elevación ligera en tarjeta auth (excepción documentada; sin shadow-2xl) */
     .avicore-auth-card {
-        @apply rounded-2xl border border-avicore-border/80 bg-avicore-card p-6 shadow-lg sm:p-8;
+        @apply rounded-2xl border border-avicore-border/80 bg-avicore-card p-6 shadow-sm sm:p-8;
     }
 
     .avicore-auth-card__header {
@@ -319,5 +329,53 @@
 
     .avicore-auth-card__subtitle {
         @apply mt-1 text-sm text-avicore-muted;
+    }
+
+    .avicore-dialog {
+        @apply fixed inset-0 z-50;
+    }
+
+    .avicore-dialog__backdrop {
+        @apply fixed inset-0 bg-avicore-text/65;
+    }
+
+    .avicore-dialog__stage {
+        @apply pointer-events-none fixed inset-0 flex items-center justify-center p-4 sm:p-6;
+    }
+
+    .avicore-dialog__panel {
+        @apply pointer-events-auto relative z-10 w-full max-w-md rounded-2xl border border-avicore-border/80 bg-avicore-card shadow-md;
+    }
+
+    .avicore-dialog__header {
+        @apply flex items-start justify-between gap-3 border-b border-avicore-border/60 px-5 py-4;
+    }
+
+    .avicore-dialog__title {
+        @apply text-lg font-semibold text-avicore-primary;
+    }
+
+    .avicore-dialog__close {
+        @apply -mr-1 flex size-9 shrink-0 items-center justify-center rounded-lg text-avicore-muted transition-colors hover:bg-avicore-soft hover:text-avicore-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    .avicore-dialog__body {
+        @apply space-y-4 px-5 py-4 text-sm leading-relaxed text-avicore-text;
+    }
+
+    .avicore-dialog__contact-link {
+        @apply flex min-h-11 items-center gap-3 rounded-lg border border-avicore-border/80 px-4 py-3 text-avicore-text transition-colors hover:border-avicore-primary/30 hover:bg-avicore-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    .avicore-dialog__contact-link-label {
+        @apply block text-xs text-avicore-muted;
+    }
+
+    .avicore-dialog__contact-link-value {
+        @apply block font-medium text-avicore-primary;
+    }
+
+    .avicore-auth-forgot-link {
+        @apply text-sm font-medium text-avicore-primary underline-offset-2 transition-colors hover:text-avicore-secondary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
 }

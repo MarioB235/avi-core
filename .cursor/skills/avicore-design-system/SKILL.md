@@ -25,9 +25,11 @@ Usar junto con `avicore-ui` cuando el cambio sea transversal (tokens, componente
 
 ## Componentes
 
-`button`, `input`, `card`, `alert`, `badge`, `logo`, `icon`, `kpi-card`, `nav-link` — extender variantes aquí antes de duplicar clases en vistas.
+`button`, `input`, `card`, `alert`, `badge`, `logo`, `icon`, `dialog`, `kpi-card`, `nav-link` — extender variantes aquí antes de duplicar clases en vistas.
 
-Layouts reutilizan partials en `components/layouts/partials/` (`auth-brand-panel`, `admin-sidebar-inner`, `admin-nav`). Assets de marca: `public/images/brand/`; fondos desde `resources/images/brand/` + `scripts/optimize-brand-assets.py`.
+**Auth:** `x-auth.support-contact-dialog` (sobre `x-ui.dialog`); iconos Lucide vía `IconSvg` + `resources/images/icons/` (color con `currentColor` + clases Tailwind, no SVG precoloreado).
+
+Layouts reutilizan partials en `components/layouts/partials/` (`auth-brand-panel`, `admin-sidebar-inner`, `admin-nav`). Assets de marca: `public/images/brand/`; fondos desde `resources/images/brand/` + `scripts/optimize-brand-assets.py`. Config de soporte: `config/avicore.php`.
 
 ## Entrada
 

@@ -21,7 +21,7 @@
 8. Tras 5 intentos fallidos de login por documento e IP en 60 segundos, se bloquea temporalmente el acceso.
 9. Si un documento resuelve más de una cuenta activa con credenciales válidas, se rechaza el login (ambigüedad).
 10. Usuario inactivo o empresa no activa impiden el acceso (Admin AviCore exceptuado de validación de empresa).
-11. La recuperación de contraseña en MVP la realiza administrador o encargado autorizado.
+11. La recuperación de contraseña en MVP la realiza administrador o encargado autorizado. En login y cambio obligatorio de contraseña, el enlace «¿Olvidaste tu contraseña?» abre un diálogo con contacto de soporte (WhatsApp y/o correo desde `config/avicore.php` / `.env`, URLs validadas en `SupportContactService`); no hay reset automático por correo.
 
 ---
 

@@ -48,6 +48,18 @@ DB_PASSWORD=
 
 Completar `DB_PASSWORD` con la contraseña del rol `postgres`.
 
+### Contacto de soporte (login — MVP)
+
+Opcional en `.env` (valores demo en `.env.example`). Alimentan el diálogo «¿Olvidaste tu contraseña?» vía `config/avicore.php` y `SupportContactService`:
+
+```env
+AVICORE_SUPPORT_WHATSAPP="+5491123456789"
+AVICORE_SUPPORT_WHATSAPP_DISPLAY="+54 9 11 2345-6789"
+AVICORE_SUPPORT_EMAIL="soporte@avicore.com"
+```
+
+WhatsApp requiere dígitos válidos; el correo debe pasar `FILTER_VALIDATE_EMAIL`. Si ambos fallan, el diálogo muestra mensaje genérico sin enlaces rotos.
+
 ### Base de datos para tests (`php artisan test`)
 
 Los tests usan **PostgreSQL** (misma extensión `pdo_pgsql` que la app; no SQLite). Crear una base separada **`avicore_test`** (pgAdmin: **Create** → **Database**, owner `postgres`).

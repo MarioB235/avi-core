@@ -42,8 +42,6 @@
             </x-ui.button>
         </form>
 
-        <p class="mt-6 text-center text-xs leading-relaxed text-avicore-muted">
-            Si olvidaste tu contraseña, contactá a tu administrador.
-        </p>
+        <x-auth.support-contact-dialog />
     </div>
 </div>

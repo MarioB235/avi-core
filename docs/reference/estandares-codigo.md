@@ -44,7 +44,8 @@
 ## Tests (PHPUnit / Feature)
 
 - Comportamiento crítico con **Feature tests** en `tests/Feature/` (auth, permisos, multiempresa, reglas de negocio, flujos documentados en `docs/02`).
-- Componentes UI reutilizables (`x-ui.*`): tests de renderizado/accesibilidad en `tests/Feature/Ui/` cuando el componente expone contrato estable (iconos, inputs, etc.).
+- Componentes UI reutilizables (`x-ui.*`, `x-auth.*`): tests de renderizado/accesibilidad en `tests/Feature/Ui/` cuando el componente expone contrato estable (iconos, inputs, dialog, support-contact-dialog, etc.).
+- Datos de configuración expuestos en UI (p. ej. contacto de soporte): validar en Service (`SupportContactService`), no confiar solo en Blade; tests Feature del service y del componente.
 - Al auditar código de aplicación, revisar también el **test correspondiente** en `tests/` (o marcar gap si falta).
 - Tests significativos: flujos reales, no asserts triviales. PostgreSQL vía `avicore_test` (ver `docs/reference/arranque-local.md`).
 - Tras correcciones post-auditoría: `php artisan test` debe quedar en verde antes de la PR.

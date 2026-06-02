@@ -33,11 +33,11 @@ Permitir el acceso seguro al sistema.
 
 ### Presentación (MVP implementado)
 
-- Layout público en **split** (≥1024px): panel de marca a la izquierda, tarjeta de login a la derecha.
+- Layout público en **split** (≥1024px): panel de marca a la izquierda (`auth-brand-panel`: logo `hero` y copy en columna alineada), tarjeta de login a la derecha.
 - En **móvil** (<1024px): fondo `background-mobile.jpg`, logo apilado centrado sobre la foto y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
-- Recuperación de contraseña: **texto informativo** («contactá a tu administrador»); sin enlace ni flujo automático en MVP (ver regla de negocio en `05`).
+- Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre un diálogo con contacto de soporte (WhatsApp y correo configurables en `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
 
 ### Validaciones
 
@@ -88,7 +88,7 @@ Forzar al usuario a cambiar la contraseña temporal.
 
 ### Presentación
 
-Mismo **layout público** que login: split en escritorio (≥1024px) y bottom sheet en móvil; inputs con iconos y toggle de contraseña donde aplique.
+Mismo **layout público** que login: split en escritorio (≥1024px) y bottom sheet en móvil; inputs con iconos Lucide (`lock-keyhole`, `key-round`, `shield-check`), placeholders, hint de política en nueva contraseña, toggle de contraseña y enlace de soporte con el mismo diálogo de contacto que login (`x-auth.support-contact-dialog`).
 
 ### Comportamiento
 
