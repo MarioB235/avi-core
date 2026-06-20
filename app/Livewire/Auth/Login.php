@@ -3,6 +3,9 @@
 namespace App\Livewire\Auth;
 
 use App\Actions\Auth\AttemptLoginAction;
+use App\Enums\UserRole;
+use App\Services\DemoLoginService;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -17,20 +20,50 @@ class Login extends Component
 
     public bool $remember = false;
 
-    public function login(AttemptLoginAction $attemptLogin): void
+    public bool $demoLoginEnabled = false;
+
+    public string $demoRole = '';
+
+    public function mount(DemoLoginService $demoLogin): void
     {
-        $this->validate([
+        $this->demoLoginEnabled = $demoLogin->isEnabled();
+
+        if (! $this->demoLoginEnabled) {
+            return;
+        }
+
+        $this->documento = (string) config('avicore.demo_login.documento', '');
+        $this->password = (string) config('avicore.demo_login.password', '');
+        $this->demoRole = UserRole::Dueno->value;
+    }
+
+    public function login(AttemptLoginAction $attemptLogin, DemoLoginService $demoLogin): void
+    {
+        $isDemoAttempt = $this->demoLoginEnabled
+            && $demoLogin->credentialsMatch($this->documento, $this->password);
+
+        $rules = [
             'documento' => ['required', 'string', 'max:50'],
             'password' => ['required', 'string'],
-        ], [
+        ];
+
+        if ($isDemoAttempt) {
+            $rules['demoRole'] = ['required', Rule::enum(UserRole::class)];
+        }
+
+        $this->validate($rules, [
             'documento.required' => 'El documento es obligatorio.',
             'password.required' => 'La contraseña es obligatoria.',
+            'demoRole.required' => 'Seleccioná un perfil para continuar.',
         ]);
+
+        $demoRole = $isDemoAttempt ? $this->demoRole : null;
 
         $result = $attemptLogin->execute(
             $this->documento,
             $this->password,
             $this->remember,
+            $demoRole,
         );
 
         $this->redirect(
@@ -43,6 +76,8 @@ class Login extends Component
 
     public function render()
     {
-        return view('livewire.auth.login');
+        return view('livewire.auth.login', [
+            'demoRoles' => UserRole::cases(),
+        ]);
     }
 }

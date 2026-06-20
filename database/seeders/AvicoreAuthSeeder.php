@@ -67,10 +67,10 @@ class AvicoreAuthSeeder extends Seeder
             'name' => 'Operario Demo',
             'documento' => '200000001',
             'email' => null,
-            'password' => 'Temporal2026!',
+            'password' => 'Avicore2026!',
             'rol' => UserRole::Operario,
             'activo' => true,
-            'must_change_password' => true,
+            'must_change_password' => false,
         ]);
     }
 }

@@ -23,7 +23,9 @@ avi-core/
 
 **Migraciones:** skeleton Laravel + `empresas` + `users` (esquema AviCore, índice único parcial documento admin). Resto de tablas operativas: pendientes (módulos 3+).
 
-**Auth (Bloque 2):** Livewire `Auth/Login`, `Auth/ChangePassword`; middleware en `bootstrap/app.php`; rutas `/dev/*` solo en entorno `local`. Contacto de recuperación MVP: `config/avicore.php` + `SupportContactService` + `x-auth.support-contact-dialog`.
+**Auth (Bloque 2):** Livewire `Auth/Login`, `Auth/ChangePassword`; middleware en `bootstrap/app.php`; rutas `/dev/*` solo en entorno `local`. Contacto de recuperación MVP: `config/avicore.php` + `SupportContactService` + `x-auth.support-contact-dialog`. Login demo local: `DemoLoginService` + selector de perfil en `/login` (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN`).
+
+**Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php`; `tests/Feature/Services/DemoLoginServiceTest.php`; `tests/Feature/Ui/LoginViewTest.php` (render login y selector demo).
 
 **Layout Livewire (oficial):** `resources/views/layouts/app.blade.php` — usado por componentes de página completa (`config/livewire.php` → `layouts::app`).
 
@@ -51,6 +53,7 @@ app/
 │   ├── ReporteService.php
 │   ├── EmpresaContextService.php
 │   ├── AdminHomeService.php        # Datos Inicio admin (contexto, KPI usuarios, checklist MVP)
+│   ├── DemoLoginService.php        # Login demo local (credencial única + rol → usuario seed)
 │   └── SupportContactService.php   # URLs de soporte auth (config/avicore.php)
 ├── Support/
 │   └── IconSvg.php                 # Carga SVG Lucide desde disco o fallback inline

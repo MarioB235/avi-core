@@ -81,6 +81,15 @@
         @apply outline-none;
     }
 
+    /* Tailwind 4 preflight pone cursor:default en button; affordance estándar en controles clicables */
+    button:not(:disabled),
+    input[type='button']:not(:disabled),
+    input[type='submit']:not(:disabled),
+    input[type='reset']:not(:disabled),
+    [role='button']:not([aria-disabled='true']) {
+        cursor: pointer;
+    }
+
     /* Autofill (Chrome): mismo fondo que el input y sin pisar el padding lateral */
     .avicore-input:-webkit-autofill,
     .avicore-input:-webkit-autofill:hover,

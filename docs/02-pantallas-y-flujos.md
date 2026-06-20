@@ -25,6 +25,7 @@ Permitir el acceso seguro al sistema.
 - Documento.
 - Contraseña.
 - Recordarme (opcional).
+- Perfil demo (opcional; solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true` — ver presentación).
 
 ### Acciones
 
@@ -37,6 +38,7 @@ Permitir el acceso seguro al sistema.
 - En **móvil** (<1024px): fondo `background-mobile.jpg`, logo apilado centrado sobre la foto y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
+- **Modo demo (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`):** credencial única `000000000` / `Avicore2026!` y selector de perfil; autentica al usuario seedeado del rol elegido (`DemoLoginService`). No visible en producción.
 - Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre un diálogo con contacto de soporte (WhatsApp y correo configurables en `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
 
 ### Validaciones
@@ -45,6 +47,7 @@ Permitir el acceso seguro al sistema.
 - Contraseña obligatoria.
 - Usuario activo.
 - Empresa activa (estado `activa`; no aplica a Admin AviCore).
+- Usuario no Admin AviCore sin empresa asignada no puede iniciar sesión.
 - Credenciales válidas.
 - Máximo 5 intentos fallidos por documento e IP en 60 segundos; luego mensaje con tiempo de espera.
 - Si el documento coincide en más de una cuenta activa con la misma contraseña, se rechaza el acceso (contactar administrador).

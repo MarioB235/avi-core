@@ -90,19 +90,31 @@ Tablas: skeleton Laravel + `empresas` + `users` (esquema AviCore). Ver [`estruct
 
 ### Datos de prueba (login)
 
-Usuarios y contraseñas demo: [`10-datos-demo.md`](../10-datos-demo.md) § 6. Tras migrar, cargarlos con:
+Usuarios demo: [`10-datos-demo.md`](../10-datos-demo.md) § 6. Tras migrar, cargarlos con:
 
 ```bash
 php artisan db:seed
 ```
 
-| Perfil | Documento | Contraseña | Notas |
-|--------|-----------|------------|--------|
-| Admin AviCore | `900000001` | `Avicore2026!` | Panel `/admin` |
-| Dueño demo | `100000001` | `Avicore2026!` | Empresa «Avícola Demo» |
-| Administrativo demo | `300000001` | `Avicore2026!` | Panel `/admin` |
-| Encargado demo | `400000001` | `Avicore2026!` | Panel `/admin` |
-| Operario demo | `200000001` | `Temporal2026!` tras seed; si ya cambió en tu PC: `Actual2026!` | Primer ingreso obliga cambio; luego `/operario` |
+**Modo rápido (solo `APP_ENV=local`, `AVICORE_DEMO_LOGIN=true`):**
+
+| Campo | Valor |
+|-------|--------|
+| Documento | `000000000` |
+| Contraseña | `Avicore2026!` |
+| Perfil | Selector en `/login` (Admin AviCore, Dueño, Administrativo, Encargado, Operario) |
+
+El selector resuelve al usuario seedeado real de cada rol (permisos y `empresa_id` auténticos). Desactivar con `AVICORE_DEMO_LOGIN=false` o fuera de `local`.
+
+**Login por documento individual** (avanzado / sin selector): sigue disponible con los documentos del seeder (`900000001`, `100000001`, etc.) y `Avicore2026!`.
+
+| Perfil | Documento | Contraseña | Después del login |
+|--------|-----------|------------|-------------------|
+| Admin AviCore | `900000001` | `Avicore2026!` | `/admin` |
+| Dueño demo | `100000001` | `Avicore2026!` | `/admin` |
+| Administrativo demo | `300000001` | `Avicore2026!` | `/admin` |
+| Encargado demo | `400000001` | `Avicore2026!` | `/admin` |
+| Operario demo | `200000001` | `Avicore2026!` | `/operario` |
 
 Rutas: `/login`, `/password/change`, `/admin`, `/operario`.
 

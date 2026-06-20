@@ -22,4 +22,27 @@ return [
         'email' => env('AVICORE_SUPPORT_EMAIL', 'soporte@avicore.com'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Login demo (solo local)
+    |--------------------------------------------------------------------------
+    |
+    | Credencial única + selector de rol en login. Activo solo si APP_ENV=local
+    | y AVICORE_DEMO_LOGIN=true (ver DemoLoginService::isEnabled()).
+    |
+    */
+
+    'demo_login' => [
+        'enabled_flag' => env('AVICORE_DEMO_LOGIN', true),
+        'documento' => env('AVICORE_DEMO_DOCUMENTO', '000000000'),
+        'password' => env('AVICORE_DEMO_PASSWORD', 'Avicore2026!'),
+        'role_documents' => [
+            'admin_avicore' => '900000001',
+            'dueno' => '100000001',
+            'administrativo' => '300000001',
+            'encargado' => '400000001',
+            'operario' => '200000001',
+        ],
+    ],
+
 ];

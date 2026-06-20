@@ -167,6 +167,26 @@ class LoginFlowTest extends TestCase
             ->assertHasErrors('documento');
     }
 
+    public function test_user_without_empresa_cannot_login(): void
+    {
+        User::factory()->create([
+            'empresa_id' => null,
+            'documento' => '44444444',
+            'password' => 'Secret123!',
+            'rol' => UserRole::Dueno,
+        ]);
+
+        $component = Livewire::test(Login::class)
+            ->set('documento', '44444444')
+            ->set('password', 'Secret123!')
+            ->call('login')
+            ->assertHasErrors('documento');
+
+        $message = $component->errors()->first('documento') ?? '';
+        $this->assertStringContainsString('sin empresa', $message);
+        $this->assertGuest();
+    }
+
     public function test_inactive_empresa_blocks_login(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Inactiva]);
