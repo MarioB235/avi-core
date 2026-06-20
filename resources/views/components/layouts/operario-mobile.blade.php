@@ -12,18 +12,24 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="avicore-brand-background pb-[max(2rem,env(safe-area-inset-bottom))] font-sans">
-    <div class="relative z-10 min-h-screen">
-        <header class="border-b border-avicore-border bg-avicore-card/95 px-4 py-3">
-            <div class="mx-auto max-w-lg">
-                <p class="text-xs text-avicore-muted">Galpón</p>
-                <p class="truncate text-base font-medium text-avicore-text">{{ $galpon ?? 'Sin seleccionar' }}</p>
+<body class="avicore-brand-background font-sans">
+    <div class="avicore-operario-shell relative z-10 min-h-screen pb-[calc(5.25rem+env(safe-area-inset-bottom,0px))]">
+        <header class="avicore-operario-header">
+            <div class="avicore-operario-header__inner">
+                <div class="min-w-0 flex-1">
+                    <h1 class="avicore-operario-header__title">{{ $operarioHeaderTitle ?? 'Operario' }}</h1>
+                    @if (! empty($operarioHeaderSubtitle))
+                        <p class="avicore-operario-header__subtitle">{{ $operarioHeaderSubtitle }}</p>
+                    @endif
+                </div>
             </div>
         </header>
 
-        <main class="mx-auto w-full max-w-lg space-y-4 px-4 py-5">
+        <main class="avicore-operario-main">
             {{ $slot }}
         </main>
+
+        <x-operario.bottom-nav />
     </div>
 
     @livewireScripts

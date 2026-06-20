@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 #[Fillable([
     'empresa_id',
+    'ultimo_galpon_id',
     'name',
     'documento',
     'email',
@@ -43,6 +45,16 @@ class User extends Authenticatable
     public function empresa(): BelongsTo
     {
         return $this->belongsTo(Empresa::class);
+    }
+
+    public function ultimoGalpon(): BelongsTo
+    {
+        return $this->belongsTo(Galpon::class, 'ultimo_galpon_id');
+    }
+
+    public function registrosOperativos(): HasMany
+    {
+        return $this->hasMany(RegistroOperativo::class);
     }
 
     public function isAdminAvicore(): bool

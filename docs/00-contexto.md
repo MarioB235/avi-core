@@ -15,7 +15,7 @@ Seleccionar galpón → cargar dato operativo → guardar → dashboard/reportes
 
 Stack: **Laravel 13, PostgreSQL, Livewire 4, Tailwind 4, Alpine.js (Livewire), PWA, Reverb, Echo** *(últimos tres en fases posteriores)*.
 
-**Estado código:** Bloque 1 completado. Bloque 2 (login + cambio obligatorio de contraseña) implementado en rama de trabajo; pendiente CRUD usuarios — [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md).
+**Estado código:** Bloque 1 completado. Bloque 2 (login + cambio obligatorio) en curso. Slice operario mínimo (estructura avícola seed + carga huevos) en rama `feature/operario-carga-minima` — [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md).
 
 ---
 
@@ -28,6 +28,8 @@ Stack: **Laravel 13, PostgreSQL, Livewire 4, Tailwind 4, Alpine.js (Livewire), P
 | Arranque local | [`reference/arranque-local.md`](reference/arranque-local.md) |
 | Estándares código | [`reference/estandares-codigo.md`](reference/estandares-codigo.md) |
 | Gobernanza docs | [`README.md`](README.md) · [`CHANGELOG.md`](CHANGELOG.md) |
+
+**Docs incrementales:** `reference/` y pantallas en `02` documentan solo lo implementado; roadmap y módulos sin código → [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md).
 
 ---
 

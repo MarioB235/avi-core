@@ -1,6 +1,6 @@
 # Referencia — Estructura del proyecto
 
-**Fuente maestra del árbol de carpetas y convenciones de código.**  
+**Fuente maestra del árbol de carpetas y convenciones de código.** Solo carpetas y clases que existen en el repo; módulos futuros en `docs/12-plan-de-desarrollo.md`.  
 Principios y stack: `docs/07-arquitectura-tecnica.md`.
 
 ---
@@ -9,10 +9,10 @@ Principios y stack: `docs/07-arquitectura-tecnica.md`.
 
 ```text
 avi-core/
-├── app/                      # Laravel — Actions, Services, Livewire, Policies, Events
+├── app/                      # Laravel — Actions, Services, Livewire, Policies
 ├── resources/views/          # layouts (público, admin, operario), components/ui
 ├── scripts/                  # dev.php (composer dev), optimize-brand-assets.py, check-agent-docs-sync.cjs
-├── tests/Feature/            # Auth/, Services/, Ui/ (componentes x-ui), …
+├── tests/Feature/            # Auth/, Operario/, Services/, Ui/
 ├── docs/                     # Documentación de producto + referencias
 ├── .cursor/                  # Reglas, skills, comando del arquitecto
 ├── AGENTS.md
@@ -21,11 +21,15 @@ avi-core/
 
 **Stack instalado (Bloque 1):** Laravel 13 · Livewire 4 · Tailwind 4 · PostgreSQL · Alpine (vía Livewire).
 
-**Migraciones:** skeleton Laravel + `empresas` + `users` (esquema AviCore, índice único parcial documento admin). Resto de tablas operativas: pendientes (módulos 3+).
+**Migraciones:** skeleton Laravel + `empresas` + `users` + estructura avícola (`granjas`, `galpones`, `lotes`, `registros_operativos`) + `users.ultimo_galpon_id`.
 
 **Auth (Bloque 2):** Livewire `Auth/Login`, `Auth/ChangePassword`; middleware en `bootstrap/app.php`; rutas `/dev/*` solo en entorno `local`. Contacto de recuperación MVP: `config/avicore.php` + `SupportContactService` + `x-auth.support-contact-dialog`. Login demo local: `DemoLoginService` + selector de perfil en `/login` (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN`).
 
+**Operario (slice mínimo):** Livewire `Operario/Home`, `Operario/SelectorGalpon`, `Operario/CargarHub`, `Operario/CargaHuevos`, `Operario/Historial`; rutas `/operario`, `/operario/galpon`, `/operario/cargar`, `/operario/carga/huevos`, `/operario/historial`; shell con `x-operario.bottom-nav`; `OperarioGalponService`, `RegistrarCargaHuevosAction`, `GalponPolicy`, `OperarioLayoutComposer`.
+
 **Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php`; `tests/Feature/Services/DemoLoginServiceTest.php`; `tests/Feature/Ui/LoginViewTest.php` (render login y selector demo).
+
+**Tests operario:** `tests/Feature/Operario/OperarioCargaHuevosTest.php` (flujo E2E, multiempresa, galpón no disponible, redirect sin galpón, Action rechaza mantenimiento), `tests/Feature/Ui/OperarioBottomNavTest.php` (dock, pestaña activa en home y en `/operario/carga/huevos`, hint de header sin galpón).
 
 **Layout Livewire (oficial):** `resources/views/layouts/app.blade.php` — usado por componentes de página completa (`config/livewire.php` → `layouts::app`).
 
@@ -33,77 +37,71 @@ Reverb, Echo y PWA quedan para fases posteriores del plan.
 
 ---
 
-## Estructura Laravel objetivo (`app/`)
+## `app/` (estado actual)
 
 ```text
 app/
 ├── Actions/
 │   ├── Auth/                 # AttemptLoginAction, ChangePasswordAction
-│   ├── Operacion/
-│   ├── Lotes/
-│   ├── Galpones/
-│   └── Auditoria/
+│   └── Operacion/            # RegistrarCargaHuevosAction
+├── Enums/                    # EmpresaEstado, UserRole, GalponEstado, LoteEstado, TipoHuevo, RegistroOperativo*
 ├── Http/
 │   ├── Middleware/           # EnsurePasswordChanged, EnsureAdminPanelAccess, EnsureOperarioAccess, RedirectIfAuthenticated
 │   └── View/
-│       └── Composers/        # Inyección de datos a vistas Blade (p. ej. AdminHomeComposer → pages.admin.home)
-├── Services/
-│   ├── DashboardService.php
-│   ├── AuditoriaService.php
-│   ├── ReporteService.php
-│   ├── EmpresaContextService.php
-│   ├── AdminHomeService.php        # Datos Inicio admin (contexto, KPI usuarios, checklist MVP)
-│   ├── DemoLoginService.php        # Login demo local (credencial única + rol → usuario seed)
-│   └── SupportContactService.php   # URLs de soporte auth (config/avicore.php)
-├── Support/
-│   └── IconSvg.php                 # Carga SVG Lucide desde disco o fallback inline
+│       └── Composers/        # AdminHomeComposer, OperarioLayoutComposer
+├── Livewire/
+│   ├── Auth/                 # Login, ChangePassword
+│   └── Operario/             # Home, SelectorGalpon, CargarHub, CargaHuevos, Historial
 ├── Models/
+│   ├── Concerns/             # BelongsToEmpresa
 │   ├── Empresa.php
 │   ├── Granja.php
 │   ├── Galpon.php
 │   ├── Lote.php
 │   ├── RegistroOperativo.php
-│   └── Auditoria.php
-├── Livewire/
-│   ├── Auth/
-│   ├── Dashboard/
-│   ├── Operario/
-│   ├── Galpones/
-│   ├── Lotes/
-│   ├── Reportes/
-│   └── Usuarios/
-├── Events/
-│   ├── RegistroOperativoCreado.php
-│   ├── RegistroAnulado.php
-│   └── AlertaGenerada.php
-└── Policies/
+│   └── User.php
+├── Policies/
+│   └── GalponPolicy.php
+├── Providers/
+│   └── AppServiceProvider.php
+├── Services/
+│   ├── AdminHomeService.php
+│   ├── DemoLoginService.php
+│   ├── EmpresaContextService.php
+│   ├── OperarioGalponService.php
+│   └── SupportContactService.php
+└── Support/
+    └── IconSvg.php
 ```
 
 ---
 
-## `resources/` (objetivo)
+## `resources/` (estado actual)
 
 ```text
 resources/
 ├── views/
 │   ├── layouts/
-│   │   └── app.blade.php     # layout Livewire (páginas completas)
+│   │   └── app.blade.php
 │   ├── components/
-│   │   ├── admin/             # home-hero (Inicio admin)
-│   │   ├── auth/             # support-contact-dialog (recuperación MVP)
-│   │   ├── layouts/          # público, admin, operario-móvil (Blade)
+│   │   ├── admin/            # home-hero
+│   │   ├── auth/             # support-contact-dialog
+│   │   ├── operario/         # bottom-nav
+│   │   ├── layouts/          # público, admin, operario-mobile
 │   │   │   └── partials/     # admin-nav, admin-sidebar-inner, admin-header-toolbar, admin-menu-trigger, auth-brand-panel
 │   │   └── ui/               # button, input, card, badge, alert, logo, icon, dialog, kpi-card, nav-link, empty-state, setup-checklist, user-avatar
-│   │       └── icons/        # inline.blade.php — fallback SVG cuando no hay archivo Lucide
+│   │       └── icons/        # inline.blade.php
+│   ├── livewire/
+│   │   ├── auth/             # login, change-password
+│   │   └── operario/         # home, selector-galpon, cargar-hub, carga-huevos, historial
 │   └── pages/
 │       ├── admin/home.blade.php
-│       ├── operario/home.blade.php
 │       └── dev/              # previews /dev/* (solo local)
 ├── images/
-│   ├── brand/             # fuente fondos JPEG (copia optimizada en public/)
-│   └── icons/             # fuente SVG Lucide (referencia; render en x-ui.icon)
+│   ├── brand/
+│   └── icons/
 ├── css/                      # Tailwind 4 + tema AviCore (`app.css`)
-└── js/                       # Vite entry
+└── js/
 ```
 
 ---
@@ -116,30 +114,26 @@ resources/
 | Datos a vistas Blade estáticas | `Http/View/Composers/` | Inyección sin lógica en Blade (`Route::view`, p. ej. Inicio admin) |
 | HTTP / UI dinámica | `Livewire/` | Estado de formularios, listados |
 | Autorización | `Policies/` | Rol + `empresa_id` |
-| Tiempo real | `Events/` + canales privados | Ver `docs/08-tiempo-real-eventos.md` |
+| Tiempo real | `Events/` + canales privados | Ver `docs/08-tiempo-real-eventos.md` (cuando exista) |
 | Persistencia | `Models/`, `database/migrations/` | Espejo de `reference/estructura-base-datos.md` |
 
 ---
 
-## Módulos vs carpetas Livewire (mapa)
+## Módulos implementados (mapa)
 
-| Módulo MVP | Livewire (sugerido) | Tablas principales |
-|------------|---------------------|-------------------|
-| Login / contraseña | `Livewire/Auth/` (layout público) | `empresas`, `users` |
-| Usuarios | `Usuarios/` | users |
-| Empresas | Admin | empresas |
-| Granjas | `Galpones/` o dedicado | granjas |
-| Galpones | `Galpones/` | galpones |
-| Lotes | `Lotes/` | lotes |
-| Carga operario | `Operario/` | registros_operativos |
-| Dashboard | `Dashboard/` | varias |
-| Reportes | `Reportes/` | lectura agregada |
+| Módulo | Livewire / vista | Tablas principales |
+|--------|------------------|-------------------|
+| Login / contraseña | `Livewire/Auth/` | `empresas`, `users` |
+| Inicio admin | `pages/admin/home` + `AdminHomeService` | `users` |
+| Carga operario | `Livewire/Operario/` | `granjas`, `galpones`, `lotes`, `registros_operativos` |
+
+Módulos pendientes (Dashboard, Reportes, CRUD usuarios, etc.): ver `docs/12-plan-de-desarrollo.md` § 13.
 
 ---
 
 ## Checklist al añadir código
 
-- [ ] Clase en carpeta según tabla anterior
+- [ ] Clase en carpeta según convenciones de capa
 - [ ] `reference/estructura-proyecto.md` si nueva carpeta estándar
 - [ ] Modelo alineado con `reference/estructura-base-datos.md`
 - [ ] Policy y scope `empresa_id`

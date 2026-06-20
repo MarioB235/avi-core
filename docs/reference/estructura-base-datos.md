@@ -1,14 +1,15 @@
 # Referencia — Estructura de base de datos
 
-**Fuente maestra del esquema.** Mantener sincronizado con migraciones reales.  
-Al cambiar tablas o campos: editar este archivo y registrar en `docs/CHANGELOG.md`.  
+**Fuente maestra del esquema implementado.** Solo tablas con migración en el repo; no documentar DDL especulativo aquí.  
+Al añadir una tabla: migración primero, luego esta sección y entrada en `docs/CHANGELOG.md`.  
+Bloques y tablas futuras (sin migración): `docs/12-plan-de-desarrollo.md`.  
 Criterios y reglas del modelo: `docs/04-modelo-de-datos.md`. Reglas de negocio: `docs/05-reglas-de-negocio.md`.
 
 **Motor:** PostgreSQL · **Convención:** `empresa_id` en tablas operativas salvo excepciones documentadas.
 
 ---
 
-## Diagrama de relaciones (MVP)
+## Diagrama de relaciones (implementado)
 
 ```mermaid
 erDiagram
@@ -17,14 +18,10 @@ erDiagram
     empresas ||--o{ galpones : tiene
     empresas ||--o{ lotes : tiene
     empresas ||--o{ registros_operativos : tiene
-    empresas ||--o{ movimientos_aves : tiene
-    empresas ||--o{ alertas : tiene
-    empresas ||--o{ configuraciones_empresa : tiene
     granjas ||--o{ galpones : contiene
     galpones ||--o{ lotes : aloja
     galpones ||--o{ registros_operativos : recibe
     users ||--o{ registros_operativos : registra
-    lotes ||--o{ movimientos_aves : opcional
 ```
 
 ---
@@ -57,6 +54,7 @@ erDiagram
 | activo | boolean | No | |
 | must_change_password | boolean | No | |
 | last_login_at | timestamp | Sí | |
+| ultimo_galpon_id | FK galpones | Sí | Último galpón de trabajo (operario) |
 | created_at, updated_at | timestamp | No | |
 
 **Índices:** `(empresa_id, documento)` único; `users_documento_admin_unique` parcial en `documento` donde `empresa_id IS NULL` (Admin AviCore).
@@ -124,64 +122,6 @@ erDiagram
 | anulado_por | FK users | Sí | |
 | motivo_anulacion | text | Sí | |
 | created_at, updated_at | timestamp | No | Fecha/hora de carga = created_at |
-
-### `movimientos_aves`
-
-| Campo | Tipo | Null | Notas |
-|-------|------|------|-------|
-| id | bigint PK | No | |
-| empresa_id | FK | No | |
-| galpon_id | FK | No | |
-| lote_id | FK lotes | Sí | |
-| tipo | string | No | `salida_parcial`, `traslado`, `ajuste`, `cierre` |
-| cantidad | integer | No | |
-| motivo | string | No | |
-| destino | string | Sí | |
-| user_id | FK users | No | |
-| observacion | text | Sí | |
-| created_at, updated_at | timestamp | No | |
-
-### `auditorias`
-
-| Campo | Tipo | Null | Notas |
-|-------|------|------|-------|
-| id | bigint PK | No | |
-| empresa_id | FK | Sí | |
-| user_id | FK users | No | |
-| accion | string | No | |
-| tabla | string | No | |
-| registro_id | bigint | Sí | |
-| valor_anterior | json | Sí | |
-| valor_nuevo | json | Sí | |
-| motivo | text | Sí | |
-| created_at | timestamp | No | |
-
-### `alertas`
-
-| Campo | Tipo | Null | Notas |
-|-------|------|------|-------|
-| id | bigint PK | No | |
-| empresa_id | FK | No | |
-| galpon_id | FK | Sí | |
-| tipo | string | No | |
-| mensaje | text | No | |
-| nivel | string | No | |
-| revisada | boolean | No | |
-| revisada_por | FK users | Sí | |
-| revisada_at | timestamp | Sí | |
-| created_at | timestamp | No | |
-
-### `configuraciones_empresa`
-
-| Campo | Tipo | Null | Notas |
-|-------|------|------|-------|
-| id | bigint PK | No | |
-| empresa_id | FK | No | |
-| clave | string | No | |
-| valor | json | No | |
-| created_at, updated_at | timestamp | No | |
-
-**Claves ejemplo:** `cajon_maples`, `maple_huevos`, `logo_reportes`, `modulos_activos`.
 
 ---
 

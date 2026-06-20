@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 ## Documentación
 
-- `docs/08-tiempo-real-eventos.md`
+- `docs/08-tiempo-real-eventos.md` (si es stub planificado, leer `docs/12-plan-de-desarrollo.md` Bloque 6; al implementar, expandir `08` + `CHANGELOG`)
 - `docs/07-arquitectura-tecnica.md`
 - `docs/05-reglas-de-negocio.md`
 - `docs/06-roles-y-permisos.md`

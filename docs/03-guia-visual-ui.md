@@ -228,11 +228,12 @@ Usar:
 
 Prioridades:
 
-- Galpón actual visible.
-- Botones grandes.
-- Pocos campos.
-- Acciones rápidas.
-- Confirmaciones claras.
+- **Header contextual:** título de la pestaña activa (Inicio, Galpón, Cargar, Historial) y galpón actual como subtítulo informativo; sin galpón, subtítulo *«Elegí un galpón en la pestaña Galpón»*; el cambio de galpón es solo en la pestaña Galpón (sin flecha ni enlace duplicado en el header).
+- **Dock inferior inset** con 4 pestañas: ítem activo con fondo verde en la celda; animación ligera (`prefers-reduced-motion` sin escala).
+- Hub de cargas (grid 2×2) en pestaña Cargar; formularios mantienen la barra con «Cargar» activo.
+- Botones grandes (touch ≥ 44px).
+- Pocos campos por pantalla.
+- Confirmaciones claras al guardar.
 
 ---
 

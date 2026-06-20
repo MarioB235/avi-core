@@ -6,6 +6,11 @@ use App\Http\Middleware\EnsurePasswordChanged;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Livewire\Auth\ChangePassword;
 use App\Livewire\Auth\Login;
+use App\Livewire\Operario\CargaHuevos;
+use App\Livewire\Operario\CargarHub;
+use App\Livewire\Operario\Historial;
+use App\Livewire\Operario\Home as OperarioHome;
+use App\Livewire\Operario\SelectorGalpon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -27,9 +32,13 @@ Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
     Route::view('/admin', 'pages.admin.home')
         ->middleware(EnsureAdminPanelAccess::class)
         ->name('admin.home');
-    Route::view('/operario', 'pages.operario.home')
-        ->middleware(EnsureOperarioAccess::class)
-        ->name('operario.home');
+    Route::middleware(EnsureOperarioAccess::class)->prefix('operario')->name('operario.')->group(function () {
+        Route::livewire('/', OperarioHome::class)->name('home');
+        Route::livewire('/galpon', SelectorGalpon::class)->name('galpon');
+        Route::livewire('/cargar', CargarHub::class)->name('cargar');
+        Route::livewire('/historial', Historial::class)->name('historial');
+        Route::livewire('/carga/huevos', CargaHuevos::class)->name('carga.huevos');
+    });
 });
 
 Route::get('/', function () {

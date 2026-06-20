@@ -30,11 +30,12 @@
 ## 3. Galpones
 
 1. La carga operativa se realiza por galpón.
-2. El operario puede elegir cualquier galpón de su empresa.
-3. El sistema recuerda el último galpón seleccionado.
-4. Un galpón puede tener uno o varios lotes.
-5. Si tiene varios lotes, se muestra aviso informativo.
-6. El aviso no bloquea la carga.
+2. El operario puede elegir cualquier galpón **disponible para carga** de su empresa (`activo` y `estado = activo`).
+3. El sistema recuerda el último galpón seleccionado (`users.ultimo_galpon_id`).
+4. Si el galpón recordado deja de estar disponible (inactivo, mantenimiento, etc.), el operario debe elegir otro en el selector; las pantallas de carga redirigen al selector.
+5. Un galpón puede tener uno o varios lotes.
+6. Si tiene varios lotes, se muestra aviso informativo.
+7. El aviso no bloquea la carga.
 
 ---
 
