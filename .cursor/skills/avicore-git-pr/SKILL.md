@@ -55,7 +55,9 @@ Mensaje usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html` (mensaje 5
 
 **Seguridad:** nunca incluir tokens en commits, PRs ni chat. Si un token se expuso en logs, recomendar rotarlo en GitHub → Settings → Developer settings. Conviene alinear `gh auth login` con la cuenta del remoto para evitar el paso 3.
 
-**Salida al usuario:** URL de la PR · rama · hash del commit · verificaciones · nota si hubo workaround de auth.
+**Salida al usuario:** URL de la PR · rama final · hash corto del commit · verificaciones · estado pendiente (merge a cargo del usuario) · nota si hubo workaround de auth.
+
+Plantilla en mensaje 5 del HTML = versión **condensada**; esta sección = versión **completa** para el cuerpo de la PR.
 
 ## Plantilla del cuerpo de la PR
 

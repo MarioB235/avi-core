@@ -10,7 +10,7 @@ Mapa de enlaces. **Contrato completo:** [`docs/00-contexto.md`](../00-contexto.m
 | Esquema BD / árbol Laravel | [`../reference/`](../reference/) |
 | Catálogo skills (13 internos) | [`03-skills-avicore.md`](03-skills-avicore.md) |
 | Matriz de mantenimiento tooling | [`05-evolucion-skills-y-docs.md`](05-evolucion-skills-y-docs.md) § Matriz |
-| Mensajes copiables (5) | [`02-avicore-mensajes-reutilizables.html`](02-avicore-mensajes-reutilizables.html) |
+| Mensajes copiables (5) | [`02-avicore-mensajes-reutilizables.html`](02-avicore-mensajes-reutilizables.html) — referencia: comandos, qué documentar, usuarios demo |
 | Evolución skills/docs | [`05-evolucion-skills-y-docs.md`](05-evolucion-skills-y-docs.md) |
 | Modo respuesta clara (default) | [`06-modo-respuesta-clara.md`](06-modo-respuesta-clara.md) |
 | Modo Caverman (opcional) | [`04-modo-respuesta-caverman.md`](04-modo-respuesta-caverman.md) |
