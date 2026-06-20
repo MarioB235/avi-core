@@ -3,6 +3,7 @@
     'subtitle' => null,
     'showName' => true,
     'stacked' => false,
+    'theme' => 'default',
 ])
 
 @php
@@ -14,18 +15,24 @@
         default => 'size-10',
     };
 
-    $nameClass = match ($size) {
-        'auth-mobile' => 'text-3xl font-semibold leading-tight tracking-tight text-avicore-primary sm:text-4xl',
-        'hero' => 'text-4xl font-semibold leading-tight tracking-tight text-avicore-primary sm:text-5xl lg:text-6xl',
-        'lg' => 'text-xl font-semibold text-avicore-primary',
+    $nameClass = match (true) {
+        $theme === 'on-primary' => 'text-base font-semibold text-white',
+        $size === 'auth-mobile' => 'text-3xl font-semibold leading-tight tracking-tight text-avicore-primary sm:text-4xl',
+        $size === 'hero' => 'text-4xl font-semibold leading-tight tracking-tight text-avicore-primary sm:text-5xl lg:text-6xl',
+        $size === 'lg' => 'text-xl font-semibold text-avicore-primary',
         default => 'text-base font-semibold text-avicore-primary',
     };
 
-    $subtitleClass = match ($size) {
-        'auth-mobile' => 'mt-0.5 text-sm font-medium text-avicore-primary/80 sm:text-base',
-        'hero' => 'mt-1 text-sm font-medium text-avicore-primary/80 sm:text-base lg:text-lg',
+    $subtitleClass = match (true) {
+        $theme === 'on-primary' => 'text-sm text-white/70',
+        $size === 'auth-mobile' => 'mt-0.5 text-sm font-medium text-avicore-primary/80 sm:text-base',
+        $size === 'hero' => 'mt-1 text-sm font-medium text-avicore-primary/80 sm:text-base lg:text-lg',
         default => 'text-sm text-avicore-muted',
     };
+
+    $imageShellClass = $theme === 'on-primary'
+        ? 'rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-black/5'
+        : '';
 
     $logoClass = match ($size) {
         'hero' => 'avicore-logo avicore-logo--hero',
@@ -64,19 +71,21 @@
     {{ $attributes->merge(['class' => trim("{$logoClass} {$wrapperClass}")]) }}
     @unless($showName) role="img" aria-label="AviCore" @endunless
 >
-    <img
-        src="{{ asset('images/brand/logo-avicore.svg') }}"
-        alt=""
-        @if($showName) aria-hidden="true" @endif
-        class="shrink-0 self-center object-contain {{ $imageClass }}"
-        width="{{ $imageDimensions['width'] }}"
-        height="{{ $imageDimensions['height'] }}"
-        decoding="async"
-        fetchpriority="{{ $size === 'hero' ? 'high' : 'auto' }}"
-    />
+    <div @class(['shrink-0 self-center', $imageShellClass])>
+        <img
+            src="{{ asset('images/brand/logo-avicore.svg') }}"
+            alt=""
+            @if($showName) aria-hidden="true" @endif
+            class="object-contain {{ $imageClass }}"
+            width="{{ $imageDimensions['width'] }}"
+            height="{{ $imageDimensions['height'] }}"
+            decoding="async"
+            fetchpriority="{{ $size === 'hero' ? 'high' : 'auto' }}"
+        />
+    </div>
 
     @if ($showName)
-        <div class="{{ $textWrapperClass }}">
+        <div class="{{ $textWrapperClass }} avicore-logo__text">
             <p class="{{ $nameClass }}">AviCore</p>
             @if ($subtitle)
                 <p class="{{ $subtitleClass }}">{{ $subtitle }}</p>

@@ -5,6 +5,25 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-06-19
+
+- **[cursor]** Mensajes HTML: botón Copiar en cabecera (1–5 sin expandir); prompts acortados alineados a skills; msg 2 «Archivos a analizar:»; msg 3 tests en verde y maximizar %; hint con modo didáctico; sin prefijo `/avicore-architect-direct —` en textos copiables (el slash va en el chat). — `02-avicore-mensajes-reutilizables.html`
+- **[cursor]** Modo didáctico en chat: cabecera operativa (rol + skill interno + contexto) y bloques **Qué hice** / **Por qué** / **Qué sigue**; excepciones tabla auditoría (msg 2) y plantilla PR (msg 5). — `avicore-modo-respuesta-clara.mdc`, `06-modo-respuesta-clara.md`, comando architect-direct, `AGENTS.md`
+- **[cursor]** Patrones Ponytail adaptados: convención `avicore-defer:`, tags YAGNI en auditoría, skill `avicore-deuda-tecnica`, `scripts/check-agent-docs-sync.cjs`; `docs/ponytail` como referencia externa en `05`/`01`. — `estandares-codigo.md`, skills auditoria/deuda-tecnica, `03-skills`, comando, `00-config`, `05`, `01`
+- **[cursor]** Mensajes reutilizables HTML: prompts 2–5 acortados (procedimiento en skills); aclarado @rutas en msg 1 vs cierre; paneles .when con catálogo `03` y matriz `05`. — `02-avicore-mensajes-reutilizables.html`
+- **[cursor]** Jerarquía canónica del tooling: comando = flujo 7 pasos; `03-skills` = única tabla mensaje→skill; `05` = gobernanza y matriz de mantenimiento; skills de flujo adelgazados; eliminado stub `avicore-architect`. — comando architect-direct, `03`, `05`, `01`, `00-config`, `AGENTS.md`, `agente-permanente.mdc`, skills auditoria/cierre/evolucion, `00-contexto` § Tooling
+- **[cursor]** Cierre 2→5 en un solo chat: `@rutas` solo al final del mensaje 2; mensajes 3–5 usan tabla, correcciones y diff de la sesión sin re-adjuntar. — `02-avicore-mensajes-reutilizables.html`, comando architect-direct, skills auditoria/cierre-tarea/git-pr, `03-skills-avicore.md`
+- **[refactor/ui]** Post-auditoría Inicio admin: `AdminHomeService` + `AdminHomeViewData`, `AdminHomeComposer` (View Composer), partial `admin-menu-trigger`, pill de fecha sin chevron, `x-ui.user-avatar` con prop `decorative`, tests Feature/Ui ampliados; script `npm run check:agent-docs`. — `app/Services/`, `app/Http/View/Composers/`, `resources/views/`, `tests/`, `package.json`, `docs/reference/estructura-proyecto.md`, `docs/reference/sistema-diseno.md`
+
+## 2026-06-02
+
+- **[ui]** Inicio admin: navbar toolbar (contexto inline, fecha, campana, perfil) y hero en tarjeta con «¡Bienvenido de nuevo!»; KPIs debajo del hero. — `resources/views/`, `resources/css/app.css`, `docs/02-pantallas-y-flujos.md`
+- **[ui]** Sidebar admin: fondo verde principal (`avicore-primary`), texto claro, secciones «Navegación» / «Cuenta», logo `theme="on-primary"`, badges «Próximamente» sobre fondo oscuro. — `resources/views/`, `resources/css/app.css`, `docs/reference/sistema-diseno.md`
+- **[fix/ui]** Shell admin: scroll natural de página (sin `h-svh`/`overflow-hidden` anidado); hero a ancho completo de la columna. — `resources/views/components/layouts/admin.blade.php`, `resources/css/app.css`
+- **[ui]** Inicio admin: masthead unificado (foto bajo navbar con degradado, header alineado al contenido, KPIs legibles sobre fade). — `resources/views/`, `resources/css/app.css`
+- **[ui]** Inicio admin: shell integrado (sidebar sticky, header y contenido con gutter común), nav sin salto al activar ítem, drawer móvil con cierre. — `resources/views/components/layouts/`, `resources/css/app.css`
+- **[ui]** Inicio admin (`/admin`): hero `admin-home-hero`, KPIs empty state, checklist configuración inicial, sidebar ampliado con badges «Próximamente», perfil con avatar y colapsar menú; `AdminHomeService`; componentes `empty-state`, `setup-checklist`, `user-avatar`. — `resources/views/`, `resources/css/app.css`, `app/Services/`, `docs/02-pantallas-y-flujos.md`, `docs/reference/sistema-diseno.md`
+
 ## 2026-06-01
 
 - **[docs]** Pasada cierre (mensaje 4): árbol `SupportContactService`/`IconSvg`/`config/avicore`, vars soporte en arranque local, regla recuperación MVP ampliada en `05`, iconos Lucide híbridos y color `currentColor` en `03`, componentes auth/dialog en `sistema-diseno`, alineación panel marca en `02`, skills ui/design-system. — `docs/02`, `docs/03`, `docs/05`, `docs/reference/`, `.cursor/skills/`

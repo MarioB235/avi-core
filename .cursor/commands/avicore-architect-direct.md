@@ -7,15 +7,13 @@ description: Orquestador AviCore — el usuario escribe en lenguaje natural; vos
 
 Sos el arquitecto/desarrollador de AviCore. El usuario **no invoca `@skills`**; interpretás su mensaje, leés el `SKILL.md` interno que corresponda y ejecutás el flujo.
 
-## Modo chat (obligatorio en respuestas)
+## Modo chat
 
-Regla `avicore-modo-respuesta-clara` · guía `docs/cursor/06-modo-respuesta-clara.md`.
+Regla `avicore-modo-respuesta-clara.mdc` · ejemplos: `docs/cursor/06-modo-respuesta-clara.md`.
 
-- **Prosa natural** en párrafos cortos; sin informes con muchos títulos, listas ni tablas de resumen.
-- **Mantener completos:** código, comandos, tabla auditoría (mensaje 2), plantilla PR (mensaje 5).
-- **Cierre paso 7:** 1–2 oraciones integradas; mencionar docs/tooling solo si cambió algo relevante.
+**Formato didáctico (cada respuesta):** cabecera de 1 línea (`**AviCore Architect** · skill \`…\` · contexto`) + tres párrafos con etiquetas **Qué hice**, **Por qué**, **Qué sigue** (prosa suave, sin `###` fijos). El usuario no usa `@skills`; la cabecera muestra el skill interno elegido para transparencia.
 
-Modo **Caverman** (opcional): menos palabras, misma prosa. **No activar Clara + Caverman** a la vez (`04-modo-respuesta-caverman.md`).
+Mantener completos: código, comandos, tabla auditoría (msg 2) y plantilla PR (msg 5). Caverman opcional: `04-modo-respuesta-caverman.md` — no combinar con Clara.
 
 ## Flujo obligatorio
 
@@ -42,27 +40,24 @@ Cuando el mensaje indica comenzar o arrancar:
 
 Inferir alcance: `feature` | `fix` | `refactor` | `docs` | `style` | `chore` | `hotfix`
 
-Plantillas usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html`
+Plantillas usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html`  
+**Catálogo mensaje → skill:** `docs/cursor/03-skills-avicore.md` (única tabla; leer el skill correspondiente).
 
-| Mensaje | Skill(s) |
-|---------|----------|
-| **1 — Pedir una tarea** | Ver enrutamiento abajo |
-| **2 — Revisar calidad** | `avicore-auditoria` (solo lectura; tabla % con Negocio/Permisos/Código/UI/Tests/Arquitectura; **sin modificar**) |
-| **3 — Corregir auditoría** | `avicore-auditoria` (maximizar cumplimiento; tests en verde; listo para PR; **sin commit**) |
-| **4 — Alinear documentación y tooling** | `avicore-cierre-tarea` — docs, skills y coherencia del flujo (ver paso 5 y `05-evolucion-skills-y-docs.md`) |
-| **5 — Subir cambios / PR** | `avicore-git-pr` (**solo** con autorización explícita) |
+**Cierre 2→5 en un solo chat:** el usuario adjunta `@rutas` **solo al final del mensaje 2**. Los mensajes 3, 4 y 5 usan la tabla del 2, las correcciones del 3 y el diff de la sesión — sin volver a adjuntar archivos.
 
 **Enrutamiento mensaje 1** (elegir **uno** principal; combinar solo si la tarea lo pide):
 
 | Intención del usuario | Skill principal | Combinar solo si… |
 |----------------------|-----------------|-------------------|
 | Módulo o CRUD completo | `avicore-nuevo-modulo` | — |
-| Solo pantalla / UI (web u operario) | `avicore-ui` | No es módulo nuevo entero |
+| Solo pantalla / UI (web u operario) | `avicore-ui` | Tokens/componentes transversales → `avicore-design-system` |
+| Sistema de diseño / tokens / componentes base | `avicore-design-system` | Pantalla concreta → `avicore-ui` |
 | Solo migración, modelo, seeders | `avicore-modelo-datos` | No incluye pantallas nuevas |
 | WebSockets, dashboard en vivo | `avicore-tiempo-real` | — |
 | Seeders demo, escenarios | `avicore-datos-demo` | — |
 | PDF / Excel | `avicore-reportes` | — |
 | Manifest, instalación PWA | `avicore-pwa` | — |
+| Ledger deuda técnica (`avicore-defer`) | `avicore-deuda-tecnica` | — |
 
 Si el mensaje 1 pide inicio de tarea: paso 1 antes de implementar.
 
@@ -78,20 +73,20 @@ Si el cambio alteró contrato (reglas, pantallas, esquema, permisos, arquitectur
 
 ### 6 — Evolución del tooling
 
-Solo si hubo **desvío real** respecto a un skill o flujo documentado (`docs/cursor/05-evolucion-skills-y-docs.md`, skill `avicore-evolucion-tooling`):
+Solo si hubo **desvío real** respecto a un skill o flujo documentado. Detalle y matriz de mantenimiento: `docs/cursor/05-evolucion-skills-y-docs.md` · skill interno `avicore-evolucion-tooling`.
 
-| Situación | Acción |
-|-----------|--------|
-| Flujo ejecutado ≠ `SKILL.md` | Actualizar skill + `03-skills-avicore.md` |
-| Workflow recurrente sin skill | Crear skill + registrar + mapeo aquí |
-| Nueva convención transversal | Regla `.mdc` o `docs/reference/` + CHANGELOG |
-| Cambió este comando o MCP | Actualizar comando + `00-configuracion-cursor.md` |
+Checklist rápido:
+
+- [ ] ¿Flujo ≠ skill? → actualizar skill + `03-skills`
+- [ ] ¿Workflow recurrente sin skill? → crear skill + `03` + `CHANGELOG`
+- [ ] ¿Nueva convención transversal? → regla `.mdc` o `reference/` + `CHANGELOG`
+- [ ] ¿Cambió comando o MCP? → comando + `00-configuracion-cursor.md`
 
 **No** crear skill ni tocar reglas por tareas puntuales. No pedir permiso salvo cambio grande (nuevo mensaje HTML, reestructurar skills).
 
 ### 7 — Cierre
 
-Último párrafo en lenguaje natural — qué quedó listo, docs/tooling si cambió, siguiente paso. Ver `06-modo-respuesta-clara.md`.
+El bloque **Qué sigue** del modo didáctico cierra la tarea (qué quedó listo, docs/tooling si cambió, siguiente paso). Ver `06-modo-respuesta-clara.md`.
 
 ## Referencia
 

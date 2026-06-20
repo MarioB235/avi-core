@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # AviCore — Nuevo módulo
 
-**Cuándo usar:** módulo o CRUD **completo** (migración + Livewire + permisos + pruebas). Si la tarea es solo pantalla → `avicore-ui`. Si solo BD → `avicore-modelo-datos`. Ver enrutamiento en `.cursor/commands/avicore-architect-direct.md` paso 3.
+**Cuándo usar:** módulo o CRUD **completo** (migración + Livewire + permisos + pruebas). Si la tarea es solo pantalla → `avicore-ui`. Si solo BD → `avicore-modelo-datos`. Enrutamiento: `docs/cursor/03-skills-avicore.md`.
 
 ## Documentación obligatoria
 

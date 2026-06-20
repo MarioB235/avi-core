@@ -70,6 +70,41 @@ class IconComponentTest extends TestCase
         }
     }
 
+    /**
+     * @return array<string, array{0: string, 1: list<string>}>
+     */
+    public static function adminHomeIconProvider(): array
+    {
+        return [
+            'chart' => ['chart', ['M18 17V9', 'M13 17V5']],
+            'layers' => ['layers', ['M12.83 2.18', 'M2 12a1']],
+            'file-bar-chart' => ['file-bar-chart', ['M6 22a2', 'M16 18v-6']],
+            'bell' => ['bell', ['M10.268 21', 'M3.262 15.326']],
+            'trending-up' => ['trending-up', ['M16 7h6v6', 'm22 7-8.5']],
+            'calendar' => ['calendar', ['M8 2v4', 'M3 10h18']],
+            'clock' => ['clock', ['cx="12" cy="12" r="10"', 'M12 6v6']],
+            'arrow-right' => ['arrow-right', ['M5 12h14', 'm12 5 7 7']],
+            'building' => ['building', ['M9 22v-3', 'M8 10h.01']],
+            'clipboard-list' => ['clipboard-list', ['M12 11h4', 'M8 11h.01']],
+            'panel-left' => ['panel-left', ['M9 3v18', 'rect width="18"']],
+        ];
+    }
+
+    /**
+     * @param  list<string>  $expectedFragments
+     */
+    #[DataProvider('adminHomeIconProvider')]
+    public function test_admin_home_icons_render_expected_svg_markup(string $name, array $expectedFragments): void
+    {
+        $html = Blade::render('<x-ui.icon name="'.$name.'" />');
+
+        $this->assertStringContainsString('<svg', $html);
+
+        foreach ($expectedFragments as $fragment) {
+            $this->assertStringContainsString($fragment, $html);
+        }
+    }
+
     public function test_document_alias_renders_same_as_id_card(): void
     {
         $idCard = $this->normalizeSvgHtml(Blade::render('<x-ui.icon name="id-card" />'));

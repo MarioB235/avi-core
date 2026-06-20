@@ -57,6 +57,8 @@ Procedimiento completo (PostgreSQL, pgAdmin, `.env`, migrate, serve): [`referenc
 
 Ver árbol completo y convenciones en [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md).
 
+Vistas Blade servidas con `Route::view` (p. ej. Inicio admin): datos vía **View Composer** en `app/Http/View/Composers/` + **Service**; sin `@php` de negocio en la vista.
+
 ---
 
 ## 5. Multiempresa

@@ -1,3 +1,11 @@
+@props([
+    'title' => null,
+    'heading' => 'Panel',
+    'subheading' => null,
+    'showDate' => false,
+    'contentWide' => false,
+    'masthead' => false,
+])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -12,11 +20,21 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="min-h-screen bg-avicore-surface font-sans">
-    <div x-data="{ sidebarOpen: false }" x-on:keydown.escape.window="sidebarOpen = false" class="flex min-h-screen">
+<body class="bg-avicore-surface font-sans antialiased">
+    <div
+        x-data="{ sidebarOpen: false, sidebarCollapsed: false }"
+        x-on:keydown.escape.window="sidebarOpen = false"
+        class="avicore-admin-shell"
+    >
         <div
             x-show="sidebarOpen"
             x-cloak
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
             class="avicore-sidebar-backdrop"
             x-on:click="sidebarOpen = false"
             aria-hidden="true"
@@ -25,44 +43,78 @@
         <aside
             x-show="sidebarOpen"
             x-cloak
-            class="fixed inset-y-0 left-0 z-50 lg:hidden"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="-translate-x-full"
+            x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="-translate-x-full"
+            class="avicore-admin-sidebar avicore-admin-sidebar--drawer"
             aria-label="Menú de navegación"
         >
-            <div class="avicore-sidebar-panel h-full border-r border-avicore-border">
-                @include('components.layouts.partials.admin-sidebar-inner')
-            </div>
+            @include('components.layouts.partials.admin-sidebar-inner', ['showDrawerClose' => true])
         </aside>
 
-        <aside class="avicore-sidebar-panel hidden lg:flex">
+        <aside
+            class="avicore-admin-sidebar hidden lg:flex"
+            :class="sidebarCollapsed ? 'avicore-sidebar-panel--collapsed' : ''"
+            aria-label="Menú de navegación"
+        >
             @include('components.layouts.partials.admin-sidebar-inner')
         </aside>
 
-        <div class="flex min-w-0 flex-1 flex-col">
-            <header class="border-b border-avicore-border bg-avicore-card">
-                <div class="flex items-center gap-3 px-4 py-4 sm:px-6">
-                    <button
-                        type="button"
-                        class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-avicore-border text-avicore-text hover:bg-avicore-soft lg:hidden"
-                        x-on:click="sidebarOpen = true"
-                        aria-label="Abrir menú"
-                    >
-                        <x-ui.icon name="menu" />
-                    </button>
+        <div class="avicore-admin-main">
+            @if ($masthead)
+                @include('components.layouts.partials.admin-header-toolbar', [
+                    'heading' => $heading,
+                    'subheading' => $subheading,
+                    'showDate' => $showDate,
+                    'contentWide' => $contentWide,
+                ])
 
-                    <div class="min-w-0 flex-1">
-                        <h1 class="avicore-page-title truncate">{{ $heading ?? 'Panel' }}</h1>
-                        @isset($subheading)
-                            <p class="avicore-page-subtitle truncate">{{ $subheading }}</p>
-                        @endisset
+                <main class="avicore-admin-main__content" role="main">
+                    <div @class([
+                        'avicore-admin-main__inner',
+                        'avicore-admin-main__inner--wide' => $contentWide ?? false,
+                        'avicore-admin-main__inner--with-masthead' => true,
+                    ])>
+                        {{ $hero ?? '' }}
+                        {{ $slot }}
                     </div>
-                </div>
-            </header>
+                </main>
+            @else
+                <header class="avicore-admin-header">
+                    <div @class([
+                        'avicore-admin-header__inner',
+                        'avicore-admin-header__inner--wide' => $contentWide ?? false,
+                    ])>
+                        @include('components.layouts.partials.admin-menu-trigger')
 
-            <main class="flex-1 p-4 sm:p-6 lg:p-8">
-                <div class="mx-auto max-w-5xl">
-                    {{ $slot }}
-                </div>
-            </main>
+                        <div class="min-w-0 flex-1">
+                            <h1 class="avicore-page-title truncate">{{ $heading ?? 'Panel' }}</h1>
+                            @isset($subheading)
+                                <p class="avicore-page-subtitle truncate">{{ $subheading }}</p>
+                            @endisset
+                        </div>
+
+                        @if ($showDate ?? false)
+                            <time datetime="{{ now()->toDateString() }}" class="avicore-date-pill">
+                                <x-ui.icon name="calendar" class="size-4 shrink-0" />
+                                <span class="capitalize">{{ now()->locale('es')->isoFormat('dddd, D [de] MMMM [de] YYYY') }}</span>
+                            </time>
+                        @endif
+                    </div>
+                </header>
+
+                <main class="avicore-admin-main__content" role="main">
+                    <div @class([
+                        'avicore-admin-main__inner',
+                        'avicore-admin-main__inner--wide' => $contentWide ?? false,
+                    ])>
+                        {{ $slot }}
+                    </div>
+                </main>
+            @endif
         </div>
     </div>
 

@@ -1,7 +1,29 @@
-<nav class="flex-1 space-y-0.5 px-3 py-4" aria-label="Navegación principal">
-    <x-ui.nav-link :href="route('admin.home')" :active="request()->routeIs('admin.home')">
+<nav class="avicore-admin-nav" aria-label="Navegación principal">
+    <x-ui.nav-link :href="route('admin.home')" :active="request()->routeIs('admin.home')" icon="home">
         Inicio
     </x-ui.nav-link>
-    <x-ui.nav-link disabled>Dashboard</x-ui.nav-link>
-    <x-ui.nav-link disabled>Galpones</x-ui.nav-link>
+
+    <x-ui.nav-link disabled icon="chart" badge="Próximamente">
+        Dashboard
+    </x-ui.nav-link>
+
+    <x-ui.nav-link disabled icon="layers">
+        Estructura
+    </x-ui.nav-link>
+
+    <x-ui.nav-link disabled icon="users">
+        Usuarios
+    </x-ui.nav-link>
+
+    <x-ui.nav-link disabled icon="file-bar-chart">
+        Reportes
+    </x-ui.nav-link>
+
+    <x-ui.nav-link disabled icon="clipboard-list">
+        Auditoría
+    </x-ui.nav-link>
+
+    <x-ui.nav-link disabled icon="bell" badge="Próximamente">
+        Notificaciones
+    </x-ui.nav-link>
 </nav>

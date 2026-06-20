@@ -14,6 +14,7 @@ BRAND_PUBLIC = ROOT / "public" / "images" / "brand"
 BACKGROUNDS = (
     ("background-desktop", 1600),
     ("background-mobile", 1080),
+    ("admin-home-hero", 1920),
 )
 JPEG_QUALITY = 78
 

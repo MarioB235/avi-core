@@ -153,23 +153,301 @@
     }
 
     .avicore-nav-link {
-        @apply flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-avicore-muted transition-colors;
+        @apply flex min-h-10 items-center gap-3 rounded-lg py-2 pl-3 pr-3 text-sm font-medium transition-colors duration-150;
     }
 
-    .avicore-nav-link:hover {
-        @apply bg-avicore-soft text-avicore-primary;
+    .avicore-admin-sidebar {
+        @apply sticky top-0 z-30 flex h-svh w-64 shrink-0 flex-col overflow-y-auto border-r border-black/10 bg-avicore-primary text-white shadow-lg;
+        background-image: linear-gradient(180deg, var(--color-avicore-primary) 0%, #184930 100%);
     }
 
-    .avicore-nav-link--active {
-        @apply bg-avicore-soft text-avicore-primary;
+    .avicore-admin-sidebar--drawer {
+        @apply fixed inset-y-0 left-0 z-50 h-svh w-64 shadow-2xl;
     }
 
-    .avicore-nav-link--disabled {
-        @apply cursor-default opacity-60 hover:bg-transparent hover:text-avicore-muted;
+    .avicore-admin-sidebar__brand {
+        @apply flex items-start justify-between gap-3 border-b border-white/10 px-4 py-5 sm:px-5;
+    }
+
+    .avicore-admin-nav {
+        @apply flex-1 space-y-0.5 overflow-y-auto px-3 pb-2;
+    }
+
+    .avicore-admin-sidebar__section-label {
+        @apply px-5 pb-2 pt-4 text-[0.6875rem] font-semibold uppercase tracking-wider text-white/45;
+    }
+
+    .avicore-admin-sidebar__footer .avicore-admin-sidebar__section-label {
+        @apply px-2 pt-0;
+    }
+
+    .avicore-admin-sidebar__footer {
+        @apply mt-auto border-t border-white/10 px-3 py-4;
+    }
+
+    .avicore-admin-sidebar__close {
+        @apply inline-flex min-h-10 min-w-10 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/15;
+    }
+
+    .avicore-admin-sidebar .avicore-nav-link {
+        @apply text-white/80;
+    }
+
+    .avicore-admin-sidebar .avicore-nav-link__icon {
+        @apply text-white/70;
+    }
+
+    .avicore-admin-sidebar .avicore-nav-link:hover {
+        @apply bg-white/10 text-white;
+    }
+
+    .avicore-admin-sidebar .avicore-nav-link:hover .avicore-nav-link__icon {
+        @apply text-white;
+    }
+
+    .avicore-admin-sidebar .avicore-nav-link--active {
+        @apply bg-white/15 text-white shadow-sm;
+    }
+
+    .avicore-admin-sidebar .avicore-nav-link--active .avicore-nav-link__icon {
+        @apply text-white;
+    }
+
+    .avicore-admin-sidebar .avicore-nav-link--disabled {
+        @apply text-white/40 hover:bg-transparent hover:text-white/40;
+    }
+
+    .avicore-sidebar-user__avatar {
+        @apply bg-white/15 text-white ring-1 ring-white/20;
+    }
+
+    .avicore-admin-shell {
+        @apply flex min-h-svh bg-avicore-surface;
+    }
+
+    .avicore-admin-gutter {
+        @apply px-4 sm:px-6 lg:px-8;
+    }
+
+    .avicore-admin-main {
+        @apply flex min-w-0 flex-1 flex-col bg-avicore-surface;
+    }
+
+    /*
+     * Inicio admin — tarjeta hero con copy + KPIs debajo.
+     */
+    .avicore-home-hero {
+        @apply w-full;
+    }
+
+    .avicore-home-hero__card {
+        @apply relative overflow-hidden rounded-2xl border border-avicore-border/80 bg-avicore-card shadow-sm;
+    }
+
+    .avicore-home-hero__figure {
+        display: none;
+    }
+
+    .avicore-home-hero__img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center right;
+    }
+
+    .avicore-home-hero__scrim {
+        @apply pointer-events-none absolute inset-0;
+        background: linear-gradient(
+            90deg,
+            rgb(255 255 255 / 0.98) 0%,
+            rgb(255 255 255 / 0.88) 22%,
+            rgb(255 255 255 / 0.35) 42%,
+            transparent 62%
+        );
+    }
+
+    .avicore-home-hero__copy {
+        @apply absolute inset-y-0 left-0 flex max-w-lg flex-col justify-center px-6 py-5 sm:px-8 lg:px-10;
+    }
+
+    .avicore-home-hero__title {
+        @apply text-xl font-semibold tracking-tight text-avicore-text sm:text-2xl;
+    }
+
+    .avicore-home-hero__subtitle {
+        @apply mt-1.5 max-w-md text-sm text-avicore-muted;
+    }
+
+    .avicore-home-hero__kpis {
+        @apply mt-6;
+    }
+
+    @media (min-width: 1024px) {
+        .avicore-home-hero__figure {
+            display: block;
+            position: relative;
+            width: 100%;
+            min-height: 7rem;
+            aspect-ratio: 42 / 9;
+            overflow: hidden;
+        }
+    }
+
+    .avicore-admin-header--toolbar {
+        @apply sticky top-0 z-20 shrink-0 border-b border-avicore-border/80 bg-avicore-card;
+    }
+
+    .avicore-admin-header--toolbar .avicore-admin-header__inner {
+        @apply gap-4 py-3 sm:py-4;
+    }
+
+    .avicore-admin-header__title-row {
+        @apply flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0;
+    }
+
+    .avicore-admin-header__context {
+        @apply text-sm font-medium text-avicore-muted;
+    }
+
+    .avicore-admin-header__actions {
+        @apply flex shrink-0 items-center gap-2 sm:gap-3;
+    }
+
+    .avicore-admin-header__icon-btn {
+        @apply inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border border-avicore-border/80 bg-avicore-card text-avicore-muted transition-colors hover:bg-avicore-surface hover:text-avicore-text disabled:cursor-not-allowed disabled:opacity-60;
+    }
+
+    .avicore-admin-header__user {
+        @apply flex min-w-0 items-center gap-2 rounded-xl border border-avicore-border/80 bg-avicore-card px-2 py-1.5 sm:px-3;
+    }
+
+    .avicore-admin-header__user-avatar {
+        @apply bg-avicore-primary text-white;
+    }
+
+    .avicore-date-pill--toolbar {
+        @apply hidden border-avicore-border/80 bg-avicore-card shadow-sm sm:inline-flex;
+    }
+
+    .avicore-admin-header {
+        @apply shrink-0 border-b border-avicore-border/80 bg-avicore-card px-4 sm:px-6 lg:px-8;
+    }
+
+    .avicore-admin-header__inner--wide {
+        @apply mx-auto w-full max-w-7xl;
+    }
+
+    .avicore-admin-header__inner {
+        @apply flex items-center gap-3 py-3 sm:py-4;
+    }
+
+    .avicore-admin-main__inner--wide {
+        @apply max-w-7xl;
+    }
+
+    .avicore-admin-main__content {
+        @apply relative flex-1;
+    }
+
+    .avicore-admin-main__inner--with-masthead {
+        @apply bg-transparent px-4 py-5 pb-10 sm:px-6 sm:py-6 lg:px-8 lg:pb-12;
+    }
+
+    .avicore-admin-main__inner--with-masthead.avicore-admin-main__inner--wide {
+        @apply max-w-7xl;
+    }
+
+    .avicore-admin-main__inner {
+        @apply mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8;
+    }
+
+    .avicore-admin-menu-trigger {
+        @apply inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg border border-avicore-border/80 bg-avicore-card text-avicore-text transition-colors hover:border-avicore-primary/20 hover:bg-avicore-soft;
+    }
+
+    .avicore-date-pill {
+        @apply hidden shrink-0 items-center gap-2 rounded-full border border-avicore-border/80 bg-avicore-surface px-3 py-1.5 text-sm text-avicore-muted sm:inline-flex;
+    }
+
+    .avicore-sidebar-panel--collapsed {
+        @apply w-[4.5rem];
+    }
+
+    .avicore-sidebar-panel--collapsed .avicore-sidebar-label,
+    .avicore-sidebar-panel--collapsed .avicore-sidebar-footer-text,
+    .avicore-sidebar-panel--collapsed .avicore-logo__text,
+    .avicore-sidebar-panel--collapsed .avicore-nav-link__badge,
+    .avicore-sidebar-panel--collapsed .avicore-admin-sidebar__section-label {
+        @apply hidden;
+    }
+
+    .avicore-sidebar-panel--collapsed .avicore-nav-link {
+        @apply justify-center px-2;
+    }
+
+    .avicore-sidebar-panel--collapsed .avicore-sidebar-user {
+        @apply justify-center px-0;
+    }
+
+    .avicore-sidebar-panel--collapsed .avicore-admin-sidebar__brand {
+        @apply justify-center px-2;
+    }
+
+    .avicore-admin-home-kpis {
+        @apply relative z-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4;
+    }
+
+    .avicore-admin-home-panels {
+        @apply mt-6 grid gap-6 lg:mt-8 lg:grid-cols-2 lg:items-start;
+    }
+
+    .avicore-panel-card {
+        @apply border-avicore-border/80 shadow-sm;
+    }
+
+    .avicore-kpi-card {
+        @apply h-full min-h-[6.5rem] border-avicore-border/80 bg-avicore-card shadow-sm;
+    }
+
+    .avicore-kpi-card-icon {
+        @apply flex size-10 shrink-0 items-center justify-center rounded-lg bg-avicore-soft text-avicore-primary;
     }
 
     .avicore-kpi-value {
-        @apply text-2xl font-semibold tabular-nums tracking-tight text-avicore-text;
+        @apply text-xl font-semibold leading-tight tabular-nums tracking-tight text-avicore-text sm:text-2xl;
+    }
+
+    .avicore-empty-state {
+        @apply flex flex-col items-center justify-center px-4 py-10 text-center;
+    }
+
+    .avicore-empty-state__icon {
+        @apply mb-4 flex size-16 items-center justify-center rounded-2xl bg-avicore-soft text-avicore-primary;
+    }
+
+    .avicore-setup-item {
+        @apply flex items-start gap-3 rounded-lg border border-avicore-border/80 px-4 py-3;
+    }
+
+    .avicore-setup-item__icon {
+        @apply mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg bg-avicore-soft text-avicore-primary;
+    }
+
+    .avicore-user-avatar {
+        @apply flex shrink-0 items-center justify-center rounded-full bg-avicore-soft font-semibold text-avicore-primary;
+    }
+
+    .avicore-user-avatar--sm {
+        @apply size-9 text-xs;
+    }
+
+    .avicore-user-avatar--md {
+        @apply size-10 text-sm;
+    }
+
+    .avicore-sidebar-user {
+        @apply flex items-center gap-3 rounded-lg px-2 py-2;
     }
 
     .avicore-kpi-label {
@@ -177,7 +455,7 @@
     }
 
     .avicore-section-title {
-        @apply text-sm font-semibold text-avicore-text;
+        @apply text-base font-semibold text-avicore-text;
     }
 
     .avicore-section-subtitle {

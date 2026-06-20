@@ -32,7 +32,7 @@ flowchart TD
     R --> S
 ```
 
-**Usuario:** solo `/avicore-architect-direct` + plantillas HTML. **Skills:** internos; el arquitecto los elige (`disable-model-invocation: true`).
+**Usuario:** solo `/avicore-architect-direct` + plantillas HTML. **Skills:** internos (13); el arquitecto los elige (`disable-model-invocation: true`). **Pasos detallados del flujo:** solo en [`.cursor/commands/avicore-architect-direct.md`](../../.cursor/commands/avicore-architect-direct.md).
 
 ## Punto de entrada
 
@@ -50,7 +50,7 @@ flowchart TD
 | Docs producto `01`–`12` | 12 |
 | Contexto + referencias + README + CHANGELOG | 5 |
 | Cursor docs `00`–`06` + `01-indice` | 8 |
-| Skills internos | 12 |
+| Skills internos | 13 |
 | Mensajes usuario (HTML) | 5 |
 | Reglas `.mdc` | 7 |
 | Comando slash | 1 |
@@ -69,9 +69,11 @@ flowchart TD
 
 La regla always-apply **no sustituye** `00-contexto.md`.
 
-## Skills (12 internos)
+## Skills (13 internos)
 
-Catálogo: [`03-skills-avicore.md`](03-skills-avicore.md) · Plantillas: [`02-avicore-mensajes-reutilizables.html`](02-avicore-mensajes-reutilizables.html)
+Catálogo (única tabla mensaje → skill): [`03-skills-avicore.md`](03-skills-avicore.md) · Plantillas: [`02-avicore-mensajes-reutilizables.html`](02-avicore-mensajes-reutilizables.html) · Matriz de mantenimiento: [`05-evolucion-skills-y-docs.md`](05-evolucion-skills-y-docs.md)
+
+**Anti-drift:** `npm run check:agent-docs` o `node scripts/check-agent-docs-sync.cjs` (tras cambiar comando, `03-skills`, `AGENTS.md` o inventario en este archivo).
 
 ## Uso diario
 
