@@ -1,12 +1,14 @@
 # 12 — Plan de desarrollo
 
-## 0. Estado de avance (2026-05-31)
+## 0. Estado de avance (2026-06-20)
 
 | Bloque | Estado | Notas |
 |--------|--------|-------|
 | **1 — Base** | **Hecho** | Laravel 13, Livewire 4, Tailwind 4, layouts, UI base, PostgreSQL + `migrate` OK |
 | **2 — Seguridad** | **En curso** | Login + cambio obligatorio implementados; roles/CRUD usuarios pendiente |
-| 3–7 | Pendiente | Según orden de la sección 2 |
+| **4 — Estructura avícola** | **Parcial** | Migraciones + seeder demo mínimo (1 granja, 2 galpones, 1 lote); sin CRUD admin |
+| **5 — Operación móvil** | **Parcial** | Home operario, selector galpón, carga huevos; muertes/alimento/combinada pendientes |
+| 3, 6–7 | Pendiente | Según orden de la sección 2 |
 
 Detalle técnico del Bloque 1: [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md) · entorno local: [`reference/arranque-local.md`](reference/arranque-local.md).
 
@@ -130,23 +132,21 @@ Dashboard refleja la carga
 
 ## 8. Bloque 4 — Estructura avícola
 
-- Granjas.
-- Galpones.
-- Lotes.
-- Estados.
-- Tipo de huevo.
+- [x] Migraciones `granjas`, `galpones`, `lotes`, `registros_operativos`.
+- [x] Seeder demo mínimo (`AvicoreEstructuraAvicolaSeeder`: 1 granja, 2 galpones, 1 lote).
+- [ ] CRUD admin granjas/galpones/lotes.
+- [ ] Estados y tipo de huevo en UI admin.
 
 ---
 
 ## 9. Bloque 5 — Operación móvil
 
-- Layout móvil.
-- Selector galpón.
-- Último galpón.
-- Carga huevos.
-- Carga muertes.
-- Carga alimento.
-- Últimas cargas.
+- [x] Layout móvil (home Livewire en `/operario`).
+- [x] Selector galpón (`/operario/galpon`) + último galpón en `users.ultimo_galpon_id`.
+- [x] Carga huevos (`/operario/carga/huevos`).
+- [ ] Carga muertes.
+- [ ] Carga alimento.
+- [ ] Últimas cargas (listado del día implementado; ampliar tipos al sumar cargas).
 
 ---
 
@@ -180,3 +180,21 @@ No avanzar al módulo siguiente si el módulo actual no:
 - Respeta empresa.
 - Funciona en PC.
 - Funciona en móvil.
+
+---
+
+## 13. Tablas y carpetas futuras (sin migración aún)
+
+Solo nombres de bloque; el DDL vive en `reference/estructura-base-datos.md` **cuando** exista la migración.
+
+| Bloque / fase | Tabla o carpeta | Notas |
+|---------------|-----------------|-------|
+| Movimientos de aves | `movimientos_aves` | Traslados, ajustes, cierres |
+| Anulación y auditoría (fase 16) | `auditorias` | Acciones críticas |
+| Dashboard (fase 17) | `alertas` | Supervisión |
+| Multiempresa / config (fase 6–7) | `configuraciones_empresa` | Maple, logos, módulos |
+| Dashboard | `Livewire/Dashboard/`, `DashboardService` | Tarjetas, KPIs |
+| Reportes (fase 19) | `Livewire/Reportes/`, `ReporteService` | PDF/Excel |
+| Usuarios admin (fase 5) | `Livewire/Usuarios/` | CRUD usuarios |
+| CRUD avícola admin | `Livewire/Galpones/`, `Livewire/Lotes/` | Granjas, galpones, lotes |
+| Tiempo real (fase 18) | `Events/`, Reverb | Ver `08-tiempo-real-eventos.md` |

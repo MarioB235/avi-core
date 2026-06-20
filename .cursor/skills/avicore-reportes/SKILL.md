@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 ## Documentación
 
-- `docs/09-reportes-exportaciones.md`
+- `docs/09-reportes-exportaciones.md` (si es stub planificado, leer `docs/12-plan-de-desarrollo.md` fase 19; al implementar, expandir `09` + `CHANGELOG`)
 - `docs/05-reglas-de-negocio.md`
 - `docs/06-roles-y-permisos.md`
 - `docs/03-guia-visual-ui.md`

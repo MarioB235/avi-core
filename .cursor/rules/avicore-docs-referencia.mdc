@@ -6,8 +6,9 @@ alwaysApply: false
 
 # Referencias AviCore
 
-- `estructura-base-datos.md` es la fuente maestra del esquema; migraciones deben coincidir.
-- `estructura-proyecto.md` es la fuente maestra del árbol de carpetas.
+- `estructura-base-datos.md` es la fuente maestra del esquema **implementado**; solo tablas con migración en el repo. Migraciones deben coincidir.
+- No añadir secciones DDL «por si acaso»; bloque futuro → `docs/12-plan-de-desarrollo.md` primero; DDL en `reference` cuando exista la migración.
+- `estructura-proyecto.md` es la fuente maestra del árbol de carpetas **existente**; módulos futuros en `12-plan`, no árboles inventados.
 - `arranque-local.md` es la fuente maestra del entorno de desarrollo local.
 - Tras cambiar contrato: entrada breve en `docs/CHANGELOG.md`.
 - No duplicar tablas completas en `04-modelo-de-datos.md`; usar enlaces a `reference/`.

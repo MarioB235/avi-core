@@ -29,10 +29,10 @@ Detalle de columnas en [`reference/estructura-base-datos.md`](reference/estructu
 | **users** | Login por documento; único por `(empresa_id, documento)`; documento único global si `empresa_id` null (Admin AviCore); contraseña temporal obliga cambio |
 | **granjas / galpones / lotes** | Jerarquía empresa → granja → galpón → lote; carga por galpón |
 | **registros_operativos** | Fecha/hora = `created_at`; anulación lógica con motivo |
-| **movimientos_aves** | Traslados, ajustes, cierres; impactan aves vivas |
-| **auditorias** | Acciones críticas; modo soporte auditado |
-| **alertas** | Dashboard y supervisión |
-| **configuraciones_empresa** | Maple/cajón, logos, módulos por empresa |
+| **movimientos_aves** | *Planificado* — traslados, ajustes, cierres; ver `12-plan-de-desarrollo.md` |
+| **auditorias** | *Planificado* — acciones críticas; ver `12-plan-de-desarrollo.md` |
+| **alertas** | *Planificado* — dashboard y supervisión; ver `12-plan-de-desarrollo.md` |
+| **configuraciones_empresa** | *Planificado* — maple/cajón, logos, módulos; ver `12-plan-de-desarrollo.md` |
 
 ---
 

@@ -79,6 +79,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.user-avatar` | Iniciales circulares; prop `decorative` cuando el nombre visible está al lado (header/sidebar) — si no, `role="img"` + `aria-label` |
 | `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger`; telón `.avicore-dialog__backdrop` (`bg-avicore-text/65`, fade sin scale), panel centrado, focus trap (Tab/Escape), restauración de foco al cerrar, bloquea scroll del body |
 | `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
+| `x-operario.bottom-nav` | Dock inferior inset — 4 pestañas; ítem activo con fondo primario en la celda (`.avicore-operario-tab-bar__item--active`); `aria-current`; `operario.carga.*` resalta Cargar |
 
 ## Layouts
 
@@ -86,7 +87,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 |--------|---------|-----|
 | Público | `components/layouts/public.blade.php` | Login, cambio de contraseña — split marca + tarjeta (≥1024px); móvil: logo apilado + bottom sheet (`.avicore-auth-mobile-brand`, `.avicore-auth-card`); partial `auth-brand-panel` |
 | Admin | `components/layouts/admin.blade.php` | Shell `.avicore-admin-*`: sidebar sticky verde (`bg-avicore-primary`, nav clara, labels de sección) + drawer Alpine (móvil), header y main con gutter común (`avicore-admin-gutter`); partials `admin-sidebar-inner`, `admin-nav`, `admin-header-toolbar`, `admin-menu-trigger` |
-| Operario | `components/layouts/operario-mobile.blade.php` | Vista móvil — fondo marca responsive |
+| Operario | `components/layouts/operario-mobile.blade.php` | Shell `.avicore-operario-shell` — header contextual (título de sección + galpón o hint sin selección; cambio de galpón solo en pestaña Galpón) + dock inset `<x-operario.bottom-nav>`; datos de header vía `OperarioLayoutComposer` |
 
 ## Quality gates
 

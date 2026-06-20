@@ -1,5 +1,7 @@
 # 02 — Pantallas y flujos
 
+> **Gobernanza incremental:** solo se detalla aquí lo que tiene ruta/UI en el repo. Pantallas planificadas: una línea + enlace a [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md). Al implementar, expandir la sección correspondiente en el mismo PR.
+
 ## 1. Objetivo
 
 Definir las pantallas principales de AviCore, sus campos, acciones, usuarios autorizados y comportamiento esperado.
@@ -137,51 +139,24 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 
 ## 4. Pantalla: Dashboard
 
-### Objetivo
-
-Mostrar lectura general de la operación.
-
-### Usuarios
-
-- Dueño.
-- Administrativo.
-- Encargado.
-
-### Tarjetas
-
-- Producción de hoy.
-- Producción semanal.
-- Productividad por galpón.
-- Mortalidad del día.
-- Mortalidad acumulada.
-- Aves vivas estimadas.
-- Alimento entregado.
-- Galpones sin carga.
-- Alertas.
-- Variación de producción.
-
-### Filtros
-
-- Fecha.
-- Rango de fechas.
-- Granja.
-- Galpón.
-- Tipo de huevo.
-
-### Tiempo real
-
-Debe actualizarse ante:
-
-- Nueva carga.
-- Anulación.
-- Corrección.
-- Ajuste de aves vivas.
-- Cierre de lote.
-- Salida parcial de aves.
+**Estado:** planificado — fase 17 en [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md) §2; tiempo real asociado en Bloque 6. Tarjetas, filtros y actualización en vivo se documentarán al implementar `Livewire/Dashboard/`.
 
 ---
 
 ## 5. Pantalla: Vista móvil del operario
+
+**Estado MVP (2026-06-20):** implementado en `/operario` — shell móvil con **dock inferior** (Inicio · Galpón · Cargar · Historial), **header contextual** (título de sección + galpón como subtítulo; cambio de galpón solo en pestaña Galpón), resumen en Inicio (últimas 3 cargas), hub de cargas en `/operario/cargar`, historial completo y perfil en `/operario/historial`. Carga de huevos en `/operario/carga/huevos` (pestaña Cargar activa). Muertes, alimento y combinada: pendientes en el hub.
+
+### Navegación móvil (4 pestañas)
+
+| Pestaña | Ruta | Contenido |
+|---------|------|-----------|
+| Inicio | `/operario` | Saludo, galpón actual, últimas 3 cargas del día |
+| Galpón | `/operario/galpon` | Selector de galpón de trabajo |
+| Cargar | `/operario/cargar` | Grid 2×2: Huevos (activo), Muertes/Alimento/Combinada (próximamente) |
+| Historial | `/operario/historial` | Todas las cargas de hoy + bloque cuenta (cerrar sesión) |
+
+El header superior muestra el **título de la sección** y el galpón actual como contexto; no repite navegación (el cambio de galpón es la pestaña Galpón). Si no hay galpón seleccionado, el subtítulo muestra *«Elegí un galpón en la pestaña Galpón»* (vía `OperarioLayoutComposer`).
 
 ### Objetivo
 
@@ -214,6 +189,8 @@ Seleccionar tipo de carga → ingresar cantidad → guardar → confirmar → vo
 
 ## 6. Pantalla: Selector de galpón
 
+**Estado MVP (2026-06-20):** implementado en `/operario/galpon` — lista de galpones activos de la empresa; persiste `users.ultimo_galpon_id`.
+
 ### Objetivo
 
 Permitir elegir galpón de trabajo.
@@ -226,13 +203,18 @@ Permitir elegir galpón de trabajo.
 
 ### Reglas
 
-- El usuario puede elegir cualquier galpón de su empresa.
-- El sistema recuerda el último galpón seleccionado.
-- Al iniciar sesión se abre el último galpón usado.
+- Solo se listan galpones **activos** de la empresa con `estado = activo` y `activo = true` (disponibles para carga).
+- La validación Livewire exige que el `galpon_id` pertenezca a la empresa del usuario y cumpla esas condiciones (`Rule::exists` con scope).
+- `GalponPolicy::view` y `OperarioGalponService::seleccionarGalpon` refuerzan multiempresa y disponibilidad.
+- El usuario puede elegir cualquier galpón disponible de su empresa.
+- El sistema recuerda el último galpón seleccionado (`users.ultimo_galpon_id`).
+- Si el galpón recordado deja de estar disponible, la carga redirige al selector.
 
 ---
 
 ## 7. Pantalla: Carga de huevos
+
+**Estado MVP (2026-06-20):** implementado en `/operario/carga/huevos` — cantidad obligatoria, observación opcional, `created_at` automático. Evento tiempo real: pendiente (Bloque 6).
 
 ### Campos
 
@@ -244,185 +226,37 @@ Permitir elegir galpón de trabajo.
 
 - Fecha y hora automática.
 - No hay selector de fecha/hora para operario.
-- Cantidad obligatoria.
+- Cantidad obligatoria (> 0).
 - Debe guardar en unidad huevos.
+- Requiere galpón disponible; sin galpón o galpón no disponible → redirección a `/operario/galpon`.
+- `RegistrarCargaHuevosAction` valida empresa, permiso (`GalponPolicy`) y estado del galpón.
 - Debe emitir evento en tiempo real.
 
 ---
 
-## 8. Pantalla: Carga de muertes
+## 8–10. Cargas operario (pendientes)
 
-### Campos
+**Estado:** planificado — fases 13–15 en [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md) §2. Reglas de negocio en [`05-reglas-de-negocio.md`](05-reglas-de-negocio.md). Placeholders en hub `/operario/cargar`.
 
-- Galpón actual.
-- Cantidad de muertes.
-- Observación opcional.
+| Pantalla | Fase | Nota breve |
+|----------|------|------------|
+| Carga de muertes | 13 | Cantidad obligatoria; descuenta aves vivas |
+| Carga de alimento | 14 | Kilos con decimales; sin stock en MVP |
+| Carga combinada | 15 | Al menos un dato (huevos, muertes o alimento) |
 
-### Reglas
-
-- Fecha y hora automática.
-- Cantidad obligatoria.
-- Descuenta aves vivas.
-- No permite aves vivas negativas.
-- Debe emitir evento en tiempo real.
+Detalle de campos y validaciones se añadirá aquí al implementar cada pantalla.
 
 ---
 
-## 9. Pantalla: Carga de alimento
+## Pantallas planificadas (admin y reportes)
 
-### Campos
+| Pantalla | Fase 12-plan | Fuente al implementar |
+|----------|--------------|------------------------|
+| Empresas | 7 | `02` § nueva + `06` permisos |
+| Granjas | 8 | `02` + CRUD admin |
+| Galpones | 9 | `02` + `reference/estructura-base-datos` |
+| Lotes | 10 | `02` + reglas en `05` |
+| Usuarios | 5 | `02` + `06` |
+| Auditoría | 16 | `02` + tabla `auditorias` (cuando exista migración) |
+| Reportes | 19 | [`09-reportes-exportaciones.md`](09-reportes-exportaciones.md) |
 
-- Galpón actual.
-- Kilos entregados.
-- Observación opcional.
-
-### Reglas
-
-- Fecha y hora automática.
-- Permite decimales.
-- No requiere cargar huevos.
-- No maneja stock en MVP.
-- Debe emitir evento en tiempo real.
-
----
-
-## 10. Pantalla: Carga combinada
-
-### Campos
-
-- Huevos.
-- Muertes.
-- Alimento en kilos.
-- Observación opcional.
-
-### Regla
-
-Debe existir al menos un dato cargado.
-
----
-
-## 11. Pantalla: Empresas
-
-### Usuarios
-
-- Admin AviCore.
-
-### Campos
-
-- Nombre.
-- Código.
-- Logo.
-- Estado.
-- Plan.
-- Configuración.
-
----
-
-## 12. Pantalla: Granjas
-
-### Usuarios
-
-- Dueño.
-- Administrativo.
-
-### Campos
-
-- Empresa.
-- Nombre.
-- Código.
-- Ubicación.
-- Estado.
-
----
-
-## 13. Pantalla: Galpones
-
-### Usuarios
-
-- Dueño.
-- Administrativo.
-- Encargado, si se habilita.
-
-### Campos
-
-- Granja.
-- Nombre.
-- Código.
-- Capacidad máxima.
-- Estado.
-- Activo/inactivo.
-- Observación.
-
----
-
-## 14. Pantalla: Lotes
-
-### Campos
-
-- Código.
-- Fecha de nacimiento.
-- Fecha de ingreso.
-- Cantidad inicial.
-- Galpón actual.
-- Línea/raza.
-- Tipo de huevo.
-- Estado.
-- Observación.
-
----
-
-## 15. Pantalla: Usuarios
-
-### Usuarios
-
-- Dueño.
-- Administrativo.
-- Admin AviCore.
-
-### Campos
-
-- Nombre.
-- Documento.
-- Contraseña temporal.
-- Rol.
-- Estado.
-- Empresa.
-
----
-
-## 16. Pantalla: Auditoría
-
-### Usuarios
-
-- Admin AviCore.
-- Dueño.
-- Encargado autorizado.
-
-### Muestra
-
-- Usuario.
-- Acción.
-- Fecha.
-- Registro afectado.
-- Valor anterior.
-- Valor nuevo.
-- Motivo.
-
----
-
-## 17. Pantalla: Reportes
-
-### Reportes
-
-- Diario.
-- Semanal.
-- Mensual.
-- Por galpón.
-- Por lote.
-
-### Acciones
-
-- Filtrar.
-- Generar.
-- Exportar PDF.
-- Exportar Excel.

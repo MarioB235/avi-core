@@ -1,0 +1,224 @@
+<?php
+
+namespace Tests\Feature\Operario;
+
+use App\Actions\Operacion\RegistrarCargaHuevosAction;
+use App\Enums\EmpresaEstado;
+use App\Enums\GalponEstado;
+use App\Enums\RegistroOperativoTipo;
+use App\Enums\UserRole;
+use App\Livewire\Operario\CargaHuevos;
+use App\Livewire\Operario\CargarHub;
+use App\Livewire\Operario\Historial;
+use App\Livewire\Operario\Home;
+use App\Livewire\Operario\SelectorGalpon;
+use App\Models\Empresa;
+use App\Models\Galpon;
+use App\Models\Granja;
+use App\Models\RegistroOperativo;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\ValidationException;
+use Livewire\Livewire;
+use Tests\TestCase;
+
+class OperarioCargaHuevosTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_operario_can_select_galpon_register_eggs_and_see_today_loads(): void
+    {
+        [$operario, $galponA, $galponB] = $this->createOperarioConGalpones();
+
+        $this->actingAs($operario)
+            ->get(route('operario.home'))
+            ->assertOk()
+            ->assertSee('Elegí un galpón en la pestaña Galpón');
+
+        Livewire::actingAs($operario)
+            ->test(SelectorGalpon::class)
+            ->set('galponId', $galponA->id)
+            ->call('guardar')
+            ->assertRedirect(route('operario.home'));
+
+        $operario->refresh();
+        $this->assertSame($galponA->id, $operario->ultimo_galpon_id);
+
+        Livewire::actingAs($operario)
+            ->test(CargaHuevos::class)
+            ->set('huevos', '1500')
+            ->set('observacion', 'Turno mañana')
+            ->call('guardar')
+            ->assertRedirect(route('operario.home'));
+
+        $this->assertDatabaseHas('registros_operativos', [
+            'empresa_id' => $operario->empresa_id,
+            'galpon_id' => $galponA->id,
+            'user_id' => $operario->id,
+            'tipo' => RegistroOperativoTipo::Huevos->value,
+            'huevos' => 1500,
+            'observacion' => 'Turno mañana',
+        ]);
+
+        Livewire::actingAs($operario)
+            ->test(Home::class)
+            ->assertSee('1.500 huevos')
+            ->assertSee($galponA->displayName());
+
+        Livewire::actingAs($operario)
+            ->test(Historial::class)
+            ->assertSee('1.500 huevos')
+            ->assertSee('Turno mañana');
+
+        Livewire::actingAs($operario)
+            ->test(CargarHub::class)
+            ->assertSee('Huevos')
+            ->assertSee($galponA->displayName());
+
+        Livewire::actingAs($operario)
+            ->test(SelectorGalpon::class)
+            ->set('galponId', $galponB->id)
+            ->call('guardar')
+            ->assertRedirect(route('operario.home'));
+
+        $operario->refresh();
+        $this->assertSame($galponB->id, $operario->ultimo_galpon_id);
+    }
+
+    public function test_operario_cannot_see_galpones_from_other_empresa(): void
+    {
+        [$operario] = $this->createOperarioConGalpones();
+
+        $otraEmpresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $otraGranja = Granja::factory()->create(['empresa_id' => $otraEmpresa->id]);
+        $galponAjeno = Galpon::factory()->forGranja($otraGranja)->create();
+
+        Livewire::actingAs($operario)
+            ->test(SelectorGalpon::class)
+            ->assertDontSee($galponAjeno->displayName());
+
+        Livewire::actingAs($operario)
+            ->test(SelectorGalpon::class)
+            ->set('galponId', $galponAjeno->id)
+            ->call('guardar')
+            ->assertHasErrors(['galponId']);
+    }
+
+    public function test_dueno_is_redirected_away_from_operario_routes(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+
+        $dueno = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Dueno,
+            'must_change_password' => false,
+        ]);
+
+        $this->actingAs($dueno)
+            ->get(route('operario.home'))
+            ->assertRedirect(route('admin.home'));
+    }
+
+    public function test_carga_huevos_redirects_to_selector_when_no_galpon_selected(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        Galpon::factory()->forGranja($granja)->create();
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => null,
+        ]);
+
+        Livewire::actingAs($operario)
+            ->test(CargaHuevos::class)
+            ->assertRedirect(route('operario.galpon'));
+    }
+
+    public function test_carga_huevos_rejects_zero_quantity(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpones();
+        $operario->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
+
+        Livewire::actingAs($operario)
+            ->test(CargaHuevos::class)
+            ->set('huevos', '0')
+            ->call('guardar')
+            ->assertHasErrors(['huevos']);
+
+        $this->assertSame(0, RegistroOperativo::query()->count());
+    }
+
+    public function test_selector_rejects_unavailable_galpon(): void
+    {
+        [$operario, , , $granja] = $this->createOperarioConGalpones();
+
+        $galponMantenimiento = Galpon::factory()->forGranja($granja)->create([
+            'nombre' => 'Galpón en mantenimiento',
+            'estado' => GalponEstado::EnMantenimiento,
+        ]);
+
+        Livewire::actingAs($operario)
+            ->test(SelectorGalpon::class)
+            ->assertDontSee($galponMantenimiento->displayName());
+
+        Livewire::actingAs($operario)
+            ->test(SelectorGalpon::class)
+            ->set('galponId', $galponMantenimiento->id)
+            ->call('guardar')
+            ->assertHasErrors(['galponId']);
+    }
+
+    public function test_carga_huevos_redirects_when_galpon_became_unavailable(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpones();
+        $operario->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
+
+        $galpon->update(['estado' => GalponEstado::EnMantenimiento]);
+
+        Livewire::actingAs($operario)
+            ->test(CargaHuevos::class)
+            ->assertRedirect(route('operario.galpon'));
+    }
+
+    public function test_registrar_carga_huevos_action_rejects_unavailable_galpon(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpones();
+        $galpon->update(['estado' => GalponEstado::EnMantenimiento]);
+        $galpon->refresh();
+
+        $this->expectException(ValidationException::class);
+
+        app(RegistrarCargaHuevosAction::class)->execute($operario, $galpon, 100);
+    }
+
+    /**
+     * @return array{0: User, 1: Galpon, 2: Galpon, 3: Granja}
+     */
+    private function createOperarioConGalpones(): array
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+
+        $galponA = Galpon::factory()->forGranja($granja)->create([
+            'nombre' => 'Galpón A',
+            'codigo' => 'GA',
+        ]);
+
+        $galponB = Galpon::factory()->forGranja($granja)->create([
+            'nombre' => 'Galpón B',
+            'codigo' => 'GB',
+        ]);
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => null,
+        ]);
+
+        return [$operario, $galponA, $galponB, $granja];
+    }
+}

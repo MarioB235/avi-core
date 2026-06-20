@@ -2,17 +2,20 @@
 
 Índice del repositorio. El **código Laravel** vive en la raíz del repo; la verdad de contrato (negocio, BD, pantallas) está en `docs/`.
 
+**Tres capas de documentación:** producto (`01`–`12` + `reference/` = fuentes maestras técnicas y de negocio) · tooling humano (`cursor/` = plantillas mensajes 1–5, catálogo skills, gobernanza) · ejecutable Cursor (`.cursor/` = reglas, skills internos, comando slash). Las reglas `.mdc` solo enlazan; no duplican `reference/`. En `reference/` solo se documenta lo implementado (migración, clase o UI); la visión futura va en `12-plan-de-desarrollo.md`.
+
 ## Punto de entrada (agentes y humanos)
 
 | Archivo | Uso |
 |---------|-----|
 | [`00-contexto.md`](00-contexto.md) | **Contexto del proyecto** — stack, mapa de lectura, principios |
-| [`reference/estructura-base-datos.md`](reference/estructura-base-datos.md) | **Esquema BD** — tablas, campos, relaciones (mantener al día) |
-| [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md) | **Árbol del repo y carpetas Laravel** |
+| [`reference/estructura-base-datos.md`](reference/estructura-base-datos.md) | **Esquema BD** — solo tablas con migración; relaciones (mantener al día) |
+| [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md) | **Árbol del repo** — carpetas y clases existentes |
 | [`reference/arranque-local.md`](reference/arranque-local.md) | **Entorno local** — PostgreSQL, `.env`, migrate, serve |
 | [`reference/estandares-codigo.md`](reference/estandares-codigo.md) | **Estándares de código** (auditoría y desarrollo) |
 | [`reference/sistema-diseno.md`](reference/sistema-diseno.md) | **Sistema de diseño** — tokens Tailwind, componentes UI, accesibilidad |
 | [`CHANGELOG.md`](CHANGELOG.md) | Cambios de contrato documental |
+| [`cursor/02-avicore-mensajes-reutilizables.html`](cursor/02-avicore-mensajes-reutilizables.html) | **Plantillas copiables** mensajes 1–5 (abrir en navegador) |
 
 Raíz del repo: [`AGENTS.md`](../AGENTS.md) (resumen para Cursor/CLI).
 
@@ -45,6 +48,8 @@ Raíz del repo: [`AGENTS.md`](../AGENTS.md) (resumen para Cursor/CLI).
 | Evento WebSocket | `08-tiempo-real-eventos.md` | `07` si cambia patrón técnico |
 | Carpeta/clase estándar | `reference/estructura-proyecto.md` | `07` si cambia principio |
 | Entorno local (PG, migrate, serve) | `reference/arranque-local.md` | README raíz resume; `07` enlaza |
+
+**Gobernanza incremental (`01`–`12`):** detalle de pantallas (`02`), eventos (`08`), reportes (`09`) y datos demo ampliados (`10`) solo cuando exista ruta, UI o migración en el repo. Visión futura → [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md) §13; al implementar un módulo, expandir su doc maestra en el mismo PR + línea en `CHANGELOG.md`.
 
 ## Cursor (tooling, no negocio)
 

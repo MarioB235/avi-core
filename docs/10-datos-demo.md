@@ -18,42 +18,19 @@ Avícola Demo
 
 ## 3. Estructura
 
-- 1 empresa demo.
-- 2 granjas.
-- 4 galpones por granja.
-- 8 galpones en total.
-- Lotes activos.
-- Algunos galpones con más de un lote.
-- 30 días de registros.
+**Seed mínimo (implementado, `AvicoreEstructuraAvicolaSeeder`):**
+
+- 1 empresa demo (`Avícola Demo`).
+- 1 granja (Granja Norte).
+- 2 galpones (G-01, G-02).
+- 1 lote activo en Galpón 1.
+- Operario demo con `ultimo_galpon_id` = Galpón 1.
+
+**Demo completa (planificada):** múltiples granjas/galpones, 30 días de registros, escenarios para gráficos y reportes — ver [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md) Bloque 7 y skill `avicore-datos-demo`. No documentar aquí el detalle hasta que exista el seeder o dataset.
 
 ---
 
-## 4. Granjas sugeridas
-
-- Granja Norte.
-- Granja Sur.
-
----
-
-## 5. Galpones sugeridos
-
-### Granja Norte
-
-- Galpón N1.
-- Galpón N2.
-- Galpón N3.
-- Galpón N4.
-
-### Granja Sur
-
-- Galpón S1.
-- Galpón S2.
-- Galpón S3.
-- Galpón S4.
-
----
-
-## 6. Usuarios demo (auth — Bloque 2)
+## 4. Usuarios demo (auth — Bloque 2)
 
 Cargados con `AvicoreAuthSeeder` (`php artisan db:seed`). Empresa: **Avícola Demo** (`DEMO`).
 
@@ -80,56 +57,3 @@ Desactivar para entornos reales: `AVICORE_DEMO_LOGIN=false` o despliegue fuera d
 El login por documento individual sigue disponible (útil para pruebas puntuales o flujo de cambio de contraseña con usuarios de factory en tests).
 
 Credenciales para probar login en local: [`reference/arranque-local.md`](reference/arranque-local.md) § «Datos de prueba (login)».
-
-Los usuarios de granjas/galpones/lotes (sección 3) se cargarán en fases posteriores del plan; hoy solo existe el seed de auth.
-
----
-
-## 7. Escenarios demo
-
-1. Producción normal.
-2. Baja producción.
-3. Alta mortalidad.
-4. Galpón sin carga.
-5. Galpón con varios lotes.
-6. Registro anulado.
-7. Ajuste manual de aves vivas.
-8. Reporte diario generado.
-9. Dashboard en tiempo real.
-10. Carga desde celular y actualización en PC.
-
----
-
-## 8. Datos por 30 días
-
-Debe incluir variaciones para que los gráficos se vean completos.
-
-Ejemplo:
-
-- Producción diaria distinta por galpón.
-- Mortalidad baja en la mayoría.
-- Mortalidad alta en un galpón.
-- Un día sin carga en un galpón.
-- Alimentación cada ciertos días.
-
----
-
-## 9. Forma de carga
-
-Se recomienda usar:
-
-- Seeders.
-- CSV.
-- JSON.
-
----
-
-## 10. Uso
-
-Los datos demo sirven para:
-
-- Probar desarrollo.
-- Mostrar demos comerciales.
-- Probar reportes.
-- Probar tiempo real.
-- Probar alertas.

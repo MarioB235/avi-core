@@ -137,3 +137,11 @@ No puede:
 - Corregir registros ajenos.
 - Ver auditoría general.
 - Exportar reportes.
+
+---
+
+## 9. Policies implementadas (MVP operario)
+
+| Modelo | Policy | Reglas |
+|--------|--------|--------|
+| `Galpon` | `GalponPolicy` | `viewAny` y `view` si el usuario tiene `empresa_id` y coincide con `galpon.empresa_id`. El acceso a rutas `/operario` lo restringe además `EnsureOperarioAccess` (solo rol operario). La selección y carga validan galpón disponible en `OperarioGalponService` y `RegistrarCargaHuevosAction`. |

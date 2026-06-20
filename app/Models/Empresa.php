@@ -26,6 +26,26 @@ class Empresa extends Model
         return $this->hasMany(User::class);
     }
 
+    public function granjas(): HasMany
+    {
+        return $this->hasMany(Granja::class);
+    }
+
+    public function galpones(): HasMany
+    {
+        return $this->hasMany(Galpon::class);
+    }
+
+    public function lotes(): HasMany
+    {
+        return $this->hasMany(Lote::class);
+    }
+
+    public function registrosOperativos(): HasMany
+    {
+        return $this->hasMany(RegistroOperativo::class);
+    }
+
     public function permiteLogin(): bool
     {
         return $this->estado->permiteLogin();
