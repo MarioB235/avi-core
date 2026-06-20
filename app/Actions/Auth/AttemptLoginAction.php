@@ -3,6 +3,7 @@
 namespace App\Actions\Auth;
 
 use App\Models\User;
+use App\Services\DemoLoginService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
@@ -13,14 +14,32 @@ class AttemptLoginAction
 
     private const DECAY_SECONDS = 60;
 
+    public function __construct(
+        private readonly DemoLoginService $demoLogin,
+    ) {}
+
     /**
      * @return array{user: User, must_change_password: bool}
      */
-    public function execute(string $documento, string $password, bool $remember = false): array
+    public function execute(string $documento, string $password, bool $remember = false, ?string $demoRole = null): array
     {
         $documento = trim($documento);
 
         $this->ensureIsNotRateLimited($documento);
+
+        if ($this->demoLogin->isEnabled() && $this->demoLogin->credentialsMatch($documento, $password)) {
+            if (blank($demoRole)) {
+                throw ValidationException::withMessages([
+                    'demoRole' => 'Seleccioná un perfil para continuar.',
+                ]);
+            }
+
+            $user = $this->demoLogin->resolveUser($demoRole);
+
+            $this->assertUserMayLogin($user, $documento);
+
+            return $this->completeLogin($user, $documento, $remember);
+        }
 
         $candidates = User::query()
             ->with('empresa')
@@ -52,6 +71,13 @@ class AttemptLoginAction
 
         $user = $matches->first();
 
+        $this->assertUserMayLogin($user, $documento);
+
+        return $this->completeLogin($user, $documento, $remember);
+    }
+
+    private function assertUserMayLogin(User $user, string $documento): void
+    {
         if (! $user->isAdminAvicore()) {
             if ($user->empresa_id === null) {
                 $this->hitRateLimiter($documento);
@@ -69,7 +95,13 @@ class AttemptLoginAction
                 ]);
             }
         }
+    }
 
+    /**
+     * @return array{user: User, must_change_password: bool}
+     */
+    private function completeLogin(User $user, string $documento, bool $remember): array
+    {
         RateLimiter::clear($this->throttleKey($documento));
 
         auth()->login($user, $remember);

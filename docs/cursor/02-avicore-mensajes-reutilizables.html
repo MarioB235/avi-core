@@ -668,6 +668,10 @@ npm run dev</pre>
           Requiere <code>php artisan migrate</code> y <code>php artisan db:seed</code>.
           Vite (<code>:5173</code>) no es la URL de la app.
         </p>
+        <p class="when">
+          <strong>Modo rápido (local):</strong> documento <code>000000000</code>, contraseña <code>Avicore2026!</code>, elegir perfil en el selector de <code>/login</code>.
+          Desactivar: <code>AVICORE_DEMO_LOGIN=false</code> en <code>.env</code>.
+        </p>
         <table class="cred-table" aria-label="Usuarios de prueba tras db:seed">
           <thead>
             <tr>
@@ -678,6 +682,9 @@ npm run dev</pre>
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td colspan="4"><em>Selector demo (local): <code>000000000</code> + <code>Avicore2026!</code> + perfil</em></td>
+            </tr>
             <tr>
               <td>Admin AviCore</td>
               <td><code>900000001</code></td>
@@ -705,8 +712,8 @@ npm run dev</pre>
             <tr>
               <td>Operario demo</td>
               <td><code>200000001</code></td>
-              <td><code>Temporal2026!</code> (seed) · <code>Actual2026!</code> si ya cambió</td>
-              <td><code>/operario</code> tras cambio obligatorio</td>
+              <td><code>Avicore2026!</code></td>
+              <td><code>/operario</code></td>
             </tr>
           </tbody>
         </table>

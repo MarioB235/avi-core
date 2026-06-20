@@ -5,8 +5,15 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-06-20
+
+- **[docs]** Pasada cierre (mensaje 4): validación login sin empresa y campo perfil demo en `02`; reglas usuario sin empresa y login demo local en `05`; árbol tests auth en `estructura-proyecto`; criterio tests `DemoLoginService` en `estandares-codigo`. — `docs/02`, `docs/05`, `docs/reference/estructura-proyecto.md`, `docs/reference/estandares-codigo.md`
+- **[auth|demo]** Post-auditoría: cobertura tests ampliada (`DemoLoginServiceTest`, roles demo en `DemoLoginTest`, usuario sin empresa en `LoginFlowTest`); `Login.php` unifica detección demo (`$isDemoAttempt`). — `app/Livewire/Auth/Login.php`, `tests/Feature/Auth/`, `tests/Feature/Services/DemoLoginServiceTest.php`
+
 ## 2026-06-19
 
+- **[auth|demo]** Login demo local: credencial única `000000000` / `Avicore2026!` + selector de perfil en `/login` (`DemoLoginService`, solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN`); operario seed unificado sin cambio obligatorio. — `app/Services/DemoLoginService.php`, `app/Actions/Auth/AttemptLoginAction.php`, `app/Livewire/Auth/Login.php`, `config/avicore.php`, `database/seeders/AvicoreAuthSeeder.php`, `resources/views/livewire/auth/login.blade.php`, `tests/Feature/Auth/DemoLoginTest.php`, `tests/Feature/Ui/LoginViewTest.php`, `docs/02`, `docs/10`, `docs/reference/arranque-local.md`, `docs/cursor/02-avicore-mensajes-reutilizables.html`
+- **[fix/ui]** Cursor `pointer` en botones y controles clicables habilitados (login, admin, diálogos): regla base en `app.css` corrige el reset de Tailwind 4 (`cursor: default` en `<button>`). — `resources/css/app.css`, `docs/reference/sistema-diseno.md`
 - **[cursor]** Mensajes HTML enriquecidos (patrón ATLAS): directiva ▶ y pasos explícitos en mensajes 1–5; msg 1 preparar entorno (Git, docs, ramas); msg 2 salida ampliada (brechas, tests, plan ≤5); msg 3 orden de correcciones; msg 4 checklist docs + frase PR; msg 5 pasos Git/PR + plantilla condensada; acordeón referencia «qué documentar». Skills auditoria/cierre/git-pr y `03` alineados; índices `README`, `01-indice-agente`, `00-configuracion-cursor` y README raíz. — `02-avicore-mensajes-reutilizables.html`, skills auditoria/cierre-tarea/git-pr, `03-skills-avicore.md`, `docs/README.md`, `docs/cursor/01-indice-agente.md`, `docs/cursor/00-configuracion-cursor.md`, `README.md`
 - **[cursor]** Mensajes HTML: botón Copiar en cabecera (1–5 sin expandir); prompts acortados alineados a skills; msg 2 «Archivos a analizar:»; msg 3 tests en verde y maximizar %; hint con modo didáctico; sin prefijo `/avicore-architect-direct —` en textos copiables (el slash va en el chat). — `02-avicore-mensajes-reutilizables.html`
 - **[cursor]** Modo didáctico en chat: cabecera operativa (rol + skill interno + contexto) y bloques **Qué hice** / **Por qué** / **Qué sigue**; excepciones tabla auditoría (msg 2) y plantilla PR (msg 5). — `avicore-modo-respuesta-clara.mdc`, `06-modo-respuesta-clara.md`, comando architect-direct, `AGENTS.md`

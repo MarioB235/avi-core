@@ -91,7 +91,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 ## Quality gates
 
 1. Tokens `avicore-*`; sin inline styles.
-2. Estados `hover`, `focus-visible`, `disabled` en controles.
+2. Estados `hover`, `focus-visible`, `disabled` y `cursor: pointer` en controles clicables habilitados (regla base en `app.css`; `disabled:cursor-not-allowed` donde aplique).
 3. Contraste WCAG AA.
 4. Touch ≥ 44px en operario.
 5. Sin `!important` en Tailwind.

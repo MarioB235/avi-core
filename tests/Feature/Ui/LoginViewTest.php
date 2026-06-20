@@ -50,4 +50,27 @@ class LoginViewTest extends TestCase
         $this->assertStringContainsString('avicore-dialog__backdrop', $html);
         $this->assertStringContainsString('openDialog()', $html);
     }
+
+    public function test_login_renders_demo_role_select_in_local_environment(): void
+    {
+        $this->app['env'] = 'local';
+        config(['avicore.demo_login.enabled_flag' => true]);
+
+        $html = Livewire::test(Login::class)->html();
+
+        $this->assertStringContainsString('name="demoRole"', $html);
+        $this->assertStringContainsString('Perfil demo', $html);
+        $this->assertStringContainsString('Modo demo — solo desarrollo local', $html);
+        $this->assertStringContainsString('Admin AviCore', $html);
+    }
+
+    public function test_login_hides_demo_role_select_outside_local_environment(): void
+    {
+        config(['avicore.demo_login.enabled_flag' => true]);
+
+        $html = Livewire::test(Login::class)->html();
+
+        $this->assertStringNotContainsString('name="demoRole"', $html);
+        $this->assertStringNotContainsString('Perfil demo', $html);
+    }
 }
