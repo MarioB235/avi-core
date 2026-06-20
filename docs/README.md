@@ -52,7 +52,7 @@ Raíz del repo: [`AGENTS.md`](../AGENTS.md) (resumen para Cursor/CLI).
 |------|-----------|
 | [cursor/00-configuracion-cursor.md](cursor/00-configuracion-cursor.md) | Setup Cursor, flujo del agente, reglas |
 | [cursor/01-indice-agente.md](cursor/01-indice-agente.md) | Índice de enlaces del agente |
-| [cursor/02-avicore-mensajes-reutilizables.html](cursor/02-avicore-mensajes-reutilizables.html) | 5 mensajes naturales (acordeón + copiar) |
+| [cursor/02-avicore-mensajes-reutilizables.html](cursor/02-avicore-mensajes-reutilizables.html) | **5 mensajes** con directiva ▶ y pasos explícitos (acordeón + copiar); acordeones de referencia: comandos, documentación pre-PR, usuarios demo |
 | [cursor/03-skills-avicore.md](cursor/03-skills-avicore.md) | Catálogo de skills **internos** y docs por mensaje |
 | [cursor/04-modo-respuesta-caverman.md](cursor/04-modo-respuesta-caverman.md) | Modo respuesta corto (opcional) |
 | [cursor/05-evolucion-skills-y-docs.md](cursor/05-evolucion-skills-y-docs.md) | Cuándo crear/actualizar skills y docs |

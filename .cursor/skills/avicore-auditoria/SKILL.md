@@ -34,18 +34,34 @@ Flujo y plantilla usuario: mensajes 2 y 3 en `docs/cursor/02-avicore-mensajes-re
 
 ## Tabla clasificadora de cumplimiento
 | Archivo | Cumplimiento % | Negocio | Permisos | Código | UI | Tests | Arquitectura | Brecha principal |
+
+## Brechas relevantes
+[lista breve]
+
+## Tests faltantes
+[solo si impactan cumplimiento; si no aplica: «N/A»]
+
+## Plan priorizado (máx. 5 acciones)
+1. …
 ```
 
-Recomendaciones accionables solo en **Brecha principal**. Tags opcionales de complejidad (`yagni:`, `shrink:`, `stdlib:`, `delete:`) según `estandares-codigo.md` § Simplificación — **después** de negocio/permisos/tests; nunca contradecir `00-contexto`.
+**Reglas de salida:**
+- No considerar 100% si el cambio era testeable y faltan tests sin justificación explícita.
+- Distinguir deuda real de ruido operativo o código generado.
+- Mejoras menores y seguras: listar en el plan para mensaje 3; **no aplicar** en modo revisar.
+- Refactors grandes: solo en el plan, no ejecutar.
+
+Recomendaciones accionables en **Brecha principal** y en el plan. Tags opcionales (`yagni:`, `shrink:`, `stdlib:`, `delete:`) según `estandares-codigo.md` § Simplificación — **después** de negocio/permisos/tests; nunca contradecir `00-contexto`.
 
 ## Modo aplicar-correcciones (mensaje 3)
 
 Alcance: tabla del mensaje 2 en **este mismo chat**. No pedir `@rutas` de nuevo.
 
-1. Corregir filas Parcial/No; maximizar % por brecha (no parche mínimo).
-2. Tests significativos cuando Tests lo requiera.
-3. Prioridad: bugs → seguridad → multiempresa → validaciones → tests → UI.
-4. Sin refactors fuera del alcance auditado.
+1. Corregir filas Parcial/No según el **plan priorizado** del mensaje 2 (máx. 5 acciones); maximizar % por brecha (no parche mínimo).
+2. Orden: bugs → tests testeables → deuda localizada → resto del plan.
+3. Tests significativos cuando Tests lo requiera.
+4. Prioridad: bugs → seguridad → multiempresa → validaciones → tests → UI.
+5. Sin refactors grandes oportunistas ni cambios fuera del alcance auditado.
 
 **Verificación:** `php artisan test` (verde) · `npm run build` si front · `vendor/bin/pint` si PHP.
 

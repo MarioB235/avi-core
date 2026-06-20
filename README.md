@@ -65,7 +65,7 @@ docs/           Documentación de producto (01–12) y referencias
 ## Desarrollo con Cursor
 
 1. Abrí este workspace en Cursor.
-2. Usá `/avicore-architect-direct` y las plantillas en [`docs/cursor/02-avicore-mensajes-reutilizables.html`](docs/cursor/02-avicore-mensajes-reutilizables.html).
+2. Usá `/avicore-architect-direct` (primera línea del chat), pegá la plantilla del mensaje que corresponda y completá el bloque final — ver [`docs/cursor/02-avicore-mensajes-reutilizables.html`](docs/cursor/02-avicore-mensajes-reutilizables.html).
 
 ## Licencia
 

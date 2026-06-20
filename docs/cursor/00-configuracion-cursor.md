@@ -77,7 +77,7 @@ Catálogo (única tabla mensaje → skill): [`03-skills-avicore.md`](03-skills-a
 
 ## Uso diario
 
-1. `/avicore-architect-direct` + mensaje del HTML.
+1. `/avicore-architect-direct` en la primera línea del chat + mensaje del HTML + detalle al final (`Aquí te detallo la tarea:` en msg 1; `@rutas` solo al final del msg 2 en cierre 2→5).
 2. Leer docs del mapa en `00-contexto` (no todo el repo).
 3. Esquema nuevo → `reference/estructura-base-datos.md` + CHANGELOG.
 4. Publicar → mensaje **5** (autorización explícita).

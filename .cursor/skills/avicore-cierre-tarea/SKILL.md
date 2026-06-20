@@ -20,6 +20,9 @@ Paso 5 vs mensaje 4 del comando architect-direct: docs proactivas al implementar
 
 ## Salida
 
-Tabla `documento | alineado (sí/no) | acción` · resumen copiable para mensaje 5 («Resumen adicional»).
+1. Tabla `documento | alineado (sí/no) | acción (actualizar / OK / no aplica)`.
+2. Lista de documentos editados o pendientes de commitear en el PR.
+3. Frase para la PR: *"Verifiqué documentación y actualicé […] según el cambio."*
+4. Bloque resumen de sesión copiable para mensaje 5 («Resumen adicional»): objetivos, cambios técnicos, verificación y docs actualizadas.
 
-Un cambio conceptual → **un** documento maestra.
+Un cambio conceptual → **un** documento maestra. Tablas de referencia: acordeón «qué documentar» en `02-avicore-mensajes-reutilizables.html`.
