@@ -56,6 +56,27 @@
 - Consultas con scope `empresa_id`; evitar N+1 evidentes en listados.
 - Componentes y CSS reutilizables; sin duplicar lógica entre admin y operario si puede compartirse.
 
+## Simplificación y complejidad (Laravel-aware)
+
+**Después** de cumplir negocio, permisos, multiempresa y tests, evaluar si el código puede simplificarse:
+
+1. ¿Hace falta esta abstracción ahora? (YAGNI) — **excepciones AviCore:** Policy, FormRequest, Service/Action y tests Feature **no** son YAGNI por defecto.
+2. ¿Laravel o el stack ya lo resuelve? (Eloquent, Collections, validación nativa, componentes Blade existentes).
+3. ¿Una dependencia nueva es inevitable? Justificar en la tarea.
+
+Atajos deliberados (MVP, rendimiento provisional): marcar en código con comentario `avicore-defer: <techo>, <disparador para revisar>`. Ledger: skill interno `avicore-deuda-tecnica`.
+
+En **Brecha principal** de la auditoría (mensaje 2), tags opcionales de complejidad (solo si aplican; no sustituyen Negocio/Permisos):
+
+| Tag | Uso |
+|-----|-----|
+| `yagni:` | Abstracción o capa sin segundo uso real |
+| `shrink:` | Misma lógica con menos líneas (mostrar forma más corta) |
+| `stdlib:` | Reinventar algo que Laravel/PHP ya ofrece |
+| `delete:` | Código muerto o flexibilidad no usada |
+
+Ejemplo: `yagni: Repository con una implementación. Usar Eloquent directo hasta segundo origen de datos.`
+
 ## Git y PR
 
 - Conventional Commits: `tipo(scope): descripción`.

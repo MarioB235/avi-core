@@ -74,8 +74,15 @@
       gap: 0.5rem;
     }
     summary::-webkit-details-marker { display: none; }
-    summary::after { content: "▸"; color: var(--green-700); }
+    summary::after { content: "▸"; color: var(--green-700); flex-shrink: 0; }
     details[open] summary::after { transform: rotate(90deg); }
+    .summary-label { flex: 1; min-width: 0; }
+    .btn-copy-header {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      padding: 0.3rem 0.6rem;
+      border-color: var(--green-700);
+    }
     .badge {
       font-size: 0.7rem;
       font-weight: 500;
@@ -133,17 +140,14 @@
   <header>
     <h1>AviCore — 5 mensajes para copiar y pegar</h1>
     <p class="lead">
-      Escribí <strong>/avicore-architect-direct</strong>, pegá el mensaje que corresponda y completá solo la parte final
-      (<em>«Lo que necesito»</em>, archivos con <em>@ruta</em>, etc.). El agente elige el skill por vos.
+      Escribí <strong>/avicore-architect-direct</strong>, pegá el mensaje que corresponda y completá solo la parte final:
+      en el mensaje <strong>1</strong>, <em>«Lo que necesito»</em> (podés incluir <code>@rutas</code> ahí); en el cierre <strong>2→5</strong>, <code>@rutas</code> solo al final del mensaje <strong>2</strong>. El agente elige el skill por vos.
     </p>
     <p class="hint">
-      Flujo de cierre recomendado: <strong>2</strong> (auditar, solo lectura) → <strong>3</strong> (corregir según tabla) → <strong>4</strong> (docs, skills y tooling) → <strong>5</strong> (PR con resúmenes del 3 y 4).
-      Usá el <strong>2</strong>–<strong>5</strong> cuando quieras revisar calidad, corregir hallazgos, alinear docs o publicar en GitHub.
-      Los acordeones de <strong>comandos locales</strong> y <strong>usuarios demo</strong> son solo consulta (no se pega al agente).
-      Comandos detallados: <code>docs/reference/arranque-local.md</code>.
-      Los mensajes <strong>3</strong> y <strong>4</strong> cierran con un <strong>resumen copiable</strong> de lo realizado — pegalo en el mensaje <strong>5</strong>, sección «Resumen adicional», al abrir la PR.
-      Catálogo skills y docs por mensaje: <code>docs/cursor/03-skills-avicore.md</code>.
-      Las respuestas del agente van en prosa clara, no en informes con muchas listas.
+      <strong>Cierre 2→5 en un solo chat:</strong> pegá el <strong>2</strong> y adjuntá <code>@rutas</code> al final (único paso del cierre). Los mensajes <strong>3</strong>, <strong>4</strong> y <strong>5</strong> siguen en el mismo chat — sin volver a adjuntar.
+      Flujo: <strong>2</strong> auditar → <strong>3</strong> corregir (tests en verde) → <strong>4</strong> docs/tooling → <strong>5</strong> PR (pegá resúmenes del 3/4 en «Resumen adicional»).
+      Respuestas del agente en modo didáctico: cabecera + <strong>Qué hice</strong> / <strong>Por qué</strong> / <strong>Qué sigue</strong> — <code>docs/cursor/06-modo-respuesta-clara.md</code>.
+      Acordeones <strong>comandos</strong> y <strong>usuarios demo</strong>: solo consulta. Catálogo skills: <code>docs/cursor/03-skills-avicore.md</code>.
     </p>
     <div class="toolbar">
       <button type="button" class="btn" id="expand-all">Expandir todos</button>
@@ -154,120 +158,89 @@
   <div class="accordion" id="accordion">
 
     <details open>
-      <summary>1 — Pedir una tarea <span class="badge">el más usado</span></summary>
+      <summary>
+        <span class="summary-label">1 — Pedir una tarea <span class="badge">el más usado</span></span>
+        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar mensaje 1">Copiar</button>
+      </summary>
       <div class="panel">
-        <p class="when">
-          Skill según tarea: <code>docs/cursor/03-skills-avicore.md</code> · flujo: <code>.cursor/commands/avicore-architect-direct.md</code>
-        </p>
-        <pre data-copy>Quiero trabajar en AviCore. Al terminar, contame en lenguaje claro qué hiciste y qué conviene hacer después.
+        <p class="when">Skill según tarea · <code>docs/cursor/03-skills-avicore.md</code></p>
+        <pre data-copy>Implementá en AviCore según docs/cursor/03-skills-avicore.md (elegí el skill interno).
 
-Seguí .cursor/commands/avicore-architect-direct.md y elegí el skill interno según docs/cursor/03-skills-avicore.md.
-
-Si estamos arrancando: mirá en qué rama estamos, actualizá main si hace falta y creá una rama nueva con nombre descriptivo (por ejemplo feature/galpones). No hagas commit ni push hasta que yo autorice subir cambios.
-
-Lectura: docs/00-contexto.md y el mapa en docs/README.md según el módulo; docs/reference/estructura-base-datos.md o estructura-proyecto.md si hay datos o código. Implementá de punta a punta respetando reglas de negocio, permisos y multiempresa.
+Si arrancamos: rama nueva desde main actualizado; sin commit ni push hasta que autorice.
 
 Lo que necesito:</pre>
-        <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
       </div>
     </details>
 
     <details>
-      <summary>2 — Revisar calidad <span class="badge">solo lectura · inicio del cierre</span></summary>
+      <summary>
+        <span class="summary-label">2 — Revisar calidad <span class="badge">solo lectura · inicio del cierre</span></span>
+        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar mensaje 2">Copiar</button>
+      </summary>
       <div class="panel">
-        <p class="when">
-          Skill: <code>avicore-auditoria</code> (revisar) · base: <code>docs/reference/estandares-codigo.md</code> · tabla obligatoria.
-        </p>
-        <pre data-copy>Necesito que revises la calidad de AviCore en modo solo lectura: no modifiques ningún archivo ni apliques correcciones todavía.
+        <p class="when">Skill: <code>avicore-auditoria</code> (revisar) · <code>03-skills-avicore.md</code></p>
+        <pre data-copy>Auditoría solo lectura (skill avicore-auditoria). Sin modificar archivos.
 
-Seguí /avicore-architect-direct y el skill avicore-auditoria (modo revisar). Base: docs/reference/estandares-codigo.md y docs de producto según cada archivo (mapa en docs/README.md).
+Criterios: skill avicore-auditoria + docs/reference/estandares-codigo.md. Incluí tests relacionados en tests/.
 
-Alcance por archivo — solo lo que aplique:
-- Negocio: docs/05-reglas-de-negocio.md, flujos docs/02-pantallas-y-flujos.md
-- Permisos: docs/06-roles-y-permisos.md, Policies/Gates
-- Código: estandares-codigo.md, capas Actions/Services, validaciones, multiempresa
-- UI: docs/03-guia-visual-ui.md, docs/reference/sistema-diseno.md
-- Datos: docs/04-modelo-de-datos.md, docs/reference/estructura-base-datos.md
-- Tests: tests/ relacionados al código auditado; cobertura de comportamiento crítico
-- Arquitectura y escalabilidad: docs/07-arquitectura-tecnica.md, docs/11-checklist-modulos.md, docs/08-tiempo-real-eventos.md si aplica
-
-Si listo código de app, incluí en la revisión (o en la tabla) los tests Feature correspondientes en tests/.
-
-Archivos a revisar:
-
-
-Al terminar: resumen ejecutivo breve (2–4 líneas) y esta tabla por archivo:
+Salida: resumen breve + tabla:
 
 | Archivo | Cumplimiento % | Negocio | Permisos | Código | UI | Tests | Arquitectura | Brecha principal |
 
-Cada dimensión: OK / Parcial / No / N/A. Toda recomendación accionable va en Brecha principal; no listas aparte de mejoras. Esta tabla es la base del mensaje 3.</pre>
-        <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
+Esta tabla alimenta los mensajes 3–5 en este mismo chat.
+
+Archivos a analizar:</pre>
       </div>
     </details>
 
     <details>
-      <summary>3 — Corregir lo de la auditoría <span class="badge">tests en verde · listo para PR</span></summary>
+      <summary>
+        <span class="summary-label">3 — Corregir lo de la auditoría <span class="badge">tests en verde · listo para PR</span></span>
+        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar mensaje 3">Copiar</button>
+      </summary>
       <div class="panel">
-        <p class="when">
-          Skill: <code>avicore-auditoria</code> (aplicar) · usa la tabla del mensaje 2 en este chat.
-        </p>
-        <pre data-copy>Según la auditoría de este chat, aplicá en AviCore las correcciones para subir el cumplimiento de cada fila auditada lo máximo posible según la tabla y sus brechas — no un parche mínimo.
+        <p class="when">Skill: <code>avicore-auditoria</code> (aplicar) · mismo chat que el 2</p>
+        <pre data-copy>Aplicá correcciones según la tabla del mensaje 2 en este chat (skill avicore-auditoria, modo aplicar).
 
-Seguí /avicore-architect-direct y el skill avicore-auditoria (modo aplicar-correcciones). Corregí todas las dimensiones Parcial o No; implementá o ampliá tests cuando Tests lo requiera o la brecha lo pida (tests significativos, no triviales). Prioridad: bugs → seguridad → multiempresa → validaciones → tests críticos → UI/responsive.
+Subí el cumplimiento % de cada fila lo máximo posible; no parche mínimo. Tests en verde: php artisan test; npm run build si hubo front; pint si PHP.
 
-Verificación obligatoria antes de cerrar: php artisan test (todo en verde; corregí fallos hasta pasar), npm run build si tocaste front o CSS, vendor/bin/pint si tocaste PHP. Sin commit, push ni PR — dejá todo listo para el mensaje 5.
+Sin commit, push ni PR. Contrato alterado → anotar para mensaje 4.
 
-Si alguna corrección altera contrato documental, anotarlo para el mensaje 4. Si el flujo aplicado difirió del skill, seguí docs/cursor/05-evolucion-skills-y-docs.md.
-
-Al terminar, enviame un resumen breve y copiable: qué corregiste por archivo, % estimado tras corrección, verificaciones corridas (test/build) y pendientes. Lo pegaré en el mensaje 5, sección «Resumen adicional».</pre>
-        <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
+Al terminar: resumen copiable (por archivo, % estimado, verificaciones) para el mensaje 5, sección «Resumen adicional».</pre>
       </div>
     </details>
 
     <details>
-      <summary>4 — Alinear documentación y tooling <span class="badge">cierre · resumen para PR</span></summary>
+      <summary>
+        <span class="summary-label">4 — Alinear documentación y tooling <span class="badge">cierre · resumen para PR</span></span>
+        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar mensaje 4">Copiar</button>
+      </summary>
       <div class="panel">
-        <p class="when">
-          Skill: <code>avicore-cierre-tarea</code> · mapa: <code>docs/README.md</code> · evolución: <code>docs/cursor/05-evolucion-skills-y-docs.md</code>.
-          Completá <strong>Archivos modificados</strong> con <code>@ruta</code>.
-        </p>
-        <pre data-copy>Pasada de cierre: alineá documentación de producto y tooling del agente (skills, comando architect-direct) con lo que cambiamos en esta sesión.
+        <p class="when">Skill: <code>avicore-cierre-tarea</code> · mismo chat que 2 y 3</p>
+        <pre data-copy>Pasada de cierre (skill avicore-cierre-tarea).
 
-Seguí /avicore-architect-direct y el skill avicore-cierre-tarea. Mapa de fuentes maestras: docs/README.md. docs/CHANGELOG.md si cambió contrato. Si hubo desvío de flujo o convenciones: docs/cursor/05-evolucion-skills-y-docs.md, .cursor/skills/ y docs/cursor/03-skills-avicore.md.
+Alcance: tabla del mensaje 2 + archivos del mensaje 3 en este chat. Mapa: docs/README.md; CHANGELOG si cambió contrato; 05-evolucion si hubo desvío de flujo.
 
-Archivos modificados en esta sesión:
-
-
-Comprobá alineación según la tabla de fuente maestra en docs/README.md; actualizá solo lo necesario. Revisá coherencia de skills y mensajes HTML si cambió el flujo. No dupliques doc ya actualizada en la misma sesión al implementar.
-
-Al terminar: tabla documento | alineado (sí/no) | acción, más un resumen copiable (docs y skills tocados, gaps pendientes) para el mensaje 5, sección «Resumen adicional».</pre>
-        <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
+Salida: tabla documento | alineado | acción + resumen copiable para mensaje 5.</pre>
       </div>
     </details>
 
     <details>
-      <summary>5 — Subir a Git y abrir PR <span class="badge">vos autorizás</span></summary>
+      <summary>
+        <span class="summary-label">5 — Subir a Git y abrir PR <span class="badge">vos autorizás</span></span>
+        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar mensaje 5">Copiar</button>
+      </summary>
       <div class="panel">
-        <p class="when">
-          Skill: <code>avicore-git-pr</code> · auth GitHub: <code>docs/cursor/00-configuracion-cursor.md</code>.
-          Pegá en «Resumen adicional» el cierre de los mensajes <strong>3</strong> y/o <strong>4</strong> si los usaste.
-        </p>
-        <pre data-copy>Te autorizo a hacer commit, push y crear la pull request en AviCore.
+        <p class="when">Skill: <code>avicore-git-pr</code> · auth: <code>00-configuracion-cursor.md</code></p>
+        <pre data-copy>Te autorizo commit, push y PR en AviCore (skill avicore-git-pr).
 
-Seguí /avicore-architect-direct y el skill avicore-git-pr (plantilla PR completa). Auth GitHub: docs/cursor/00-configuracion-cursor.md.
+Base: chat completo (tabla 2, correcciones 3, docs 4) + diff actual. Verificá test/build según skill antes de commitear.
 
-Revisá git status y diff, confirmá que no se sube nada sensible (.env), corré php artisan test y npm run build si hay código Laravel, commit con Conventional Commits (feat, fix, refactor, docs, chore…), push de la rama y PR con MCP user-github (o gh pr create si falla).
+Resumen adicional (pegá cierre del mensaje 3 y/o 4):
 
-Redactá título y descripción según lo que hicimos y acordamos en esta conversación (archivos tocados, módulo, verificaciones).
-
-Resumen adicional (pegá acá el resumen copiable del mensaje 3 y/o 4, si aplica):
-
-
-Datos del repositorio:
-Rama (dejar vacío para usar la actual):
-Base (main u otra):
-Título sugerido (opcional):</pre>
-        <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar mensaje</button></div>
+Rama (vacío = actual):
+Base (main):
+Título (opcional):</pre>
       </div>
     </details>
 
@@ -520,20 +493,35 @@ npm run dev</pre>
       }, 2800);
     }
 
+    async function handleCopy(btn, getText) {
+      const text = getText().trim();
+      if (!text) {
+        showToast("No se encontró el texto del mensaje.", true);
+        return;
+      }
+      const ok = await copyToClipboard(text);
+      showToast(
+        ok ? "Copiado al portapapeles" : "No se pudo copiar. Seleccioná el texto del recuadro gris y Ctrl+C.",
+        !ok
+      );
+    }
+
+    document.querySelectorAll(".btn-copy-header").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const details = btn.closest("details");
+        const pre = details?.querySelector("pre[data-copy]");
+        await handleCopy(btn, () => pre?.textContent ?? "");
+      });
+    });
+
     document.querySelectorAll(".btn-copy").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         e.preventDefault();
         const pre = btn.closest(".copy-row")?.previousElementSibling;
-        const text = (pre?.matches?.("pre[data-copy]") ? pre.textContent : btn.closest(".panel")?.querySelector("pre[data-copy]")?.textContent ?? "").trim();
-        if (!text) {
-          showToast("No se encontró el texto del mensaje.", true);
-          return;
-        }
-        const ok = await copyToClipboard(text);
-        showToast(
-          ok ? "Copiado al portapapeles" : "No se pudo copiar. Seleccioná el texto del recuadro gris y Ctrl+C.",
-          !ok
-        );
+        const text = pre?.matches?.("pre[data-copy]") ? pre.textContent : "";
+        await handleCopy(btn, () => text);
       });
     });
 

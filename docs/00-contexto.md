@@ -102,12 +102,11 @@ No implementar sin leer docs del módulo · lógica crítica en Blade · saltar 
 
 ## Tooling Cursor
 
-`/avicore-architect-direct` — el usuario escribe en lenguaje natural; el arquitecto elige skills internos.  
-Plantillas: `docs/cursor/02-avicore-mensajes-reutilizables.html`
+Flujo slash (7 pasos): [`.cursor/commands/avicore-architect-direct.md`](../.cursor/commands/avicore-architect-direct.md) · plantillas: `docs/cursor/02-avicore-mensajes-reutilizables.html` · catálogo skills: `docs/cursor/03-skills-avicore.md`
 
 **MCP:** Context7 (`user-context7`) para dudas de API/stack tras docs del proyecto; GitHub (`user-github`) solo mensaje 5 / `avicore-git-pr`.
 
-**Chat:** respuestas en prosa natural, lenguaje llano (`docs/cursor/06-modo-respuesta-clara.md`).
+**Chat:** `docs/cursor/06-modo-respuesta-clara.md` (regla `.mdc` always-apply).
 
 ---
 

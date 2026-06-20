@@ -98,6 +98,40 @@ Tras guardar: `must_change_password` pasa a falso y redirección al home del rol
 
 ---
 
+## 3.1 Pantalla: Inicio admin (MVP)
+
+### Objetivo
+
+Landing post-login para roles con panel administrativo (Dueño, Administrativo, Encargado, Admin AviCore): contexto de empresa, KPIs en estado vacío y guía de configuración inicial.
+
+### Usuarios
+
+- Dueño.
+- Administrativo.
+- Encargado.
+- Admin AviCore.
+
+### Elementos
+
+- Layout admin: sidebar verde (`avicore-primary`), logo con subtítulo «Gestión operativa avícola» en blanco, secciones «Navegación» y «Cuenta», perfil con iniciales y «Colapsar menú» (escritorio).
+- Header: barra blanca sticky — título e contexto `{empresa o AviCore} · {rol}` en la misma línea; pill de fecha, campana (deshabilitada hasta módulo) y perfil con avatar a la derecha.
+- **Masthead** (escritorio): tarjeta con foto de granja, copy «¡Bienvenido de nuevo!» y KPIs en fila debajo; contenido alineado a `max-w-7xl`.
+- Hero con foto de granja (`admin-home-hero`) — **solo escritorio** (≥1024px); hero móvil reservado para asset futuro.
+- Cuatro KPIs: Producción de hoy, Galpones activos, Alertas (empty state), Usuarios activos (conteo real por empresa; Admin AviCore ve total de usuarios activos).
+- Card «Estado inicial»: checklist Granjas / Galpones / Usuarios (Pendiente) y botón «Configurar estructura» deshabilitado hasta existir módulos.
+- Card «Actividad reciente»: empty state hasta haya operación.
+
+### Navegación lateral (MVP)
+
+- **Inicio** — activo en `/admin`.
+- **Dashboard**, **Estructura**, **Usuarios**, **Reportes**, **Auditoría**, **Notificaciones** — visibles; ítems futuros deshabilitados con badge «Próximamente» (sin contador falso en notificaciones).
+
+### Comportamiento
+
+Tras login exitoso (sin cambio de contraseña pendiente), roles no operario llegan a `/admin` con esta pantalla.
+
+---
+
 ## 4. Pantalla: Dashboard
 
 ### Objetivo

@@ -1,29 +1,25 @@
 ---
 name: avicore-cierre-tarea
-description: Verifica y actualiza documentación AviCore según archivos o módulos indicados por el usuario. Mensaje 4 — pasada dedicada; si el paso 5 del architect ya actualizó la fuente maestra, solo verificar gaps.
+description: Verifica y actualiza documentación AviCore según el alcance del chat (mensajes 2–3). Mensaje 4 — pasada dedicada; ver gaps si el paso 5 del architect ya actualizó la fuente maestra.
 disable-model-invocation: true
 ---
 
 # AviCore — Documentación (mensaje 4)
 
-Pasada **dedicada** de alineación documental. Si en la misma sesión el architect ya actualizó la fuente maestra (paso 5), verificar que no falte nada — no duplicar.
+Plantilla usuario: mensaje 4 en `docs/cursor/02-avicore-mensajes-reutilizables.html`.
 
-El usuario completa la sección **«Archivos modificados en esta sesión»** del mensaje 4 (`@rutas`, una por línea) o adjunta archivos al chat al pegar. Sin esa lista, pedir las rutas antes de editar docs.
+Alcance: tabla del mensaje 2 + archivos tocados en el mensaje 3 (**mismo chat**). No pedir `@rutas` de nuevo.
 
-## Base obligatoria
+Paso 5 vs mensaje 4 del comando architect-direct: docs proactivas al implementar; mensaje 4 = revisión dedicada o verificación de gaps — no duplicar.
 
-- `docs/README.md` — tabla «Regla de una sola fuente maestra» (mapa canónico negocio→05, pantallas→02, etc.)
-- `docs/CHANGELOG.md` — si cambió contrato documental
-- Mensaje usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html` (mensaje 4) · catálogo: `docs/cursor/03-skills-avicore.md`
+## Base
 
-## Qué documento actualizar
-
-Usar **solo** la tabla en `docs/README.md` § «Regla de una sola fuente maestra». Revisar docs pertinentes a los archivos listados por el usuario.
-
-Si hubo desvío de flujo o convenciones: `docs/cursor/05-evolucion-skills-y-docs.md`, `.cursor/skills/` afectados, `docs/cursor/03-skills-avicore.md` y coherencia con `02-avicore-mensajes-reutilizables.html` / comando architect-direct.
+- `docs/README.md` — tabla «Regla de una sola fuente maestra»
+- `docs/CHANGELOG.md` — si cambió contrato
+- Desvío de flujo: `docs/cursor/05-evolucion-skills-y-docs.md`, skills afectados, `03-skills-avicore.md`
 
 ## Salida
 
-Tabla `documento | alineado (sí/no) | acción` · docs y skills tocados · **resumen copiable para PR** (mensaje 5, «Resumen adicional»).
+Tabla `documento | alineado (sí/no) | acción` · resumen copiable para mensaje 5 («Resumen adicional»).
 
-Un cambio conceptual → **un** documento maestra; no duplicar.
+Un cambio conceptual → **un** documento maestra.

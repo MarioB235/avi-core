@@ -29,7 +29,7 @@ Mensaje usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html` (mensaje 5
 
 ### C — Pull Request
 
-**Redacción del cuerpo:** basar resumen y objetivos en el **chat actual** (diff + conversación). Si el usuario completó «Resumen adicional (opcional)» en el mensaje 5, integrarlo sin contradecir el diff ni este chat.
+**Redacción del cuerpo:** basar resumen y objetivos en el **chat actual** (mensajes 2–4, diff y conversación). Los `@rutas` del cierre van solo en el mensaje 2; no pedir re-adjuntar en el 5. Si el usuario completó «Resumen adicional» en el mensaje 5, integrarlo sin contradecir el diff ni este chat.
 
 **Antes de crear la PR:** `gh auth status` y comparar la cuenta activa con el `owner` del remoto (`git remote get-url origin`). El push puede funcionar con credenciales de Git distintas a las de `gh` — si no coinciden, `gh pr create` fallará aunque el push haya salido bien.
 

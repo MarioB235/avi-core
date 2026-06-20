@@ -9,6 +9,7 @@
         'danger' => 'bg-red-50 text-red-800 ring-1 ring-inset ring-avicore-danger/25',
         'info' => 'bg-blue-50 text-blue-800 ring-1 ring-inset ring-avicore-info/25',
         'primary' => 'bg-avicore-soft text-avicore-primary ring-1 ring-inset ring-avicore-primary/15',
+        'sidebar' => 'bg-white/15 text-white/90 ring-1 ring-inset ring-white/20',
         default => 'bg-gray-100 text-gray-700 ring-1 ring-inset ring-gray-500/10',
     };
 @endphp

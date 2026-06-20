@@ -28,6 +28,14 @@ class LogoComponentTest extends TestCase
         $this->assertStringContainsString('text-3xl', $html);
     }
 
+    public function test_on_primary_theme_wraps_icon_with_white_background(): void
+    {
+        $html = Blade::render('<x-ui.logo theme="on-primary" subtitle="Gestión operativa avícola" />');
+
+        $this->assertStringContainsString('bg-white', $html);
+        $this->assertStringContainsString('text-white', $html);
+    }
+
     public function test_isotype_only_variant_exposes_accessible_label(): void
     {
         $html = Blade::render('<x-ui.logo :showName="false" />');

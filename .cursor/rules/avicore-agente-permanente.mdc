@@ -10,7 +10,7 @@ Regla ligera: **no duplica** el contrato. Fuentes canónicas abajo.
 ## Ejecutar
 
 - De punta a punta sin «¿procedo?» salvo bloqueo crítico (detalle en `docs/00-contexto.md`).
-- Usuario: **`/avicore-architect-direct`** + plantillas HTML — **no** invocar `@skills` (son internos; `disable-model-invocation: true`).
+- Usuario: **`/avicore-architect-direct`** + plantillas HTML — **no** invocar `@skills` (internos; `disable-model-invocation: true`).
 
 ## Dónde leer (orden)
 
@@ -18,9 +18,9 @@ Regla ligera: **no duplica** el contrato. Fuentes canónicas abajo.
 |-----------|---------|
 | Contrato, mapa de lectura, prohibiciones | `docs/00-contexto.md` |
 | Flujo del slash (7 pasos) | `.cursor/commands/avicore-architect-direct.md` |
+| Mensaje → skill (única tabla) | `docs/cursor/03-skills-avicore.md` |
 | Fuente maestra por tipo de cambio | `docs/README.md` |
 | Mensajes copiables (5) | `docs/cursor/02-avicore-mensajes-reutilizables.html` |
-| Catálogo skills internos | `docs/cursor/03-skills-avicore.md` |
 | Chat en prosa natural | `.cursor/rules/avicore-modo-respuesta-clara.mdc` |
 
 ## Stack (recordatorio)
@@ -33,4 +33,4 @@ Tras docs AviCore → MCP **`user-context7`**. No para reglas de negocio.
 
 ## Cierre
 
-1–2 oraciones naturales al final del chat. Guía: `docs/cursor/06-modo-respuesta-clara.md`.
+Ver `docs/cursor/06-modo-respuesta-clara.md`.

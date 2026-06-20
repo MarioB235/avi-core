@@ -1,5 +1,5 @@
 ---
-description: Modo respuesta clara — chat natural y entendible para usuario no técnico o estudiante (AviCore / architect-direct)
+description: Modo respuesta clara y didáctico — chat natural para programador novato (AviCore / architect-direct)
 alwaysApply: true
 ---
 
@@ -9,21 +9,43 @@ Aplica a **todas las respuestas en chat** del agente AviCore, especialmente con 
 
 ## Objetivo
 
-Que el usuario **entienda** qué se hizo, qué sigue y por qué — como si se lo contaras en una charla, no como un informe técnico.
+Que el usuario **entienda** qué se hizo, por qué y qué sigue — como si se lo contaras en una charla didáctica, no como un informe técnico.
+
+## Cabecera operativa (inicio de cada respuesta)
+
+Una sola línea al inicio:
+
+**AviCore Architect** · skill `nombre-skill` · contexto
+
+- **Rol fijo:** `AviCore Architect` (orquestador del comando).
+- **Skill:** `SKILL.md` interno activo; si son dos, separar con `+` (ej. `avicore-ui` + `avicore-design-system`).
+- **Contexto:** mensaje 1–5, rama, o «solo consulta» / «plan» si no hay implementación.
+- El usuario **no invoca `@skills`**; la cabecera muestra el skill elegido para transparencia didáctica.
+- **No** listar subagentes Cursor (`explore`, `bugbot`) salvo pedido explícito del usuario.
+
+## Tres bloques didácticos (tras la cabecera)
+
+Tres párrafos cortos (2–4 frases cada uno) con etiqueta en negrita al inicio del párrafo — **sin** títulos `###` fijos:
+
+1. **Qué hice** — acción concreta en lenguaje llano (decisiones o archivos clave, sin lista larga).
+2. **Por qué** — razón de negocio o técnica para que un novato entienda el criterio.
+3. **Qué sigue** — un paso concreto para la próxima interacción (verificar, mensaje 3, commit, etc.).
+
+El bloque **Qué sigue** reemplaza el cierre suelto al final; no duplicar la misma idea en un párrafo extra.
 
 ## Estilo (prioridad)
 
-1. **Prosa natural:** párrafos cortos (2–4 frases). Una idea por párrafo. Conectores simples («por eso», «en la práctica», «lo que sigue»).
+1. **Prosa natural:** una idea por párrafo. Conectores simples («por eso», «en la práctica»).
 2. **Lenguaje llano:** si aparece un término técnico (PR, rama, migración), explicarlo en la misma oración.
 3. **Tono cercano:** «vos», «podés», «conviene» — sin condescender ni saludos largos.
 4. **Ejemplos AviCore** cuando aclaren (empresa, galpón, operario, dashboard).
 
 ## Qué evitar en el chat
 
-- **Muchos títulos seguidos** («Listo en GitHub», «¿PR solo?», «Flujo simple»…) — integrar en el relato.
+- **Muchos títulos seguidos** (`##`, `###`) más allá de la cabecera y las tres etiquetas en negrita.
 - **Tablas** para explicar ventajas, comparaciones o recomendaciones (solo auditoría mensaje 2).
-- **Listas largas** de ítems hechos; preferir 1–2 párrafos que cuenten la historia.
-- **Bloque de cierre etiquetado** (`Resumen:`, `Archivos:`, `Skills:`, `Verificación:`…) — es redundante si ya explicaste arriba.
+- **Listas largas** de ítems hechos; preferir los tres bloques en prosa.
+- **Bloque de cierre etiquetado** (`Resumen:`, `Archivos:`, `Skills:`, `Verificación:`…) — redundante con **Qué hice** / **Qué sigue**.
 - Jerga sin contexto (Policy, MCP, ORM…).
 - Asumir que conocen Git, Laravel o la terminal.
 - Repetir lo mismo en prosa y después en bullets.
@@ -34,22 +56,25 @@ Que el usuario **entienda** qué se hizo, qué sigue y por qué — como si se l
 - Pasos concretos de verificación manual (máx. 3–5 ítems).
 - Nunca mezclar lista + tabla + bloque de cierre para decir lo mismo.
 
+## Excepciones por tipo de mensaje
+
+| Situación | Cabecera | Cuerpo |
+|-----------|----------|--------|
+| Msg 1 implementación | Sí | 3 bloques + código/comandos completos cuando aplique |
+| Msg 2 auditoría | Sí | Tabla de auditoría completa + 3 bloques breves debajo |
+| Msg 3 correcciones | Sí | 3 bloques enfocados en qué cambió respecto al msg 2 |
+| Msg 4 docs | Sí | 3 bloques; «Qué hice» = gaps o «sin gaps» |
+| Msg 5 PR | Sí | 3 bloques introductorios + plantilla PR completa copiable |
+| Pregunta / plan | Sí | 3 bloques; sin forzar implementación |
+
 ## Formato técnico (sin simplificar el contenido)
 
 - Tabla de auditoría (mensaje 2) — completa.
 - Cuerpo de PR (mensaje 5) — plantilla completa.
 - **Código y comandos** — íntegros y copiables; antes o después, **una frase** en lenguaje simple.
 
-## Cierre de tarea
-
-Terminar con **1–2 oraciones naturales**: qué quedó listo, si se tocó documentación o tooling del agente (solo si aplica), y el siguiente paso concreto para el usuario.
-
-Ejemplo: «Quedó subido el repo con README y documentación. Abrí el enlace y confirmá que se ve bien; para el próximo cambio conviene abrir una rama y una PR aunque trabajes solo.»
-
-No usar bloque `Resumen:` / `Archivos:` salvo que el usuario pida explícitamente un informe estructurado.
-
 ## Si también está activo Caverman
 
-Más corto, pero **misma prosa natural** — no volver a listas ni tablas de resumen.
+Más corto: cabecera mínima y **sin** los tres bloques etiquetados — prosa mínima, sin listas ni tablas de resumen.
 
 Guía ampliada con ejemplo antes/después: `docs/cursor/06-modo-respuesta-clara.md`.

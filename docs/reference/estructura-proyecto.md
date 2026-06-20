@@ -11,8 +11,8 @@ Principios y stack: `docs/07-arquitectura-tecnica.md`.
 avi-core/
 ├── app/                      # Laravel — Actions, Services, Livewire, Policies, Events
 ├── resources/views/          # layouts (público, admin, operario), components/ui
-├── scripts/                  # dev.php (composer dev), optimize-brand-assets.py
-├── tests/Feature/            # Auth/, Ui/ (componentes x-ui), …
+├── scripts/                  # dev.php (composer dev), optimize-brand-assets.py, check-agent-docs-sync.cjs
+├── tests/Feature/            # Auth/, Services/, Ui/ (componentes x-ui), …
 ├── docs/                     # Documentación de producto + referencias
 ├── .cursor/                  # Reglas, skills, comando del arquitecto
 ├── AGENTS.md
@@ -42,12 +42,15 @@ app/
 │   ├── Galpones/
 │   └── Auditoria/
 ├── Http/
-│   └── Middleware/           # EnsurePasswordChanged, EnsureAdminPanelAccess, EnsureOperarioAccess, RedirectIfAuthenticated
+│   ├── Middleware/           # EnsurePasswordChanged, EnsureAdminPanelAccess, EnsureOperarioAccess, RedirectIfAuthenticated
+│   └── View/
+│       └── Composers/        # Inyección de datos a vistas Blade (p. ej. AdminHomeComposer → pages.admin.home)
 ├── Services/
 │   ├── DashboardService.php
 │   ├── AuditoriaService.php
 │   ├── ReporteService.php
 │   ├── EmpresaContextService.php
+│   ├── AdminHomeService.php        # Datos Inicio admin (contexto, KPI usuarios, checklist MVP)
 │   └── SupportContactService.php   # URLs de soporte auth (config/avicore.php)
 ├── Support/
 │   └── IconSvg.php                 # Carga SVG Lucide desde disco o fallback inline
@@ -83,10 +86,11 @@ resources/
 │   ├── layouts/
 │   │   └── app.blade.php     # layout Livewire (páginas completas)
 │   ├── components/
+│   │   ├── admin/             # home-hero (Inicio admin)
 │   │   ├── auth/             # support-contact-dialog (recuperación MVP)
 │   │   ├── layouts/          # público, admin, operario-móvil (Blade)
-│   │   │   └── partials/     # admin-nav, admin-sidebar-inner, auth-brand-panel
-│   │   └── ui/               # button, input, card, badge, alert, logo, icon, dialog, kpi-card, nav-link
+│   │   │   └── partials/     # admin-nav, admin-sidebar-inner, admin-header-toolbar, admin-menu-trigger, auth-brand-panel
+│   │   └── ui/               # button, input, card, badge, alert, logo, icon, dialog, kpi-card, nav-link, empty-state, setup-checklist, user-avatar
 │   │       └── icons/        # inline.blade.php — fallback SVG cuando no hay archivo Lucide
 │   └── pages/
 │       ├── admin/home.blade.php
@@ -106,6 +110,7 @@ resources/
 | Capa | Ubicación | Responsabilidad |
 |------|-----------|-----------------|
 | Reglas de negocio | `Actions/`, `Services/` | Validaciones complejas, cálculos, anulaciones |
+| Datos a vistas Blade estáticas | `Http/View/Composers/` | Inyección sin lógica en Blade (`Route::view`, p. ej. Inicio admin) |
 | HTTP / UI dinámica | `Livewire/` | Estado de formularios, listados |
 | Autorización | `Policies/` | Rol + `empresa_id` |
 | Tiempo real | `Events/` + canales privados | Ver `docs/08-tiempo-real-eventos.md` |

@@ -4,6 +4,39 @@ El arquitecto (`/avicore-architect-direct`) debe **mantener el repo al día**, n
 
 ---
 
+## Jerarquía canónica (una fuente por tema)
+
+| Tema | Fuente canónica |
+|------|-----------------|
+| Flujo slash (7 pasos) | `.cursor/commands/avicore-architect-direct.md` |
+| Mensaje → skill | `docs/cursor/03-skills-avicore.md` (única tabla) |
+| Plantillas usuario | `docs/cursor/02-avicore-mensajes-reutilizables.html` |
+| Procedimiento auditoría / PR / docs | Skills `avicore-auditoria`, `git-pr`, `cierre-tarea` |
+| Gobernanza tooling | Este archivo (`05`) |
+| Contrato producto | `docs/00-contexto.md` |
+
+---
+
+## Matriz de mantenimiento
+
+| Si cambia… | Editar (en orden) |
+|------------|-------------------|
+| Flujo 2→5 / adjuntos / pasos del slash | Comando → HTML `02` → skill afectado → `03` → `CHANGELOG [cursor]` |
+| Nuevo skill enrutable (msg 1–5) | `SKILL.md` → `03` (única tabla) → enrutamiento msg 1 en comando si aplica → `CHANGELOG` |
+| Criterios auditoría | `estandares-codigo.md` → skill `avicore-auditoria` → HTML msg 2 |
+| Tono chat | `avicore-modo-respuesta-clara.mdc` → `06` (ejemplos); comando: enlace breve |
+| MCP / auth PR | `00-configuracion-cursor.md` § MCP → skill `git-pr` → una línea en `00-contexto` § Tooling |
+| Contrato producto | Fuente maestra `docs/README.md` → `CHANGELOG` |
+| Anti-drift tooling agente | `node scripts/check-agent-docs-sync.cjs` tras cambiar comando, `03`, `AGENTS` o `00-config` |
+
+---
+
+## Referencias externas
+
+[`docs/ponytail/`](../ponytail/README.md) — repositorio vendoreado de **ideas** (deuda con comentarios, anti-drift, tags YAGNI). **No** es dependencia del agente AviCore: no instalar plugins Ponytail ni copiar skills/commands tal cual. Patrones adoptados en AviCore: `avicore-defer:`, tags en auditoría, `scripts/check-agent-docs-sync.cjs`. Origen: [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail).
+
+---
+
 ## Cuándo actualizar un skill existente
 
 Hacerlo en la **misma sesión** si detectás:
@@ -58,7 +91,7 @@ Proactivo al cerrar **cualquier** tarea con cambio de contrato (paso 5 del archi
 
 | Señal | Acción |
 |-------|--------|
-| Nuevo skill enrutable desde mensaje 1–5 | Tabla paso 3 |
+| Nuevo skill enrutable desde mensaje 1–5 | `03-skills-avicore.md` + enrutamiento msg 1 en comando si aplica |
 | Nuevo paso obligatorio del flujo | Renumerar en `.cursor/commands/avicore-architect-direct.md` |
 | Nueva política MCP (Context7, GitHub) | Paso 2 o 3 + `00-configuracion-cursor.md` |
 | Cambió tono o audiencia del chat | `avicore-modo-respuesta-clara.mdc` + `06-modo-respuesta-clara.md` + sección Modo chat del comando |

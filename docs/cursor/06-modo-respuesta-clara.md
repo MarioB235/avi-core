@@ -1,59 +1,67 @@
-# Modo respuesta clara (chat)
+# Modo respuesta clara y didáctico (chat)
 
-Respuestas **naturales** y **entendibles** para quien no es desarrollador o está aprendiendo. Regla: `.cursor/rules/avicore-modo-respuesta-clara.mdc` (`alwaysApply: true` en este repo).
+Respuestas **naturales** y **entendibles** para quien está aprendiendo. Regla: `.cursor/rules/avicore-modo-respuesta-clara.mdc` (`alwaysApply: true` en este repo).
 
 ## Principio
 
-Contar qué pasó y qué sigue **en prosa**, como en una conversación. El agente ejecuta igual (docs, skills, MCP, pasos 1–7 del architect); solo cambia **cómo se escribe el chat**.
+Contar qué pasó, por qué y qué sigue **en prosa didáctica**, con transparencia sobre qué skill interno activó el orquestador. El agente ejecuta igual (docs, skills, MCP, pasos 1–7 del architect); solo cambia **cómo se escribe el chat**.
 
 ## Anatomía de una buena respuesta
 
-1. **Apertura:** qué se hizo o qué respondés, en una oración clara.
-2. **Desarrollo:** el porqué y los detalles importantes en 1–3 párrafos cortos.
-3. **Recomendación** (si aplica): integrada en el texto, no en tabla.
-4. **Cierre:** una frase con el siguiente paso concreto.
+1. **Cabecera operativa** (1 línea): rol + skill interno + contexto (mensaje 1–5, rama, o «solo consulta»).
+2. **Qué hice** — párrafo corto con la acción concreta.
+3. **Por qué** — párrafo con el criterio (negocio o técnico).
+4. **Qué sigue** — párrafo con el siguiente paso para el usuario.
+5. **Artefactos técnicos** (si aplican): código, comandos, tabla auditoría o plantilla PR — completos y copiables.
 
-Longitud orientativa: **3–6 párrafos** para tareas medianas; menos si la tarea fue trivial.
+Longitud orientativa: cabecera + **3 párrafos** + artefactos; menos si la tarea fue trivial.
+
+Plantilla de cabecera:
+
+```text
+**AviCore Architect** · skill `avicore-ui` · mensaje 1
+```
 
 ## Ejemplo: antes vs después
 
-Contexto: subir el repo a GitHub, crear README, usuario pregunta si conviene PR trabajando solo.
+Contexto: reorganizar el hero del admin home en móvil.
 
-### Antes (evitar)
-
-Muchos bloques, tabla de ventajas, lista duplicada y cierre etiquetado:
-
-```text
-Listo en GitHub
-- README.md en la raíz
-- .gitignore para .env
-- Primer commit: 50 archivos
-
-¿PR aunque trabajes solo?
-| Ventaja | Qué significa |
-| Historial claro | ... |
-
-Flujo simple:
-1. main = estable
-2. rama feature/...
-
-Resumen: Repo en GitHub...
-Archivos: README.md, .gitignore
-Verificación: push exitoso
-Siguiente: Abrí el repo...
-```
-
-### Después (objetivo)
+### Antes (solo prosa, sin transparencia ni estructura)
 
 ```text
 Ya está todo en GitHub: https://github.com/MarioB235/avi-core
 
-Armé un README en la raíz que explica qué es AviCore, en qué estado está el proyecto y dónde están la documentación y la config de Cursor. También dejé un .gitignore para que no se suban secretos (como el .env) ni carpetas pesadas de Laravel o Node cuando agregues código. El primer commit incluye la documentación completa y la carpeta .cursor/.
+Armé un README en la raíz que explica qué es AviCore…
 
-Sobre tu pregunta de las pull requests (PR): sí, conviene usarlas aunque trabajes solo. Cada cambio queda en su rama y podés revisar el diff en GitHub como si fuera otra persona; cuando sumes gente al equipo, el flujo ya está armado. Para este arranque subimos directo a main, que es lo normal en un repo vacío. De acá en adelante: rama feature/nombre → commits → PR → revisás → merge. Para docs chicas podés ir a main si querés; para código Laravel mejor siempre con PR (mensaje 5 del HTML).
+Sobre tu pregunta de las pull requests…
 
-Abrí el repo en el navegador y confirmá que el README se ve bien; el próximo cambio empezalo en una rama feature/….
+Abrí el repo en el navegador y confirmá que el README se ve bien…
 ```
+
+Funciona, pero el novato no sabe qué agente/skill actuó ni dónde está el «por qué» vs el «qué sigue».
+
+### Después (objetivo didáctico)
+
+```text
+**AviCore Architect** · skill `avicore-ui` · mensaje 1
+
+**Qué hice** Reorganicé el hero del admin home usando el componente `home-hero` y moví los KPIs a una grilla de dos columnas en móvil.
+
+**Por qué** En pantallas chicas los números quedaban apilados y costaba comparar galpones; el diseño en `02-pantallas-y-flujos` pide jerarquía visual clara antes de los accesos rápidos.
+
+**Qué sigue** Corré `npm run dev`, abrí `/admin` en el teléfono o DevTools responsive y contame si el hero se lee bien; si está ok, en el mismo chat podés mandar el mensaje 2 para auditar.
+```
+
+## Reglas por tipo de mensaje
+
+| Mensaje | Cabecera | Cuerpo |
+|---------|----------|--------|
+| 1 — implementación | skill principal (+ secundario si aplica) · mensaje 1 | 3 bloques + código/comandos |
+| 2 — auditoría | skill `avicore-auditoria` · mensaje 2 | Tabla `%` completa + 3 bloques breves |
+| 3 — correcciones | skill según corrección · mensaje 3 | 3 bloques: qué cambió vs msg 2 |
+| 4 — docs | skill `avicore-cierre-tarea` · mensaje 4 | 3 bloques; gaps o «sin gaps» |
+| 5 — PR | skill `avicore-git-pr` · mensaje 5 | 3 bloques intro + plantilla PR completa |
+| Consulta / plan | skill inferido o «consulta» | 3 bloques; sin implementar salvo pedido |
 
 ## Qué sigue completo (no simplificar)
 
@@ -71,11 +79,11 @@ Por defecto en AviCore: regla con `alwaysApply: true`. El comando `/avicore-arch
 
 | Modo | Efecto |
 |------|--------|
-| **Clara** (default) | Prosa natural, párrafos cortos |
-| **Caverman** (opcional) | Menos palabras; **no** volver a listas/tablas de resumen |
+| **Clara / didáctico** (default) | Cabecera + 3 bloques en prosa |
+| **Caverman** (opcional) | Cabecera mínima; sin bloques etiquetados; menos palabras |
 
-Para solo Caverman técnico: `avicore-modo-caverman.mdc` con `alwaysApply: true` y `avicore-modo-respuesta-clara.mdc` con `alwaysApply: false` (no recomendado si el usuario es no técnico).
+Para solo Caverman técnico: `avicore-modo-caverman.mdc` con `alwaysApply: true` y `avicore-modo-respuesta-clara.mdc` con `alwaysApply: false` (no recomendado si el usuario está aprendiendo).
 
 ## Convivencia con architect-direct
 
-El flujo interno (docs, skills, MCP, pasos 1–7) no cambia. El paso 7 ya no exige bloque `Resumen:` / `Archivos:`; el cierre va integrado en el último párrafo del chat.
+El flujo interno (docs, skills, MCP, pasos 1–7) no cambia. El paso 7 usa el bloque **Qué sigue** en lugar de un cierre suelto duplicado. El usuario no usa `@skills`; la cabecera muestra el skill interno para transparencia didáctica.

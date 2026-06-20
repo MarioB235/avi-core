@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "check:agent-docs": "node scripts/check-agent-docs-sync.cjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

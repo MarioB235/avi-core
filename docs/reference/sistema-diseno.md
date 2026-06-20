@@ -20,7 +20,7 @@ Registro: [awesome-design-skills](https://github.com/bergside/awesome-design-ski
 1. **Mucho aire** — una idea por bloque; pocos elementos por pantalla.
 2. **Color con criterio** — verde solo en marca, botón primario y acentos puntuales.
 3. **Sin motion decorativo** — solo `transition-colors` en controles; respetar `prefers-reduced-motion`.
-4. **Sin capas visuales extra** — no gradientes de fondo, blur, sombras fuertes ni paneles duplicados.
+4. **Sin capas visuales extra** — no gradientes de fondo globales, blur, sombras fuertes ni paneles duplicados. **Excepciones:** tarjeta auth sobre foto; hero Inicio admin (`<x-admin.home-hero>`: `<img>` a ancho completo de la columna principal, KPIs en `max-w-7xl`; grid + `translateY(55%)` en ≥1024px).
 5. **Tipografía 12/14/16/20/24/32** — rejilla 8pt; labels en uppercase solo en KPIs/tablas.
 
 ## Assets de marca
@@ -30,6 +30,8 @@ Registro: [awesome-design-skills](https://github.com/bergside/awesome-design-ski
 | `logo-avicore.svg` | Isotipo con fondo transparente — **única copia:** `public/images/brand/logo-avicore.svg` (`x-ui.logo`) |
 | `background-mobile.jpg` | Fondo ≤1023px — fuente en `resources/images/brand/`, copia en `public/images/brand/` |
 | `background-desktop.jpg` | Fondo ≥1024px — idem |
+| `admin-home-hero.jpg` | Hero Inicio admin (≥1024px) — fuente PNG/JPG en `resources/images/brand/`; degradado inferior documentado como excepción clean |
+| `admin-home-hero-mobile.jpg` | Reservado — hero Inicio admin en móvil (pendiente asset) |
 
 Tras cambiar fondos JPEG/PNG: `python scripts/optimize-brand-assets.py` (comprime y sincroniza `public/`). El logo SVG se edita o reemplaza solo en `public/images/brand/`.
 
@@ -67,11 +69,14 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.input` | `aria-invalid`, estados error, `hint`, `toggle-password` (un solo toggle visible); icono leading en `avicore-primary`, toggle ojo en `avicore-muted` |
 | `x-ui.card` | Borde simple, sin sombra; `padding`: `default`, `compact`, `none` |
 | `x-ui.alert` | `info`, `success`, `warning`, `danger` |
-| `x-ui.badge` | Estados semánticos |
-| `x-ui.logo` | Marca — `public/images/brand/logo-avicore.svg` (verde `#1F5E3B`) + subtítulo opcional; `stacked` + `size="auth-mobile"` en login móvil |
+| `x-ui.badge` | Estados semánticos; variante `sidebar` para badges sobre fondo verde |
+| `x-ui.logo` | Marca — `public/images/brand/logo-avicore.svg` (verde `#1F5E3B`) + subtítulo opcional; `theme="on-primary"` en sidebar admin (texto blanco, icono sobre fondo blanco); `stacked` + `size="auth-mobile"` en login móvil |
 | `x-ui.icon` | SVG inline por nombre (`menu`, `document`, `lock`, `eye`, `circle-x`, `mail`, `message-circle-check`, …) — nav, inputs, acciones; fuente Lucide en `resources/images/icons/` |
-| `x-ui.kpi-card` | Label + valor + hint; para dashboard |
-| `x-ui.nav-link` | Sidebar admin |
+| `x-ui.kpi-card` | Label + valor + hint; prop `icon` opcional; para dashboard e Inicio admin |
+| `x-ui.nav-link` | Sidebar admin — props `icon`, `active`, `disabled` |
+| `x-ui.empty-state` | Empty state con icono, título y descripción |
+| `x-ui.setup-checklist` | Lista de pasos de configuración inicial con badge de estado |
+| `x-ui.user-avatar` | Iniciales circulares; prop `decorative` cuando el nombre visible está al lado (header/sidebar) — si no, `role="img"` + `aria-label` |
 | `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger`; telón `.avicore-dialog__backdrop` (`bg-avicore-text/65`, fade sin scale), panel centrado, focus trap (Tab/Escape), restauración de foco al cerrar, bloquea scroll del body |
 | `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
 
@@ -80,7 +85,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | Layout | Archivo | Uso |
 |--------|---------|-----|
 | Público | `components/layouts/public.blade.php` | Login, cambio de contraseña — split marca + tarjeta (≥1024px); móvil: logo apilado + bottom sheet (`.avicore-auth-mobile-brand`, `.avicore-auth-card`); partial `auth-brand-panel` |
-| Admin | `components/layouts/admin.blade.php` | Sidebar fija (desktop) + drawer Alpine (móvil); partials `admin-sidebar-inner`, `admin-nav` |
+| Admin | `components/layouts/admin.blade.php` | Shell `.avicore-admin-*`: sidebar sticky verde (`bg-avicore-primary`, nav clara, labels de sección) + drawer Alpine (móvil), header y main con gutter común (`avicore-admin-gutter`); partials `admin-sidebar-inner`, `admin-nav`, `admin-header-toolbar`, `admin-menu-trigger` |
 | Operario | `components/layouts/operario-mobile.blade.php` | Vista móvil — fondo marca responsive |
 
 ## Quality gates
