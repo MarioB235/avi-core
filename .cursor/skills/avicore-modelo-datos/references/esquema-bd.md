@@ -2,8 +2,8 @@
 
 **Fuente maestra del esquema implementado.** Solo tablas con migración en el repo; no documentar DDL especulativo aquí.  
 Al añadir una tabla: migración primero, luego esta sección y entrada en `docs/CHANGELOG.md`.  
-Bloques y tablas futuras (sin migración): `docs/12-plan-de-desarrollo.md`.  
-Criterios y reglas del modelo: `docs/04-modelo-de-datos.md`. Reglas de negocio: `docs/05-reglas-de-negocio.md`.
+Bloques y tablas futuras (sin migración): `plan-desarrollo.md`.  
+Criterios del modelo: [`criterios-modelo.md`](criterios-modelo.md). Reglas de negocio: `avicore-negocio/references/reglas.md`.
 
 **Motor:** PostgreSQL · **Convención:** `empresa_id` en tablas operativas salvo excepciones documentadas.
 
@@ -50,7 +50,7 @@ erDiagram
 | documento | string | No | Único por `empresa_id` |
 | email | string | Sí | |
 | password | string | No | |
-| rol | string | No | Ver `docs/06-roles-y-permisos.md` |
+| rol | string | No | Ver `avicore-negocio/references/permisos.md` |
 | activo | boolean | No | |
 | must_change_password | boolean | No | |
 | last_login_at | timestamp | Sí | |
@@ -139,8 +139,8 @@ erDiagram
 
 ## Checklist al modificar esquema
 
-- [ ] `reference/estructura-base-datos.md` actualizado
+- [ ] `esquema-bd.md` actualizado
 - [ ] Migración / modelo alineados
-- [ ] `05-reglas-de-negocio.md` si cambia regla
-- [ ] `02-pantallas-y-flujos.md` si cambia formulario
-- [ ] `CHANGELOG.md` con entrada breve
+- [ ] `avicore-negocio/references/reglas.md` si cambia regla
+- [ ] `avicore-ui/references/pantallas-flujos.md` si cambia formulario
+- [ ] `docs/CHANGELOG.md` con entrada breve

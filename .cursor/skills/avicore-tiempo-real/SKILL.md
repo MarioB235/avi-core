@@ -1,23 +1,17 @@
 ---
 name: avicore-tiempo-real
 description: Implementa eventos Laravel Reverb y Echo en AviCore para dashboard, alertas y supervisión. Usar cuando se necesita actualización en tiempo real, WebSockets o canales privados por empresa.
-disable-model-invocation: true
 ---
 
 # AviCore — Tiempo real (Reverb + Echo)
 
-## Documentación
+## Leer primero
 
-- `docs/08-tiempo-real-eventos.md` (si es stub planificado, leer `docs/12-plan-de-desarrollo.md` Bloque 6; al implementar, expandir `08` + `CHANGELOG`)
-- `docs/07-arquitectura-tecnica.md`
-- `docs/05-reglas-de-negocio.md`
-- `docs/06-roles-y-permisos.md`
-
-## Definir
-
-- Evento Laravel, canal privado, payload mínimo
-- Componente que escucha y roles autorizados
-- Si afecta dashboard, alertas o supervisión
+| Referencia | Contenido |
+|------------|-----------|
+| [`references/eventos.md`](references/eventos.md) | Eventos y canales |
+| `avicore-contexto/references/arquitectura.md` | Stack |
+| `avicore-negocio/references/` | Reglas y permisos |
 
 ## Reglas
 
@@ -25,16 +19,8 @@ disable-model-invocation: true
 - No usar tiempo real en CRUD simple sin valor
 - Auditar si surge de acción crítica
 
-## No usar tiempo real en
-
-CRUD empresas/granjas/galpones/lotes/usuarios, configuración, exportaciones.
-
 ## Verificación
 
 1. Cargar dato en una sesión
 2. Ver actualización en otra sesión
 3. Usuario de otra empresa sin acceso al canal
-
-## Entrada del usuario
-
-Evento o flujo a implementar.

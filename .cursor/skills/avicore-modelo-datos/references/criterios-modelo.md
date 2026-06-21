@@ -1,6 +1,6 @@
 # 04 — Modelo de datos inicial
 
-> **Esquema canónico (tablas y campos):** [`reference/estructura-base-datos.md`](reference/estructura-base-datos.md) — actualizar primero al cambiar BD y registrar en [`CHANGELOG.md`](CHANGELOG.md).
+> **Esquema canónico (tablas y campos):** [`esquema-bd.md`](esquema-bd.md) — actualizar primero al cambiar BD y registrar en [`docs/CHANGELOG.md`](../../../../docs/CHANGELOG.md).
 
 ## 1. Criterio general
 
@@ -21,7 +21,7 @@ El modelo debe soportar:
 
 ## 2. Entidades y reglas (resumen)
 
-Detalle de columnas en [`reference/estructura-base-datos.md`](reference/estructura-base-datos.md).
+Detalle de columnas en [`esquema-bd.md`](esquema-bd.md).
 
 | Entidad | Reglas clave |
 |---------|----------------|
@@ -29,10 +29,10 @@ Detalle de columnas en [`reference/estructura-base-datos.md`](reference/estructu
 | **users** | Login por documento; único por `(empresa_id, documento)`; documento único global si `empresa_id` null (Admin AviCore); contraseña temporal obliga cambio |
 | **granjas / galpones / lotes** | Jerarquía empresa → granja → galpón → lote; carga por galpón |
 | **registros_operativos** | Fecha/hora = `created_at`; anulación lógica con motivo |
-| **movimientos_aves** | *Planificado* — traslados, ajustes, cierres; ver `12-plan-de-desarrollo.md` |
-| **auditorias** | *Planificado* — acciones críticas; ver `12-plan-de-desarrollo.md` |
-| **alertas** | *Planificado* — dashboard y supervisión; ver `12-plan-de-desarrollo.md` |
-| **configuraciones_empresa** | *Planificado* — maple/cajón, logos, módulos; ver `12-plan-de-desarrollo.md` |
+| **movimientos_aves** | *Planificado* — traslados, ajustes, cierres; ver `avicore-contexto/references/plan-desarrollo.md` |
+| **auditorias** | *Planificado* — acciones críticas; ver `avicore-contexto/references/plan-desarrollo.md` |
+| **alertas** | *Planificado* — dashboard y supervisión; ver `avicore-contexto/references/plan-desarrollo.md` |
+| **configuraciones_empresa** | *Planificado* — maple/cajón, logos, módulos; ver `avicore-contexto/references/plan-desarrollo.md` |
 
 ---
 

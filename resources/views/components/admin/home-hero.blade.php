@@ -3,7 +3,7 @@
     'welcomeSubtitle' => 'Aquí tienes un resumen general de la operación.',
 ])
 
-{{-- Hero Inicio admin: tarjeta con foto + copy; KPIs debajo. Móvil: avicore-defer: admin-home-hero-mobile.jpg, cuando exista asset en sistema-diseno.md --}}
+{{-- Hero Inicio admin: tarjeta con foto + copy; KPIs debajo. Móvil: avicore-defer: admin-home-hero-mobile.jpg, cuando exista asset en tokens-componentes.md --}}
 <section class="avicore-home-hero">
     <div class="avicore-home-hero__card">
         <figure class="avicore-home-hero__figure" aria-hidden="true">

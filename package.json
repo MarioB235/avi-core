@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "check:agent-docs": "node scripts/check-agent-docs-sync.cjs"
+        "check:agent-docs": "node scripts/check-agent-docs-sync.cjs && node scripts/check-skill-references.cjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

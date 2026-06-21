@@ -6,65 +6,31 @@ disable-model-invocation: true
 
 # AviCore — Auditoría
 
-Flujo y plantilla usuario: mensajes 2 y 3 en `docs/cursor/02-avicore-mensajes-reutilizables.html` · catálogo: `docs/cursor/03-skills-avicore.md`.
+Flujo y plantilla usuario: mensajes 2 y 3 en `docs/02-avicore-mensajes-reutilizables.html` · catálogo: `.cursor/skills/README.md`.
 
 ## Modo revisar (mensaje 2) — SOLO LECTURA
 
 **No modificar código.**
 
-1. Base: `docs/reference/estandares-codigo.md` + docs según alcance (mapa en `docs/README.md`).
+1. Base: [`references/estandares-codigo.md`](references/estandares-codigo.md) + `references/` del skill dueño según alcance.
 2. Auditar solo archivos con `@rutas` al final del mensaje 2.
-3. Si hay código de app, incluir tests relacionados en `tests/` (tabla o gap en Tests).
-4. Por archivo: % global (0–100) y dimensiones OK / Parcial / No / N/A.
+3. Si hay código de app, incluir tests relacionados en `tests/`.
 
 | Dimensión | Contraste principal |
 |-----------|---------------------|
-| Negocio | `docs/05`, flujos `docs/02` |
-| Permisos | `docs/06`, Policies/Gates |
-| Código | `estandares-codigo.md`, capas, multiempresa |
-| UI | `docs/03`, `reference/sistema-diseno.md` |
-| Tests | Par en `tests/`, comportamiento crítico |
-| Arquitectura | `docs/07`, escalabilidad, capas |
+| Negocio | `avicore-negocio/references/` |
+| Permisos | `avicore-negocio/references/permisos.md` |
+| Código | `references/estandares-codigo.md` |
+| UI | `avicore-design-system/references/` |
+| Tests | Par en `tests/` |
+| Arquitectura | `avicore-contexto/references/arquitectura.md` |
 
-**Salida obligatoria:**
-
-```markdown
-## Resumen ejecutivo
-[2–4 líneas]
-
-## Tabla clasificadora de cumplimiento
-| Archivo | Cumplimiento % | Negocio | Permisos | Código | UI | Tests | Arquitectura | Brecha principal |
-
-## Brechas relevantes
-[lista breve]
-
-## Tests faltantes
-[solo si impactan cumplimiento; si no aplica: «N/A»]
-
-## Plan priorizado (máx. 5 acciones)
-1. …
-```
-
-**Reglas de salida:**
-- No considerar 100% si el cambio era testeable y faltan tests sin justificación explícita.
-- Distinguir deuda real de ruido operativo o código generado.
-- Mejoras menores y seguras: listar en el plan para mensaje 3; **no aplicar** en modo revisar.
-- Refactors grandes: solo en el plan, no ejecutar.
-
-Recomendaciones accionables en **Brecha principal** y en el plan. Tags opcionales (`yagni:`, `shrink:`, `stdlib:`, `delete:`) según `estandares-codigo.md` § Simplificación — **después** de negocio/permisos/tests; nunca contradecir `00-contexto`.
+**Salida obligatoria:** resumen + tabla clasificadora + brechas + plan ≤5 acciones.
 
 ## Modo aplicar-correcciones (mensaje 3)
 
-Alcance: tabla del mensaje 2 en **este mismo chat**. No pedir `@rutas` de nuevo.
+Alcance: tabla del mensaje 2 en **este mismo chat**. Orden: bugs → tests → deuda → resto.
 
-1. Corregir filas Parcial/No según el **plan priorizado** del mensaje 2 (máx. 5 acciones); maximizar % por brecha (no parche mínimo).
-2. Orden: bugs → tests testeables → deuda localizada → resto del plan.
-3. Tests significativos cuando Tests lo requiera.
-4. Prioridad: bugs → seguridad → multiempresa → validaciones → tests → UI.
-5. Sin refactors grandes oportunistas ni cambios fuera del alcance auditado.
+**Verificación:** `php artisan test` · `npm run build` si front · `vendor/bin/pint` si PHP.
 
-**Verificación:** `php artisan test` (verde) · `npm run build` si front · `vendor/bin/pint` si PHP.
-
-Sin commit/push/PR. Si altera contrato → anotar para mensaje 4. Desvío de flujo → `05-evolucion-skills-y-docs.md`.
-
-**Salida:** % estimado por archivo · verificaciones · resumen copiable para mensaje 5 («Resumen adicional»).
+Sin commit/push/PR. Si altera contrato → anotar para mensaje 4.

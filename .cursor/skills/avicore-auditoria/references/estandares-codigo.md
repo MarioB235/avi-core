@@ -1,6 +1,6 @@
 # Referencia — Estándares de código AviCore
 
-**Fuente maestra** para revisión y auditoría de código. Complementa `07-arquitectura-tecnica.md` y `03-guia-visual-ui.md`.
+**Fuente maestra** para revisión y auditoría de código. Complementa `avicore-contexto/references/arquitectura.md` y `avicore-design-system/references/guia-visual.md`.
 
 ---
 
@@ -27,12 +27,12 @@
 - **Prohibido `!important`** salvo excepción documentada en el PR (último recurso).
 - **Sin estilos inline** en Blade/HTML (`style="..."`).
 - Reutilizar componentes y clases del proyecto; no duplicar utilidades arbitrarias.
-- Diseño responsivo; operario con botones grandes y áreas táctiles (ver `03-guia-visual-ui.md`).
+- Diseño responsivo; operario con botones grandes y áreas táctiles (ver `avicore-ui/references/patrones-mobile-operario.md` y `tokens-componentes.md`).
 
 ## JavaScript / Alpine
 
 - Alpine solo para interacciones pequeñas; no reimplementar lógica de negocio.
-- Echo/Reverb según `08-tiempo-real-eventos.md`; canales privados y `empresa_id`.
+- Echo/Reverb según `avicore-tiempo-real/references/eventos.md`; canales privados y `empresa_id`.
 
 ## Librerías y dependencias
 
@@ -43,12 +43,12 @@
 
 ## Tests (PHPUnit / Feature)
 
-- Comportamiento crítico con **Feature tests** en `tests/Feature/` (auth, permisos, multiempresa, reglas de negocio, flujos documentados en `docs/02`).
+- Comportamiento crítico con **Feature tests** en `tests/Feature/` (auth, permisos, multiempresa, reglas de negocio, flujos en `avicore-ui/references/pantallas-flujos.md`).
 - Componentes UI reutilizables (`x-ui.*`, `x-auth.*`): tests de renderizado/accesibilidad en `tests/Feature/Ui/` cuando el componente expone contrato estable (iconos, inputs, dialog, support-contact-dialog, etc.).
 - Datos de configuración expuestos en UI (p. ej. contacto de soporte): validar en Service (`SupportContactService`), no confiar solo en Blade; tests Feature del service y del componente.
 - Servicios de auth con ramas de error (`DemoLoginService::resolveUser`): tests Feature en `tests/Feature/Services/` y flujos Livewire en `tests/Feature/Auth/`.
 - Al auditar código de aplicación, revisar también el **test correspondiente** en `tests/` (o marcar gap si falta).
-- Tests significativos: flujos reales, no asserts triviales. PostgreSQL vía `avicore_test` (ver `docs/reference/arranque-local.md`).
+- Tests significativos: flujos reales, no asserts triviales. PostgreSQL vía `avicore_test` (ver `arranque-local.md`).
 - Tras correcciones post-auditoría: `php artisan test` debe quedar en verde antes de la PR.
 
 ## Escalabilidad y mantenibilidad
@@ -85,9 +85,9 @@ Ejemplo: `yagni: Repository con una implementación. Usar Eloquent directo hasta
 
 ## Auditoría
 
-Al auditar, contrastar cada archivo contra este documento y la documentación maestra del módulo (`05`, `06`, `02`, `03`, `04`, `07`, `08`, `11`, `reference/` según aplique).
+Al auditar, contrastar cada archivo contra este documento y las `references/` del skill dueño (`avicore-negocio`, `avicore-ui`, `avicore-modelo-datos`, `avicore-design-system`, `avicore-contexto`, según aplique).
 
 **Dimensiones de la tabla (mensaje 2):** Negocio · Permisos · Código · UI · Tests · Arquitectura — cada una: OK / Parcial / No / N/A.
 
 - **Tests:** para código de app, verificar par en `tests/`; brecha si falta cobertura de reglas críticas del archivo.
-- **Arquitectura:** capas, multiempresa, Policies, escalabilidad según `07-arquitectura-tecnica.md`.
+- **Arquitectura:** capas, multiempresa, Policies, escalabilidad según `avicore-contexto/references/arquitectura.md`.

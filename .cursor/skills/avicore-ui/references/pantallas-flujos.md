@@ -236,7 +236,7 @@ Permitir elegir galpón de trabajo.
 
 ## 8–10. Cargas operario (pendientes)
 
-**Estado:** planificado — fases 13–15 en [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md) §2. Reglas de negocio en [`05-reglas-de-negocio.md`](05-reglas-de-negocio.md). Placeholders en hub `/operario/cargar`.
+**Estado:** planificado — fases 13–15 en [`avicore-contexto/references/plan-desarrollo.md`](../../avicore-contexto/references/plan-desarrollo.md) §2. Reglas de negocio en [`avicore-negocio/references/reglas.md`](../../avicore-negocio/references/reglas.md). Placeholders en hub `/operario/cargar`.
 
 | Pantalla | Fase | Nota breve |
 |----------|------|------------|
@@ -252,11 +252,11 @@ Detalle de campos y validaciones se añadirá aquí al implementar cada pantalla
 
 | Pantalla | Fase 12-plan | Fuente al implementar |
 |----------|--------------|------------------------|
-| Empresas | 7 | `02` § nueva + `06` permisos |
-| Granjas | 8 | `02` + CRUD admin |
-| Galpones | 9 | `02` + `reference/estructura-base-datos` |
-| Lotes | 10 | `02` + reglas en `05` |
-| Usuarios | 5 | `02` + `06` |
-| Auditoría | 16 | `02` + tabla `auditorias` (cuando exista migración) |
-| Reportes | 19 | [`09-reportes-exportaciones.md`](09-reportes-exportaciones.md) |
+| Empresas | 7 | Esta guía § nueva + `avicore-negocio/references/permisos.md` |
+| Granjas | 8 | Esta guía + CRUD admin |
+| Galpones | 9 | Esta guía + `avicore-modelo-datos/references/esquema-bd.md` |
+| Lotes | 10 | Esta guía + `avicore-negocio/references/reglas.md` |
+| Usuarios | 5 | Esta guía + permisos |
+| Auditoría | 16 | Esta guía + tabla `auditorias` (cuando exista migración) |
+| Reportes | 19 | `avicore-reportes/references/reportes.md` |
 

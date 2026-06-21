@@ -10,17 +10,18 @@ Regla ligera: **no duplica** el contrato. Fuentes canónicas abajo.
 ## Ejecutar
 
 - De punta a punta sin «¿procedo?» salvo bloqueo crítico (detalle en `docs/00-contexto.md`).
-- Usuario: **`/avicore-architect-direct`** + plantillas HTML — **no** invocar `@skills` (internos; `disable-model-invocation: true`).
+- Usuario: **`/avicore-architect-direct`** + plantillas HTML — **no** invocar `@skills` manualmente.
 
 ## Dónde leer (orden)
 
 | Necesidad | Archivo |
 |-----------|---------|
-| Contrato, mapa de lectura, prohibiciones | `docs/00-contexto.md` |
+| Contrato mínimo | `docs/00-contexto.md` |
 | Flujo del slash (7 pasos) | `.cursor/commands/avicore-architect-direct.md` |
-| Mensaje → skill (única tabla) | `docs/cursor/03-skills-avicore.md` |
-| Fuente maestra por tipo de cambio | `docs/README.md` |
-| Mensajes copiables (5) | `docs/cursor/02-avicore-mensajes-reutilizables.html` |
+| Mensaje → skill (única tabla) | `.cursor/skills/README.md` |
+| Detalle de producto | `.cursor/skills/*/references/` |
+| Mensajes copiables (5) | `docs/02-avicore-mensajes-reutilizables.html` |
+| Config Cursor | `.cursor/README.md` |
 | Chat en prosa natural | `.cursor/rules/avicore-modo-respuesta-clara.mdc` |
 
 ## Stack (recordatorio)
@@ -30,7 +31,3 @@ Laravel · PostgreSQL · Livewire · Tailwind · Alpine · PWA · Reverb · Echo
 ## Dudas de API del stack
 
 Tras docs AviCore → MCP **`user-context7`**. No para reglas de negocio.
-
-## Cierre
-
-Ver `docs/cursor/06-modo-respuesta-clara.md`.

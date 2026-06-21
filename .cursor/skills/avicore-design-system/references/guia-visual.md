@@ -1,7 +1,8 @@
 # 03 — Guía visual UI
 
-**Implementación técnica (tokens, componentes, quality gates):** [`reference/sistema-diseno.md`](reference/sistema-diseno.md).  
-Guía externa base: [awesome-design-skills](https://github.com/bergside/awesome-design-skills) — skill **clean** + patrones **enterprise**; la paleta verde/agro de esta página tiene prioridad.
+**Implementación técnica (tokens, componentes, quality gates):** [`tokens-componentes.md`](tokens-componentes.md).  
+**Refined Agro (motion, elevación, mobile vs admin):** [`refined-agro-principios.md`](refined-agro-principios.md).  
+Guía externa base: [awesome-design-skills](https://github.com/bergside/awesome-design-skills) — skill **clean** + patrones **enterprise** + polish **Refined Agro**; la paleta verde/agro de esta página tiene prioridad.
 
 ---
 
@@ -55,7 +56,7 @@ Debe evitar:
 
 El isotipo oficial (`logo-avicore.svg`) usa el verde principal `#1F5E3B` sobre fondo transparente.
 
-**Wordmark «AviCore»** (texto junto al isotipo en `x-ui.logo`): `font-semibold`, color primario; **sin** uppercase, tracking amplio ni tipografía decorativa. Tamaños por contexto: `hero` en panel de marca (escritorio), `auth-mobile` + `stacked` en login móvil. Detalle técnico: [`reference/sistema-diseno.md`](reference/sistema-diseno.md).
+**Wordmark «AviCore»** (texto junto al isotipo en `x-ui.logo`): `font-semibold`, color primario; **sin** uppercase, tracking amplio ni tipografía decorativa. Tamaños por contexto: `hero` en panel de marca (escritorio), `auth-mobile` + `stacked` en login móvil. Detalle técnico: [`tokens-componentes.md`](tokens-componentes.md).
 
 **Auth (login y cambio de contraseña):** escritorio en split marca + tarjeta; móvil con fondo de marca, logo apilado y tarjeta tipo bottom sheet — ver [`02-pantallas-y-flujos.md`](02-pantallas-y-flujos.md) § Login.
 
@@ -250,3 +251,20 @@ Usar iconos simples y funcionales vía **`x-ui.icon`**.
 **Nav y dashboard:** `home`, `users`, `warehouse`, `egg`, `chart`, `document`, `lock`, `menu`, `logout`, entre otros.
 
 No abusar de iconos decorativos; no importar librerías de iconos en runtime salvo esta convención Lucide + `IconSvg`.
+
+---
+
+## 14. Refined Agro — polish controlado
+
+Evolución del estilo **clean**: misma paleta verde/agro, con feedback táctil y elevación sutil donde aporta claridad (no decoración).
+
+| Aspecto | Operario (móvil) | Admin (web) |
+|---------|------------------|-------------|
+| Feedback | `active:`, fondo en ítem activo | `md:hover:` en filas, nav, cards |
+| Elevación | Dock con blur + sombra suave | Cards `shadow-sm` → `md:hover:shadow-md` |
+| Motion | ≤200ms; sin entrada en listas | Drawer Alpine ≤300ms |
+| Referencia | `avicore-ui/references/patrones-mobile-operario.md` | `avicore-ui/references/patrones-web-admin.md` |
+
+**Inspiración TALL** (patrones, no dependencias): [`INDICE-TALL-REFERENCIA.md`](INDICE-TALL-REFERENCIA.md).
+
+**Prohibido:** gradientes Soft UI, `scale-102` en hover, glass global, UI kits como dependencia composer/npm.

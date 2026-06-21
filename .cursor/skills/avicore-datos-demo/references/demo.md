@@ -56,4 +56,4 @@ Desactivar para entornos reales: `AVICORE_DEMO_LOGIN=false` o despliegue fuera d
 
 El login por documento individual sigue disponible (útil para pruebas puntuales o flujo de cambio de contraseña con usuarios de factory en tests).
 
-Credenciales para probar login en local: [`reference/arranque-local.md`](reference/arranque-local.md) § «Datos de prueba (login)».
+Credenciales para probar login en local: [`avicore-contexto/references/arranque-local.md`](../../avicore-contexto/references/arranque-local.md) § «Datos de prueba (login)».

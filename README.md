@@ -8,8 +8,8 @@ Permite registrar y consultar producción diaria por galpón: huevos, mortalidad
 
 | Fase | Contenido |
 |------|-----------|
-| **Hecho** | Bloque 1: Laravel 13, Livewire 4, Tailwind 4, layouts, UI base, PostgreSQL con migraciones iniciales |
-| **Siguiente** | Login + cambio obligatorio de contraseña — [`docs/12-plan-de-desarrollo.md`](docs/12-plan-de-desarrollo.md) |
+| **Hecho** | Bloque 1–2, slice operario mínimo (estructura avícola + carga huevos) |
+| **Siguiente** | Ver [`avicore-contexto/references/plan-desarrollo.md`](.cursor/skills/avicore-contexto/references/plan-desarrollo.md) |
 
 ## Stack
 
@@ -17,21 +17,14 @@ Laravel 13 · PostgreSQL · Livewire 4 · Tailwind CSS 4 · Alpine.js (Livewire)
 
 ## Arranque local
 
-Guía completa: [`docs/reference/arranque-local.md`](docs/reference/arranque-local.md)
+Guía completa: [`.cursor/skills/avicore-contexto/references/arranque-local.md`](.cursor/skills/avicore-contexto/references/arranque-local.md)
 
 ```bash
 composer install
 cp .env.example .env   # si no tenés .env
 php artisan key:generate
 npm install && npm run build
-```
-
-**PostgreSQL:** crear base `avicore` en pgAdmin. En `.env`, completar `DB_PASSWORD` del usuario `postgres` (pgAdmin puede guardar la clave; Laravel necesita la misma en `.env`).
-
-```bash
-php artisan migrate
-php artisan serve
-npm run dev   # otra terminal, opcional
+composer dev           # atajo: serve + queue + vite
 ```
 
 URL: `http://localhost:8000` · previews: `/dev/admin-layout`, `/dev/operario-layout`
@@ -41,31 +34,26 @@ URL: `http://localhost:8000` · previews: `/dev/admin-layout`, `/dev/operario-la
 | Qué necesitás | Archivo |
 |---------------|---------|
 | Contexto del proyecto | [`docs/00-contexto.md`](docs/00-contexto.md) |
-| Índice de documentación | [`docs/README.md`](docs/README.md) |
-| Entorno local (PG, migrate) | [`docs/reference/arranque-local.md`](docs/reference/arranque-local.md) |
-| Agente / Cursor | [`docs/cursor/01-indice-agente.md`](docs/cursor/01-indice-agente.md) |
+| Detalle de producto | [`.cursor/skills/README.md`](.cursor/skills/README.md) |
+| Entorno local | [`avicore-contexto/references/arranque-local.md`](.cursor/skills/avicore-contexto/references/arranque-local.md) |
+| Config Cursor | [`.cursor/README.md`](.cursor/README.md) |
 | Comando del arquitecto | `/avicore-architect-direct` → [`.cursor/commands/avicore-architect-direct.md`](.cursor/commands/avicore-architect-direct.md) |
+| Plantillas mensajes 1–5 | [`docs/02-avicore-mensajes-reutilizables.html`](docs/02-avicore-mensajes-reutilizables.html) |
 | Instrucciones para el agente | [`AGENTS.md`](AGENTS.md) |
-
-## Flujo operativo (MVP)
-
-```text
-Seleccionar galpón → cargar dato operativo → guardar → dashboard / reportes
-```
 
 ## Estructura principal
 
 ```text
 app/            Actions, Services, Livewire, Policies, Events
 resources/      Layouts, componentes UI, assets (Vite + Tailwind)
-docs/           Documentación de producto (01–12) y referencias
-.cursor/        Reglas, skills y comando del arquitecto AviCore
+docs/           Contexto mínimo (00-contexto, CHANGELOG, plantillas HTML)
+.cursor/        Skills, reglas, comando del arquitecto AviCore
 ```
 
 ## Desarrollo con Cursor
 
 1. Abrí este workspace en Cursor.
-2. Usá `/avicore-architect-direct` (primera línea del chat), pegá la plantilla del mensaje que corresponda y completá el bloque final — ver [`docs/cursor/02-avicore-mensajes-reutilizables.html`](docs/cursor/02-avicore-mensajes-reutilizables.html).
+2. Usá `/avicore-architect-direct` (primera línea del chat), pegá la plantilla del mensaje que corresponda y completá el bloque final — ver [`docs/02-avicore-mensajes-reutilizables.html`](docs/02-avicore-mensajes-reutilizables.html).
 
 ## Licencia
 
