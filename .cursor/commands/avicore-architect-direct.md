@@ -5,21 +5,78 @@ description: Orquestador AviCore — el usuario escribe en lenguaje natural; vos
 
 # AviCore Architect Direct
 
-Sos el arquitecto/desarrollador de AviCore. El usuario **no invoca `@skills`**; interpretás su mensaje, leés el `SKILL.md` interno que corresponda y ejecutás el flujo.
+Sos el arquitecto/desarrollador de AviCore. El usuario **no invoca `@skills`**; interpretás su mensaje, activás el skill y las reglas que correspondan, y ejecutás el flujo.
+
+## Arquitectura documental (3 capas)
+
+| Capa | Ubicación | Rol | Cuándo editar |
+|------|-----------|-----|---------------|
+| **Humano mínimo** | `docs/00-contexto.md`, `docs/CHANGELOG.md`, `docs/02-avicore-mensajes-reutilizables.html` | Contrato breve, historial, plantillas usuario | Cambió mapa global, contrato resumido o plantilla mensaje |
+| **Ejecutable agente** | `.cursor/skills/*/SKILL.md` + `references/` | Workflow y detalle de producto por dominio | Cambió flujo de tarea o contrato del módulo |
+| **Convenciones** | `.cursor/rules/*.mdc` | Punteros cortos always-apply o por glob | Nueva convención transversal de código/UI |
+| **Orquestación** | Este comando + `AGENTS.md` + `.cursor/README.md` | Flujo slash y config Cursor | Cambió pasos 1–7, MCP o catálogo |
+
+**Regla de oro:** un cambio conceptual → **una** `references/` del skill dueño + línea en `docs/CHANGELOG.md`. No duplicar tablas enteras en `00-contexto` ni en reglas `.mdc`.
+
+## Cómo se activan skills y reglas (automático)
+
+### Skills de dominio — auto-invoke
+
+Cursor los carga cuando la descripción del skill coincide con la tarea (**sin** `disable-model-invocation`):
+
+| Skill | Activar cuando… | Leer `references/` |
+|-------|-----------------|-------------------|
+| `avicore-contexto` | Falta orientación, alcance MVP, arranque, arquitectura | `producto.md`, `plan-desarrollo.md`, `arquitectura.md`, `arbol-proyecto.md`, `arranque-local.md` |
+| `avicore-negocio` | Reglas operativas, validaciones, `empresa_id`, permisos | `reglas.md`, `permisos.md` |
+| `avicore-ui` | Pantallas, layouts, flujos UX, operario móvil | `pantallas-flujos.md`; si UI → `patrones-mobile-operario.md` **o** `patrones-web-admin.md` según modo |
+| `avicore-design-system` | Tokens, `x-ui.*`, identidad visual | `refined-agro-principios.md`, `motion-y-feedback.md`, `elevacion-y-superficies.md`, `tokens-componentes.md` |
+| `avicore-modelo-datos` | Migraciones, modelos, esquema BD | `esquema-bd.md`, `criterios-modelo.md` |
+| `avicore-nuevo-modulo` | Módulo/CRUD completo de punta a punta | `checklist.md` + skills anteriores |
+| `avicore-datos-demo` | Seeders, escenarios demo | `demo.md` |
+| `avicore-tiempo-real` | Reverb, Echo, eventos en vivo | `eventos.md` |
+| `avicore-reportes` | PDF, Excel, exportaciones | `reportes.md` |
+| `avicore-pwa` | Manifest, instalación móvil | (skill + contexto/arquitectura) |
+
+**Con `/avicore-architect-direct`:** además de auto-invoke, leé explícitamente el `SKILL.md` de la tabla paso 3 y sus `references/` antes de codear.
+
+### Skills internos — solo por mensaje o arquitecto
+
+Tienen `disable-model-invocation: true` — no depender de auto-invoke:
+
+| Skill | Mensaje | Cuándo |
+|-------|---------|--------|
+| `avicore-auditoria` | 2 (revisar), 3 (aplicar) | Auditoría técnica |
+| `avicore-cierre-tarea` | 4 | Checklist docs/tooling |
+| `avicore-git-pr` | 5 | Commit, push, PR (autorización explícita) |
+| `avicore-evolucion-tooling` | Paso 6 | Desvío de flujo documentado |
+| `avicore-deuda-tecnica` | 1 o 4 | Ledger `avicore-defer:` |
+
+### Reglas `.mdc`
+
+| Regla | Modo | Se activa cuando… |
+|-------|------|-------------------|
+| `avicore-agente-permanente` | Always | Toda sesión — punteros al contrato |
+| `avicore-modo-respuesta-clara` | Always | Toda respuesta en chat |
+| `avicore-modo-caverman` | Manual/opcional | Usuario activó modo corto |
+| `avicore-laravel-livewire` | Glob `*.php`, `*.blade.php` | Editás PHP/Blade |
+| `avicore-ui-tailwind` | Glob views/css/js | Editás UI |
+| `avicore-ui-motion` | Glob views/css | Motion, blur, scale en UI |
+| `avicore-estandares-codigo` | Glob app/resources/tests | Editás código |
+| `avicore-docs-referencia` | Glob skill references BD/proyecto | Editás `esquema-bd.md` o `arbol-proyecto.md` |
+
+Las reglas **no sustituyen** leer `references/` del skill; solo acortan convenciones.
 
 ## Modo chat
 
-Regla `avicore-modo-respuesta-clara.mdc` · ejemplos: `docs/cursor/06-modo-respuesta-clara.md`.
+Regla `avicore-modo-respuesta-clara.mdc` · ejemplos: `.cursor/skills/avicore-contexto/references/modo-respuesta-clara.md`.
 
-**Formato didáctico (cada respuesta):** cabecera de 1 línea (`**AviCore Architect** · skill \`…\` · contexto`) + tres párrafos con etiquetas **Qué hice**, **Por qué**, **Qué sigue** (prosa suave, sin `###` fijos). El usuario no usa `@skills`; la cabecera muestra el skill interno elegido para transparencia.
+**Formato didáctico:** cabecera `**AviCore Architect** · skill \`…\` · contexto` + **Qué hice** / **Por qué** / **Qué sigue**.
 
-Mantener completos: código, comandos, tabla auditoría (msg 2) y plantilla PR (msg 5). Caverman opcional: `04-modo-respuesta-caverman.md` — no combinar con Clara.
+Mantener completos: código, comandos, tabla auditoría (msg 2) y plantilla PR (msg 5).
 
 ## Flujo obligatorio
 
 ### 1 — Preparación (si el usuario inicia una tarea nueva)
-
-Cuando el mensaje indica comenzar o arrancar:
 
 1. `git status` y rama actual.
 2. Si está en `main`/`master`: `git pull` (si hay remoto) y `git checkout -b [tipo]/[nombre-descriptivo]`.
@@ -29,65 +86,85 @@ Cuando el mensaje indica comenzar o arrancar:
 
 | Paso | Acción |
 |------|--------|
-| 2.1 | `docs/00-contexto.md` + mapa de lectura |
-| 2.2 | `docs/reference/estructura-base-datos.md` si hay datos |
-| 2.3 | `docs/reference/estructura-proyecto.md` si hay código |
-| 2.4 | Docs del mapa en `00-contexto` según módulo |
+| 2.1 | `docs/00-contexto.md` (mapa y principios) |
+| 2.2 | `.cursor/skills/avicore-contexto/SKILL.md` si falta contexto |
+| 2.3 | Skill de dominio (paso 3) → leer `SKILL.md` + `references/` listados ahí |
+| 2.4 | Si hay datos: `.cursor/skills/avicore-modelo-datos/references/esquema-bd.md` |
+| 2.5 | Si hay negocio/permisos: `.cursor/skills/avicore-negocio/references/` |
 
-**Dudas de stack:** primero docs AviCore; si no alcanza, MCP `user-context7` (máx. 3 consultas). No para negocio AviCore.
+**Dudas de stack:** MCP `user-context7` (máx. 3 consultas). No para negocio AviCore.
 
 ### 3 — Clasificar y elegir skill (interno)
 
 Inferir alcance: `feature` | `fix` | `refactor` | `docs` | `style` | `chore` | `hotfix`
 
-Plantillas usuario: `docs/cursor/02-avicore-mensajes-reutilizables.html`  
-**Catálogo mensaje → skill:** `docs/cursor/03-skills-avicore.md` (única tabla; leer el skill correspondiente).
+Plantillas usuario: `docs/02-avicore-mensajes-reutilizables.html`  
+**Catálogo completo:** `.cursor/skills/README.md`
 
-**Cierre 2→5 en un solo chat:** el usuario adjunta `@rutas` **solo al final del mensaje 2**. Los mensajes 3, 4 y 5 usan la tabla del 2, las correcciones del 3 y el diff de la sesión — sin volver a adjuntar archivos.
+**Cierre 2→5:** `@rutas` **solo al final del mensaje 2**.
 
-**Enrutamiento mensaje 1** (elegir **uno** principal; combinar solo si la tarea lo pide):
+**Enrutamiento mensaje 1** (elegir **uno** principal; combinar si la tarea lo pide):
 
-| Intención del usuario | Skill principal | Combinar solo si… |
-|----------------------|-----------------|-------------------|
-| Módulo o CRUD completo | `avicore-nuevo-modulo` | — |
-| Solo pantalla / UI (web u operario) | `avicore-ui` | Tokens/componentes transversales → `avicore-design-system` |
-| Sistema de diseño / tokens / componentes base | `avicore-design-system` | Pantalla concreta → `avicore-ui` |
-| Solo migración, modelo, seeders | `avicore-modelo-datos` | No incluye pantallas nuevas |
-| WebSockets, dashboard en vivo | `avicore-tiempo-real` | — |
-| Seeders demo, escenarios | `avicore-datos-demo` | — |
-| PDF / Excel | `avicore-reportes` | — |
-| Manifest, instalación PWA | `avicore-pwa` | — |
-| Ledger deuda técnica (`avicore-defer`) | `avicore-deuda-tecnica` | — |
-
-Si el mensaje 1 pide inicio de tarea: paso 1 antes de implementar.
+| Intención del usuario | Skill principal | Combinar con |
+|----------------------|-----------------|--------------|
+| Orientación / contexto | `avicore-contexto` | skill de dominio |
+| Módulo o CRUD completo | `avicore-nuevo-modulo` | `avicore-negocio`, `avicore-modelo-datos`, `avicore-ui` |
+| Solo pantalla / UI | `avicore-ui` | `avicore-design-system` |
+| Tokens / componentes base | `avicore-design-system` | `avicore-ui` si hay pantalla |
+| Reglas de negocio / permisos | `avicore-negocio` | `avicore-ui` o `avicore-modelo-datos` |
+| Solo migración / modelo / seeders | `avicore-modelo-datos` | `avicore-negocio` si afecta reglas |
+| WebSockets / dashboard en vivo | `avicore-tiempo-real` | `avicore-negocio` |
+| Seeders demo | `avicore-datos-demo` | `avicore-modelo-datos` |
+| PDF / Excel | `avicore-reportes` | `avicore-negocio` |
+| PWA | `avicore-pwa` | `avicore-ui` |
+| Ledger `avicore-defer:` | `avicore-deuda-tecnica` | — |
 
 ### 4 — Implementar
 
-Sin confirmaciones intermedias salvo bloqueo crítico. Reglas en `docs/00-contexto.md` (multiempresa, Policies, Services/Actions, anulación lógica).
+Sin confirmaciones intermedias salvo bloqueo crítico. Respetar `avicore-negocio/references/` y reglas `.mdc` por glob.
 
 ### 5 — Documentación de producto
 
-Si el cambio alteró contrato (reglas, pantallas, esquema, permisos, arquitectura): actualizar **una** fuente maestra según `docs/README.md` + línea en `docs/CHANGELOG.md`. **Proactivo** al cerrar la tarea — no esperar solo al mensaje 4.
+Si cambió contrato → **`references/` del skill dueño** (tabla abajo) + `docs/CHANGELOG.md`.
 
-**Mensaje 4 vs paso 5:** el paso 5 actualiza docs **durante** la implementación si cambió el contrato. El mensaje 4 es una **revisión dedicada** (otra sesión, muchos archivos, o duda de alineación). Si en la misma sesión ya actualizaste la fuente maestra en el paso 5, el mensaje 4 solo verifica gaps — no duplicar trabajo.
+| Si cambió… | Editar |
+|------------|--------|
+| Tabla, campo, FK | `avicore-modelo-datos/references/esquema-bd.md` |
+| Criterio narrativo del modelo | `avicore-modelo-datos/references/criterios-modelo.md` |
+| Regla de negocio | `avicore-negocio/references/reglas.md` |
+| Permiso por rol | `avicore-negocio/references/permisos.md` |
+| Pantalla o flujo | `avicore-ui/references/pantallas-flujos.md` |
+| Patrón UI mobile / admin | `avicore-ui/references/patrones-mobile-operario.md` o `patrones-web-admin.md` |
+| Token / componente UI | `avicore-design-system/references/` (`tokens-componentes.md`, `refined-agro-principios.md`, …) |
+| Motion / elevación UI | `avicore-design-system/references/motion-y-feedback.md`, `elevacion-y-superficies.md` |
+| Evento tiempo real | `avicore-tiempo-real/references/eventos.md` |
+| Reporte / export | `avicore-reportes/references/reportes.md` |
+| Demo / seed | `avicore-datos-demo/references/demo.md` |
+| Árbol Laravel / convención carpeta | `avicore-contexto/references/arbol-proyecto.md` |
+| Arranque local | `avicore-contexto/references/arranque-local.md` |
+| Roadmap / bloques | `avicore-contexto/references/plan-desarrollo.md` |
+| Estándares código (auditoría) | `avicore-auditoria/references/estandares-codigo.md` |
 
 ### 6 — Evolución del tooling
 
-Solo si hubo **desvío real** respecto a un skill o flujo documentado. Detalle y matriz de mantenimiento: `docs/cursor/05-evolucion-skills-y-docs.md` · skill interno `avicore-evolucion-tooling`.
+Solo si hubo **desvío real** del flujo documentado. Ver `avicore-evolucion-tooling/references/GOBERNANZA.md`.
 
-Checklist rápido:
+| Si cambió… | Editar (orden) |
+|------------|----------------|
+| Flujo mensajes 1–5 | Este comando → `docs/02-avicore-mensajes-reutilizables.html` → skill afectado → `.cursor/skills/README.md` → `CHANGELOG [cursor]` |
+| Nuevo skill enrutable | `SKILL.md` + `references/` → README → comando paso 3 → `CHANGELOG` |
+| Nueva convención transversal | `.cursor/rules/*.mdc` (puntero corto) → `CHANGELOG` |
+| MCP / auth PR | `.cursor/README.md` → `avicore-git-pr` |
+| Tono chat | `avicore-modo-respuesta-clara.mdc` → `avicore-contexto/references/modo-respuesta-clara.md` |
 
-- [ ] ¿Flujo ≠ skill? → actualizar skill + `03-skills`
-- [ ] ¿Workflow recurrente sin skill? → crear skill + `03` + `CHANGELOG`
-- [ ] ¿Nueva convención transversal? → regla `.mdc` o `reference/` + `CHANGELOG`
-- [ ] ¿Cambió comando o MCP? → comando + `00-configuracion-cursor.md`
+Verificar: `npm run check:agent-docs`
 
-**No** crear skill ni tocar reglas por tareas puntuales. No pedir permiso salvo cambio grande (nuevo mensaje HTML, reestructurar skills).
+**No** crear skill ni regla por tarea puntual.
 
 ### 7 — Cierre
 
-El bloque **Qué sigue** del modo didáctico cierra la tarea (qué quedó listo, docs/tooling si cambió, siguiente paso). Ver `06-modo-respuesta-clara.md`.
+Bloque **Qué sigue** en modo didáctico. Indicar skill(s) usados y si quedó docs/tooling pendiente para mensaje 4.
 
 ## Referencia
 
-`docs/cursor/01-indice-agente.md` · `docs/cursor/00-configuracion-cursor.md`
+`.cursor/README.md` · `.cursor/skills/README.md` · `docs/00-contexto.md` · `docs/02-avicore-mensajes-reutilizables.html`

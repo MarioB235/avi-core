@@ -10,7 +10,7 @@
 | **5 — Operación móvil** | **Parcial** | Home operario, selector galpón, carga huevos; muertes/alimento/combinada pendientes |
 | 3, 6–7 | Pendiente | Según orden de la sección 2 |
 
-Detalle técnico del Bloque 1: [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md) · entorno local: [`reference/arranque-local.md`](reference/arranque-local.md).
+Detalle técnico del Bloque 1: [`arbol-proyecto.md`](arbol-proyecto.md) · entorno local: [`arranque-local.md`](arranque-local.md).
 
 ---
 
@@ -185,7 +185,7 @@ No avanzar al módulo siguiente si el módulo actual no:
 
 ## 13. Tablas y carpetas futuras (sin migración aún)
 
-Solo nombres de bloque; el DDL vive en `reference/estructura-base-datos.md` **cuando** exista la migración.
+Solo nombres de bloque; el DDL vive en `avicore-modelo-datos/references/esquema-bd.md` **cuando** exista la migración.
 
 | Bloque / fase | Tabla o carpeta | Notas |
 |---------------|-----------------|-------|
@@ -197,4 +197,4 @@ Solo nombres de bloque; el DDL vive en `reference/estructura-base-datos.md` **cu
 | Reportes (fase 19) | `Livewire/Reportes/`, `ReporteService` | PDF/Excel |
 | Usuarios admin (fase 5) | `Livewire/Usuarios/` | CRUD usuarios |
 | CRUD avícola admin | `Livewire/Galpones/`, `Livewire/Lotes/` | Granjas, galpones, lotes |
-| Tiempo real (fase 18) | `Events/`, Reverb | Ver `08-tiempo-real-eventos.md` |
+| Tiempo real (fase 18) | `Events/`, Reverb | Ver `avicore-tiempo-real/references/eventos.md` |

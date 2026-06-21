@@ -1,15 +1,14 @@
 ---
 description: Gobernanza al editar referencias de BD o estructura del proyecto AviCore
-globs: "docs/reference/**/*.md"
+globs: ".cursor/skills/avicore-modelo-datos/references/**/*.md,.cursor/skills/avicore-contexto/references/**/*.md"
 alwaysApply: false
 ---
 
 # Referencias AviCore
 
-- `estructura-base-datos.md` es la fuente maestra del esquema **implementado**; solo tablas con migración en el repo. Migraciones deben coincidir.
-- No añadir secciones DDL «por si acaso»; bloque futuro → `docs/12-plan-de-desarrollo.md` primero; DDL en `reference` cuando exista la migración.
-- `estructura-proyecto.md` es la fuente maestra del árbol de carpetas **existente**; módulos futuros en `12-plan`, no árboles inventados.
-- `arranque-local.md` es la fuente maestra del entorno de desarrollo local.
+- `avicore-modelo-datos/references/esquema-bd.md` es la fuente maestra del esquema **implementado**; solo tablas con migración en el repo.
+- No añadir secciones DDL «por si acaso»; bloque futuro → `avicore-contexto/references/plan-desarrollo.md` primero.
+- `avicore-contexto/references/arbol-proyecto.md` es la fuente maestra del árbol **existente**.
+- `avicore-contexto/references/arranque-local.md` es la fuente maestra del entorno local.
 - Tras cambiar contrato: entrada breve en `docs/CHANGELOG.md`.
-- No duplicar tablas completas en `04-modelo-de-datos.md`; usar enlaces a `reference/`.
-- Tabla de ownership: `docs/README.md`.
+- Mapa de ownership: `docs/00-contexto.md`.

@@ -1,14 +1,15 @@
 ---
-description: Guía UI AviCore — Tailwind, identidad verde/agro, responsive
+description: Guía UI AviCore — Tailwind, identidad verde/agro, Refined Agro, responsive mobile vs admin
 globs: "{resources/views/**/*,resources/css/**/*,resources/js/**/*}"
 alwaysApply: false
 ---
 
 # AviCore — UI
 
-- Identidad verde/agro moderna; claridad antes que decoración.
-- Tailwind CSS; sin estilos inline; reutilizar componentes y tokens.
-- Botones grandes en móvil; tablas limpias en web; cards KPI claras.
-- Layouts: público (login), web administrativo, móvil operario (carga en campo).
+- Identidad verde/agro moderna; **Refined Agro** — polish controlado, no decoración.
+- Tailwind CSS; sin estilos inline; reutilizar componentes `x-ui.*` y tokens `avicore-*`.
+- **Operario:** sin `hover` como feedback; touch ≥44px; ver `avicore-ui/references/patrones-mobile-operario.md`.
+- **Admin:** `hover:` solo con prefijo `md:`+; sidebar/drawer; ver `patrones-web-admin.md`.
+- Motion: 150–300ms; regla `avicore-ui-motion.mdc` en `resources/`.
 
-Consultar `docs/03-guia-visual-ui.md`, `docs/reference/sistema-diseno.md` y `docs/02-pantallas-y-flujos.md` antes de cambiar pantallas.
+Consultar `avicore-ui/references/pantallas-flujos.md` y `avicore-design-system/references/` (empezar por `refined-agro-principios.md`) antes de cambiar pantallas.

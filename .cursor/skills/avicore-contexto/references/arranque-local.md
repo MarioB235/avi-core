@@ -1,7 +1,7 @@
 # Referencia — Arranque local
 
 **Fuente maestra del entorno de desarrollo en PC.**  
-Stack y principios: [`07-arquitectura-tecnica.md`](../07-arquitectura-tecnica.md).
+Stack y principios: [`arquitectura.md`](arquitectura.md).
 
 ---
 

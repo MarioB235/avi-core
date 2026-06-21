@@ -1,16 +1,13 @@
 ---
 name: avicore-pwa
 description: Configura PWA de AviCore (manifest, iconos, instalación móvil) sin offline completo en MVP. Usar para progressive web app, instalación en celular o experiencia móvil instalable.
-disable-model-invocation: true
 ---
 
 # AviCore — PWA
 
-## Documentación
+## Leer primero
 
-- `docs/07-arquitectura-tecnica.md`
-- `docs/03-guia-visual-ui.md`
-- `docs/02-pantallas-y-flujos.md`
+`avicore-contexto/references/arquitectura.md` · `avicore-ui/references/pantallas-flujos.md` · `avicore-design-system/references/guia-visual.md`
 
 ## Objetivo MVP
 
@@ -22,8 +19,4 @@ disable-model-invocation: true
 
 - Instalación en celular, logo y nombre AviCore
 - Vista móvil del operario intacta
-- Responsive; Livewire y Reverb sin regresiones
-
-## Entrada del usuario
-
-Detalle del ajuste PWA.
+- Livewire y Reverb sin regresiones

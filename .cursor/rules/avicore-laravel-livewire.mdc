@@ -30,4 +30,4 @@ php artisan reverb:start
 php artisan test
 ```
 
-Ver `docs/reference/estructura-proyecto.md`, `docs/07-arquitectura-tecnica.md`, `docs/08-tiempo-real-eventos.md`.
+Ver `avicore-contexto/references/arbol-proyecto.md`, `avicore-contexto/references/arquitectura.md`, `avicore-tiempo-real/references/eventos.md`.

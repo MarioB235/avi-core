@@ -13,15 +13,18 @@ Registro: [awesome-design-skills](https://github.com/bergside/awesome-design-ski
 | minimal / sleek | Referencia de densidad; paleta siempre AviCore |
 | glassmorphism / neon / gradient / bento / etc. | **Descartados** — contradicen identidad agro y skill clean |
 
-**Paleta de marca:** siempre `docs/03-guia-visual-ui.md` (verde/agro). Los skills genéricos no reemplazan colores AviCore.
+**Paleta de marca:** siempre `guia-visual.md` (verde/agro). Los skills genéricos no reemplazan colores AviCore.
 
-## Principios clean aplicados
+## Principios Refined Agro (clean + polish controlado)
+
+Ver [`refined-agro-principios.md`](refined-agro-principios.md), [`motion-y-feedback.md`](motion-y-feedback.md), [`elevacion-y-superficies.md`](elevacion-y-superficies.md).
 
 1. **Mucho aire** — una idea por bloque; pocos elementos por pantalla.
 2. **Color con criterio** — verde solo en marca, botón primario y acentos puntuales.
-3. **Sin motion decorativo** — solo `transition-colors` en controles; respetar `prefers-reduced-motion`.
-4. **Sin capas visuales extra** — no gradientes de fondo globales, blur, sombras fuertes ni paneles duplicados. **Excepciones:** tarjeta auth sobre foto; hero Inicio admin (`<x-admin.home-hero>`: `<img>` a ancho completo de la columna principal, KPIs en `max-w-7xl`; grid + `translateY(55%)` en ≥1024px).
+3. **Motion con propósito** — transiciones 150–300ms en color, sombra y transform sutil; `prefers-reduced-motion` obligatorio en `scale`/`transform`.
+4. **Elevación sutil** — `shadow-sm`/`shadow-md`; `backdrop-blur` solo en chrome fijo (nav operario, modales). **Excepciones:** tarjeta auth sobre foto; hero Inicio admin; gradiente local operario (`.avicore-operario-shell::before`).
 5. **Tipografía 12/14/16/20/24/32** — rejilla 8pt; labels en uppercase solo en KPIs/tablas.
+6. **Mobile vs admin** — operario sin `hover` como feedback; admin con `hover:` desde `md:`.
 
 ## Assets de marca
 
@@ -43,12 +46,24 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 
 **Input contraseña:** `x-ui.input` con `toggle-password`; clase `.avicore-password-input` oculta el reveal nativo del navegador (un solo icono ojo).
 
+## Lista blanca motion / superficie (Refined Agro)
+
+| Efecto | Dónde | Notas |
+|--------|-------|-------|
+| `transition-colors` 150–200ms | Controles, nav | Siempre permitido |
+| `transition-shadow` 200ms | Cards admin | Con `md:hover:shadow-md` |
+| `active:scale-[0.98]` / `active:scale-95` | Botones/listas móvil | Dentro de `@media (prefers-reduced-motion: no-preference)` |
+| `md:hover:*` | Admin sidebar, tablas, cards | No en operario como único feedback |
+| `backdrop-blur-md` | `.avicore-operario-tab-bar`, modales | No en fondo global ni cards KPI |
+| Alpine `x-transition` 250–300ms | Drawer admin, modales | Un panel a la vez |
+
 ## Anti-patrones (no implementar)
 
 - Panel lateral de marca + contenido duplicado en login/home.
 - Grillas de tarjetas informativas cuando el módulo aún no existe.
-- Banners con gradiente, badges decorativos o iconos en cada bloque.
-- Animaciones de entrada, scale en botones, backdrop-blur.
+- Banners con gradiente ajeno a marca, badges decorativos o iconos en cada bloque.
+- Animaciones de entrada en cada ítem de lista; `hover:scale-102`; glassmorphism global.
+- Paleta morada/fuchsia Soft UI; instalar UI kits externos (WireBlade, Flux, Soft UI).
 - Más de tres colores de acento visibles en una misma pantalla.
 
 ## Tokens (fuente: `resources/css/app.css`)
@@ -99,6 +114,8 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 
 ## Enlaces
 
-- Guía producto: [`../03-guia-visual-ui.md`](../03-guia-visual-ui.md)
-- awesome-design-skills clean: `skills/clean/SKILL.md` en el registro
-- Pantallas: [`../02-pantallas-y-flujos.md`](../02-pantallas-y-flujos.md)
+- Guía producto: [`guia-visual.md`](guia-visual.md)
+- Patrones TALL (índice): [`INDICE-TALL-REFERENCIA.md`](INDICE-TALL-REFERENCIA.md)
+- Snippets: [`ejemplos-snippet.md`](ejemplos-snippet.md)
+- Mobile / admin: `avicore-ui/references/patrones-mobile-operario.md`, `patrones-web-admin.md`
+- Pantallas: `avicore-ui/references/pantallas-flujos.md`

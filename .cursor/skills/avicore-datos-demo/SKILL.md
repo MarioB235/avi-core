@@ -1,16 +1,13 @@
 ---
 name: avicore-datos-demo
 description: Crea o actualiza seeders, CSV o JSON de datos demo AviCore (Avícola Demo, granjas, galpones, escenarios). Usar para empresa demo, datos de prueba o escenarios de dashboard y reportes.
-disable-model-invocation: true
 ---
 
 # AviCore — Datos demo
 
-## Documentación
+## Leer primero
 
-- `docs/10-datos-demo.md`
-- `docs/04-modelo-de-datos.md`
-- `docs/05-reglas-de-negocio.md`
+[`references/demo.md`](references/demo.md) · `avicore-negocio/references/` · `avicore-modelo-datos/references/`
 
 ## Estructura MVP
 
@@ -25,7 +22,3 @@ Producción normal, baja producción, alta mortalidad, galpón sin carga, varios
 ## Verificación
 
 Dashboard y reportes deben mostrar información útil con los datos generados.
-
-## Entrada del usuario
-
-Qué datos demo crear o ajustar.

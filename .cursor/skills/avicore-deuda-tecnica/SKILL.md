@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # AviCore — Deuda técnica (`avicore-defer`)
 
-Convención en [`estandares-codigo.md`](../../../docs/reference/estandares-codigo.md) § Simplificación. Inspirado en el patrón de ledger de referencia [`docs/ponytail`](../../../docs/ponytail/README.md); **no** usar marcador `ponytail:` en código de producto AviCore.
+Convención en [`estandares-codigo.md`](../../../estandares-codigo.md) § Simplificación. Inspirado en el patrón de ledger de referencia [`docs/ponytail`](../../../docs/ponytail/README.md); **no** usar marcador `ponytail:` en código de producto AviCore.
 
 ## Convención
 
@@ -41,5 +41,5 @@ Cierre: `<N> marcadores, <M> sin disparador.` Si no hay ninguno: `Sin avicore-de
 ## Boundaries
 
 - **Solo lectura** por defecto; no modificar código.
-- Persistir ledger (p. ej. `docs/reference/deuda-tecnica-ledger.md`) solo si el usuario lo pide.
+- Persistir ledger solo si el usuario lo pide (skill `avicore-evolucion-tooling`).
 - No confundir con auditoría msg 2 (multidimensional); este skill solo lista deferencias marcadas.

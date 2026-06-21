@@ -14,6 +14,6 @@ Laravel Reverb · Laravel Echo · Events de Laravel · canales privados por empr
 
 ## Próximo paso al implementar
 
-1. Instalar y configurar Reverb + Echo (`07-arquitectura-tecnica.md`).
+1. Instalar y configurar Reverb + Echo (`avicore-contexto/references/arquitectura.md`).
 2. Primeros eventos sugeridos en el plan: carga operativa creada, registro anulado, alerta generada.
 3. Documentar aquí cada evento (nombre, cuándo se dispara, payload mínimo, qué UI actualiza).

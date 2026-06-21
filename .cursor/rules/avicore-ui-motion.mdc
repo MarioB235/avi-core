@@ -1,0 +1,16 @@
+---
+description: Motion y feedback Refined Agro — duraciones, reduced-motion, límites en resources/
+globs: "{resources/views/**/*,resources/css/**/*}"
+alwaysApply: false
+---
+
+# AviCore — Motion (Refined Agro)
+
+Detalle: `avicore-design-system/references/motion-y-feedback.md`.
+
+- Duraciones máximas: **200ms** controles; **300ms** drawer/modal.
+- `transform`/`scale` solo con `@media (prefers-reduced-motion: no-preference)`.
+- **Operario:** `active:scale-[0.98]` o `active:scale-95`; sin animación de entrada en listas.
+- **Admin:** `md:hover:` para color/sombra; no `hover:scale-102`.
+- `backdrop-blur` solo en chrome fijo (`.avicore-operario-tab-bar`, modales).
+- Alpine: un panel overlay a la vez; restaurar foco al cerrar.

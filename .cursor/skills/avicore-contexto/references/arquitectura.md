@@ -1,6 +1,6 @@
 # 07 — Arquitectura técnica
 
-> **Árbol de carpetas y mapa módulo → código:** [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md)
+> **Árbol de carpetas y mapa módulo → código:** [`arbol-proyecto.md`](arbol-proyecto.md)
 
 ## 1. Stack definido
 
@@ -24,7 +24,7 @@ Reverb, Echo y PWA: pendientes (Bloques 6–7 del plan).
 
 ## 1b. Entorno local
 
-Procedimiento completo (PostgreSQL, pgAdmin, `.env`, migrate, serve): [`reference/arranque-local.md`](reference/arranque-local.md).
+Procedimiento completo (PostgreSQL, pgAdmin, `.env`, migrate, serve): [`arranque-local.md`](arranque-local.md).
 
 ## 2. Función de cada tecnología
 
@@ -55,7 +55,7 @@ Procedimiento completo (PostgreSQL, pgAdmin, `.env`, migrate, serve): [`referenc
 
 ## 4. Estructura de código
 
-Ver árbol completo y convenciones en [`reference/estructura-proyecto.md`](reference/estructura-proyecto.md).
+Ver árbol completo y convenciones en [`arbol-proyecto.md`](arbol-proyecto.md).
 
 Vistas Blade servidas con `Route::view` (p. ej. Inicio admin): datos vía **View Composer** en `app/Http/View/Composers/` + **Service**; sin `@php` de negocio en la vista.
 

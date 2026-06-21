@@ -37,3 +37,10 @@ Thumbs.db
 # Build front
 /dist/
 /.vite/
+
+# Referencias TALL locales (no versionar clones)
+/docs/awesome-tall-stack/
+/docs/dashboard/
+/docs/soft-ui-dashboard-tall/
+/docs/tallstarter/
+/docs/wireblade/

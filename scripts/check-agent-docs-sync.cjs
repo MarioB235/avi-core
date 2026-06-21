@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
  * Verifica invariantes del tooling del agente AviCore (anti-drift).
- * Inspirado en docs/ponytail/scripts/check-rule-copies.js — adaptado a la jerarquía AviCore.
  *
  * Uso: node scripts/check-agent-docs-sync.cjs
  */
@@ -34,39 +33,38 @@ function fail(message) {
 
 const agents = read('AGENTS.md');
 const comando = read('.cursor/commands/avicore-architect-direct.md');
-const skills03 = read('docs/cursor/03-skills-avicore.md');
-const config00 = read('docs/cursor/00-configuracion-cursor.md');
-const index01 = read('docs/cursor/01-indice-agente.md');
+const skillsReadme = read('.cursor/skills/README.md');
+const cursorReadme = read('.cursor/README.md');
 
 const actualSkillCount = countSkillDirs();
 
-const countMatch03 = skills03.match(/\((\d+)\s+internos/);
-const documentedCount03 = countMatch03 ? parseInt(countMatch03[1], 10) : null;
+const countMatchReadme = skillsReadme.match(/\((\d+)\s+internos/);
+const documentedCount = countMatchReadme ? parseInt(countMatchReadme[1], 10) : null;
 
-if (documentedCount03 !== actualSkillCount) {
+if (documentedCount !== actualSkillCount) {
   fail(
-    `docs/cursor/03-skills-avicore.md dice ${documentedCount03} internos pero hay ${actualSkillCount} carpetas con SKILL.md`
+    `.cursor/skills/README.md dice ${documentedCount} internos pero hay ${actualSkillCount} carpetas con SKILL.md`
   );
 }
 
-for (const file of ['docs/cursor/00-configuracion-cursor.md', 'docs/cursor/01-indice-agente.md']) {
-  const text = file === 'docs/cursor/00-configuracion-cursor.md' ? config00 : index01;
-  const m = text.match(/Skills internos\s*\|\s*(\d+)/) || text.match(/\((\d+)\s+internos\)/);
-  if (m && parseInt(m[1], 10) !== actualSkillCount) {
-    fail(`${file}: inventario dice ${m[1]} skills, hay ${actualSkillCount}`);
-  }
+const inventoryMatch = cursorReadme.match(/Skills \((\d+)\)/);
+if (inventoryMatch && parseInt(inventoryMatch[1], 10) !== actualSkillCount) {
+  fail(`.cursor/README.md: inventario dice ${inventoryMatch[1]} skills, hay ${actualSkillCount}`);
 }
 
 const POINTER_CHECKS = [
-  ['AGENTS.md', agents, '01-indice-agente.md'],
   ['AGENTS.md', agents, '/avicore-architect-direct'],
-  ['comando', comando, '03-skills-avicore.md'],
-  ['comando', comando, 'Cierre 2→5 en un solo chat'],
+  ['AGENTS.md', agents, '.cursor/skills/README.md'],
+  ['comando', comando, '.cursor/skills/README.md'],
+  ['comando', comando, 'avicore-contexto'],
+  ['comando', comando, 'avicore-negocio'],
+  ['comando', comando, 'Arquitectura documental'],
+  ['comando', comando, 'docs/02-avicore-mensajes-reutilizables.html'],
   ['comando', comando, 'solo al final del mensaje 2'],
-  ['03-skills', skills03, 'Única tabla mensaje → skill'],
-  ['03-skills', skills03, 'avicore-deuda-tecnica'],
-  ['00-config', config00, 'check-agent-docs-sync'],
-  ['05 vía index', index01, '05-evolucion-skills-y-docs.md'],
+  ['skills README', skillsReadme, 'Única tabla mensaje → skill'],
+  ['skills README', skillsReadme, 'avicore-deuda-tecnica'],
+  ['cursor README', cursorReadme, 'check-agent-docs-sync'],
+  ['cursor README', cursorReadme, 'GOBERNANZA.md'],
 ];
 
 for (const [label, text, needle] of POINTER_CHECKS) {
@@ -75,16 +73,16 @@ for (const [label, text, needle] of POINTER_CHECKS) {
   }
 }
 
-const skillNamesIn03 = [...skills03.matchAll(/`avicore-[\w-]+`/g)].map((m) => m[0].slice(1, -1));
+const skillNamesInReadme = [...skillsReadme.matchAll(/`avicore-[\w-]+`/g)].map((m) => m[0].slice(1, -1));
 const NON_SKILL_MARKERS = new Set(['avicore-defer']);
-const uniqueSkills = [...new Set(skillNamesIn03)].filter(
+const uniqueSkills = [...new Set(skillNamesInReadme)].filter(
   (n) => n.startsWith('avicore-') && !NON_SKILL_MARKERS.has(n)
 );
 
 for (const skillName of uniqueSkills) {
   const skillPath = path.join(root, '.cursor', 'skills', skillName, 'SKILL.md');
   if (!fs.existsSync(skillPath)) {
-    fail(`03-skills referencia ${skillName} pero no existe ${skillPath}`);
+    fail(`README referencia ${skillName} pero no existe ${skillPath}`);
   }
 }
 
@@ -92,6 +90,7 @@ const ROUTING_INTENTS = [
   'avicore-nuevo-modulo',
   'avicore-ui',
   'avicore-design-system',
+  'avicore-negocio',
   'avicore-deuda-tecnica',
 ];
 
@@ -99,13 +98,25 @@ for (const skill of ROUTING_INTENTS) {
   if (!comando.includes(skill)) {
     fail(`comando: falta enrutamiento mensaje 1 para ${skill}`);
   }
-  if (!skills03.includes(skill)) {
-    fail(`03-skills: falta ${skill} en enrutamiento o catálogo`);
+  if (!skillsReadme.includes(skill)) {
+    fail(`skills README: falta ${skill} en enrutamiento o catálogo`);
+  }
+}
+
+const removedPaths = [
+  'docs/cursor/03-skills-avicore.md',
+  'docs/README.md',
+  'docs/reference/estructura-base-datos.md',
+];
+
+for (const rel of removedPaths) {
+  if (fs.existsSync(path.join(root, rel))) {
+    fail(`archivo obsoleto aún existe: ${rel}`);
   }
 }
 
 if (failed) {
-  console.error('\nCorregí el drift según docs/cursor/05-evolucion-skills-y-docs.md § Matriz.');
+  console.error('\nCorregí el drift según avicore-evolucion-tooling/references/GOBERNANZA.md');
   process.exit(1);
 }
 

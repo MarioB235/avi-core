@@ -1,7 +1,7 @@
 # Referencia — Estructura del proyecto
 
-**Fuente maestra del árbol de carpetas y convenciones de código.** Solo carpetas y clases que existen en el repo; módulos futuros en `docs/12-plan-de-desarrollo.md`.  
-Principios y stack: `docs/07-arquitectura-tecnica.md`.
+**Fuente maestra del árbol de carpetas y convenciones de código.** Solo carpetas y clases que existen en el repo; módulos futuros en `plan-desarrollo.md`.  
+Principios y stack: `arquitectura.md`.
 
 ---
 
@@ -114,8 +114,8 @@ resources/
 | Datos a vistas Blade estáticas | `Http/View/Composers/` | Inyección sin lógica en Blade (`Route::view`, p. ej. Inicio admin) |
 | HTTP / UI dinámica | `Livewire/` | Estado de formularios, listados |
 | Autorización | `Policies/` | Rol + `empresa_id` |
-| Tiempo real | `Events/` + canales privados | Ver `docs/08-tiempo-real-eventos.md` (cuando exista) |
-| Persistencia | `Models/`, `database/migrations/` | Espejo de `reference/estructura-base-datos.md` |
+| Tiempo real | `Events/` + canales privados | Ver `eventos.md` (cuando exista) |
+| Persistencia | `Models/`, `database/migrations/` | Espejo de `avicore-modelo-datos/references/esquema-bd.md` |
 
 ---
 
@@ -127,13 +127,13 @@ resources/
 | Inicio admin | `pages/admin/home` + `AdminHomeService` | `users` |
 | Carga operario | `Livewire/Operario/` | `granjas`, `galpones`, `lotes`, `registros_operativos` |
 
-Módulos pendientes (Dashboard, Reportes, CRUD usuarios, etc.): ver `docs/12-plan-de-desarrollo.md` § 13.
+Módulos pendientes (Dashboard, Reportes, CRUD usuarios, etc.): ver `plan-desarrollo.md` § 13.
 
 ---
 
 ## Checklist al añadir código
 
 - [ ] Clase en carpeta según convenciones de capa
-- [ ] `reference/estructura-proyecto.md` si nueva carpeta estándar
-- [ ] Modelo alineado con `reference/estructura-base-datos.md`
+- [ ] `arbol-proyecto.md` si nueva carpeta estándar
+- [ ] Modelo alineado con `avicore-modelo-datos/references/esquema-bd.md`
 - [ ] Policy y scope `empresa_id`
