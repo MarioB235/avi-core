@@ -664,6 +664,51 @@
         @apply block font-medium text-avicore-primary;
     }
 
+    .avicore-sheet {
+        @apply fixed inset-0 z-[60];
+    }
+
+    .avicore-sheet__backdrop {
+        @apply fixed inset-0 bg-avicore-text/65;
+    }
+
+    .avicore-sheet__panel {
+        @apply fixed inset-x-0 bottom-0 z-10 mx-auto flex max-h-[min(92dvh,42rem)] w-full max-w-lg flex-col rounded-t-[1.75rem] border border-avicore-border/80 bg-avicore-card shadow-[0_-16px_48px_rgba(15,23,42,0.18)];
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .avicore-sheet__handle {
+        @apply mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-full bg-avicore-border-strong/80;
+    }
+
+    .avicore-sheet__header {
+        @apply flex shrink-0 items-start justify-between gap-3 border-b border-avicore-border/60 px-5 pb-3 pt-1;
+    }
+
+    .avicore-sheet__title {
+        @apply text-lg font-semibold text-avicore-primary;
+    }
+
+    .avicore-sheet__close {
+        @apply -mr-1 flex size-9 shrink-0 items-center justify-center rounded-lg text-avicore-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    .avicore-sheet__body {
+        @apply min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-4 text-sm leading-relaxed text-avicore-text;
+    }
+
+    .avicore-sheet__galpon {
+        @apply rounded-xl border border-avicore-border-strong/70 bg-avicore-surface px-4 py-3;
+    }
+
+    .avicore-sheet__galpon-label {
+        @apply text-xs font-medium text-avicore-muted;
+    }
+
+    .avicore-sheet__galpon-value {
+        @apply mt-0.5 text-base font-semibold text-avicore-text;
+    }
+
     .avicore-auth-forgot-link {
         @apply text-sm font-medium text-avicore-primary underline-offset-2 transition-colors hover:text-avicore-secondary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }

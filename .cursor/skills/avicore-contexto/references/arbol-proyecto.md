@@ -25,11 +25,11 @@ avi-core/
 
 **Auth (Bloque 2):** Livewire `Auth/Login`, `Auth/ChangePassword`; middleware en `bootstrap/app.php`; rutas `/dev/*` solo en entorno `local`. Contacto de recuperación MVP: `config/avicore.php` + `SupportContactService` + `x-auth.support-contact-dialog`. Login demo local: `DemoLoginService` + selector de perfil en `/login` (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN`).
 
-**Operario (slice mínimo):** Livewire `Operario/Home`, `Operario/CargarHub`, `Operario/CargaHuevos`, `Operario/Historial`; rutas `/operario`, `/operario/cargar`, `/operario/carga/huevos`, `/operario/historial`; shell con `x-operario.header`, `x-operario.home-hero`, `x-operario.bottom-nav`, `x-ui.snackbar-host`; selector galpón en `Home` + `partials/galpon-chip-selector`; `OperarioGalponService` (`galponDisponibleParaUsuario`, `galponActual`, `seleccionarGalpon`), `RegistrarCargaHuevosAction`, `GalponPolicy`, `OperarioLayoutComposer`, `Support\OperarioNav` (pestañas y títulos de header).
+**Operario (slice mínimo):** Livewire `Operario/Home`, `Operario/CargarHub`, `Operario/CargaHuevos` (redirect-only), `Operario/Historial`; rutas `/operario`, `/operario/cargar`, `/operario/carga/huevos`, `/operario/historial`; shell con `x-operario.header`, `x-operario.home-hero`, `x-operario.cargar-hero`, `x-operario.bottom-nav`, `x-ui.snackbar-host`; carga huevos en hub vía `x-ui.dialog` (`partials/carga-huevos-form`); selector galpón en `Home` + `partials/galpon-chip-selector`; `OperarioGalponService` (`galponDisponibleParaUsuario`, `galponActual`, `seleccionarGalpon`), `RegistrarCargaHuevosAction`, `GalponPolicy`, `OperarioLayoutComposer`, `Support\OperarioNav` (pestañas y títulos de header).
 
 **Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php`; `tests/Feature/Services/DemoLoginServiceTest.php`; `tests/Feature/Ui/LoginViewTest.php` (render login y selector demo); `tests/Feature/Ui/PublicLayoutTest.php` (shell login móvil).
 
-**Tests operario:** `tests/Feature/Operario/OperarioCargaHuevosTest.php` (flujo E2E, multiempresa, galpón no disponible, redirect sin galpón y apertura automática del selector, Action rechaza mantenimiento), `tests/Feature/Services/OperarioGalponServiceTest.php` (`galponDisponibleParaUsuario`, maples, multiempresa, selección), `tests/Feature/Support/OperarioNavTest.php` (pestaña activa y `headerTitle` por ruta), `tests/Feature/Ui/OperarioBottomNavTest.php` (dock, transiciones, subtítulo layout, chip galpón vacío/activo, KPI maples), `tests/Feature/Ui/SnackbarHostTest.php` (host en layout, evento `snackbar-show`, flash `status`).
+**Tests operario:** `tests/Feature/Operario/OperarioCargaHuevosTest.php` (flujo E2E, multiempresa, galpón no disponible, redirect sin galpón y apertura automática del selector, Action rechaza mantenimiento), `tests/Feature/Services/OperarioGalponServiceTest.php` (`galponDisponibleParaUsuario`, maples, multiempresa, selección), `tests/Feature/Support/OperarioNavTest.php` (pestaña activa y `headerTitle` por ruta), `tests/Feature/Ui/OperarioBottomNavTest.php` (dock, transiciones, hero Cargar, diálogo huevos, chip galpón vacío/activo, KPI maples), `tests/Feature/Ui/DialogComponentTest.php`, `tests/Feature/Ui/SheetComponentTest.php`, `tests/Feature/Ui/SnackbarHostTest.php` (host en layout, evento `snackbar-show`, flash `status`).
 
 **Layout Livewire (oficial):** `resources/views/layouts/app.blade.php` — usado por componentes de página completa (`config/livewire.php` → `layouts::app`).
 
@@ -87,14 +87,15 @@ resources/
 │   ├── components/
 │   │   ├── admin/            # home-hero
 │   │   ├── auth/             # support-contact-dialog
-│   │   ├── operario/         # bottom-nav, header, home-hero
+│   │   ├── operario/         # bottom-nav, header, home-hero, cargar-hero
 │   │   ├── layouts/          # público, admin, operario-mobile
 │   │   │   └── partials/     # admin-nav, admin-sidebar-inner, admin-header-toolbar, admin-menu-trigger, auth-brand-panel
-│   │   └── ui/               # button, input, card, badge, alert, logo, icon, dialog, kpi-card, nav-link, empty-state, setup-checklist, user-avatar, snackbar-host
+│   │   └── ui/               # button, input, card, badge, alert, logo, icon, dialog, sheet, kpi-card, nav-link, empty-state, setup-checklist, user-avatar, snackbar-host
 │   │       └── icons/        # inline.blade.php
 │   ├── livewire/
+│   │   ├── _redirect-placeholder.blade.php
 │   │   ├── auth/             # login, change-password
-│   │   └── operario/         # home (+ partials/galpon-chip-selector), cargar-hub, carga-huevos, historial
+│   │   └── operario/         # home (+ partials/galpon-chip-selector, carga-huevos-form), cargar-hub, historial
 │   └── pages/
 │       ├── admin/home.blade.php
 │       └── dev/              # previews /dev/* (solo local)

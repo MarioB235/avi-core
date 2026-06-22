@@ -44,7 +44,7 @@
 ## Tests (PHPUnit / Feature)
 
 - Comportamiento crítico con **Feature tests** en `tests/Feature/` (auth, permisos, multiempresa, reglas de negocio, flujos en `avicore-ui/references/pantallas-flujos.md`).
-- Componentes UI reutilizables (`x-ui.*`, `x-auth.*`): tests de renderizado/accesibilidad en `tests/Feature/Ui/` cuando el componente expone contrato estable (iconos, inputs, dialog, support-contact-dialog, etc.).
+- Componentes UI reutilizables (`x-ui.*`, `x-auth.*`): tests de renderizado/accesibilidad en `tests/Feature/Ui/` cuando el componente expone contrato estable (iconos, inputs, `x-ui.dialog`, `x-ui.sheet`, `support-contact-dialog`, etc.) — p. ej. `DialogComponentTest`, `SheetComponentTest`, `LoginViewTest`.
 - Datos de configuración expuestos en UI (p. ej. contacto de soporte): validar en Service (`SupportContactService`), no confiar solo en Blade; tests Feature del service y del componente.
 - Servicios de auth con ramas de error (`DemoLoginService::resolveUser`): tests Feature en `tests/Feature/Services/` y flujos Livewire en `tests/Feature/Auth/`.
 - Servicios operarios con reglas de negocio (`OperarioGalponService`: `galponDisponibleParaUsuario`, maples, multiempresa, galpón disponible): tests Feature en `tests/Feature/Services/OperarioGalponServiceTest.php` + integración en `tests/Feature/Ui/` y `tests/Feature/Support/OperarioNavTest.php` cuando aplique.

@@ -13,7 +13,6 @@
             height="1440"
             decoding="async"
         >
-        <div class="avicore-operario-home-hero__scrim"></div>
     </div>
 
     <div class="avicore-operario-home-hero__content">

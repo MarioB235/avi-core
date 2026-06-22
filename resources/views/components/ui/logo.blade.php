@@ -17,6 +17,7 @@
 
     $nameClass = match (true) {
         $theme === 'on-primary' => 'text-base font-semibold text-white',
+        $theme === 'on-photo' => 'text-base font-semibold text-white',
         $size === 'auth-mobile' => 'text-3xl font-semibold leading-tight tracking-tight text-avicore-primary sm:text-4xl',
         $size === 'hero' => 'text-4xl font-semibold leading-tight tracking-tight text-avicore-primary sm:text-5xl lg:text-6xl',
         $size === 'lg' => 'text-xl font-semibold text-avicore-primary',
@@ -25,14 +26,17 @@
 
     $subtitleClass = match (true) {
         $theme === 'on-primary' => 'text-sm text-white/70',
+        $theme === 'on-photo' => 'text-sm text-white/75',
         $size === 'auth-mobile' => 'mt-0.5 text-sm font-medium text-avicore-primary/80 sm:text-base',
         $size === 'hero' => 'mt-1 text-sm font-medium text-avicore-primary/80 sm:text-base lg:text-lg',
         default => 'text-sm text-avicore-muted',
     };
 
-    $imageShellClass = $theme === 'on-primary'
-        ? 'rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-black/5'
-        : '';
+    $imageShellClass = match ($theme) {
+        'on-primary' => 'rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-black/5',
+        'on-photo' => 'rounded-full bg-white p-2 shadow-[0_8px_24px_rgba(15,23,42,0.2)] ring-2 ring-white/90',
+        default => '',
+    };
 
     $logoClass = match ($size) {
         'hero' => 'avicore-logo avicore-logo--hero',

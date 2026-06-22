@@ -47,8 +47,9 @@ class LoginViewTest extends TestCase
         $this->assertStringContainsString('+54 9 11 2345-6789', $html);
         $this->assertStringContainsString('wa.me/5491123456789', $html);
         $this->assertStringContainsString('role="dialog"', $html);
-        $this->assertStringContainsString('avicore-dialog__backdrop', $html);
-        $this->assertStringContainsString('openDialog()', $html);
+        $this->assertStringContainsString('avicore-sheet__backdrop', $html);
+        $this->assertStringContainsString('openSheet()', $html);
+        $this->assertStringContainsString('translate-y-full', $html);
     }
 
     public function test_login_renders_demo_role_select_in_local_environment(): void

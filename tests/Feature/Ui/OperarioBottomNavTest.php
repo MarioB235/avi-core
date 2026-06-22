@@ -57,7 +57,7 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee(route('operario.historial'), false);
     }
 
-    public function test_carga_huevos_highlights_cargar_tab_in_bottom_navigation(): void
+    public function test_carga_huevos_highlights_cargar_tab_and_opens_dialog_from_deep_link(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
@@ -71,15 +71,13 @@ class OperarioBottomNavTest extends TestCase
         ]);
 
         $this->actingAs($operario)
-            ->get(route('operario.carga.huevos'))
+            ->get(route('operario.cargar', ['form' => 'huevos']))
             ->assertOk()
             ->assertSee('avicore-operario-tab-bar__item--active', false)
-            ->assertSee('avicore-operario-tab-bar__icon-wrap', false)
-            ->assertSee('aria-current="page"', false)
-            ->assertSee(route('operario.cargar'), false)
-            ->assertSee('Cantidad de huevos')
-            ->assertSee('wire:transition="operario-chrome"', false)
-            ->assertSee('wire:transition="operario-page"', false);
+            ->assertSee('avicore-dialog', false)
+            ->assertSee('Cantidad de huevos', false)
+            ->assertSee('wire:click="abrirFormularioHuevos"', false)
+            ->assertDontSee('wire:transition="operario-chrome"', false);
     }
 
     public function test_cargar_hub_shows_layout_subtitle_when_no_galpon_selected(): void
@@ -96,8 +94,38 @@ class OperarioBottomNavTest extends TestCase
         $this->actingAs($operario)
             ->get(route('operario.cargar'))
             ->assertOk()
+            ->assertSee('avicore-operario-cargar-hero', false)
+            ->assertSee('avicore-operario-cargar-alert', false)
             ->assertSee('Elegí un galpón en Inicio', false)
-            ->assertSee('wire:transition="operario-chrome"', false);
+            ->assertSee('Sin seleccionar · Elegí en Inicio', false)
+            ->assertSee('images/brand/operario-cargar-hero.jpg', false)
+            ->assertDontSee('wire:transition="operario-chrome"', false);
+    }
+
+    public function test_cargar_hub_renders_hero_sheet_and_featured_huevos_tile_with_galpon(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create();
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => $galpon->id,
+        ]);
+
+        $this->actingAs($operario)
+            ->get(route('operario.cargar'))
+            ->assertOk()
+            ->assertSee('avicore-operario-cargar-hero', false)
+            ->assertSee('avicore-operario-home-sheet', false)
+            ->assertSee('avicore-operario-carga-tile--featured', false)
+            ->assertSee('Nueva carga', false)
+            ->assertSee('Tipo de carga', false)
+            ->assertSee('wire:click="abrirFormularioHuevos"', false)
+            ->assertSee($galpon->displayName(), false)
+            ->assertDontSee(route('operario.carga.huevos'), false);
     }
 
     public function test_home_shows_empty_galpon_chip_when_no_galpon_selected(): void

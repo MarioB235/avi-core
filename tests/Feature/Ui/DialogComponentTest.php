@@ -26,6 +26,8 @@ class DialogComponentTest extends TestCase
         $this->assertStringContainsString('openDialog()', $html);
         $this->assertStringContainsString('closeDialog()', $html);
         $this->assertStringContainsString('trapTab($event)', $html);
+        $this->assertStringContainsString('applyOpenSideEffects', $html);
+        $this->assertStringContainsString('x-effect="applyOpenSideEffects(open)"', $html);
         $this->assertStringContainsString('x-on:alpine:destroy', $html);
     }
 

@@ -15,9 +15,9 @@
 <body class="avicore-operario-body font-sans">
     <div @class([
         'avicore-operario-shell',
-        'avicore-operario-shell--home' => $operarioIsHomePage ?? false,
+        'avicore-operario-shell--home' => $operarioIsHeroPage ?? false,
     ])>
-        @unless ($operarioIsHomePage ?? false)
+        @unless ($operarioIsHeroPage ?? false)
             <div wire:transition="operario-chrome">
                 <x-operario.header
                     :title="$operarioHeaderTitle ?? 'Operario'"
@@ -29,7 +29,7 @@
 
         <main @class([
             'avicore-operario-main',
-            'avicore-operario-main--home' => $operarioIsHomePage ?? false,
+            'avicore-operario-main--home' => $operarioIsHeroPage ?? false,
         ])>
             <div wire:transition="operario-page" class="avicore-operario-page">
                 {{ $slot }}

@@ -36,6 +36,7 @@ Ver [`refined-agro-principios.md`](refined-agro-principios.md), [`motion-y-feedb
 | `admin-home-hero.jpg` | Hero Inicio admin (≥1024px) — fuente PNG/JPG en `resources/images/brand/`; degradado inferior documentado como excepción clean |
 | `admin-home-hero-mobile.jpg` | Reservado — hero Inicio admin en móvil (pendiente asset) |
 | `operario-home-hero.jpg` | Hero Inicio operario — fuente PNG en `resources/images/brand/`; render en `<x-operario.home-hero>` |
+| `operario-cargar-hero.jpg` | Hero hub Cargar operario — interior de galpón (pasillo, jaulas, luz natural); fuente PNG en `resources/images/brand/`; render en `<x-operario.cargar-hero>` |
 
 Tras cambiar fondos JPEG/PNG: `python scripts/optimize-brand-assets.py` (comprime fondos y sincroniza logo + `public/`).
 
@@ -43,7 +44,7 @@ Tras cambiar fondos JPEG/PNG: `python scripts/optimize-brand-assets.py` (comprim
 
 Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card` (elevación `shadow-sm`/`shadow-md`, excepción documentada frente a cards KPI). Panel de marca escritorio: `.avicore-auth-brand` alinea logo (`x-ui.logo` size `hero`) y copy en columna (`auth-brand-panel`). Fondos referenciados desde Vite en `resources/css/app.css`.
 
-**Recuperación MVP:** `config/avicore.php` (`.env` → `AVICORE_SUPPORT_*`) + `App\Services\SupportContactService` (valida WhatsApp/correo, construye `wa.me`/`mailto` con mensaje prefijado). Vista compuesta `x-auth.support-contact-dialog` sobre `x-ui.dialog`.
+**Recuperación MVP:** `config/avicore.php` (`.env` → `AVICORE_SUPPORT_*`) + `App\Services\SupportContactService` (valida WhatsApp/correo, construye `wa.me`/`mailto` con mensaje prefijado). Vista compuesta `x-auth.support-contact-dialog` sobre **`x-ui.sheet`** (bottom sheet en auth; el nombre del componente es histórico).
 
 **Input contraseña:** `x-ui.input` con `toggle-password`; clase `.avicore-password-input` oculta el reveal nativo del navegador (un solo icono ojo).
 
@@ -56,7 +57,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `active:scale-[0.98]` / `active:scale-95` | Botones/listas móvil | Dentro de `@media (prefers-reduced-motion: no-preference)` |
 | `md:hover:*` | Admin sidebar, tablas, cards | No en operario como único feedback |
 | `backdrop-blur-md` | `.avicore-operario-tab-bar`, modales | No en fondo global ni cards KPI |
-| Alpine `x-transition` 250–300ms | Drawer admin, modales | Un panel a la vez |
+| Alpine `x-transition` 250–300ms | Drawer admin, modales, bottom sheet operario | Un panel a la vez |
 
 ## Anti-patrones (no implementar)
 
@@ -94,9 +95,11 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.empty-state` | Empty state con icono, título y descripción |
 | `x-ui.setup-checklist` | Lista de pasos de configuración inicial con badge de estado |
 | `x-ui.user-avatar` | Iniciales circulares; prop `decorative` cuando el nombre visible está al lado (header/sidebar) — si no, `role="img"` + `aria-label` |
-| `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger`; telón `.avicore-dialog__backdrop` (`bg-avicore-text/65`, fade sin scale), panel centrado, focus trap (Tab/Escape), restauración de foco al cerrar, bloquea scroll del body |
-| `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
-| `x-operario.home-hero` | Inicio — foto + header + saludo (`primerNombre` desde Livewire) + chip galpón en un solo bloque (`home-hero.blade.php`) |
+| `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger` **o** `wire:model` (Livewire); panel centrado; focus trap; `applyOpenSideEffects` sincroniza scroll/foco al cerrar vía entangle |
+| `x-ui.sheet` | Bottom sheet Alpine — slot `trigger` **o** `wire:model`; panel anclado abajo (slide-up), handle, safe-area; auth recuperación contraseña |
+| `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», bottom sheet (`x-ui.sheet`); enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
+| `x-operario.home-hero` | Inicio — foto sin scrim + header + saludo (`primerNombre` desde Livewire) + chip galpón en un solo bloque (`home-hero.blade.php`) |
+| `x-operario.cargar-hero` | Hub Cargar — foto sin scrim; header `photo-overlay` (texto blanco, logo sin círculo); chip galpón solo lectura |
 | `x-operario.header` | Barra operario — variante Inicio (dentro del hero) o contextual (título + chip galpón) |
 | `x-operario.bottom-nav` | Barra inferior integrada — 3 pestañas; ítem activo con círculo verde sobresaliente; datos desde `OperarioNav` |
 
@@ -106,7 +109,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 |--------|---------|-----|
 | Público | `components/layouts/public.blade.php` | Login, cambio de contraseña — split marca + tarjeta (≥1024px); móvil: logo apilado + bottom sheet (`.avicore-auth-mobile-brand`, `.avicore-auth-card`); partial `auth-brand-panel` |
 | Admin | `components/layouts/admin.blade.php` | Shell `.avicore-admin-*`: sidebar sticky verde (`bg-avicore-primary`, nav clara, labels de sección) + drawer Alpine (móvil), header y main con gutter común (`avicore-admin-gutter`); partials `admin-sidebar-inner`, `admin-nav`, `admin-header-toolbar`, `admin-menu-trigger` |
-| Operario | `components/layouts/operario-mobile.blade.php` | Shell `.avicore-operario-shell` — header `<x-operario.header>` (omitido en Inicio; va en hero) + barra inferior `<x-operario.bottom-nav>`; datos de galpón vía `OperarioLayoutComposer`; pestañas/títulos vía `OperarioNav` |
+| Operario | `components/layouts/operario-mobile.blade.php` | Shell `.avicore-operario-shell` — header `<x-operario.header>` omitido en páginas hero (`operarioIsHeroPage`: Inicio + Cargar) + barra inferior `<x-operario.bottom-nav>`; datos de galpón vía `OperarioLayoutComposer`; pestañas/títulos vía `OperarioNav` |
 
 ## Quality gates
 
