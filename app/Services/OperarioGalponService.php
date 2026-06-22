@@ -82,6 +82,36 @@ class OperarioGalponService
             ->get();
     }
 
+    public function cantidadCargasDelDia(User $user): int
+    {
+        if ($user->empresa_id === null) {
+            return 0;
+        }
+
+        return RegistroOperativo::query()
+            ->forEmpresa($user->empresa_id)
+            ->where('user_id', $user->id)
+            ->activos()
+            ->delDia()
+            ->count();
+    }
+
+    public function maplesProducidosHoy(User $user): int
+    {
+        if ($user->empresa_id === null) {
+            return 0;
+        }
+
+        $huevos = RegistroOperativo::query()
+            ->forEmpresa($user->empresa_id)
+            ->where('user_id', $user->id)
+            ->activos()
+            ->delDia()
+            ->sum('huevos');
+
+        return intdiv((int) $huevos, 30);
+    }
+
     public function etiquetaGalpon(?Galpon $galpon): string
     {
         if ($galpon === null) {

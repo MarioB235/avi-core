@@ -10,7 +10,7 @@ El arquitecto (`/avicore-architect-direct`) debe **mantener el repo al día**, n
 |------|-----------------|
 | Flujo slash (7 pasos) | `.cursor/commands/avicore-architect-direct.md` |
 | Mensaje → skill | `.cursor/skills/README.md` (única tabla) |
-| Plantillas usuario | `docs/02-avicore-mensajes-reutilizables.html` |
+| Plantillas usuario | `docs/02-avicore-mensajes-reutilizables.html` (índice) · contenido en `docs/plantillas/` |
 | Procedimiento auditoría / PR / docs | Skills `avicore-auditoria`, `avicore-git-pr`, `avicore-cierre-tarea` |
 | Gobernanza tooling | Este archivo |
 | Contrato producto mínimo | `docs/00-contexto.md` |
@@ -23,7 +23,7 @@ El arquitecto (`/avicore-architect-direct`) debe **mantener el repo al día**, n
 
 | Si cambia… | Editar (en orden) |
 |------------|-------------------|
-| Flujo 2→5 / adjuntos / pasos del slash | Comando → `docs/02-avicore-mensajes-reutilizables.html` → skill afectado → `skills/README.md` → `CHANGELOG [cursor]` |
+| Flujo 2→5 / adjuntos / pasos del slash | Comando → `docs/plantillas/` (o índice `02-…html`) → skill afectado → `skills/README.md` → `CHANGELOG [cursor]` |
 | Nuevo skill enrutable (msg 1–5) | `SKILL.md` → README → enrutamiento msg 1 en comando → `CHANGELOG` |
 | Criterios auditoría | `avicore-auditoria/references/estandares-codigo.md` → skill auditoría → HTML msg 2 |
 | Tono chat | `avicore-modo-respuesta-clara.mdc` → `avicore-contexto/references/modo-respuesta-clara.md` |

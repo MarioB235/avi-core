@@ -16,11 +16,19 @@ class Home extends Component
     {
         $user = auth()->user();
         $galpon = $operarioGalponService->galponActual($user);
+        $hora = now()->hour;
 
         return view('livewire.operario.home', [
             'galpon' => $galpon,
             'galponEtiqueta' => $operarioGalponService->etiquetaGalpon($galpon),
             'ultimasCargas' => $operarioGalponService->ultimasCargasDelDia($user)->take(3),
+            'cargasCompletadasHoy' => $operarioGalponService->cantidadCargasDelDia($user),
+            'maplesProducidosHoy' => $operarioGalponService->maplesProducidosHoy($user),
+            'saludo' => match (true) {
+                $hora < 12 => 'Buenos días',
+                $hora < 19 => 'Buenas tardes',
+                default => 'Buenas noches',
+            },
         ]);
     }
 }

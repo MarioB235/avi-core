@@ -11,7 +11,7 @@ class LogoComponentTest extends TestCase
     {
         $html = Blade::render('<x-ui.logo size="hero" subtitle="Gestión operativa avícola" />');
 
-        $this->assertStringContainsString('images/brand/logo-avicore.svg', $html);
+        $this->assertStringContainsString('images/brand/logo-avicore.png', $html);
         $this->assertStringContainsString('avicore-logo--hero', $html);
         $this->assertStringContainsString('AviCore', $html);
         $this->assertStringContainsString('Gestión operativa avícola', $html);

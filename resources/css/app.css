@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './operario.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/livewire/src/Features/**/*.php';
@@ -513,8 +514,9 @@
 
     /* Fondos de marca — rutas relativas para Vite (dev + build) */
     .avicore-brand-background {
-        @apply min-h-screen bg-cover bg-center bg-no-repeat;
-        background-image: url('../images/brand/background-mobile.jpg');
+        @apply min-h-screen bg-cover bg-no-repeat;
+        background-image: url('../images/brand/login-background.jpg');
+        background-position: center 38%;
     }
 
     @media (min-width: 1024px) {
@@ -664,61 +666,5 @@
 
     .avicore-auth-forgot-link {
         @apply text-sm font-medium text-avicore-primary underline-offset-2 transition-colors hover:text-avicore-secondary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
-    }
-
-    .avicore-operario-shell::before {
-        @apply pointer-events-none fixed inset-x-0 top-0 z-0 h-48 bg-gradient-to-b from-avicore-card/90 via-avicore-card/50 to-transparent;
-        content: '';
-    }
-
-    .avicore-operario-header {
-        @apply relative z-20 px-4 pt-[max(0.75rem,env(safe-area-inset-top,0px))];
-    }
-
-    .avicore-operario-header__inner {
-        @apply mx-auto flex max-w-lg items-center gap-3;
-    }
-
-    .avicore-operario-header__title {
-        @apply text-lg font-semibold tracking-tight text-avicore-text;
-    }
-
-    .avicore-operario-header__subtitle {
-        @apply mt-0.5 truncate text-sm text-avicore-muted;
-    }
-
-    .avicore-operario-main {
-        @apply relative z-10 mx-auto w-full max-w-lg space-y-4 px-4 py-4;
-    }
-
-    .avicore-operario-tab-bar {
-        @apply fixed inset-x-4 z-40 mx-auto max-w-lg rounded-2xl border border-avicore-border/40 bg-avicore-card/95 shadow-[0_8px_32px_rgba(31,41,51,0.12)] backdrop-blur-md;
-        bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
-    }
-
-    .avicore-operario-tab-bar__inner {
-        @apply grid grid-cols-4 gap-1 p-1.5;
-    }
-
-    .avicore-operario-tab-bar__item {
-        @apply flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-2 text-[0.6875rem] font-medium text-avicore-muted;
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-        .avicore-operario-tab-bar__item {
-            @apply transition-[color,background-color,transform,box-shadow] duration-200 ease-out active:scale-95;
-        }
-    }
-
-    .avicore-operario-tab-bar__item--active {
-        @apply bg-avicore-primary text-white shadow-sm;
-    }
-
-    .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__label {
-        @apply font-semibold;
-    }
-
-    .avicore-operario-tab-bar__label {
-        @apply leading-tight;
     }
 }

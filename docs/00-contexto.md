@@ -2,7 +2,7 @@
 
 **Punto de entrada humano y agente.** Contrato mínimo; el detalle vive en `.cursor/skills/*/references/`.
 
-Plantillas usuario: [`docs/02-avicore-mensajes-reutilizables.html`](02-avicore-mensajes-reutilizables.html)  
+Plantillas usuario: [`docs/02-avicore-mensajes-reutilizables.html`](02-avicore-mensajes-reutilizables.html) (índice) · secciones en [`docs/plantillas/`](plantillas/) (desarrollo, ChatGPT pantallas)  
 Catálogo skills: [`.cursor/skills/README.md`](../.cursor/skills/README.md)  
 Flujo slash: [`.cursor/commands/avicore-architect-direct.md`](../.cursor/commands/avicore-architect-direct.md)
 

@@ -54,7 +54,7 @@ Debe evitar:
 | Crítico | #DC2626 |
 | Información | #2563EB |
 
-El isotipo oficial (`logo-avicore.svg`) usa el verde principal `#1F5E3B` sobre fondo transparente.
+El isotipo oficial (`logo-avicore.png`) usa el verde principal `#1F5E3B` sobre fondo transparente.
 
 **Wordmark «AviCore»** (texto junto al isotipo en `x-ui.logo`): `font-semibold`, color primario; **sin** uppercase, tracking amplio ni tipografía decorativa. Tamaños por contexto: `hero` en panel de marca (escritorio), `auth-mobile` + `stacked` en login móvil. Detalle técnico: [`tokens-componentes.md`](tokens-componentes.md).
 

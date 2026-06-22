@@ -25,11 +25,11 @@ avi-core/
 
 **Auth (Bloque 2):** Livewire `Auth/Login`, `Auth/ChangePassword`; middleware en `bootstrap/app.php`; rutas `/dev/*` solo en entorno `local`. Contacto de recuperación MVP: `config/avicore.php` + `SupportContactService` + `x-auth.support-contact-dialog`. Login demo local: `DemoLoginService` + selector de perfil en `/login` (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN`).
 
-**Operario (slice mínimo):** Livewire `Operario/Home`, `Operario/SelectorGalpon`, `Operario/CargarHub`, `Operario/CargaHuevos`, `Operario/Historial`; rutas `/operario`, `/operario/galpon`, `/operario/cargar`, `/operario/carga/huevos`, `/operario/historial`; shell con `x-operario.bottom-nav`; `OperarioGalponService`, `RegistrarCargaHuevosAction`, `GalponPolicy`, `OperarioLayoutComposer`.
+**Operario (slice mínimo):** Livewire `Operario/Home`, `Operario/SelectorGalpon`, `Operario/CargarHub`, `Operario/CargaHuevos`, `Operario/Historial`; rutas `/operario`, `/operario/galpon`, `/operario/cargar`, `/operario/carga/huevos`, `/operario/historial`; shell con `x-operario.header`, `x-operario.home-hero`, `x-operario.bottom-nav`; `OperarioGalponService`, `RegistrarCargaHuevosAction`, `GalponPolicy`, `OperarioLayoutComposer`, `Support\OperarioNav` (pestañas y títulos de header).
 
-**Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php`; `tests/Feature/Services/DemoLoginServiceTest.php`; `tests/Feature/Ui/LoginViewTest.php` (render login y selector demo).
+**Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php`; `tests/Feature/Services/DemoLoginServiceTest.php`; `tests/Feature/Ui/LoginViewTest.php` (render login y selector demo); `tests/Feature/Ui/PublicLayoutTest.php` (shell login móvil).
 
-**Tests operario:** `tests/Feature/Operario/OperarioCargaHuevosTest.php` (flujo E2E, multiempresa, galpón no disponible, redirect sin galpón, Action rechaza mantenimiento), `tests/Feature/Ui/OperarioBottomNavTest.php` (dock, pestaña activa en home y en `/operario/carga/huevos`, hint de header sin galpón).
+**Tests operario:** `tests/Feature/Operario/OperarioCargaHuevosTest.php` (flujo E2E, multiempresa, galpón no disponible, redirect sin galpón, Action rechaza mantenimiento), `tests/Feature/Services/OperarioGalponServiceTest.php` (maples, multiempresa, selección), `tests/Feature/Ui/OperarioBottomNavTest.php` (dock, pestaña activa, chip galpón vacío/activo, KPI maples).
 
 **Layout Livewire (oficial):** `resources/views/layouts/app.blade.php` — usado por componentes de página completa (`config/livewire.php` → `layouts::app`).
 
@@ -71,7 +71,8 @@ app/
 │   ├── OperarioGalponService.php
 │   └── SupportContactService.php
 └── Support/
-    └── IconSvg.php
+    ├── IconSvg.php
+    └── OperarioNav.php          # Pestañas y títulos del shell operario
 ```
 
 ---
@@ -86,7 +87,7 @@ resources/
 │   ├── components/
 │   │   ├── admin/            # home-hero
 │   │   ├── auth/             # support-contact-dialog
-│   │   ├── operario/         # bottom-nav
+│   │   ├── operario/         # bottom-nav, header, home-hero
 │   │   ├── layouts/          # público, admin, operario-mobile
 │   │   │   └── partials/     # admin-nav, admin-sidebar-inner, admin-header-toolbar, admin-menu-trigger, auth-brand-panel
 │   │   └── ui/               # button, input, card, badge, alert, logo, icon, dialog, kpi-card, nav-link, empty-state, setup-checklist, user-avatar
@@ -100,7 +101,7 @@ resources/
 ├── images/
 │   ├── brand/
 │   └── icons/
-├── css/                      # Tailwind 4 + tema AviCore (`app.css`)
+├── css/                      # Tailwind 4 + tema AviCore (`app.css`, `operario.css`)
 └── js/
 ```
 

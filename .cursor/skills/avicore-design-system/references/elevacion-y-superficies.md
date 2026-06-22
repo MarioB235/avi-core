@@ -8,7 +8,7 @@
 | 1 | `bg-avicore-card border border-avicore-border` | Card KPI, formularios |
 | 2 | `shadow-sm border border-avicore-border/80` | Cards auth, paneles elevados |
 | 3 | `shadow-md` | Modal panel, dropdown |
-| 4 | Chrome flotante operario | `shadow-[0_8px_32px_rgba(31,41,51,0.12)]` + `backdrop-blur-md` |
+| 4 | Dock operario integrado | `.avicore-operario-tab-bar` — `rounded-t-[1.75rem]`, sombra hacia arriba; ítem activo con círculo `avicore-primary` sobresaliente (`operario.css`) |
 
 ## Bordes
 
@@ -20,7 +20,6 @@
 
 **Solo permitido en:**
 
-- `.avicore-operario-tab-bar` (nav inferior fijo)
 - Telón de modal (opcional blur ligero en backdrop — ya en dialog)
 
 **No** en: fondo de página, cards KPI, sidebar admin completo.

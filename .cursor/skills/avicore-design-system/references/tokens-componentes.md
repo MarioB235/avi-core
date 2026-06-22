@@ -30,13 +30,14 @@ Ver [`refined-agro-principios.md`](refined-agro-principios.md), [`motion-y-feedb
 
 | Archivo | Uso |
 |---------|-----|
-| `logo-avicore.svg` | Isotipo con fondo transparente — **única copia:** `public/images/brand/logo-avicore.svg` (`x-ui.logo`) |
-| `background-mobile.jpg` | Fondo ≤1023px — fuente en `resources/images/brand/`, copia en `public/images/brand/` |
+| `logo-avicore.png` | Isotipo PNG — fuente `resources/images/brand/`, copia en `public/images/brand/` (`x-ui.logo`) |
+| `login-background.jpg` | Fondo login ≤1023px — fuente PNG en `resources/images/brand/login-background.png` |
 | `background-desktop.jpg` | Fondo ≥1024px — idem |
 | `admin-home-hero.jpg` | Hero Inicio admin (≥1024px) — fuente PNG/JPG en `resources/images/brand/`; degradado inferior documentado como excepción clean |
 | `admin-home-hero-mobile.jpg` | Reservado — hero Inicio admin en móvil (pendiente asset) |
+| `operario-home-hero.jpg` | Hero Inicio operario — fuente PNG en `resources/images/brand/`; render en `<x-operario.home-hero>` |
 
-Tras cambiar fondos JPEG/PNG: `python scripts/optimize-brand-assets.py` (comprime y sincroniza `public/`). El logo SVG se edita o reemplaza solo en `public/images/brand/`.
+Tras cambiar fondos JPEG/PNG: `python scripts/optimize-brand-assets.py` (comprime fondos y sincroniza logo + `public/`).
 
 **Iconos Lucide:** fuente preferida en `resources/images/icons/` (nombres kebab-case); `App\Support\IconSvg` carga el SVG del disco cuando existe y, si no, usa fallback inline en `components/ui/icons/inline.blade.php`. En pantalla: `x-ui.icon` con `stroke="currentColor"` (color vía Tailwind).
 
@@ -85,7 +86,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.card` | Borde simple, sin sombra; `padding`: `default`, `compact`, `none` |
 | `x-ui.alert` | `info`, `success`, `warning`, `danger` |
 | `x-ui.badge` | Estados semánticos; variante `sidebar` para badges sobre fondo verde |
-| `x-ui.logo` | Marca — `public/images/brand/logo-avicore.svg` (verde `#1F5E3B`) + subtítulo opcional; `theme="on-primary"` en sidebar admin (texto blanco, icono sobre fondo blanco); `stacked` + `size="auth-mobile"` en login móvil |
+| `x-ui.logo` | Marca — `public/images/brand/logo-avicore.png` + subtítulo opcional; `theme="on-primary"` en sidebar admin (texto blanco, icono sobre fondo blanco); `stacked` + `size="auth-mobile"` en login móvil |
 | `x-ui.icon` | SVG inline por nombre (`menu`, `document`, `lock`, `eye`, `circle-x`, `mail`, `message-circle-check`, …) — nav, inputs, acciones; fuente Lucide en `resources/images/icons/` |
 | `x-ui.kpi-card` | Label + valor + hint; prop `icon` opcional; para dashboard e Inicio admin |
 | `x-ui.nav-link` | Sidebar admin — props `icon`, `active`, `disabled` |
@@ -94,7 +95,9 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.user-avatar` | Iniciales circulares; prop `decorative` cuando el nombre visible está al lado (header/sidebar) — si no, `role="img"` + `aria-label` |
 | `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger`; telón `.avicore-dialog__backdrop` (`bg-avicore-text/65`, fade sin scale), panel centrado, focus trap (Tab/Escape), restauración de foco al cerrar, bloquea scroll del body |
 | `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
-| `x-operario.bottom-nav` | Dock inferior inset — 4 pestañas; ítem activo con fondo primario en la celda (`.avicore-operario-tab-bar__item--active`); `aria-current`; `operario.carga.*` resalta Cargar |
+| `x-operario.home-hero` | Inicio — foto + header + saludo + chip galpón en un solo bloque (`home-hero.blade.php`) |
+| `x-operario.header` | Barra operario — variante Inicio (dentro del hero) o contextual (título + chip galpón) |
+| `x-operario.bottom-nav` | Barra inferior integrada — 4 pestañas; ítem activo con círculo verde sobresaliente; datos desde `OperarioNav` |
 
 ## Layouts
 
@@ -102,7 +105,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 |--------|---------|-----|
 | Público | `components/layouts/public.blade.php` | Login, cambio de contraseña — split marca + tarjeta (≥1024px); móvil: logo apilado + bottom sheet (`.avicore-auth-mobile-brand`, `.avicore-auth-card`); partial `auth-brand-panel` |
 | Admin | `components/layouts/admin.blade.php` | Shell `.avicore-admin-*`: sidebar sticky verde (`bg-avicore-primary`, nav clara, labels de sección) + drawer Alpine (móvil), header y main con gutter común (`avicore-admin-gutter`); partials `admin-sidebar-inner`, `admin-nav`, `admin-header-toolbar`, `admin-menu-trigger` |
-| Operario | `components/layouts/operario-mobile.blade.php` | Shell `.avicore-operario-shell` — header contextual (título de sección + galpón o hint sin selección; cambio de galpón solo en pestaña Galpón) + dock inset `<x-operario.bottom-nav>`; datos de header vía `OperarioLayoutComposer` |
+| Operario | `components/layouts/operario-mobile.blade.php` | Shell `.avicore-operario-shell` — header `<x-operario.header>` (omitido en Inicio; va en hero) + barra inferior `<x-operario.bottom-nav>`; datos de galpón vía `OperarioLayoutComposer`; pestañas/títulos vía `OperarioNav` |
 
 ## Quality gates
 
