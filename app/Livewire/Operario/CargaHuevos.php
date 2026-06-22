@@ -20,7 +20,8 @@ class CargaHuevos extends Component
     public function mount(OperarioGalponService $operarioGalponService): void
     {
         if ($operarioGalponService->galponActual(auth()->user()) === null) {
-            $this->redirectRoute('operario.galpon', navigate: true);
+            session()->flash('abrirSelectorGalpon', true);
+            $this->redirectRoute('operario.home', navigate: true);
         }
     }
 
@@ -39,7 +40,8 @@ class CargaHuevos extends Component
         $galpon = $operarioGalponService->galponActual(auth()->user());
 
         if ($galpon === null) {
-            $this->redirectRoute('operario.galpon', navigate: true);
+            session()->flash('abrirSelectorGalpon', true);
+            $this->redirectRoute('operario.home', navigate: true);
 
             return;
         }

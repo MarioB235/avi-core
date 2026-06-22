@@ -10,7 +10,81 @@
     }
 
     .avicore-operario-shell--home {
-        @apply bg-white;
+        @apply bg-avicore-surface;
+    }
+
+    .avicore-operario-page {
+        @apply min-h-full;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-operario-shell--navigating .avicore-operario-page {
+            @apply opacity-90 transition-opacity duration-200 ease-out;
+        }
+
+        ::view-transition-old(operario-page) {
+            animation: avicore-operario-page-out 220ms ease-out both;
+        }
+
+        ::view-transition-new(operario-page) {
+            animation: avicore-operario-page-in 280ms ease-out both;
+        }
+
+        ::view-transition-old(operario-chrome) {
+            animation: avicore-operario-chrome-out 200ms ease-out both;
+        }
+
+        ::view-transition-new(operario-chrome) {
+            animation: avicore-operario-chrome-in 240ms ease-out both;
+        }
+    }
+
+    @keyframes avicore-operario-page-in {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes avicore-operario-page-out {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+    }
+
+    @keyframes avicore-operario-chrome-in {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes avicore-operario-chrome-out {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
     }
 
     .avicore-operario-main {
@@ -23,12 +97,12 @@
 
     /* ── Inicio: hero (foto + header + saludo) ─────────────────────── */
     .avicore-operario-home-hero {
-        @apply relative isolate overflow-hidden;
+        @apply relative z-10;
         min-height: min(48vh, 26rem);
     }
 
     .avicore-operario-home-hero__media {
-        @apply pointer-events-none absolute inset-0;
+        @apply pointer-events-none absolute inset-0 overflow-hidden;
     }
 
     .avicore-operario-home-hero__img {
@@ -43,10 +117,10 @@
         @apply pointer-events-none absolute inset-0;
         background: linear-gradient(
             180deg,
-            rgb(15 23 42 / 0.08) 0%,
-            transparent 38%,
-            rgb(255 255 255 / 0.55) 72%,
-            rgb(255 255 255 / 1) 100%
+            rgb(15 23 42 / 0.22) 0%,
+            rgb(15 23 42 / 0.04) 32%,
+            rgb(234 245 236 / 0.72) 68%,
+            rgb(245 247 250 / 1) 100%
         );
     }
 
@@ -55,23 +129,66 @@
     }
 
     .avicore-operario-home-hero__greeting {
-        @apply mt-auto space-y-2 px-4 pb-8;
+        @apply relative z-20 mt-auto space-y-2 px-4 pb-6;
     }
 
     .avicore-operario-home-hero__title {
         @apply text-[1.75rem] font-bold leading-tight tracking-tight text-avicore-text;
+        text-shadow: 0 1px 12px rgb(255 255 255 / 0.65);
     }
 
     .avicore-operario-home-hero__subtitle {
-        @apply text-sm leading-snug text-avicore-muted;
+        @apply text-sm font-medium leading-snug text-avicore-primary;
     }
 
     .avicore-operario-home-hero__galpon {
-        @apply mt-3 inline-flex max-w-full min-h-11 items-center gap-2 rounded-full bg-avicore-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(31,94,59,0.24)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+        @apply inline-flex max-w-full min-h-11 items-center gap-2 rounded-full bg-avicore-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(31,94,59,0.24)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
 
     .avicore-operario-home-hero__galpon--empty {
         @apply bg-amber-600 shadow-[0_8px_20px_rgba(180,83,9,0.22)];
+    }
+
+    .avicore-operario-galpon-selector {
+        @apply relative z-20;
+    }
+
+    .avicore-operario-galpon-selector--open {
+        @apply z-50;
+    }
+
+    .avicore-operario-galpon-selector__backdrop {
+        @apply fixed inset-0 z-40 bg-slate-900/25;
+    }
+
+    .avicore-operario-galpon-selector__panel {
+        @apply absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-2xl border border-avicore-border-strong bg-avicore-card shadow-[0_22px_56px_rgba(15,23,42,0.22)] ring-1 ring-avicore-primary/10;
+    }
+
+    .avicore-operario-galpon-selector__list {
+        @apply max-h-64 overflow-y-auto p-1.5;
+    }
+
+    .avicore-operario-galpon-selector__option {
+        @apply flex min-h-11 w-full flex-col items-start rounded-xl px-3 py-2.5 text-left active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .avicore-operario-galpon-selector__option {
+            @apply active:scale-100;
+        }
+    }
+
+    .avicore-operario-galpon-selector__option--active {
+        @apply bg-avicore-soft ring-1 ring-avicore-primary/30;
+    }
+
+    .avicore-operario-galpon-selector__empty {
+        @apply px-4 py-3 text-sm leading-relaxed text-avicore-muted;
+    }
+
+    .avicore-operario-galpon-selector__error {
+        @apply border-t border-avicore-border px-4 py-2 text-sm text-red-600;
     }
 
     /* ── Inicio: hoja de contenido ─────────────────────────────────── */
@@ -80,31 +197,67 @@
     }
 
     .avicore-operario-home-sheet {
-        @apply relative z-20 -mt-12 flex flex-1 flex-col gap-6 rounded-t-[2.5rem] bg-white px-4 pb-8 pt-5 shadow-[0_-12px_40px_rgba(15,23,42,0.06)];
+        @apply relative z-20 -mt-10 flex flex-1 flex-col gap-5 rounded-t-[2rem] border-t border-avicore-border-strong/70 bg-avicore-surface px-4 pb-8 pt-6 shadow-[0_-16px_48px_rgba(15,23,42,0.1)];
+    }
+
+    .avicore-operario-home--selector-open .avicore-operario-home-hero {
+        @apply z-50;
+    }
+
+    .avicore-operario-home--selector-open .avicore-operario-home-sheet {
+        @apply z-10;
+    }
+
+    .avicore-operario-home-section__head {
+        @apply space-y-0.5;
+    }
+
+    .avicore-operario-home-section__eyebrow {
+        @apply text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-avicore-primary;
     }
 
     .avicore-operario-home-cargas {
-        @apply flex min-h-[50dvh] flex-col overflow-hidden rounded-2xl border border-avicore-border/50 bg-avicore-surface/30 px-4 py-4;
+        @apply flex min-h-[42dvh] flex-col overflow-hidden rounded-2xl border border-avicore-border-strong/80 bg-avicore-card px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)];
     }
 
     .avicore-operario-home-cargas__header {
-        @apply flex shrink-0 items-center justify-between gap-3;
+        @apply flex shrink-0 items-start justify-between gap-3 border-b border-avicore-border pb-3.5;
+    }
+
+    .avicore-operario-home-cargas__heading {
+        @apply flex min-w-0 items-start gap-3;
+    }
+
+    .avicore-operario-home-cargas__heading-icon {
+        @apply flex size-9 shrink-0 items-center justify-center rounded-xl bg-avicore-primary text-white shadow-[0_6px_16px_rgba(31,94,59,0.28)];
+    }
+
+    .avicore-operario-home-cargas__subtitle {
+        @apply mt-0.5 text-xs font-medium text-avicore-muted;
     }
 
     .avicore-operario-home-cargas__body {
-        @apply mt-4 flex min-h-0 flex-1 flex-col;
+        @apply mt-3.5 flex min-h-0 flex-1 flex-col;
     }
 
     .avicore-operario-home-cargas__body--empty {
-        @apply items-center justify-center text-center;
+        @apply items-center justify-center py-6 text-center;
+    }
+
+    .avicore-operario-home-cargas__empty {
+        @apply flex max-w-[15rem] flex-col items-center gap-3;
+    }
+
+    .avicore-operario-home-cargas__empty-icon {
+        @apply flex size-14 items-center justify-center rounded-2xl bg-avicore-soft text-avicore-primary ring-1 ring-avicore-primary/15;
     }
 
     .avicore-operario-home-cargas__empty-text {
-        @apply max-w-[16rem] text-sm leading-relaxed text-avicore-muted;
+        @apply text-sm font-medium leading-relaxed text-avicore-muted;
     }
 
     .avicore-operario-home-cargas__list {
-        @apply min-h-0 flex-1 space-y-2 overflow-y-auto pr-0.5;
+        @apply min-h-0 flex-1 space-y-2.5 overflow-y-auto pr-0.5;
     }
 
     .avicore-operario-home-summary {
@@ -112,11 +265,11 @@
     }
 
     .avicore-operario-home-section__title {
-        @apply text-base font-bold text-avicore-text;
+        @apply text-base font-bold leading-tight text-avicore-text;
     }
 
     .avicore-operario-home-section__link {
-        @apply inline-flex shrink-0 items-center gap-0.5 text-xs font-semibold text-avicore-primary;
+        @apply inline-flex shrink-0 items-center gap-0.5 rounded-full bg-avicore-soft px-2.5 py-1 text-xs font-semibold text-avicore-primary ring-1 ring-avicore-primary/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
 
     /* ── Header ────────────────────────────────────────────────────── */
@@ -191,11 +344,35 @@
     }
 
     .avicore-operario-kpi-card {
-        @apply flex min-h-[7.5rem] flex-col items-center justify-center rounded-2xl border border-avicore-border/60 bg-white px-2 py-3 text-center;
+        @apply flex min-h-[7.75rem] flex-col items-center justify-center rounded-2xl border border-avicore-border-strong/80 bg-avicore-card px-2 py-3 text-center shadow-[0_8px_20px_rgba(15,23,42,0.06)];
+    }
+
+    .avicore-operario-kpi-card--featured {
+        @apply border-avicore-primary/30 bg-avicore-primary text-white shadow-[0_12px_28px_rgba(31,94,59,0.32)];
+    }
+
+    .avicore-operario-kpi-card--featured .avicore-operario-kpi-card__icon-shell {
+        @apply bg-white/15 text-white ring-1 ring-white/25;
+    }
+
+    .avicore-operario-kpi-card--featured .avicore-operario-kpi-card__value {
+        @apply text-white;
+    }
+
+    .avicore-operario-kpi-card--featured .avicore-operario-kpi-card__label {
+        @apply text-white/85;
+    }
+
+    .avicore-operario-kpi-card--muted {
+        @apply border-dashed border-avicore-border-strong bg-avicore-surface;
+    }
+
+    .avicore-operario-kpi-card--muted .avicore-operario-kpi-card__value {
+        @apply text-avicore-muted;
     }
 
     .avicore-operario-kpi-card__icon-shell {
-        @apply flex size-9 items-center justify-center rounded-xl bg-avicore-soft text-avicore-primary;
+        @apply flex size-9 items-center justify-center rounded-xl bg-avicore-soft text-avicore-primary ring-1 ring-avicore-primary/10;
     }
 
     .avicore-operario-kpi-card__value {
@@ -203,19 +380,33 @@
     }
 
     .avicore-operario-kpi-card__label {
-        @apply mt-2 text-[0.625rem] font-medium leading-tight text-avicore-muted;
+        @apply mt-2 text-[0.625rem] font-semibold leading-tight text-avicore-muted;
     }
 
     .avicore-operario-load-item {
-        @apply flex min-h-14 items-center gap-3 rounded-xl border border-avicore-border/80 bg-white px-3 py-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+        @apply flex min-h-[3.75rem] items-center gap-3 rounded-xl border border-avicore-border-strong/70 bg-avicore-surface px-3 py-2.5 shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-operario-load-item {
+            @apply transition-[transform,box-shadow,background-color] duration-150 ease-out active:scale-[0.99] active:bg-avicore-soft/60;
+        }
     }
 
     .avicore-operario-load-item__icon {
-        @apply flex size-10 shrink-0 items-center justify-center rounded-xl bg-avicore-soft text-avicore-primary;
+        @apply flex size-10 shrink-0 items-center justify-center rounded-xl bg-avicore-primary text-white shadow-[0_4px_12px_rgba(31,94,59,0.22)];
     }
 
-    .avicore-operario-load-item__chevron {
-        @apply shrink-0 text-avicore-muted;
+    .avicore-operario-load-item__title {
+        @apply block truncate text-sm font-semibold text-avicore-text;
+    }
+
+    .avicore-operario-load-item__meta {
+        @apply block truncate text-xs font-medium text-avicore-muted;
+    }
+
+    .avicore-operario-load-item__time {
+        @apply shrink-0 rounded-lg bg-avicore-card px-2 py-1 text-xs font-bold tabular-nums text-avicore-primary ring-1 ring-avicore-primary/15;
     }
 
     /* ── Barra inferior (integrada, ícono activo sobresale) ────────── */
@@ -225,7 +416,7 @@
     }
 
     .avicore-operario-tab-bar__inner {
-        @apply mx-auto grid max-w-lg grid-cols-4 items-end px-3 pt-3;
+        @apply mx-auto grid max-w-lg grid-cols-3 items-end px-4 pt-3;
         min-height: 4.5rem;
         padding-bottom: 0.5rem;
     }
@@ -234,19 +425,26 @@
         @apply relative flex min-h-11 flex-col items-center justify-end gap-1.5 px-1 pb-0.5 text-[0.6875rem] font-medium text-avicore-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
 
+    .avicore-operario-tab-bar__item[data-current] {
+        @apply text-avicore-primary;
+    }
+
     .avicore-operario-tab-bar__icon-wrap {
         @apply relative z-10 flex size-6 items-center justify-center;
     }
 
-    .avicore-operario-tab-bar__item--active {
+    .avicore-operario-tab-bar__item--active,
+    .avicore-operario-tab-bar__item[data-current] {
         @apply text-avicore-primary;
     }
 
-    .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__icon-wrap {
+    .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__icon-wrap,
+    .avicore-operario-tab-bar__item[data-current] .avicore-operario-tab-bar__icon-wrap {
         @apply -mt-7 size-[3.25rem] -translate-y-2 rounded-full border-[3px] border-white bg-avicore-primary text-white shadow-[0_8px_22px_rgba(31,94,59,0.35)];
     }
 
-    .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__label {
+    .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__label,
+    .avicore-operario-tab-bar__item[data-current] .avicore-operario-tab-bar__label {
         @apply font-semibold;
     }
 
@@ -256,11 +454,19 @@
 
     @media (prefers-reduced-motion: no-preference) {
         .avicore-operario-tab-bar__item {
-            @apply transition-[color,transform] duration-200 ease-out active:scale-95;
+            @apply transition-[color,transform] duration-300 ease-out active:scale-95;
         }
 
         .avicore-operario-tab-bar__icon-wrap {
-            @apply transition-[transform,box-shadow,background-color,color,border-color] duration-200 ease-out;
+            @apply transition-[width,height,margin,transform,border-radius,box-shadow,background-color,color,border-color] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)];
+        }
+
+        .avicore-operario-tab-bar__label {
+            @apply transition-[color,font-weight,opacity] duration-300 ease-out;
+        }
+
+        .avicore-operario-tab-bar__item:not(.avicore-operario-tab-bar__item--active):not([data-current]) .avicore-operario-tab-bar__label {
+            @apply opacity-80;
         }
     }
 }

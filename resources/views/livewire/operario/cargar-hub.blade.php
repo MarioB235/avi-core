@@ -7,14 +7,14 @@
         </p>
         @unless ($galpon)
             <p class="mt-2 text-sm text-avicore-muted">
-                Elegí un galpón en la pestaña Galpón antes de cargar datos.
+                Elegí un galpón en Inicio antes de cargar datos.
             </p>
         @endunless
     </x-ui.card>
 
     <div class="grid grid-cols-2 gap-3">
         <x-ui.button
-            href="{{ $galpon ? route('operario.carga.huevos') : route('operario.galpon') }}"
+            href="{{ $galpon ? route('operario.carga.huevos') : route('operario.home', ['abrir_galpon' => 1]) }}"
             class="min-h-[5.5rem] flex-col gap-2 py-4 text-base"
         >
             <x-ui.icon name="egg" class="size-6" />

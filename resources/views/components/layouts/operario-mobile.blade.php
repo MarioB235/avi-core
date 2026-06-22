@@ -18,23 +18,28 @@
         'avicore-operario-shell--home' => $operarioIsHomePage ?? false,
     ])>
         @unless ($operarioIsHomePage ?? false)
-            <x-operario.header
-                :title="$operarioHeaderTitle ?? 'Operario'"
-                :subtitle="$operarioHeaderSubtitle ?? null"
-                :has-galpon="$operarioHasGalpon ?? false"
-                :is-galpon-page="$operarioIsGalponPage ?? false"
-            />
+            <div wire:transition="operario-chrome">
+                <x-operario.header
+                    :title="$operarioHeaderTitle ?? 'Operario'"
+                    :subtitle="$operarioHeaderSubtitle ?? null"
+                    :has-galpon="$operarioHasGalpon ?? false"
+                />
+            </div>
         @endunless
 
         <main @class([
             'avicore-operario-main',
             'avicore-operario-main--home' => $operarioIsHomePage ?? false,
         ])>
-            {{ $slot }}
+            <div wire:transition="operario-page" class="avicore-operario-page">
+                {{ $slot }}
+            </div>
         </main>
 
         <x-operario.bottom-nav />
     </div>
+
+    <x-ui.snackbar-host context="operario" />
 
     @livewireScripts
 </body>

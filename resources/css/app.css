@@ -667,4 +667,74 @@
     .avicore-auth-forgot-link {
         @apply text-sm font-medium text-avicore-primary underline-offset-2 transition-colors hover:text-avicore-secondary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
+
+    .avicore-snackbar-host {
+        @apply pointer-events-none fixed inset-x-0 z-[70] flex justify-center px-4;
+    }
+
+    .avicore-snackbar-host--operario {
+        bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    .avicore-snackbar-host--default {
+        @apply bottom-6;
+    }
+
+    .avicore-snackbar {
+        @apply pointer-events-auto flex w-full max-w-md min-h-12 items-center gap-3 rounded-2xl px-4 py-3 shadow-[0_10px_28px_rgba(15,23,42,0.1)] ring-1;
+    }
+
+    .avicore-snackbar--success {
+        @apply bg-avicore-soft text-avicore-primary ring-avicore-primary/12;
+    }
+
+    .avicore-snackbar--danger {
+        @apply bg-red-50 text-red-900 ring-red-200/80;
+    }
+
+    .avicore-snackbar--warning {
+        @apply bg-amber-50 text-amber-950 ring-amber-200/80;
+    }
+
+    .avicore-snackbar--info {
+        @apply bg-blue-50 text-blue-950 ring-blue-200/80;
+    }
+
+    .avicore-snackbar--success .avicore-snackbar__icon {
+        @apply text-avicore-secondary;
+    }
+
+    .avicore-snackbar--danger .avicore-snackbar__icon {
+        @apply text-red-600;
+    }
+
+    .avicore-snackbar--warning .avicore-snackbar__icon {
+        @apply text-amber-600;
+    }
+
+    .avicore-snackbar--info .avicore-snackbar__icon {
+        @apply text-avicore-info;
+    }
+
+    .avicore-snackbar__icon {
+        @apply shrink-0;
+    }
+
+    .avicore-snackbar__message {
+        @apply min-w-0 flex-1 text-sm font-medium leading-snug;
+    }
+
+    .avicore-snackbar--success .avicore-snackbar__message {
+        @apply text-avicore-text;
+    }
+
+    .avicore-snackbar__close {
+        @apply -mr-1 flex size-11 shrink-0 items-center justify-center rounded-xl text-avicore-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-snackbar__close {
+            @apply active:scale-95 active:bg-black/5;
+        }
+    }
 }

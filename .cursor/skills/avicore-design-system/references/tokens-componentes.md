@@ -85,6 +85,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.input` | `aria-invalid`, estados error, `hint`, `toggle-password` (un solo toggle visible); icono leading en `avicore-primary`, toggle ojo en `avicore-muted` |
 | `x-ui.card` | Borde simple, sin sombra; `padding`: `default`, `compact`, `none` |
 | `x-ui.alert` | `info`, `success`, `warning`, `danger` |
+| `x-ui.snackbar-host` | Toast fijo — fondo sólido suave por variante (`success` = `avicore-soft`, texto oscuro); `context` (`operario` \| `default`), auto-cierre ~4,5s, botón cerrar, evento `snackbar-show`; flash `status` + `status_variant` |
 | `x-ui.badge` | Estados semánticos; variante `sidebar` para badges sobre fondo verde |
 | `x-ui.logo` | Marca — `public/images/brand/logo-avicore.png` + subtítulo opcional; `theme="on-primary"` en sidebar admin (texto blanco, icono sobre fondo blanco); `stacked` + `size="auth-mobile"` en login móvil |
 | `x-ui.icon` | SVG inline por nombre (`menu`, `document`, `lock`, `eye`, `circle-x`, `mail`, `message-circle-check`, …) — nav, inputs, acciones; fuente Lucide en `resources/images/icons/` |
@@ -95,9 +96,9 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.user-avatar` | Iniciales circulares; prop `decorative` cuando el nombre visible está al lado (header/sidebar) — si no, `role="img"` + `aria-label` |
 | `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger`; telón `.avicore-dialog__backdrop` (`bg-avicore-text/65`, fade sin scale), panel centrado, focus trap (Tab/Escape), restauración de foco al cerrar, bloquea scroll del body |
 | `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
-| `x-operario.home-hero` | Inicio — foto + header + saludo + chip galpón en un solo bloque (`home-hero.blade.php`) |
+| `x-operario.home-hero` | Inicio — foto + header + saludo (`primerNombre` desde Livewire) + chip galpón en un solo bloque (`home-hero.blade.php`) |
 | `x-operario.header` | Barra operario — variante Inicio (dentro del hero) o contextual (título + chip galpón) |
-| `x-operario.bottom-nav` | Barra inferior integrada — 4 pestañas; ítem activo con círculo verde sobresaliente; datos desde `OperarioNav` |
+| `x-operario.bottom-nav` | Barra inferior integrada — 3 pestañas; ítem activo con círculo verde sobresaliente; datos desde `OperarioNav` |
 
 ## Layouts
 

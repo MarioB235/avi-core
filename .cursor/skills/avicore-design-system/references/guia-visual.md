@@ -229,8 +229,8 @@ Usar:
 
 Prioridades:
 
-- **Header contextual:** título de la pestaña activa (Inicio, Galpón, Cargar, Historial) y galpón actual como subtítulo informativo; sin galpón, subtítulo *«Elegí un galpón en la pestaña Galpón»*; el cambio de galpón es solo en la pestaña Galpón (sin flecha ni enlace duplicado en el header).
-- **Dock inferior inset** con 4 pestañas: ítem activo con fondo verde en la celda; animación ligera (`prefers-reduced-motion` sin escala).
+- **Header contextual:** título de la pestaña activa (Inicio, Cargar, Historial) y galpón actual como subtítulo informativo; sin galpón, subtítulo *«Elegí un galpón en Inicio»*; el cambio de galpón es solo en Inicio (chip desplegable en hero).
+- **Dock inferior integrado** con 3 pestañas: ítem activo con círculo verde sobresaliente; animación ligera (`prefers-reduced-motion` sin escala). Detalle: `patrones-mobile-operario.md`.
 - Hub de cargas (grid 2×2) en pestaña Cargar; formularios mantienen la barra con «Cargar» activo.
 - Botones grandes (touch ≥ 44px).
 - Pocos campos por pantalla.

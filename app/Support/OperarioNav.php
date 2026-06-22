@@ -20,13 +20,6 @@ class OperarioNav
                 'headerTitle' => 'Inicio',
             ],
             [
-                'route' => 'operario.galpon',
-                'patterns' => ['operario.galpon'],
-                'label' => 'Galpón',
-                'icon' => 'warehouse',
-                'headerTitle' => 'Galpón',
-            ],
-            [
                 'route' => 'operario.cargar',
                 'patterns' => ['operario.cargar', 'operario.carga.*'],
                 'label' => 'Cargar',

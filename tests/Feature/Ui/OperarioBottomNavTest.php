@@ -39,18 +39,20 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee('avicore-operario-tab-bar__inner', false)
             ->assertSee('avicore-operario-tab-bar__icon-wrap', false)
             ->assertSee('avicore-operario-tab-bar__item--active', false)
-            ->assertSee('Resumen de hoy', false)
+            ->assertSee('Resumen del día', false)
             ->assertSee('Maples producidos', false)
             ->assertSee('Cargas realizadas', false)
             ->assertSee('Operario', false)
             ->assertSee('Inicio', false)
-            ->assertSee('Galpón', false)
             ->assertSee('Cargar', false)
             ->assertSee('Historial', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee('Acá tenés el resumen de tu granja.', false)
+            ->assertSee('avicore-operario-galpon-selector', false)
+            ->assertSee('wire:transition="operario-page"', false)
+            ->assertSee('wire:navigate.hover', false)
+            ->assertSee('avicore-snackbar-host', false)
             ->assertSee('images/brand/operario-home-hero.jpg', false)
-            ->assertSee(route('operario.galpon'), false)
             ->assertSee(route('operario.cargar'), false)
             ->assertSee(route('operario.historial'), false);
     }
@@ -75,7 +77,27 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee('avicore-operario-tab-bar__icon-wrap', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee(route('operario.cargar'), false)
-            ->assertSee('Cantidad de huevos');
+            ->assertSee('Cantidad de huevos')
+            ->assertSee('wire:transition="operario-chrome"', false)
+            ->assertSee('wire:transition="operario-page"', false);
+    }
+
+    public function test_cargar_hub_shows_layout_subtitle_when_no_galpon_selected(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => null,
+        ]);
+
+        $this->actingAs($operario)
+            ->get(route('operario.cargar'))
+            ->assertOk()
+            ->assertSee('Elegí un galpón en Inicio', false)
+            ->assertSee('wire:transition="operario-chrome"', false);
     }
 
     public function test_home_shows_empty_galpon_chip_when_no_galpon_selected(): void

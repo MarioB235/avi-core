@@ -47,7 +47,8 @@
 - Componentes UI reutilizables (`x-ui.*`, `x-auth.*`): tests de renderizado/accesibilidad en `tests/Feature/Ui/` cuando el componente expone contrato estable (iconos, inputs, dialog, support-contact-dialog, etc.).
 - Datos de configuración expuestos en UI (p. ej. contacto de soporte): validar en Service (`SupportContactService`), no confiar solo en Blade; tests Feature del service y del componente.
 - Servicios de auth con ramas de error (`DemoLoginService::resolveUser`): tests Feature en `tests/Feature/Services/` y flujos Livewire en `tests/Feature/Auth/`.
-- Servicios operarios con reglas de negocio (`OperarioGalponService`: maples, multiempresa, galpón disponible): tests Feature en `tests/Feature/Services/OperarioGalponServiceTest.php` + integración en `tests/Feature/Ui/` cuando aplique.
+- Servicios operarios con reglas de negocio (`OperarioGalponService`: `galponDisponibleParaUsuario`, maples, multiempresa, galpón disponible): tests Feature en `tests/Feature/Services/OperarioGalponServiceTest.php` + integración en `tests/Feature/Ui/` y `tests/Feature/Support/OperarioNavTest.php` cuando aplique.
+- Snackbar global (`x-ui.snackbar-host`): `tests/Feature/Ui/SnackbarHostTest.php` (layout operario, evento `snackbar-show`, flash `status`).
 - Al auditar código de aplicación, revisar también el **test correspondiente** en `tests/` (o marcar gap si falta).
 - Tests significativos: flujos reales, no asserts triviales. PostgreSQL vía `avicore_test` (ver `arranque-local.md`).
 - Tras correcciones post-auditoría: `php artisan test` debe quedar en verde antes de la PR.
