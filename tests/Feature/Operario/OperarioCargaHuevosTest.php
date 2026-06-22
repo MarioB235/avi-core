@@ -33,7 +33,7 @@ class OperarioCargaHuevosTest extends TestCase
         $this->actingAs($operario)
             ->get(route('operario.home'))
             ->assertOk()
-            ->assertSee('Elegí un galpón en la pestaña Galpón');
+            ->assertSee('Sin seleccionar');
 
         Livewire::actingAs($operario)
             ->test(SelectorGalpon::class)

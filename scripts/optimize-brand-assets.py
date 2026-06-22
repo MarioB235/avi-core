@@ -13,10 +13,12 @@ BRAND_RESOURCES = ROOT / "resources" / "images" / "brand"
 BRAND_PUBLIC = ROOT / "public" / "images" / "brand"
 BACKGROUNDS = (
     ("background-desktop", 1600),
-    ("background-mobile", 1080),
+    ("login-background", 1080),
     ("admin-home-hero", 1920),
+    ("operario-home-hero", 1080),
 )
 JPEG_QUALITY = 78
+LOGO_FILE = "logo-avicore.png"
 
 
 def compress_background(stem: str, max_width: int) -> Path:
@@ -44,6 +46,19 @@ def compress_background(stem: str, max_width: int) -> Path:
     return out
 
 
+def sync_logo() -> None:
+    source = BRAND_RESOURCES / LOGO_FILE
+    if not source.exists():
+        print(f"Omitido (no existe): {LOGO_FILE}", file=sys.stderr)
+        return
+    BRAND_PUBLIC.mkdir(parents=True, exist_ok=True)
+    dest = BRAND_PUBLIC / LOGO_FILE
+    dest.write_bytes(source.read_bytes())
+    for legacy in ("logo-avicore.svg", "logo-avicore.jpg"):
+        (BRAND_PUBLIC / legacy).unlink(missing_ok=True)
+    print(f"OK logo: {LOGO_FILE} -> {dest.stat().st_size // 1024} KiB")
+
+
 def main() -> int:
     for stem, max_width in BACKGROUNDS:
         try:
@@ -57,6 +72,8 @@ def main() -> int:
         public_png = BRAND_PUBLIC / f"{stem}.png"
         public_png.unlink(missing_ok=True)
         print(f"OK fondo: {out.name} -> {out.stat().st_size // 1024} KiB")
+
+    sync_logo()
 
     return 0
 

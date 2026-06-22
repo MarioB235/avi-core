@@ -37,7 +37,7 @@ Permitir el acceso seguro al sistema.
 ### Presentación (MVP implementado)
 
 - Layout público en **split** (≥1024px): panel de marca a la izquierda (`auth-brand-panel`: logo `hero` y copy en columna alineada), tarjeta de login a la derecha.
-- En **móvil** (<1024px): fondo `background-mobile.jpg`, logo apilado centrado sobre la foto y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
+- En **móvil** (<1024px): fondo `login-background.jpg` (granja al atardecer), logo apilado centrado sobre la foto y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
 - **Modo demo (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`):** credencial única `000000000` / `Avicore2026!` y selector de perfil; autentica al usuario seedeado del rol elegido (`DemoLoginService`). No visible en producción.
@@ -145,18 +145,18 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 
 ## 5. Pantalla: Vista móvil del operario
 
-**Estado MVP (2026-06-20):** implementado en `/operario` — shell móvil con **dock inferior** (Inicio · Galpón · Cargar · Historial), **header contextual** (título de sección + galpón como subtítulo; cambio de galpón solo en pestaña Galpón), resumen en Inicio (últimas 3 cargas), hub de cargas en `/operario/cargar`, historial completo y perfil en `/operario/historial`. Carga de huevos en `/operario/carga/huevos` (pestaña Cargar activa). Muertes, alimento y combinada: pendientes en el hub.
+**Estado MVP (2026-06-22):** implementado en `/operario` — shell móvil con **barra inferior integrada** (4 pestañas: Inicio · Galpón · Cargar · Historial; ítem activo con círculo verde sobresaliente), **hero con foto** en Inicio, hoja blanca con últimas cargas y resumen KPI (maples del día = huevos ÷ 30). Header con `safe-area-inset-top` para notch. Nav y títulos de header: `App\Support\OperarioNav`.
 
 ### Navegación móvil (4 pestañas)
 
 | Pestaña | Ruta | Contenido |
 |---------|------|-----------|
-| Inicio | `/operario` | Saludo, galpón actual, últimas 3 cargas del día |
+| Inicio | `/operario` | Hero con foto, saludo, galpón, últimas cargas, resumen del día |
 | Galpón | `/operario/galpon` | Selector de galpón de trabajo |
-| Cargar | `/operario/cargar` | Grid 2×2: Huevos (activo), Muertes/Alimento/Combinada (próximamente) |
+| Cargar | `/operario/cargar` | Hub de tipos de carga |
 | Historial | `/operario/historial` | Todas las cargas de hoy + bloque cuenta (cerrar sesión) |
 
-El header superior muestra el **título de la sección** y el galpón actual como contexto; no repite navegación (el cambio de galpón es la pestaña Galpón). Si no hay galpón seleccionado, el subtítulo muestra *«Elegí un galpón en la pestaña Galpón»* (vía `OperarioLayoutComposer`).
+En **Inicio**, el header muestra logo + usuario (sin menú desplegable en MVP); el galpón va en chip enlazado al selector sobre el hero con copy «Acá tenés el resumen de tu granja.». La barra inferior es blanca con esquinas superiores redondeadas; el ítem **activo** sobresale con círculo verde e icono blanco (mismo patrón en las 4 pestañas).
 
 ### Objetivo
 

@@ -73,7 +73,7 @@
 >
     <div @class(['shrink-0 self-center', $imageShellClass])>
         <img
-            src="{{ asset('images/brand/logo-avicore.svg') }}"
+            src="{{ asset('images/brand/logo-avicore.png') }}"
             alt=""
             @if($showName) aria-hidden="true" @endif
             class="object-contain {{ $imageClass }}"

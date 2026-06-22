@@ -12,20 +12,24 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="avicore-brand-background font-sans">
-    <div class="avicore-operario-shell relative z-10 min-h-screen pb-[calc(5.25rem+env(safe-area-inset-bottom,0px))]">
-        <header class="avicore-operario-header">
-            <div class="avicore-operario-header__inner">
-                <div class="min-w-0 flex-1">
-                    <h1 class="avicore-operario-header__title">{{ $operarioHeaderTitle ?? 'Operario' }}</h1>
-                    @if (! empty($operarioHeaderSubtitle))
-                        <p class="avicore-operario-header__subtitle">{{ $operarioHeaderSubtitle }}</p>
-                    @endif
-                </div>
-            </div>
-        </header>
+<body class="avicore-operario-body font-sans">
+    <div @class([
+        'avicore-operario-shell',
+        'avicore-operario-shell--home' => $operarioIsHomePage ?? false,
+    ])>
+        @unless ($operarioIsHomePage ?? false)
+            <x-operario.header
+                :title="$operarioHeaderTitle ?? 'Operario'"
+                :subtitle="$operarioHeaderSubtitle ?? null"
+                :has-galpon="$operarioHasGalpon ?? false"
+                :is-galpon-page="$operarioIsGalponPage ?? false"
+            />
+        @endunless
 
-        <main class="avicore-operario-main">
+        <main @class([
+            'avicore-operario-main',
+            'avicore-operario-main--home' => $operarioIsHomePage ?? false,
+        ])>
             {{ $slot }}
         </main>
 

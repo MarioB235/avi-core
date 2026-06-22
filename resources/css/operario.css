@@ -1,0 +1,266 @@
+@layer components {
+    /* ── Tokens locales operario ───────────────────────────────────── */
+    .avicore-operario-body {
+        @apply min-h-screen bg-avicore-surface text-avicore-text;
+    }
+
+    .avicore-operario-shell {
+        @apply relative z-10 mx-auto min-h-screen w-full max-w-lg;
+        padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    .avicore-operario-shell--home {
+        @apply bg-white;
+    }
+
+    .avicore-operario-main {
+        @apply relative z-10 space-y-4 px-4 py-2 pb-4;
+    }
+
+    .avicore-operario-main--home {
+        @apply space-y-0 p-0;
+    }
+
+    /* ── Inicio: hero (foto + header + saludo) ─────────────────────── */
+    .avicore-operario-home-hero {
+        @apply relative isolate overflow-hidden;
+        min-height: min(48vh, 26rem);
+    }
+
+    .avicore-operario-home-hero__media {
+        @apply pointer-events-none absolute inset-0;
+    }
+
+    .avicore-operario-home-hero__img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 20%;
+    }
+
+    .avicore-operario-home-hero__scrim {
+        @apply pointer-events-none absolute inset-0;
+        background: linear-gradient(
+            180deg,
+            rgb(15 23 42 / 0.08) 0%,
+            transparent 38%,
+            rgb(255 255 255 / 0.55) 72%,
+            rgb(255 255 255 / 1) 100%
+        );
+    }
+
+    .avicore-operario-home-hero__content {
+        @apply relative z-10 flex min-h-full flex-col;
+    }
+
+    .avicore-operario-home-hero__greeting {
+        @apply mt-auto space-y-2 px-4 pb-8;
+    }
+
+    .avicore-operario-home-hero__title {
+        @apply text-[1.75rem] font-bold leading-tight tracking-tight text-avicore-text;
+    }
+
+    .avicore-operario-home-hero__subtitle {
+        @apply text-sm leading-snug text-avicore-muted;
+    }
+
+    .avicore-operario-home-hero__galpon {
+        @apply mt-3 inline-flex max-w-full min-h-11 items-center gap-2 rounded-full bg-avicore-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(31,94,59,0.24)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    .avicore-operario-home-hero__galpon--empty {
+        @apply bg-amber-600 shadow-[0_8px_20px_rgba(180,83,9,0.22)];
+    }
+
+    /* ── Inicio: hoja de contenido ─────────────────────────────────── */
+    .avicore-operario-home {
+        @apply flex min-h-[calc(100dvh-6rem-env(safe-area-inset-bottom,0px))] flex-col;
+    }
+
+    .avicore-operario-home-sheet {
+        @apply relative z-20 -mt-12 flex flex-1 flex-col gap-6 rounded-t-[2.5rem] bg-white px-4 pb-8 pt-5 shadow-[0_-12px_40px_rgba(15,23,42,0.06)];
+    }
+
+    .avicore-operario-home-cargas {
+        @apply flex min-h-[50dvh] flex-col overflow-hidden rounded-2xl border border-avicore-border/50 bg-avicore-surface/30 px-4 py-4;
+    }
+
+    .avicore-operario-home-cargas__header {
+        @apply flex shrink-0 items-center justify-between gap-3;
+    }
+
+    .avicore-operario-home-cargas__body {
+        @apply mt-4 flex min-h-0 flex-1 flex-col;
+    }
+
+    .avicore-operario-home-cargas__body--empty {
+        @apply items-center justify-center text-center;
+    }
+
+    .avicore-operario-home-cargas__empty-text {
+        @apply max-w-[16rem] text-sm leading-relaxed text-avicore-muted;
+    }
+
+    .avicore-operario-home-cargas__list {
+        @apply min-h-0 flex-1 space-y-2 overflow-y-auto pr-0.5;
+    }
+
+    .avicore-operario-home-summary {
+        @apply shrink-0 space-y-3;
+    }
+
+    .avicore-operario-home-section__title {
+        @apply text-base font-bold text-avicore-text;
+    }
+
+    .avicore-operario-home-section__link {
+        @apply inline-flex shrink-0 items-center gap-0.5 text-xs font-semibold text-avicore-primary;
+    }
+
+    /* ── Header ────────────────────────────────────────────────────── */
+    .avicore-operario-header {
+        @apply relative z-20 px-4 pb-2;
+        padding-top: max(2.75rem, calc(env(safe-area-inset-top, 0px) + 1.25rem));
+    }
+
+    .avicore-operario-header--home {
+        @apply bg-transparent;
+    }
+
+    .avicore-operario-header:not(.avicore-operario-header--home) {
+        @apply sticky top-0 z-20 bg-avicore-surface;
+    }
+
+    .avicore-operario-header__bar {
+        @apply flex min-h-11 items-center gap-3;
+    }
+
+    .avicore-operario-header__logo {
+        @apply shrink-0;
+    }
+
+    .avicore-operario-header__user {
+        @apply ml-auto flex min-w-0 items-center gap-2.5;
+    }
+
+    .avicore-operario-header__user-name {
+        @apply truncate text-sm font-semibold text-avicore-text;
+    }
+
+    .avicore-operario-header__user-role {
+        @apply text-xs font-medium text-avicore-primary;
+    }
+
+    .avicore-operario-header__avatar {
+        @apply shrink-0 ring-2 ring-white;
+    }
+
+    .avicore-operario-header__content {
+        @apply min-w-0 flex-1;
+    }
+
+    .avicore-operario-header__badge {
+        @apply inline-flex rounded-full bg-avicore-soft px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wider text-avicore-primary;
+    }
+
+    .avicore-operario-header__title {
+        @apply mt-1 truncate text-xl font-bold leading-tight tracking-tight text-avicore-text;
+    }
+
+    .avicore-operario-header__subtitle {
+        @apply mt-1 text-sm leading-snug text-avicore-muted;
+    }
+
+    .avicore-operario-header__chip {
+        @apply mt-1.5 inline-flex max-w-full min-h-6 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold;
+    }
+
+    .avicore-operario-header__chip--active {
+        @apply bg-avicore-primary text-white;
+    }
+
+    .avicore-operario-header__chip--empty {
+        @apply bg-amber-50 text-amber-800;
+    }
+
+    /* ── KPI y filas de carga (Inicio) ─────────────────────────────── */
+    .avicore-operario-kpi-grid {
+        @apply grid grid-cols-3 gap-2.5;
+    }
+
+    .avicore-operario-kpi-card {
+        @apply flex min-h-[7.5rem] flex-col items-center justify-center rounded-2xl border border-avicore-border/60 bg-white px-2 py-3 text-center;
+    }
+
+    .avicore-operario-kpi-card__icon-shell {
+        @apply flex size-9 items-center justify-center rounded-xl bg-avicore-soft text-avicore-primary;
+    }
+
+    .avicore-operario-kpi-card__value {
+        @apply mt-2 text-xl font-bold leading-none text-avicore-primary;
+    }
+
+    .avicore-operario-kpi-card__label {
+        @apply mt-2 text-[0.625rem] font-medium leading-tight text-avicore-muted;
+    }
+
+    .avicore-operario-load-item {
+        @apply flex min-h-14 items-center gap-3 rounded-xl border border-avicore-border/80 bg-white px-3 py-2.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    .avicore-operario-load-item__icon {
+        @apply flex size-10 shrink-0 items-center justify-center rounded-xl bg-avicore-soft text-avicore-primary;
+    }
+
+    .avicore-operario-load-item__chevron {
+        @apply shrink-0 text-avicore-muted;
+    }
+
+    /* ── Barra inferior (integrada, ícono activo sobresale) ────────── */
+    .avicore-operario-tab-bar {
+        @apply fixed inset-x-0 bottom-0 z-40 overflow-visible rounded-t-[1.75rem] border-t border-avicore-border/60 bg-white shadow-[0_-10px_28px_rgba(15,23,42,0.1)];
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .avicore-operario-tab-bar__inner {
+        @apply mx-auto grid max-w-lg grid-cols-4 items-end px-3 pt-3;
+        min-height: 4.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .avicore-operario-tab-bar__item {
+        @apply relative flex min-h-11 flex-col items-center justify-end gap-1.5 px-1 pb-0.5 text-[0.6875rem] font-medium text-avicore-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    .avicore-operario-tab-bar__icon-wrap {
+        @apply relative z-10 flex size-6 items-center justify-center;
+    }
+
+    .avicore-operario-tab-bar__item--active {
+        @apply text-avicore-primary;
+    }
+
+    .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__icon-wrap {
+        @apply -mt-7 size-[3.25rem] -translate-y-2 rounded-full border-[3px] border-white bg-avicore-primary text-white shadow-[0_8px_22px_rgba(31,94,59,0.35)];
+    }
+
+    .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__label {
+        @apply font-semibold;
+    }
+
+    .avicore-operario-tab-bar__label {
+        @apply max-w-full truncate leading-tight;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-operario-tab-bar__item {
+            @apply transition-[color,transform] duration-200 ease-out active:scale-95;
+        }
+
+        .avicore-operario-tab-bar__icon-wrap {
+            @apply transition-[transform,box-shadow,background-color,color,border-color] duration-200 ease-out;
+        }
+    }
+}

@@ -142,6 +142,26 @@
         <path d="m6 9 6 6 6-6" />
         @break
 
+    @case('chevron-right')
+        <path d="m9 18 6-6-6-6" />
+        @break
+
+    @case('check-circle')
+        <circle cx="12" cy="12" r="10" />
+        <path d="m9 12 2 2 4-4" />
+        @break
+
+    @case('plus')
+        <path d="M5 12h14" />
+        <path d="M12 5v14" />
+        @break
+
+    @case('hand-wave')
+        <path d="M7 11V4a2 2 0 0 1 4 0v2" />
+        <path d="M11 6V3a2 2 0 0 1 4 0v4" />
+        <path d="M15 7V5a2 2 0 0 1 4 0v8a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6V9a2 2 0 0 1 4 0v2" />
+        @break
+
     @case('panel-left')
         <rect width="18" height="18" x="3" y="3" rx="2" />
         <path d="M9 3v18" />

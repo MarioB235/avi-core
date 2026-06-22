@@ -4,6 +4,7 @@ namespace App\Http\View\Composers;
 
 use App\Models\Galpon;
 use App\Services\OperarioGalponService;
+use App\Support\OperarioNav;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\View\View;
@@ -20,30 +21,12 @@ class OperarioLayoutComposer
         $galpon = $user ? $this->operarioGalponService->galponActual($user) : null;
 
         $view->with([
-            'operarioHeaderTitle' => $this->headerTitle(),
+            'operarioHeaderTitle' => OperarioNav::headerTitle(),
             'operarioHeaderSubtitle' => $this->headerSubtitle($galpon),
+            'operarioHasGalpon' => $galpon !== null,
+            'operarioIsGalponPage' => Request::routeIs('operario.galpon'),
+            'operarioIsHomePage' => Request::routeIs('operario.home'),
         ]);
-    }
-
-    private function headerTitle(): string
-    {
-        if (Request::routeIs('operario.home')) {
-            return 'Inicio';
-        }
-
-        if (Request::routeIs('operario.galpon')) {
-            return 'Galpón';
-        }
-
-        if (Request::routeIs('operario.cargar', 'operario.carga.*')) {
-            return 'Cargar';
-        }
-
-        if (Request::routeIs('operario.historial')) {
-            return 'Historial';
-        }
-
-        return 'Operario';
     }
 
     private function headerSubtitle(?Galpon $galpon): ?string
