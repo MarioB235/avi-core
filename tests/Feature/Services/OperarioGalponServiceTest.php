@@ -89,6 +89,39 @@ class OperarioGalponServiceTest extends TestCase
         app(OperarioGalponService::class)->seleccionarGalpon($operario, $galponAjeno);
     }
 
+    public function test_galpon_disponible_para_usuario_returns_null_for_other_company(): void
+    {
+        [$operario] = $this->createOperarioConGalpon();
+
+        $otraEmpresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $otraGranja = Granja::factory()->create(['empresa_id' => $otraEmpresa->id]);
+        $galponAjeno = Galpon::factory()->forGranja($otraGranja)->create();
+
+        $this->assertNull(
+            app(OperarioGalponService::class)->galponDisponibleParaUsuario($operario, $galponAjeno->id)
+        );
+    }
+
+    public function test_galpon_disponible_para_usuario_returns_null_when_unavailable(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+        $galpon->update(['estado' => GalponEstado::EnMantenimiento]);
+
+        $this->assertNull(
+            app(OperarioGalponService::class)->galponDisponibleParaUsuario($operario, $galpon->id)
+        );
+    }
+
+    public function test_galpon_disponible_para_usuario_returns_scoped_galpon(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+
+        $resolved = app(OperarioGalponService::class)->galponDisponibleParaUsuario($operario, $galpon->id);
+
+        $this->assertNotNull($resolved);
+        $this->assertSame($galpon->id, $resolved->id);
+    }
+
     public function test_galpones_disponibles_only_lists_company_galpones(): void
     {
         [$operario, $galpon] = $this->createOperarioConGalpon();

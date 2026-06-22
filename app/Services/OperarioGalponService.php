@@ -34,11 +34,20 @@ class OperarioGalponService
             return null;
         }
 
+        return $this->galponDisponibleParaUsuario($user, (int) $user->ultimo_galpon_id);
+    }
+
+    public function galponDisponibleParaUsuario(User $user, int $galponId): ?Galpon
+    {
+        if ($user->empresa_id === null) {
+            return null;
+        }
+
         $galpon = Galpon::query()
             ->forEmpresa((int) $user->empresa_id)
             ->disponiblesParaCarga()
             ->with('granja')
-            ->find($user->ultimo_galpon_id);
+            ->find($galponId);
 
         if ($galpon === null) {
             return null;

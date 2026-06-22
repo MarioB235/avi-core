@@ -11,7 +11,6 @@ use App\Livewire\Operario\CargaHuevos;
 use App\Livewire\Operario\CargarHub;
 use App\Livewire\Operario\Historial;
 use App\Livewire\Operario\Home;
-use App\Livewire\Operario\SelectorGalpon;
 use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
@@ -36,10 +35,9 @@ class OperarioCargaHuevosTest extends TestCase
             ->assertSee('Sin seleccionar');
 
         Livewire::actingAs($operario)
-            ->test(SelectorGalpon::class)
-            ->set('galponId', $galponA->id)
-            ->call('guardar')
-            ->assertRedirect(route('operario.home'));
+            ->test(Home::class)
+            ->call('seleccionarGalpon', $galponA->id)
+            ->assertHasNoErrors();
 
         $operario->refresh();
         $this->assertSame($galponA->id, $operario->ultimo_galpon_id);
@@ -76,10 +74,9 @@ class OperarioCargaHuevosTest extends TestCase
             ->assertSee($galponA->displayName());
 
         Livewire::actingAs($operario)
-            ->test(SelectorGalpon::class)
-            ->set('galponId', $galponB->id)
-            ->call('guardar')
-            ->assertRedirect(route('operario.home'));
+            ->test(Home::class)
+            ->call('seleccionarGalpon', $galponB->id)
+            ->assertHasNoErrors();
 
         $operario->refresh();
         $this->assertSame($galponB->id, $operario->ultimo_galpon_id);
@@ -94,13 +91,12 @@ class OperarioCargaHuevosTest extends TestCase
         $galponAjeno = Galpon::factory()->forGranja($otraGranja)->create();
 
         Livewire::actingAs($operario)
-            ->test(SelectorGalpon::class)
+            ->test(Home::class)
             ->assertDontSee($galponAjeno->displayName());
 
         Livewire::actingAs($operario)
-            ->test(SelectorGalpon::class)
-            ->set('galponId', $galponAjeno->id)
-            ->call('guardar')
+            ->test(Home::class)
+            ->call('seleccionarGalpon', $galponAjeno->id)
             ->assertHasErrors(['galponId']);
     }
 
@@ -134,7 +130,51 @@ class OperarioCargaHuevosTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(CargaHuevos::class)
-            ->assertRedirect(route('operario.galpon'));
+            ->assertRedirect(route('operario.home'));
+
+        $this->actingAs($operario);
+        session(['abrirSelectorGalpon' => true]);
+
+        Livewire::test(Home::class)
+            ->assertSet('selectorGalponAbierto', true);
+    }
+
+    public function test_home_opens_selector_with_abrir_galpon_query_param(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => null,
+        ]);
+
+        Livewire::actingAs($operario)
+            ->withQueryParams(['abrir_galpon' => '1'])
+            ->test(Home::class)
+            ->assertSet('selectorGalponAbierto', true);
+    }
+
+    public function test_home_opens_selector_via_http_after_carga_redirect_flash(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        Galpon::factory()->forGranja($granja)->create();
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => null,
+        ]);
+
+        $this->actingAs($operario)
+            ->withSession(['abrirSelectorGalpon' => true])
+            ->get(route('operario.home'))
+            ->assertOk()
+            ->assertSee('operario-galpon-listbox', false)
+            ->assertSee('avicore-operario-galpon-selector', false);
     }
 
     public function test_carga_huevos_rejects_zero_quantity(): void
@@ -161,13 +201,12 @@ class OperarioCargaHuevosTest extends TestCase
         ]);
 
         Livewire::actingAs($operario)
-            ->test(SelectorGalpon::class)
+            ->test(Home::class)
             ->assertDontSee($galponMantenimiento->displayName());
 
         Livewire::actingAs($operario)
-            ->test(SelectorGalpon::class)
-            ->set('galponId', $galponMantenimiento->id)
-            ->call('guardar')
+            ->test(Home::class)
+            ->call('seleccionarGalpon', $galponMantenimiento->id)
             ->assertHasErrors(['galponId']);
     }
 
@@ -180,7 +219,7 @@ class OperarioCargaHuevosTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(CargaHuevos::class)
-            ->assertRedirect(route('operario.galpon'));
+            ->assertRedirect(route('operario.home'));
     }
 
     public function test_registrar_carga_huevos_action_rejects_unavailable_galpon(): void

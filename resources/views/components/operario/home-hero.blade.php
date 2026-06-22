@@ -1,7 +1,6 @@
 @props([
     'saludo',
-    'galponEtiqueta',
-    'hasGalpon' => false,
+    'primerNombre',
 ])
 
 <section class="avicore-operario-home-hero" aria-label="Bienvenida">
@@ -21,9 +20,6 @@
         <x-operario.header :is-home-page="true" />
 
         <div class="avicore-operario-home-hero__greeting">
-            @php
-                $primerNombre = explode(' ', trim(auth()->user()->name))[0] ?? auth()->user()->name;
-            @endphp
             <h1 class="avicore-operario-home-hero__title">
                 ¡{{ $saludo }}, {{ $primerNombre }}!
             </h1>
@@ -31,18 +27,7 @@
                 Acá tenés el resumen de tu granja.
             </p>
 
-            <a
-                href="{{ route('operario.galpon') }}"
-                wire:navigate
-                @class([
-                    'avicore-operario-home-hero__galpon',
-                    'avicore-operario-home-hero__galpon--empty' => ! $hasGalpon,
-                ])
-            >
-                <x-ui.icon name="warehouse" class="size-4 shrink-0" />
-                <span class="truncate">{{ $galponEtiqueta }}</span>
-                <x-ui.icon name="chevron-down" class="size-4 shrink-0 opacity-80" />
-            </a>
+            {{ $galponSelector }}
         </div>
     </div>
 </section>

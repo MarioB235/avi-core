@@ -2,7 +2,6 @@
     'title' => 'Operario',
     'subtitle' => null,
     'hasGalpon' => false,
-    'isGalponPage' => false,
     'isHomePage' => false,
 ])
 
@@ -33,9 +32,7 @@
                 <h1 class="avicore-operario-header__title">{{ $title }}</h1>
 
                 @if (! empty($subtitle))
-                    @if ($isGalponPage)
-                        <p class="avicore-operario-header__subtitle">{{ $subtitle }}</p>
-                    @elseif ($hasGalpon)
+                    @if ($hasGalpon)
                         <div class="avicore-operario-header__chip avicore-operario-header__chip--active">
                             <span class="truncate">{{ $subtitle }}</span>
                         </div>

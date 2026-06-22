@@ -145,18 +145,17 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 
 ## 5. Pantalla: Vista móvil del operario
 
-**Estado MVP (2026-06-22):** implementado en `/operario` — shell móvil con **barra inferior integrada** (4 pestañas: Inicio · Galpón · Cargar · Historial; ítem activo con círculo verde sobresaliente), **hero con foto** en Inicio, hoja blanca con últimas cargas y resumen KPI (maples del día = huevos ÷ 30). Header con `safe-area-inset-top` para notch. Nav y títulos de header: `App\Support\OperarioNav`.
+**Estado MVP (2026-06-22):** implementado en `/operario` — shell móvil con **barra inferior integrada** (3 pestañas: Inicio · Cargar · Historial; ítem activo con círculo verde sobresaliente), **hero con foto** en Inicio, hoja blanca con últimas cargas y resumen KPI (maples del día = huevos ÷ 30). Header con `safe-area-inset-top` para notch. Nav y títulos de header: `App\Support\OperarioNav`.
 
-### Navegación móvil (4 pestañas)
+### Navegación móvil (3 pestañas)
 
 | Pestaña | Ruta | Contenido |
 |---------|------|-----------|
-| Inicio | `/operario` | Hero con foto, saludo, galpón, últimas cargas, resumen del día |
-| Galpón | `/operario/galpon` | Selector de galpón de trabajo |
+| Inicio | `/operario` | Hero con foto, saludo, selector de galpón (chip desplegable), últimas cargas, resumen del día |
 | Cargar | `/operario/cargar` | Hub de tipos de carga |
 | Historial | `/operario/historial` | Todas las cargas de hoy + bloque cuenta (cerrar sesión) |
 
-En **Inicio**, el header muestra logo + usuario (sin menú desplegable en MVP); el galpón va en chip enlazado al selector sobre el hero con copy «Acá tenés el resumen de tu granja.». La barra inferior es blanca con esquinas superiores redondeadas; el ítem **activo** sobresale con círculo verde e icono blanco (mismo patrón en las 4 pestañas).
+En **Inicio**, el header muestra logo + usuario (sin menú desplegable en MVP); el galpón se elige con chip desplegable sobre el hero (copy «Acá tenés el resumen de tu granja.» en verde marca). La barra inferior es blanca con esquinas superiores redondeadas; el ítem **activo** sobresale con círculo verde e icono blanco.
 
 ### Objetivo
 
@@ -189,7 +188,7 @@ Seleccionar tipo de carga → ingresar cantidad → guardar → confirmar → vo
 
 ## 6. Pantalla: Selector de galpón
 
-**Estado MVP (2026-06-20):** implementado en `/operario/galpon` — lista de galpones activos de la empresa; persiste `users.ultimo_galpon_id`.
+**Estado MVP (2026-06-22):** integrado en **Inicio** (`/operario`) — chip desplegable sobre el hero; persiste `users.ultimo_galpon_id` al elegir un ítem. Sin ruta `/operario/galpon` dedicada.
 
 ### Objetivo
 
@@ -205,10 +204,11 @@ Permitir elegir galpón de trabajo.
 
 - Solo se listan galpones **activos** de la empresa con `estado = activo` y `activo = true` (disponibles para carga).
 - La validación Livewire exige que el `galpon_id` pertenezca a la empresa del usuario y cumpla esas condiciones (`Rule::exists` con scope).
-- `GalponPolicy::view` y `OperarioGalponService::seleccionarGalpon` refuerzan multiempresa y disponibilidad.
+- `GalponPolicy::view`, `OperarioGalponService::galponDisponibleParaUsuario` y `seleccionarGalpon` refuerzan multiempresa y disponibilidad.
 - El usuario puede elegir cualquier galpón disponible de su empresa.
 - El sistema recuerda el último galpón seleccionado (`users.ultimo_galpon_id`).
-- Si el galpón recordado deja de estar disponible, la carga redirige al selector.
+- Si el galpón recordado deja de estar disponible, la carga redirige a **Inicio** con el selector abierto (`session` `abrirSelectorGalpon` o query `?abrir_galpon=1` desde el hub Cargar).
+- Tras elegir galpón: snackbar «Galpón actualizado.» (`dispatch snackbar-show`).
 
 ---
 
@@ -228,7 +228,7 @@ Permitir elegir galpón de trabajo.
 - No hay selector de fecha/hora para operario.
 - Cantidad obligatoria (> 0).
 - Debe guardar en unidad huevos.
-- Requiere galpón disponible; sin galpón o galpón no disponible → redirección a `/operario/galpon`.
+- Requiere galpón disponible; sin galpón o galpón no disponible → redirección a `/operario` con selector abierto (no hay ruta `/operario/galpon`).
 - `RegistrarCargaHuevosAction` valida empresa, permiso (`GalponPolicy`) y estado del galpón.
 - Debe emitir evento en tiempo real.
 

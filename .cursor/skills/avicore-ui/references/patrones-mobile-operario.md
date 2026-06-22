@@ -13,27 +13,30 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 ## Navegación
 
 - **Fuente única de rutas y títulos:** `App\Support\OperarioNav` — pestañas (`tabs()`), título de header (`headerTitle()`), activo (`tabIsActive()`). Consumido por `<x-operario.bottom-nav>` y `OperarioLayoutComposer`; no duplicar arrays de rutas en Blade.
-- 4 pestañas en fila: Inicio · Galpón · Cargar · Historial — **mismo diseño** en todos los ítems.
+- 3 pestañas en fila: Inicio · Cargar · Historial — **mismo diseño** en todos los ítems.
 - Ítem **activo**: círculo verde sólido (`avicore-primary`), icono blanco, borde blanco fino; sobresale por encima del borde superior de la barra (efecto «notch» visual).
 - Barra inferior **integrada**: esquinas superiores redondeadas, sombra suave hacia arriba, `safe-area-inset-bottom`.
 - Ítems inactivos: icono y label en `avicore-muted`, sin círculo ni elevación.
-- `wire:navigate` en todos los links; feedback táctil `active:scale-95` (con `prefers-reduced-motion`).
-- Cambio de galpón **solo** en pestaña Galpón.
+- `wire:navigate.hover` en links del dock; transición de página con `wire:transition="operario-page"` (View Transitions API) + morph suave del ítem activo (300ms).
+- Cambio de galpón **solo** en Inicio (chip desplegable en hero).
+- Sin galpón al intentar cargar: redirect a Inicio con selector abierto (`CargaHuevos` → flash `abrirSelectorGalpon`; hub Cargar → `?abrir_galpon=1`).
 
 ## Header contextual
 
-- **Inicio:** `<x-operario.home-hero>` integra foto, header (safe-area), saludo y chip galpón enlazado a `/operario/galpon`.
+- **Inicio:** `<x-operario.home-hero>` integra foto, header (safe-area), saludo (`primerNombre` desde `Home::render`, no lógica en Blade) y chip galpón desplegable (`seleccionarGalpon` + `galponDisponibleParaUsuario` en servicio).
 - **Inicio (header):** logo + nombre/rol + avatar; **sin** chevron decorativo (no hay menú de usuario en MVP).
 - **Otras rutas:** barra con badge «Operario», título de sección, chip galpón y avatar.
 - Galpón seleccionado: chip verde sólido (`avicore-primary`); sin galpón: chip ámbar con icono warehouse.
-- En pestaña Galpón: subtítulo plano «Seleccioná dónde vas a cargar hoy».
+- Subtítulo hero «Acá tenés el resumen de tu granja.» en `text-avicore-primary`.
 - Datos vía `OperarioLayoutComposer` — no duplicar lógica en cada Livewire.
+- Feedback de confirmación: `<x-ui.snackbar-host context="operario" />` en layout; Livewire `dispatch('snackbar-show', message:, variant:)` o `session()->flash('status')` tras redirect.
 
 ## Inicio operario
 
-- `<x-operario.home-hero>` — bloque único con foto, header, saludo («Acá tenés el resumen de tu granja.») y chip galpón (icono `warehouse`; vacío = ámbar + «Sin seleccionar»).
-- `.avicore-operario-home-cargas` — panel «Últimas cargas de hoy» con `min-height: 50dvh`; lista con scroll interno; vacío centrado.
-- `.avicore-operario-home-summary` — bloque KPI debajo del panel de cargas (maples = suma huevos del día ÷ 30; ver `reglas.md`).
+- `<x-operario.home-hero>` — bloque único con foto, header, saludo («Acá tenés el resumen de tu granja.» en verde marca) y chip galpón desplegable (icono `warehouse`; vacío = ámbar + «Sin seleccionar»).
+- `.avicore-operario-home-sheet` — fondo `avicore-surface`; KPI arriba (maples destacado en verde sólido); card blanca de últimas cargas con header icono + borde inferior.
+- `.avicore-operario-home-cargas` — panel con `min-height: 42dvh`; lista con scroll interno; vacío con icono en soft verde.
+- `.avicore-operario-home-summary` — bloque KPI con eyebrow «Hoy»; maples = suma huevos del día ÷ 30 (ver `reglas.md`).
 - Estilos del módulo: `resources/css/operario.css` (no mezclar en `app.css`).
 
 ## Formularios de carga

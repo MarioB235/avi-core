@@ -24,19 +24,14 @@ class OperarioLayoutComposer
             'operarioHeaderTitle' => OperarioNav::headerTitle(),
             'operarioHeaderSubtitle' => $this->headerSubtitle($galpon),
             'operarioHasGalpon' => $galpon !== null,
-            'operarioIsGalponPage' => Request::routeIs('operario.galpon'),
             'operarioIsHomePage' => Request::routeIs('operario.home'),
         ]);
     }
 
     private function headerSubtitle(?Galpon $galpon): ?string
     {
-        if (Request::routeIs('operario.galpon')) {
-            return 'Seleccioná dónde vas a cargar hoy';
-        }
-
         if ($galpon === null) {
-            return 'Elegí un galpón en la pestaña Galpón';
+            return 'Elegí un galpón en Inicio';
         }
 
         return $this->operarioGalponService->etiquetaGalpon($galpon);
