@@ -1,0 +1,20 @@
+<form wire:submit="guardarHuevos" class="space-y-4">
+    <div>
+        <x-ui.input
+            label="Cantidad de huevos"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            wire:model="huevos"
+            placeholder="Ej: 1250"
+            required
+        />
+        @error('huevos')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <x-ui.button type="submit" class="w-full py-4 text-base" wire:loading.attr="disabled">
+        Guardar carga
+    </x-ui.button>
+</form>

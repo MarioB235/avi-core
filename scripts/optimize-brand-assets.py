@@ -16,6 +16,7 @@ BACKGROUNDS = (
     ("login-background", 1080),
     ("admin-home-hero", 1920),
     ("operario-home-hero", 1080),
+    ("operario-cargar-hero", 1080),
 )
 JPEG_QUALITY = 78
 LOGO_FILE = "logo-avicore.png"

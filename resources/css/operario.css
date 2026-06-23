@@ -101,6 +101,51 @@
         min-height: min(48vh, 26rem);
     }
 
+    .avicore-operario-cargar-hero {
+        min-height: min(44vh, 24rem);
+    }
+
+    .avicore-operario-cargar-hero .avicore-operario-home-hero__img {
+        object-position: center top;
+    }
+
+    .avicore-operario-cargar-hero .avicore-operario-home-hero__title {
+        @apply text-white;
+        text-shadow: 0 2px 16px rgb(15 23 42 / 0.45);
+    }
+
+    .avicore-operario-cargar-hero .avicore-operario-home-hero__subtitle {
+        @apply text-white/90;
+        text-shadow: 0 1px 10px rgb(15 23 42 / 0.35);
+    }
+
+    .avicore-operario-header--photo-overlay .avicore-operario-header__user-name {
+        @apply text-white;
+        text-shadow: 0 1px 10px rgb(15 23 42 / 0.35);
+    }
+
+    .avicore-operario-header--photo-overlay .avicore-operario-header__user-role {
+        @apply text-white/85;
+        text-shadow: 0 1px 8px rgb(15 23 42 / 0.3);
+    }
+
+    .avicore-operario-header--photo-overlay .avicore-logo__text p {
+        @apply text-white;
+        text-shadow: 0 1px 10px rgb(15 23 42 / 0.35);
+    }
+
+    .avicore-operario-header--photo-overlay .avicore-operario-header__avatar {
+        @apply ring-2 ring-white/90 shadow-[0_4px_14px_rgba(15,23,42,0.22)];
+    }
+
+    .avicore-operario-cargar-hero__galpon {
+        @apply pointer-events-none;
+    }
+
+    a.avicore-operario-cargar-hero__galpon {
+        @apply pointer-events-auto;
+    }
+
     .avicore-operario-home-hero__media {
         @apply pointer-events-none absolute inset-0 overflow-hidden;
     }
@@ -111,17 +156,6 @@
         height: 100%;
         object-fit: cover;
         object-position: center 20%;
-    }
-
-    .avicore-operario-home-hero__scrim {
-        @apply pointer-events-none absolute inset-0;
-        background: linear-gradient(
-            180deg,
-            rgb(15 23 42 / 0.22) 0%,
-            rgb(15 23 42 / 0.04) 32%,
-            rgb(234 245 236 / 0.72) 68%,
-            rgb(245 247 250 / 1) 100%
-        );
     }
 
     .avicore-operario-home-hero__content {
@@ -407,6 +441,89 @@
 
     .avicore-operario-load-item__time {
         @apply shrink-0 rounded-lg bg-avicore-card px-2 py-1 text-xs font-bold tabular-nums text-avicore-primary ring-1 ring-avicore-primary/15;
+    }
+
+    /* ── Cargar: hub de tipos ──────────────────────────────────────── */
+    .avicore-operario-cargar {
+        @apply flex min-h-[calc(100dvh-6rem-env(safe-area-inset-bottom,0px))] flex-col;
+    }
+
+    .avicore-operario-cargar-types {
+        @apply flex flex-1 flex-col gap-4;
+    }
+
+    .avicore-operario-cargar-alert {
+        @apply flex items-start gap-3 rounded-2xl border border-amber-200/80 bg-amber-50 px-4 py-3.5;
+    }
+
+    .avicore-operario-cargar-alert__icon {
+        @apply flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700;
+    }
+
+    .avicore-operario-cargar-alert__text {
+        @apply pt-2 text-sm font-medium leading-relaxed text-amber-900;
+    }
+
+    .avicore-operario-carga-grid {
+        @apply grid grid-cols-2 gap-3;
+    }
+
+    .avicore-operario-carga-tile {
+        @apply flex min-h-[7.5rem] flex-col items-center justify-center rounded-2xl border border-avicore-border-strong/80 bg-avicore-card px-3 py-4 text-center shadow-[0_8px_20px_rgba(15,23,42,0.06)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    button.avicore-operario-carga-tile {
+        @apply w-full cursor-pointer;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-operario-carga-tile:not(.avicore-operario-carga-tile--soon) {
+            @apply transition-[transform,box-shadow,background-color] duration-150 ease-out active:scale-[0.98] active:bg-avicore-soft/60;
+        }
+    }
+
+    .avicore-operario-carga-tile--featured {
+        @apply border-avicore-primary/30 bg-avicore-primary text-white shadow-[0_12px_28px_rgba(31,94,59,0.32)];
+    }
+
+    .avicore-operario-carga-tile--featured .avicore-operario-carga-tile__icon {
+        @apply bg-white/15 text-white ring-1 ring-white/25;
+    }
+
+    .avicore-operario-carga-tile--featured .avicore-operario-carga-tile__label {
+        @apply text-white;
+    }
+
+    .avicore-operario-carga-tile--featured .avicore-operario-carga-tile__hint {
+        @apply text-white/80;
+    }
+
+    .avicore-operario-carga-tile--soon {
+        @apply border-dashed border-avicore-border-strong bg-avicore-surface opacity-80;
+    }
+
+    .avicore-operario-carga-tile__icon {
+        @apply flex size-11 items-center justify-center rounded-xl bg-avicore-soft text-avicore-primary ring-1 ring-avicore-primary/10;
+    }
+
+    .avicore-operario-carga-tile--soon .avicore-operario-carga-tile__icon {
+        @apply text-avicore-muted;
+    }
+
+    .avicore-operario-carga-tile__label {
+        @apply mt-2.5 text-sm font-bold leading-tight text-avicore-text;
+    }
+
+    .avicore-operario-carga-tile--soon .avicore-operario-carga-tile__label {
+        @apply text-avicore-muted;
+    }
+
+    .avicore-operario-carga-tile__hint {
+        @apply mt-1 text-[0.6875rem] font-medium text-avicore-muted;
+    }
+
+    .avicore-operario-carga-tile__badge {
+        @apply mt-1.5 rounded-full bg-avicore-soft px-2 py-0.5 text-[0.625rem] font-semibold text-avicore-muted ring-1 ring-avicore-border;
     }
 
     /* ── Barra inferior (integrada, ícono activo sobresale) ────────── */

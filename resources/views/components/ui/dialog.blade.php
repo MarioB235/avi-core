@@ -5,30 +5,43 @@
 
 @php
     $titleId = $labelledby ?? 'dialog-title-'.uniqid();
+    $wireModel = $attributes->wire('model')->value();
 @endphp
 
 <div
     x-data="{
-        open: false,
+        open: @if ($wireModel) @entangle($wireModel).live @else false @endif,
         previousFocus: null,
-        openDialog() {
-            this.previousFocus = document.activeElement;
-            this.open = true;
-            document.body.style.overflow = 'hidden';
+        focusPanel() {
             this.$nextTick(() => {
                 const panel = this.$refs.dialogPanel;
-                const initial = panel?.querySelector('[data-dialog-initial-focus]');
+                const initial = panel?.querySelector('input:not([disabled]), textarea:not([disabled]), select:not([disabled])')
+                    ?? panel?.querySelector('[data-dialog-initial-focus]');
                 (initial ?? panel)?.focus?.();
             });
         },
+        restoreFocus() {
+            const triggerFocus = this.$refs.trigger?.querySelector('button, a, [href]');
+            const target = this.previousFocus ?? triggerFocus;
+            this.previousFocus = null;
+            this.$nextTick(() => target?.focus?.());
+        },
+        applyOpenSideEffects(isOpen) {
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+            if (isOpen) {
+                if (this.previousFocus === null) {
+                    this.previousFocus = document.activeElement;
+                }
+                this.focusPanel();
+            } else if (this.previousFocus !== null) {
+                this.restoreFocus();
+            }
+        },
+        openDialog() {
+            this.open = true;
+        },
         closeDialog() {
             this.open = false;
-            document.body.style.overflow = '';
-            this.$nextTick(() => {
-                const triggerFocus = this.$refs.trigger?.querySelector('button, a, [href]');
-                (this.previousFocus ?? triggerFocus)?.focus?.();
-                this.previousFocus = null;
-            });
         },
         trapTab(event) {
             if (! this.open) {
@@ -60,14 +73,17 @@
             }
         },
     }"
+    x-effect="applyOpenSideEffects(open)"
     x-on:keydown.escape.window="if (open) closeDialog()"
     x-on:keydown.tab.window="trapTab($event)"
     x-on:alpine:destroy="document.body.style.overflow = ''"
-    {{ $attributes->class('contents') }}
+    {{ $attributes->except('wire:model')->class('contents') }}
 >
-    <div x-ref="trigger" x-on:click="openDialog()">
-        {{ $trigger }}
-    </div>
+    @unless ($wireModel)
+        <div x-ref="trigger" x-on:click="openDialog()">
+            {{ $trigger }}
+        </div>
+    @endunless
 
     <template x-teleport="body">
         <div x-show="open" x-cloak class="avicore-dialog" role="presentation">

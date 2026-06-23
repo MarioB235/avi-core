@@ -1,3 +1,4 @@
+{{-- Recuperación de contraseña: panel inferior móvil vía x-ui.sheet (no x-ui.dialog). --}}
 @props([
     'trigger' => '¿Olvidaste tu contraseña?',
     'dialogTitle' => 'Recuperar contraseña',
@@ -10,7 +11,7 @@
 @endphp
 
 <p {{ $attributes->merge(['class' => 'mt-6 text-center']) }}>
-    <x-ui.dialog :title="$dialogTitle">
+    <x-ui.sheet :title="$dialogTitle">
         <x-slot:trigger>
             <button type="button" class="avicore-auth-forgot-link">
                 {{ $trigger }}
@@ -62,5 +63,5 @@
                 {{ $footer }}
             </p>
         @endif
-    </x-ui.dialog>
+    </x-ui.sheet>
 </p>

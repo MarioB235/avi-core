@@ -47,7 +47,7 @@ x-transition:enter-end="translate-x-0 opacity-100"
 ```
 
 - Un solo panel a la vez (drawer **o** modal).
-- `@click.away` para cerrar drawer; restaurar foco al cerrar (como `x-ui.dialog`).
+- `@click.away` para cerrar drawer; restaurar foco al cerrar (`x-ui.dialog` con `applyOpenSideEffects` cuando cierra vía `wire:model`; `x-ui.sheet` con `closeSheet()`).
 
 ## prefers-reduced-motion
 

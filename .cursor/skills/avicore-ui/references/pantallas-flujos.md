@@ -152,7 +152,7 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 | Pestaña | Ruta | Contenido |
 |---------|------|-----------|
 | Inicio | `/operario` | Hero con foto, saludo, selector de galpón (chip desplegable), últimas cargas, resumen del día |
-| Cargar | `/operario/cargar` | Hub de tipos de carga |
+| Cargar | `/operario/cargar` | Hero + hoja con tipos; formulario huevos en diálogo centrado (`x-ui.dialog` + `wire:model`); deep link `?form=huevos` o `/operario/carga/huevos` |
 | Historial | `/operario/historial` | Todas las cargas de hoy + bloque cuenta (cerrar sesión) |
 
 En **Inicio**, el header muestra logo + usuario (sin menú desplegable en MVP); el galpón se elige con chip desplegable sobre el hero (copy «Acá tenés el resumen de tu granja.» en verde marca). La barra inferior es blanca con esquinas superiores redondeadas; el ítem **activo** sobresale con círculo verde e icono blanco.
@@ -181,7 +181,7 @@ Permitir carga rápida desde celular.
 ### Flujo
 
 ```text
-Seleccionar tipo de carga → ingresar cantidad → guardar → confirmar → volver al galpón actual
+Seleccionar tipo de carga en hub → diálogo centrado con formulario (solo cantidad) → guardar → snackbar → permanece en hub Cargar
 ```
 
 ---
@@ -207,20 +207,19 @@ Permitir elegir galpón de trabajo.
 - `GalponPolicy::view`, `OperarioGalponService::galponDisponibleParaUsuario` y `seleccionarGalpon` refuerzan multiempresa y disponibilidad.
 - El usuario puede elegir cualquier galpón disponible de su empresa.
 - El sistema recuerda el último galpón seleccionado (`users.ultimo_galpon_id`).
-- Si el galpón recordado deja de estar disponible, la carga redirige a **Inicio** con el selector abierto (`session` `abrirSelectorGalpon` o query `?abrir_galpon=1` desde el hub Cargar).
+- Si el galpón recordado deja de estar disponible, la carga redirige a **Inicio** con el selector abierto (`session` flash `abrirSelectorGalpon` desde hub y deep link; `Home` también acepta `?abrir_galpon=1` desde enlaces del hero).
 - Tras elegir galpón: snackbar «Galpón actualizado.» (`dispatch snackbar-show`).
 
 ---
 
 ## 7. Pantalla: Carga de huevos
 
-**Estado MVP (2026-06-20):** implementado en `/operario/carga/huevos` — cantidad obligatoria, observación opcional, `created_at` automático. Evento tiempo real: pendiente (Bloque 6).
+**Estado MVP (2026-06-22):** formulario huevos en diálogo centrado desde hub `/operario/cargar` (`CargarHub` + `x-ui.dialog`); solo cantidad obligatoria; `created_at` automático; deep link `/operario/carga/huevos` → redirect con `?form=huevos` (`CargaHuevos` usa vista `livewire._redirect-placeholder`). Evento tiempo real: pendiente (Bloque 6).
 
 ### Campos
 
-- Galpón actual.
+- Galpón actual (contexto en hero; no se repite en el diálogo).
 - Cantidad de huevos.
-- Observación opcional.
 
 ### Reglas
 

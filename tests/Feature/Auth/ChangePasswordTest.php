@@ -182,6 +182,7 @@ class ChangePasswordTest extends TestCase
         $this->assertStringContainsString('¿Problemas con tu contraseña temporal?', $html);
         $this->assertStringContainsString('wa.me/5491123456789', $html);
         $this->assertStringContainsString('mailto:soporte@avicore.com', $html);
-        $this->assertStringContainsString('openDialog()', $html);
+        $this->assertStringContainsString('openSheet()', $html);
+        $this->assertStringContainsString('avicore-sheet__panel', $html);
     }
 }

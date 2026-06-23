@@ -3,11 +3,13 @@
     'subtitle' => null,
     'hasGalpon' => false,
     'isHomePage' => false,
+    'photoOverlay' => false,
 ])
 
 <header @class([
     'avicore-operario-header',
     'avicore-operario-header--home' => $isHomePage,
+    'avicore-operario-header--photo-overlay' => $photoOverlay,
 ])>
     <div class="avicore-operario-header__bar">
         @if ($isHomePage)

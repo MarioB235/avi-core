@@ -32,7 +32,7 @@
 1. La carga operativa se realiza por galpón.
 2. El operario puede elegir cualquier galpón **disponible para carga** de su empresa (`activo` y `estado = activo`).
 3. El sistema recuerda el último galpón seleccionado (`users.ultimo_galpon_id`).
-4. Si el galpón recordado deja de estar disponible (inactivo, mantenimiento, etc.), el operario debe elegir otro en el selector de **Inicio**; las pantallas de carga redirigen a `/operario` con el selector abierto (`abrirSelectorGalpon` o `?abrir_galpon=1`).
+4. Si el galpón recordado deja de estar disponible (inactivo, mantenimiento, etc.), el operario debe elegir otro en el selector de **Inicio**; las pantallas de carga redirigen a `/operario` con el selector abierto (flash `abrirSelectorGalpon` desde `CargarHub`/`CargaHuevos`; `Home` también abre el selector con `?abrir_galpon=1` desde enlaces del hero).
 5. Un galpón puede tener uno o varios lotes.
 6. Si tiene varios lotes, se muestra aviso informativo.
 7. El aviso no bloquea la carga.
