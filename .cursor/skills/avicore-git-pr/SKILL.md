@@ -18,7 +18,7 @@ Mensaje usuario: `docs/02-avicore-mensajes-reutilizables.html` (mensaje 5) · ca
 2. Confirmar que **no** se incluyen `.env`, credenciales ni archivos ignorados por error.
 3. Verificaciones si existe código Laravel:
    - `php artisan test`
-   - `npm run build`
+   - `pnpm run build`
 
 ### B — Commit y push (terminal)
 
@@ -86,7 +86,7 @@ Plantilla en mensaje 5 del HTML = versión **condensada**; esta sección = versi
 
 ## Verificación
 - [ ] `php artisan test`
-- [ ] `npm run build`
+- [ ] `pnpm run build`
 - [ ] Prueba manual PC
 - [ ] Prueba manual móvil (si aplica)
 - [ ] Tiempo real probado (si aplica)

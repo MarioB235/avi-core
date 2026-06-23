@@ -23,7 +23,7 @@ Guía completa: [`.cursor/skills/avicore-contexto/references/arranque-local.md`]
 composer install
 cp .env.example .env   # si no tenés .env
 php artisan key:generate
-npm install && npm run build
+pnpm install && pnpm run build
 composer dev           # atajo: serve + queue + vite
 ```
 

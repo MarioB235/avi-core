@@ -16,6 +16,7 @@ Punto de entrada de documentación de producto tras `docs/00-contexto.md`.
 | Roadmap y bloques | [`references/plan-desarrollo.md`](references/plan-desarrollo.md) |
 | Árbol Laravel | [`references/arbol-proyecto.md`](references/arbol-proyecto.md) |
 | Entorno local | [`references/arranque-local.md`](references/arranque-local.md) |
+| Despliegue Laravel Cloud | [`references/deploy-laravel-cloud.md`](references/deploy-laravel-cloud.md) |
 | Modo chat (ejemplos) | [`references/modo-respuesta-clara.md`](references/modo-respuesta-clara.md) |
 
 ## Mapa rápido → skill de dominio
