@@ -24,7 +24,12 @@ auth.json
 # Logs y caché
 *.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-error.log
+
+# Lockfiles de otros gestores (repo usa pnpm)
+package-lock.json
+yarn.lock
 
 # IDE y sistema
 .idea/

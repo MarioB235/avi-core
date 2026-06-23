@@ -35,6 +35,7 @@ Stack: **Laravel 13, PostgreSQL, Livewire 4, Tailwind 4, Alpine.js (Livewire), P
 | BD / migraciones | `avicore-modelo-datos` | `references/esquema-bd.md` |
 | Módulo completo | `avicore-nuevo-modulo` | `references/checklist.md` |
 | Arranque local | `avicore-contexto` | `references/arranque-local.md` |
+| Despliegue Laravel Cloud | `avicore-contexto` | `references/deploy-laravel-cloud.md` |
 | Árbol Laravel | `avicore-contexto` | `references/arbol-proyecto.md` |
 
 Ruta base: `.cursor/skills/<skill>/references/`

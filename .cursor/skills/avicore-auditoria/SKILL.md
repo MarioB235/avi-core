@@ -31,6 +31,6 @@ Flujo y plantilla usuario: mensajes 2 y 3 en `docs/02-avicore-mensajes-reutiliza
 
 Alcance: tabla del mensaje 2 en **este mismo chat**. Orden: bugs → tests → deuda → resto.
 
-**Verificación:** `php artisan test` · `npm run build` si front · `vendor/bin/pint` si PHP.
+**Verificación:** `php artisan test` · `pnpm run build` si front · `vendor/bin/pint` si PHP.
 
 Sin commit/push/PR. Si altera contrato → anotar para mensaje 4.

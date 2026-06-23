@@ -157,7 +157,7 @@ Solo si hubo **desvío real** del flujo documentado. Ver `avicore-evolucion-tool
 | MCP / auth PR | `.cursor/README.md` → `avicore-git-pr` |
 | Tono chat | `avicore-modo-respuesta-clara.mdc` → `avicore-contexto/references/modo-respuesta-clara.md` |
 
-Verificar: `npm run check:agent-docs`
+Verificar: `pnpm run check:agent-docs`
 
 **No** crear skill ni regla por tarea puntual.
 

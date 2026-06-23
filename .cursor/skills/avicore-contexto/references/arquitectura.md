@@ -17,6 +17,7 @@ Laravel + PostgreSQL + Livewire + Tailwind CSS + Alpine.js + PWA + Laravel Rever
 | Tailwind CSS | 4.x (Vite plugin) |
 | PHP | 8.3+ |
 | PostgreSQL | Según instalación local (ej. 18) |
+| Node / pnpm | 10.x (`pnpm-lock.yaml`; ver [`arranque-local.md`](arranque-local.md)) |
 
 Reverb, Echo y PWA: pendientes (Bloques 6–7 del plan).
 
@@ -24,7 +25,7 @@ Reverb, Echo y PWA: pendientes (Bloques 6–7 del plan).
 
 ## 1b. Entorno local
 
-Procedimiento completo (PostgreSQL, pgAdmin, `.env`, migrate, serve): [`arranque-local.md`](arranque-local.md).
+Procedimiento completo (PostgreSQL, pgAdmin, `.env`, migrate, serve): [`arranque-local.md`](arranque-local.md). Producción (Laravel Cloud): [`deploy-laravel-cloud.md`](deploy-laravel-cloud.md).
 
 ## 2. Función de cada tecnología
 

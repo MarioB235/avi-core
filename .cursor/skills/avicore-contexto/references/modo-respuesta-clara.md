@@ -49,7 +49,7 @@ Funciona, pero el novato no sabe qué agente/skill actuó ni dónde está el «p
 
 **Por qué** En pantallas chicas los números quedaban apilados y costaba comparar galpones; el diseño en `02-pantallas-y-flujos` pide jerarquía visual clara antes de los accesos rápidos.
 
-**Qué sigue** Corré `npm run dev`, abrí `/admin` en el teléfono o DevTools responsive y contame si el hero se lee bien; si está ok, en el mismo chat podés mandar el mensaje 2 para auditar.
+**Qué sigue** Corré `pnpm run dev`, abrí `/admin` en el teléfono o DevTools responsive y contame si el hero se lee bien; si está ok, en el mismo chat podés mandar el mensaje 2 para auditar.
 ```
 
 ## Reglas por tipo de mensaje
