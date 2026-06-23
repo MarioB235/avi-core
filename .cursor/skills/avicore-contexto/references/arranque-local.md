@@ -9,7 +9,7 @@ Stack y principios: [`arquitectura.md`](arquitectura.md).
 
 - PHP 8.3+
 - Composer
-- Node.js y npm
+- Node.js y pnpm (Corepack: `corepack enable` si hace falta)
 - PostgreSQL (pgAdmin u otro cliente)
 - Extensiones PHP: `pdo_pgsql`, `pgsql`
 
@@ -23,8 +23,8 @@ Desde la raíz del repo (donde está `artisan`):
 composer install
 cp .env.example .env   # si no existe .env
 php artisan key:generate
-npm install
-npm run build
+pnpm install
+pnpm run build
 ```
 
 ---
@@ -127,11 +127,11 @@ En local hacen falta **dos procesos** (dos terminales). No son dos “versiones�
 | URL | Qué es | ¿Abrís el navegador ahí? |
 |-----|--------|---------------------------|
 | `http://127.0.0.1:8000` o `http://localhost:8000` | **Laravel** (`php artisan serve`) — pantallas, login, API | **Sí** — esta es AviCore |
-| `http://localhost:5173` | **Vite** (`npm run dev` / `pnpm run dev`) — compila CSS/JS en caliente | **No** — verás solo la página informativa de Vite |
+| `http://localhost:5173` | **Vite** (`pnpm run dev`) — compila CSS/JS en caliente | **No** — verás solo la página informativa de Vite |
 
 La app carga estilos y scripts desde Vite en segundo plano cuando abrís el puerto **8000**. Si cerrás la terminal de Vite, la app puede verse sin estilos o sin recarga automática; el login y las rutas siguen en **8000**.
 
-**Windows — pantalla sin estilos (elementos amontonados):** Vite puede escribir `public/hot` con `[::1]:5173` (IPv6) y el navegador no carga el CSS. En `vite.config.js` está `server.host: '127.0.0.1'`. Tras cambiar eso: detené `composer dev`, volvé a arrancarlo y recargá con Ctrl+F5. Si persiste, borrá `public/hot`, ejecutá `npm run build` y recargá (usa assets compilados sin Vite en caliente).
+**Windows — pantalla sin estilos (elementos amontonados):** Vite puede escribir `public/hot` con `[::1]:5173` (IPv6) y el navegador no carga el CSS. En `vite.config.js` está `server.host: '127.0.0.1'`. Tras cambiar eso: detené `composer dev`, volvé a arrancarlo y recargá con Ctrl+F5. Si persiste, borrá `public/hot`, ejecutá `pnpm run build` y recargá (usa assets compilados sin Vite en caliente).
 
 Terminal 1:
 
@@ -142,10 +142,8 @@ php artisan serve
 Terminal 2 (assets en caliente; dejarla abierta):
 
 ```bash
-npm run dev
+pnpm run dev
 ```
-
-(o `pnpm run dev` si usás pnpm)
 
 **Entrada recomendada:** `http://localhost:8000` o `http://localhost:8000/login` — la raíz `/` redirige al login si no hay sesión.
 
@@ -153,13 +151,13 @@ Usuarios demo: tabla de la sección «Datos de prueba (login)» más arriba.
 
 Previews de layout (requieren sesión): `/dev/admin-layout`, `/dev/operario-layout`.
 
-Atajo Composer (servidor + cola + Vite vía `npx concurrently`; logs en vivo con Pail solo en Linux/macOS):
+Atajo Composer (servidor + cola + Vite vía `pnpm exec concurrently`; logs en vivo con Pail solo en Linux/macOS):
 
 ```bash
 composer dev
 ```
 
-En **Windows**, Pail no corre (requiere `pcntl`); el resto sí. Los logs quedan en `storage/logs/laravel.log`. Alternativa manual: dos terminales con `php artisan serve` y `npm run dev` (tabla más arriba).
+En **Windows**, Pail no corre (requiere `pcntl`); el resto sí. Los logs quedan en `storage/logs/laravel.log`. Alternativa manual: dos terminales con `php artisan serve` y `pnpm run dev` (tabla más arriba).
 
 Artefactos de fuentes en desarrollo (`public/fonts-manifest.dev.json`) se generan con Vite y **no** se versionan (ver `.gitignore`).
 
@@ -171,7 +169,7 @@ Artefactos de fuentes en desarrollo (`public/fonts-manifest.dev.json`) se genera
 
 ```bash
 php artisan test
-npm run build
+pnpm run build
 ```
 
 ---
@@ -180,3 +178,9 @@ npm run build
 
 - `.env` no se sube a Git (ver `.gitignore`).
 - `.env.example` documenta variables sin valores secretos.
+
+---
+
+## Despliegue en Laravel Cloud
+
+Staging y pruebas internas: [`deploy-laravel-cloud.md`](deploy-laravel-cloud.md).

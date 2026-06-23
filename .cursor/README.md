@@ -69,7 +69,7 @@ flowchart TD
 ```bash
 node scripts/check-agent-docs-sync.cjs
 node scripts/check-skill-references.cjs
-npm run check:agent-docs
+pnpm run check:agent-docs
 ```
 
 Gobernanza: [`skills/avicore-evolucion-tooling/references/GOBERNANZA.md`](skills/avicore-evolucion-tooling/references/GOBERNANZA.md)

@@ -141,7 +141,7 @@ Priorizá:
 
 Verificación obligatoria:
 - php artisan test (verde)
-- npm run build si hubo front
+- pnpm run build si hubo front
 - vendor/bin/pint si PHP (Windows: vendor\bin\pint)
 
 Sin commit, push ni PR. Contrato alterado → anotar para mensaje 4.
@@ -190,7 +190,7 @@ Devolvé:
 
 Antes del commit (si hay código Laravel):
 - php artisan test
-- npm run build (si hubo front)
+- pnpm run build (si hubo front)
 
 1. Verificar rama actual: git branch
 2. Si estás en main: crear rama según tipo de cambio
@@ -235,7 +235,7 @@ Plantilla PR (condensada — versión completa en skill avicore-git-pr):
 
 ## Verificación
 - [ ] php artisan test
-- [ ] npm run build
+- [ ] pnpm run build
 
 ## Documentación
 Verifiqué documentación y actualicé [lista o «no aplica»] según el cambio.
@@ -492,7 +492,7 @@ Estado: pendiente (merge a cargo del usuario)</pre>
             <tr>
               <td>Primera vez / dejar listo el repo</td>
               <td><code>composer setup</code></td>
-              <td>Instala deps, <code>.env</code>, key, migrate, <code>npm run build</code></td>
+              <td>Instala deps, <code>.env</code>, key, migrate, <code>pnpm run build</code></td>
             </tr>
             <tr>
               <td>Instalar dependencias PHP</td>
@@ -501,7 +501,7 @@ Estado: pendiente (merge a cargo del usuario)</pre>
             </tr>
             <tr>
               <td>Instalar dependencias front</td>
-              <td><code>npm install</code></td>
+              <td><code>pnpm install</code></td>
               <td>Tras clonar o cambiar <code>package-lock.json</code></td>
             </tr>
             <tr>
@@ -522,7 +522,7 @@ Estado: pendiente (merge a cargo del usuario)</pre>
             <tr>
               <td>Levantar todo en una terminal</td>
               <td><code>composer dev</code></td>
-              <td>Serve + cola + <code>npm run dev</code> (Pail solo Linux/macOS)</td>
+              <td>Serve + cola + <code>pnpm run dev</code> (Pail solo Linux/macOS)</td>
             </tr>
             <tr>
               <td>Solo Laravel (terminal 1)</td>
@@ -531,12 +531,12 @@ Estado: pendiente (merge a cargo del usuario)</pre>
             </tr>
             <tr>
               <td>Solo assets en caliente (terminal 2)</td>
-              <td><code>npm run dev</code></td>
+              <td><code>pnpm run dev</code></td>
               <td>Dejar abierto mientras desarrollás</td>
             </tr>
             <tr>
               <td>Compilar CSS/JS para producción</td>
-              <td><code>npm run build</code></td>
+              <td><code>pnpm run build</code></td>
               <td>Antes de PR o si no corrés Vite</td>
             </tr>
             <tr>
@@ -573,17 +573,17 @@ Estado: pendiente (merge a cargo del usuario)</pre>
           <pre data-copy>composer install
 cp .env.example .env
 php artisan key:generate
-npm install
+pnpm install
 php artisan migrate
 php artisan db:seed
-npm run build</pre>
+pnpm run build</pre>
           <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar bloque</button></div>
         </div>
 
         <div class="cmd-group">
           <h3>Verificar antes de PR</h3>
           <pre data-copy>php artisan test
-npm run build</pre>
+pnpm run build</pre>
           <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar bloque</button></div>
         </div>
 
@@ -591,11 +591,11 @@ npm run build</pre>
           <h3>Corregir / refrescar el proyecto local</h3>
           <p>Cuando fallan deps, estilos rotos o config desactualizada:</p>
           <pre data-copy>composer install
-npm install
+pnpm install
 php artisan migrate
 php artisan config:clear
 php artisan cache:clear
-npm run build</pre>
+pnpm run build</pre>
           <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar bloque</button></div>
         </div>
 
@@ -613,7 +613,7 @@ php artisan test</pre>
 php artisan serve
 
 # Terminal 2
-npm run dev</pre>
+pnpm run dev</pre>
           <div class="copy-row"><button type="button" class="btn btn-primary btn-copy">Copiar bloque</button></div>
         </div>
       </div>

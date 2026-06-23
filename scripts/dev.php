@@ -17,7 +17,7 @@ if ($hasPcntl) {
     $processes[] = 'php artisan pail --timeout=0';
 }
 
-$processes[] = 'npm run dev';
+$processes[] = 'pnpm run dev';
 
 $names = $hasPcntl ? 'server,queue,logs,vite' : 'server,queue,vite';
 $colors = $hasPcntl ? '#93c5fd,#c4b5fd,#fb7185,#fdba74' : '#93c5fd,#c4b5fd,#fdba74';
@@ -28,7 +28,7 @@ $quotedProcesses = array_map(
 );
 
 $command = sprintf(
-    'npx concurrently -c "%s" %s --names=%s --kill-others',
+    'pnpm exec concurrently -c "%s" %s --names=%s --kill-others',
     $colors,
     implode(' ', $quotedProcesses),
     $names

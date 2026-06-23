@@ -16,6 +16,7 @@ avi-core/
 ├── docs/                     # Documentación de producto + referencias
 ├── .cursor/                  # Reglas, skills, comando del arquitecto
 ├── AGENTS.md
+├── pnpm-lock.yaml            # Lockfile front (pnpm)
 └── …                         # Rutas, migraciones (estándar Laravel)
 ```
 

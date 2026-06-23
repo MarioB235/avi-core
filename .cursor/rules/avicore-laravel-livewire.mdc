@@ -22,9 +22,9 @@ alwaysApply: false
 ## Comandos locales habituales
 
 ```bash
-composer install && npm install
+composer install && pnpm install
 php artisan migrate --seed
-npm run dev
+pnpm run dev
 php artisan serve
 php artisan reverb:start
 php artisan test
