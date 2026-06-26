@@ -5,6 +5,18 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-06-26
+
+- **[operario|fix]** Post-auditoría msg 3: tests HTTP Historial (tab activa, empty state, registros del día); excepción `!important` documentada en avatar home-nav; gradiente SVG nav con tokens `--color-avicore-*`; EOL `historial-hero`. — `OperarioBottomNavTest.php`, `operario.css`, `header.blade.php`, `historial-hero.blade.php`, `patrones-mobile-operario.md`, `tokens-componentes.md`, `pantallas-flujos.md`, `arbol-proyecto.md`, `estandares-codigo.md`
+
+## 2026-06-23
+
+- **[ui|operario]** Home nav: línea con gradiente fade (sin halo/sombra SVG). — `header.blade.php`, `operario.css`, `patrones-mobile-operario.md`
+- **[ui|operario]** Navbar home: blanco hasta safe-area (padding en bar + SVG 100%); truncate nombre con `min-width:0` en flex; avatar fijo sin conflicto `size-9`. — `operario.css`
+- **[ui|operario]** Navbar: divisor absoluto (SVG 390×112), logo/usuario posicionados; saludo sin `mt-auto`; hero `54dvh`. — `header.blade.php`, `operario.css`
+- **[ui|operario]** Navbar superior elevado (barra blanca, blur, sombra) en heroes; Historial alineado a Inicio/Cargar con `historial-hero` + hoja de registros. — `header.blade.php`, `historial-hero.blade.php`, `historial.blade.php`, `Historial.php`, `OperarioLayoutComposer.php`, `operario.css`, `patrones-mobile-operario.md`, `tokens-componentes.md`
+- **[ui|operario]** Heroes Inicio y Cargar sin fotos: degradado suave unificado (`--avicore-operario-brand-surface`) en body, heroes y header Historial; Cargar alineado visualmente a Inicio. — `home-hero.blade.php`, `cargar-hero.blade.php`, `header.blade.php`, `operario.css`, `app.css`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`, `tokens-componentes.md`
+
 ## 2026-06-22
 
 - **[chore|tooling]** Migración npm → pnpm: `packageManager`, `pnpm-lock.yaml`, `composer.json` setup, `dev.php`, `.gitignore`, docs (`arranque-local`, `deploy-laravel-cloud`, `arquitectura`, `README`, `plantillas/desarrollo.html`, reglas/skills). — `package.json`, `pnpm-lock.yaml`, `composer.json`, `scripts/dev.php`, `.gitignore`, `arranque-local.md`, `deploy-laravel-cloud.md`, `arquitectura.md`, `arbol-proyecto.md`, `desarrollo.html`, `avicore-laravel-livewire.mdc`, `avicore-auditoria`, `avicore-git-pr`

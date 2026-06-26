@@ -4,16 +4,7 @@
 ])
 
 <section class="avicore-operario-home-hero" aria-label="Bienvenida">
-    <div class="avicore-operario-home-hero__media" aria-hidden="true">
-        <img
-            src="{{ asset('images/brand/operario-home-hero.jpg') }}"
-            alt=""
-            class="avicore-operario-home-hero__img"
-            width="1080"
-            height="1440"
-            decoding="async"
-        >
-    </div>
+    <div class="avicore-operario-home-hero__media" aria-hidden="true"></div>
 
     <div class="avicore-operario-home-hero__content">
         <x-operario.header :is-home-page="true" />

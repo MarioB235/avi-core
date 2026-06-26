@@ -16,11 +16,12 @@ class Historial extends Component
     {
         $user = auth()->user();
 
+        $galpon = $user ? $operarioGalponService->galponActual($user) : null;
+
         return view('livewire.operario.historial', [
+            'galpon' => $galpon,
             'ultimasCargas' => $operarioGalponService->ultimasCargasDelDia($user),
-            'galponEtiqueta' => $operarioGalponService->etiquetaGalpon(
-                $operarioGalponService->galponActual($user)
-            ),
+            'galponEtiqueta' => $operarioGalponService->etiquetaGalpon($galpon),
         ]);
     }
 }

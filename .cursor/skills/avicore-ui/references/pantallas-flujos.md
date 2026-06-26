@@ -145,15 +145,15 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 
 ## 5. Pantalla: Vista móvil del operario
 
-**Estado MVP (2026-06-22):** implementado en `/operario` — shell móvil con **barra inferior integrada** (3 pestañas: Inicio · Cargar · Historial; ítem activo con círculo verde sobresaliente), **hero con foto** en Inicio, hoja blanca con últimas cargas y resumen KPI (maples del día = huevos ÷ 30). Header con `safe-area-inset-top` para notch. Nav y títulos de header: `App\Support\OperarioNav`.
+**Estado MVP (2026-06-26):** implementado en `/operario` — shell móvil con **barra inferior integrada** (3 pestañas: Inicio · Cargar · Historial; ítem activo con círculo verde sobresaliente y `aria-current="page"`), **heroes con degradado suave** unificado (`--avicore-operario-brand-surface`, sin fotos en Inicio/Cargar/Historial), hoja blanca con últimas cargas y resumen KPI en Inicio (maples del día = huevos ÷ 30). Header hero: grilla logo/usuario + línea ogee con gradiente de marca (`avicore-home-nav`). Nav y títulos de header: `App\Support\OperarioNav`; layout hero vía `operarioIsHeroPage` (Inicio + Cargar + Historial).
 
 ### Navegación móvil (3 pestañas)
 
 | Pestaña | Ruta | Contenido |
 |---------|------|-----------|
-| Inicio | `/operario` | Hero con foto, saludo, selector de galpón (chip desplegable), últimas cargas, resumen del día |
-| Cargar | `/operario/cargar` | Hero + hoja con tipos; formulario huevos en diálogo centrado (`x-ui.dialog` + `wire:model`); deep link `?form=huevos` o `/operario/carga/huevos` |
-| Historial | `/operario/historial` | Todas las cargas de hoy + bloque cuenta (cerrar sesión) |
+| Inicio | `/operario` | Hero degradado, saludo, selector de galpón (chip desplegable), últimas cargas, resumen del día |
+| Cargar | `/operario/cargar` | Hero degradado + hoja con tipos; formulario huevos en diálogo centrado (`x-ui.dialog` + `wire:model`); deep link `?form=huevos` o `/operario/carga/huevos`; chip galpón solo lectura (vacío → enlace `?abrir_galpon=1` en Inicio) |
+| Historial | `/operario/historial` | Hero degradado (`x-operario.historial-hero`), registros del día (mismo panel que Inicio) + bloque cuenta (cerrar sesión); chip galpón solo lectura |
 
 En **Inicio**, el header muestra logo + usuario (sin menú desplegable en MVP); el galpón se elige con chip desplegable sobre el hero (copy «Acá tenés el resumen de tu granja.» en verde marca). La barra inferior es blanca con esquinas superiores redondeadas; el ítem **activo** sobresale con círculo verde e icono blanco.
 
