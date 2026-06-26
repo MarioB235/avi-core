@@ -5,6 +5,25 @@
 @endphp
 
 <nav class="avicore-operario-tab-bar" aria-label="Navegación operario">
+    <svg
+        class="avicore-operario-tab-bar__edge"
+        viewBox="0 0 390 4"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+    >
+        <defs>
+            <linearGradient id="avicoreTabBarLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="var(--color-avicore-secondary)" stop-opacity="1" />
+                <stop offset="38%" stop-color="var(--color-avicore-secondary)" stop-opacity="0.98" />
+                <stop offset="70%" stop-color="var(--color-avicore-primary)" stop-opacity="0.35" />
+                <stop offset="100%" stop-color="var(--color-avicore-soft)" stop-opacity="0.5" />
+            </linearGradient>
+        </defs>
+
+        <path class="avicore-operario-tab-bar__edge-line" d="M0 2 H390" />
+    </svg>
+
     <div class="avicore-operario-tab-bar__inner">
         @foreach ($tabs as $tab)
             @php($active = OperarioNav::tabIsActive($tab))

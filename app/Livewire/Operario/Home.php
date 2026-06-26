@@ -4,7 +4,6 @@ namespace App\Livewire\Operario;
 
 use App\Enums\GalponEstado;
 use App\Models\Galpon;
-use App\Models\User;
 use App\Services\OperarioGalponService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
@@ -100,15 +99,6 @@ class Home extends Component
                 $hora < 19 => 'Buenas tardes',
                 default => 'Buenas noches',
             },
-            'primerNombre' => self::primerNombreUsuario($user),
         ]);
-    }
-
-    private static function primerNombreUsuario(User $user): string
-    {
-        $nombre = trim($user->name);
-        $partes = explode(' ', $nombre);
-
-        return $partes[0] !== '' ? $partes[0] : $nombre;
     }
 }

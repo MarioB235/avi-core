@@ -30,7 +30,7 @@ class OperarioNav
                 'route' => 'operario.historial',
                 'patterns' => ['operario.historial'],
                 'label' => 'Historial',
-                'icon' => 'clock',
+                'icon' => 'calendar',
                 'headerTitle' => 'Historial',
             ],
         ];

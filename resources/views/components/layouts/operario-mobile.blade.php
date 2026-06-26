@@ -17,7 +17,9 @@
         'avicore-operario-shell',
         'avicore-operario-shell--home' => $operarioIsHeroPage ?? false,
     ])>
-        @unless ($operarioIsHeroPage ?? false)
+        @if ($operarioIsHeroPage ?? false)
+            <x-operario.header :is-home-page="true" />
+        @else
             <div wire:transition="operario-chrome">
                 <x-operario.header
                     :title="$operarioHeaderTitle ?? 'Operario'"
@@ -25,7 +27,7 @@
                     :has-galpon="$operarioHasGalpon ?? false"
                 />
             </div>
-        @endunless
+        @endif
 
         <main @class([
             'avicore-operario-main',

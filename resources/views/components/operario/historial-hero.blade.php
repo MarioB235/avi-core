@@ -7,8 +7,6 @@
     <div class="avicore-operario-home-hero__media" aria-hidden="true"></div>
 
     <div class="avicore-operario-home-hero__content">
-        <x-operario.header :is-home-page="true" />
-
         <div class="avicore-operario-home-hero__greeting">
             <h1 class="avicore-operario-home-hero__title">
                 Historial
