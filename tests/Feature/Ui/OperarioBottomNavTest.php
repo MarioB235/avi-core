@@ -52,9 +52,93 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee('wire:transition="operario-page"', false)
             ->assertSee('wire:navigate.hover', false)
             ->assertSee('avicore-snackbar-host', false)
-            ->assertSee('images/brand/operario-home-hero.jpg', false)
+            ->assertSee('avicore-operario-home-hero__media', false)
             ->assertSee(route('operario.cargar'), false)
             ->assertSee(route('operario.historial'), false);
+    }
+
+    public function test_historial_renders_hero_navbar_and_sheet_without_layout_chrome(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => null,
+        ]);
+
+        $this->actingAs($operario)
+            ->get(route('operario.historial'))
+            ->assertOk()
+            ->assertSee('avicore-operario-shell--home', false)
+            ->assertSee('avicore-operario-historial-hero', false)
+            ->assertSee('avicore-home-nav', false)
+            ->assertSee('avicore-operario-header--home', false)
+            ->assertSee('Tus registros de hoy.', false)
+            ->assertSee('Registros del día', false)
+            ->assertSee('Tu cuenta', false)
+            ->assertSee('avicore-operario-tab-bar__item--active', false)
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('avicore-operario-home-hero__galpon--empty', false)
+            ->assertSee('Sin seleccionar · Elegí en Inicio', false)
+            ->assertSee('abrir_galpon=1', false)
+            ->assertSee('Cuando registres huevos u otros datos, aparecerán acá.', false)
+            ->assertDontSee('wire:transition="operario-chrome"', false);
+    }
+
+    public function test_historial_highlights_historial_tab_via_http(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+        ]);
+
+        $response = $this->actingAs($operario)->get(route('operario.historial'));
+
+        $response
+            ->assertOk()
+            ->assertSee(route('operario.historial'), false)
+            ->assertSee('avicore-operario-tab-bar__item--active', false)
+            ->assertSee('aria-current="page"', false);
+
+        $this->assertSame(
+            1,
+            substr_count($response->getContent(), 'aria-current="page"'),
+            'Solo la pestaña activa debe exponer aria-current="page".'
+        );
+    }
+
+    public function test_historial_shows_today_loads_via_http_route(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create();
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => $galpon->id,
+        ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 1500,
+            ]);
+
+        $this->actingAs($operario)
+            ->get(route('operario.historial'))
+            ->assertOk()
+            ->assertSee('1.500 huevos', false)
+            ->assertSee($galpon->displayName(), false)
+            ->assertDontSee('Cuando registres huevos u otros datos, aparecerán acá.', false)
+            ->assertSee('avicore-operario-load-item', false);
     }
 
     public function test_carga_huevos_highlights_cargar_tab_and_opens_dialog_from_deep_link(): void
@@ -98,7 +182,7 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee('avicore-operario-cargar-alert', false)
             ->assertSee('Elegí un galpón en Inicio', false)
             ->assertSee('Sin seleccionar · Elegí en Inicio', false)
-            ->assertSee('images/brand/operario-cargar-hero.jpg', false)
+            ->assertSee('avicore-operario-home-hero__media', false)
             ->assertDontSee('wire:transition="operario-chrome"', false);
     }
 

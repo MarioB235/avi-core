@@ -8,7 +8,7 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 2. **Sin hover** — feedback con `active:`, cambio de fondo en estado activo, y `focus-visible` para teclado/accesibilidad.
 3. **Una acción primaria** por pantalla cuando sea posible.
 4. **Densidad vertical** — listas con `min-h-[3.25rem]` o más; padding generoso en cards.
-5. **Safe area** — header Inicio: `max(2.75rem, safe-area + 1.25rem)`; dock con `safe-area-inset-bottom` (`resources/css/operario.css`).
+5. **Safe area** — header Inicio: `--header-safe-top` en bar (grid); dock con `safe-area-inset-bottom` (`resources/css/operario.css`).
 
 ## Navegación
 
@@ -19,14 +19,12 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 - Ítems inactivos: icono y label en `avicore-muted`, sin círculo ni elevación.
 - `wire:navigate.hover` en links del dock; transición de página con `wire:transition="operario-page"` (View Transitions API) + morph suave del ítem activo (300ms).
 - Cambio de galpón **solo** en Inicio (chip desplegable en hero).
-- Sin galpón al intentar cargar: redirect a Inicio con selector abierto — flash `abrirSelectorGalpon` (`CargarHub`, `CargaHuevos`); enlace del chip vacío en hero Cargar puede usar `?abrir_galpon=1` (ambos los consume `Home`).
+- Sin galpón al intentar cargar: redirect a Inicio con selector abierto — flash `abrirSelectorGalpon` (`CargarHub`, `CargaHuevos`); enlace del chip vacío en hero Cargar/Historial puede usar `?abrir_galpon=1` (ambos los consume `Home`).
 
 ## Header contextual
 
-- **Inicio:** `<x-operario.home-hero>` — foto sin scrim; header, saludo (verde marca) y chip galpón desplegable (`seleccionarGalpon` + `galponDisponibleParaUsuario` en servicio).
-- **Cargar (hub):** `<x-operario.cargar-hero>` — foto sin scrim; header blanco (`photo-overlay`); logo sin círculo; chip galpón solo lectura.
-- **Inicio (header):** logo + nombre/rol + avatar; **sin** chevron decorativo (no hay menú de usuario en MVP).
-- **Otras rutas:** barra con badge «Operario», título de sección, chip galpón y avatar.
+- **Inicio / Cargar / Historial:** `avicore-home-nav` — `__shape` blanco + `__line-main` con gradiente fade en tokens de marca (`var(--color-avicore-secondary|primary|soft)` en SVG inline; sin glow/blur).
+- **Rutas legacy / futuras:** barra contextual con el mismo estilo elevado (`header` sin `isHomePage`).
 - Galpón seleccionado: chip verde sólido (`avicore-primary`); sin galpón: chip ámbar con icono warehouse.
 - Subtítulo hero «Acá tenés el resumen de tu granja.» en `text-avicore-primary`.
 - Datos vía `OperarioLayoutComposer` — no duplicar lógica en cada Livewire.
@@ -34,7 +32,7 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 
 ## Inicio operario
 
-- `<x-operario.home-hero>` — bloque único con foto sin scrim, header, saludo («Acá tenés el resumen de tu granja.» en verde marca) y chip galpón desplegable (icono `warehouse`; vacío = ámbar + «Sin seleccionar»).
+- `<x-operario.home-hero>` — bloque único con fondo degradado suave, header, saludo («Acá tenés el resumen de tu granja.» en verde marca) y chip galpón desplegable (icono `warehouse`; vacío = ámbar + «Sin seleccionar»).
 - `.avicore-operario-home-sheet` — fondo `avicore-surface`; KPI arriba (maples destacado en verde sólido); card blanca de últimas cargas con header icono + borde inferior.
 - `.avicore-operario-home-cargas` — panel con `min-height: 42dvh`; lista con scroll interno; vacío con icono en soft verde.
 - `.avicore-operario-home-summary` — bloque KPI con eyebrow «Hoy»; maples = suma huevos del día ÷ 30 (ver `reglas.md`).
@@ -42,10 +40,16 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 
 ## Formularios de carga
 
-- Hub **Cargar** (`/operario/cargar`): hero sin scrim; header y saludo en blanco; logo sin círculo; grilla 2×2. **Huevos** → diálogo centrado (solo cantidad). Login recuperación: bottom sheet.
+- Hub **Cargar** (`/operario/cargar`): hero con fondo suave (igual que Inicio); grilla 2×2. **Huevos** → diálogo centrado (solo cantidad). Login recuperación: bottom sheet.
 - Inputs numéricos grandes; botón guardar ancho completo en móvil.
 - Validación inline; sin modales innecesarios.
 - Tras guardar: feedback claro (toast o redirect a historial).
+
+## Historial operario
+
+- `<x-operario.historial-hero>` — hero con degradado suave (igual que Inicio/Cargar); chip galpón solo lectura (vacío → enlace `?abrir_galpon=1`).
+- `.avicore-operario-home-sheet` — lista de registros del día (mismo panel que «Últimas cargas» en Inicio) + bloque «Tu cuenta» con cierre de sesión.
+- Tests HTTP: `OperarioBottomNavTest` (tab activa, empty state, registros del día).
 
 ## Motion (operario)
 

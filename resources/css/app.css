@@ -60,6 +60,14 @@
 
     /* Touch mínimo operario (WCAG) */
     --min-height-avicore-touch: 2.75rem;
+
+    /* Superficie marca operario (heroes + shell) */
+    --avicore-operario-brand-surface: linear-gradient(
+        165deg,
+        var(--color-avicore-soft) 0%,
+        var(--color-avicore-surface) 58%,
+        color-mix(in srgb, var(--color-avicore-secondary) 16%, var(--color-avicore-soft)) 100%
+    );
 }
 
 @layer base {

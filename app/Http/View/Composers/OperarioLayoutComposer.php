@@ -24,7 +24,7 @@ class OperarioLayoutComposer
             'operarioHeaderTitle' => OperarioNav::headerTitle(),
             'operarioHeaderSubtitle' => $this->headerSubtitle($galpon),
             'operarioHasGalpon' => $galpon !== null,
-            'operarioIsHeroPage' => Request::routeIs('operario.home', 'operario.cargar'),
+            'operarioIsHeroPage' => Request::routeIs('operario.home', 'operario.cargar', 'operario.historial'),
         ]);
     }
 
