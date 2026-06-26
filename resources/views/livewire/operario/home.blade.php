@@ -3,13 +3,15 @@
     x-data
     :class="{ 'avicore-operario-home--selector-open': $wire.selectorGalponAbierto }"
 >
-    <x-operario.home-hero :saludo="$saludo" :primer-nombre="$primerNombre">
+    <x-operario.home-hero :saludo="$saludo">
         <x-slot:galponSelector>
             @include('livewire.operario.partials.galpon-chip-selector')
         </x-slot:galponSelector>
     </x-operario.home-hero>
 
     <div class="avicore-operario-home-sheet">
+        <x-operario.primary-action :href="route('operario.cargar')" />
+
         <section class="avicore-operario-home-summary" aria-label="Resumen de hoy">
             <div class="avicore-operario-home-section__head">
                 <p class="avicore-operario-home-section__eyebrow">Hoy</p>
@@ -22,26 +24,26 @@
                         <x-ui.icon name="egg" class="size-5" />
                     </span>
                     <p class="avicore-operario-kpi-card__value">{{ number_format($maplesProducidosHoy, 0, ',', '.') }}</p>
-                    <p class="avicore-operario-kpi-card__label">Maples producidos</p>
+                    <p class="avicore-operario-kpi-card__label">Maples hoy</p>
                 </article>
                 <article class="avicore-operario-kpi-card">
                     <span class="avicore-operario-kpi-card__icon-shell">
                         <x-ui.icon name="clipboard-list" class="size-5" />
                     </span>
                     <p class="avicore-operario-kpi-card__value">{{ $cargasCompletadasHoy }}</p>
-                    <p class="avicore-operario-kpi-card__label">Cargas realizadas</p>
+                    <p class="avicore-operario-kpi-card__label">Cargas hoy</p>
                 </article>
-                <article class="avicore-operario-kpi-card avicore-operario-kpi-card--muted">
-                    <span class="avicore-operario-kpi-card__icon-shell">
-                        <x-ui.icon name="trending-up" class="size-5" />
-                    </span>
-                    <p class="avicore-operario-kpi-card__value">N/D</p>
-                    <p class="avicore-operario-kpi-card__label">Producción vs. objetivo</p>
-                </article>
+                {{-- avicore-defer: objetivo diario por galpón, cuando exista meta en reglas.md --}}
             </div>
         </section>
 
-        <section class="avicore-operario-home-cargas" aria-label="Últimas cargas">
+        <section
+            @class([
+                'avicore-operario-home-cargas',
+                'avicore-operario-home-cargas--empty' => $ultimasCargas->isEmpty(),
+            ])
+            aria-label="Últimas cargas"
+        >
             <div class="avicore-operario-home-cargas__header">
                 <div class="avicore-operario-home-cargas__heading">
                     <span class="avicore-operario-home-cargas__heading-icon" aria-hidden="true">
@@ -69,9 +71,21 @@
                         <span class="avicore-operario-home-cargas__empty-icon" aria-hidden="true">
                             <x-ui.icon name="clipboard-list" class="size-6" />
                         </span>
-                        <p class="avicore-operario-home-cargas__empty-text">
-                            Todavía no hay cargas registradas hoy.
-                        </p>
+                        <div class="avicore-operario-home-cargas__empty-copy">
+                            <p class="avicore-operario-home-cargas__empty-text">
+                                Todavía no hay cargas hoy.
+                            </p>
+                            <p class="avicore-operario-home-cargas__empty-hint">
+                                Registrá la primera carga del galpón.
+                            </p>
+                        </div>
+                        <a
+                            href="{{ route('operario.cargar') }}"
+                            wire:navigate
+                            class="avicore-operario-home-cargas__empty-cta"
+                        >
+                            Cargar ahora
+                        </a>
                     </div>
                 @else
                     <ul class="avicore-operario-home-cargas__list">
