@@ -65,4 +65,28 @@ class OperarioNavTest extends TestCase
         $this->assertTrue(OperarioNav::tabIsActive($homeTab));
         $this->assertSame('Inicio', OperarioNav::headerTitle());
     }
+
+    public function test_historial_route_marks_historial_tab_active(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+        ]);
+
+        $request = Request::create(route('operario.historial'), 'GET');
+        $request->setRouteResolver(fn () => app('router')->getRoutes()->match($request));
+
+        $this->actingAs($operario);
+        $this->app->instance('request', $request);
+
+        $historialTab = collect(OperarioNav::tabs())->firstWhere('route', 'operario.historial');
+
+        $this->assertNotNull($historialTab);
+        $this->assertSame('calendar', $historialTab['icon']);
+        $this->assertTrue(OperarioNav::tabIsActive($historialTab));
+        $this->assertSame('Historial', OperarioNav::headerTitle());
+    }
 }

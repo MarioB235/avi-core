@@ -40,14 +40,18 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee('avicore-operario-tab-bar__icon-wrap', false)
             ->assertSee('avicore-operario-tab-bar__item--active', false)
             ->assertSee('Resumen del día', false)
-            ->assertSee('Maples producidos', false)
-            ->assertSee('Cargas realizadas', false)
+            ->assertSee('Registrar producción', false)
+            ->assertSee('Maples hoy', false)
+            ->assertSee('Cargas hoy', false)
+            ->assertSee('avicore-operario-primary-action', false)
             ->assertSee('Operario', false)
             ->assertSee('Inicio', false)
             ->assertSee('Cargar', false)
             ->assertSee('Historial', false)
             ->assertSee('aria-current="page"', false)
-            ->assertSee('Acá tenés el resumen de tu granja.', false)
+            ->assertSee('Estado de hoy del galpón.', false)
+            ->assertSee('Todavía no hay cargas hoy.', false)
+            ->assertSee('Cargar ahora', false)
             ->assertSee('avicore-operario-galpon-selector', false)
             ->assertSee('wire:transition="operario-page"', false)
             ->assertSee('wire:navigate.hover', false)
@@ -103,7 +107,9 @@ class OperarioBottomNavTest extends TestCase
             ->assertOk()
             ->assertSee(route('operario.historial'), false)
             ->assertSee('avicore-operario-tab-bar__item--active', false)
-            ->assertSee('aria-current="page"', false);
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('M8 2v4', false)
+            ->assertSee('M3 10h18', false);
 
         $this->assertSame(
             1,

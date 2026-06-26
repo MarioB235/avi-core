@@ -2,20 +2,43 @@
     /* ── Tokens locales operario ───────────────────────────────────── */
     .avicore-operario-body {
         @apply min-h-screen text-avicore-text;
-        background: var(--avicore-operario-brand-surface);
+        background-color: var(--color-avicore-card);
+        background-image: var(--avicore-operario-brand-surface);
+        background-repeat: no-repeat;
+        background-size: 100% min(52vh, 24rem);
+        background-position: top center;
     }
 
     .avicore-operario-shell {
-        @apply relative z-10 mx-auto min-h-screen w-full max-w-lg;
+        @apply relative z-10 mx-auto flex min-h-screen w-full max-w-lg flex-col;
         padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
     }
 
     .avicore-operario-shell--home {
-        @apply bg-transparent;
+        @apply bg-avicore-card;
+        padding-bottom: 0;
+        --operario-dock-clearance: calc(6rem + env(safe-area-inset-bottom, 0px));
+        --operario-nav-x: clamp(0.9rem, 4vw, 1.35rem);
+        --operario-nav-safe-top: max(0.35rem, calc(env(safe-area-inset-top, 0px) + 0.2rem));
+        --operario-nav-height: 5.1rem;
+    }
+
+    @media (max-width: 380px) {
+        .avicore-operario-shell--home {
+            --operario-nav-x: 0.75rem;
+            --operario-nav-height: 4.85rem;
+        }
+    }
+
+    .avicore-operario-shell:not(.avicore-operario-shell--home) {
+        --operario-contextual-header-offset: calc(
+            max(2.75rem, calc(env(safe-area-inset-top, 0px) + 1rem)) + 2.75rem + 0.75rem
+        );
+        padding-top: var(--operario-contextual-header-offset);
     }
 
     .avicore-operario-page {
-        @apply min-h-full;
+        @apply min-h-full pb-4;
     }
 
     @media (prefers-reduced-motion: no-preference) {
@@ -93,21 +116,22 @@
     }
 
     .avicore-operario-main--home {
-        @apply space-y-0 p-0;
+        @apply flex min-h-0 flex-1 flex-col bg-avicore-card p-0;
+    }
+
+    .avicore-operario-main--home .avicore-operario-page {
+        @apply flex min-h-0 flex-1 flex-col pb-0;
+    }
+
+    .avicore-operario-home,
+    .avicore-operario-cargar,
+    .avicore-operario-historial {
+        @apply flex min-h-0 flex-1 flex-col;
     }
 
     /* ── Inicio: hero (fondo marca + header + saludo) ─────────────── */
     .avicore-operario-home-hero {
-        @apply relative z-10;
-        min-height: min(54dvh, 30rem);
-    }
-
-    .avicore-operario-cargar-hero {
-        min-height: min(44vh, 24rem);
-    }
-
-    .avicore-operario-historial-hero {
-        min-height: min(40vh, 22rem);
+        @apply relative z-10 shrink-0;
     }
 
     .avicore-operario-cargar-hero__galpon,
@@ -126,20 +150,23 @@
     }
 
     .avicore-operario-home-hero__content {
-        @apply relative z-10 flex min-h-full flex-col bg-transparent;
+        @apply relative z-10 flex flex-col bg-transparent;
+        padding-top: calc(var(--operario-nav-height) + var(--operario-nav-safe-top));
     }
 
     .avicore-operario-home-hero__greeting {
-        @apply relative z-20 space-y-2 px-4 pb-6;
-        margin-top: 0.45rem;
+        @apply relative z-20 space-y-1.5 px-4;
+        margin-top: 0.15rem;
+        padding-bottom: 2.75rem;
     }
 
     .avicore-operario-home-hero__title {
-        @apply text-[1.75rem] font-bold leading-tight tracking-tight text-avicore-text;
+        font-size: clamp(1.45rem, 7vw, 1.75rem);
+        @apply font-bold leading-tight tracking-tight text-avicore-text;
     }
 
     .avicore-operario-home-hero__subtitle {
-        @apply text-sm font-medium leading-snug text-avicore-primary;
+        @apply text-sm font-medium leading-snug text-avicore-primary/90;
     }
 
     .avicore-operario-home-hero__galpon {
@@ -193,17 +220,11 @@
     }
 
     /* ── Inicio: hoja de contenido ─────────────────────────────────── */
-    .avicore-operario-home {
-        @apply flex min-h-[calc(100dvh-6rem-env(safe-area-inset-bottom,0px))] flex-col;
-    }
-
-    .avicore-operario-cargar,
-    .avicore-operario-historial {
-        @apply flex min-h-[calc(100dvh-6rem-env(safe-area-inset-bottom,0px))] flex-col;
-    }
-
     .avicore-operario-home-sheet {
-        @apply relative z-20 -mt-10 flex flex-1 flex-col gap-5 rounded-t-[2rem] border-t border-avicore-border-strong/70 bg-avicore-surface px-4 pb-8 pt-6 shadow-[0_-16px_48px_rgba(15,23,42,0.1)];
+        @apply relative z-10 flex min-h-0 flex-1 flex-col gap-4 rounded-t-[2rem] border-t border-avicore-border-strong/70 bg-avicore-card px-4 shadow-[0_-16px_48px_rgba(15,23,42,0.1)];
+        margin-top: -2rem;
+        padding-top: 1.35rem;
+        padding-bottom: calc(var(--operario-dock-clearance, calc(6rem + env(safe-area-inset-bottom, 0px))) + 1.25rem);
     }
 
     .avicore-operario-home--selector-open .avicore-operario-home-hero {
@@ -223,7 +244,15 @@
     }
 
     .avicore-operario-home-cargas {
-        @apply flex min-h-[42dvh] flex-col overflow-hidden rounded-2xl border border-avicore-border-strong/80 bg-avicore-card px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)];
+        @apply flex flex-col overflow-hidden rounded-2xl border border-avicore-border-strong/80 bg-avicore-card px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)];
+    }
+
+    .avicore-operario-home-cargas:not(.avicore-operario-home-cargas--empty) {
+        min-height: clamp(14rem, 34dvh, 22rem);
+    }
+
+    .avicore-operario-home-cargas--empty {
+        @apply shrink-0;
     }
 
     .avicore-operario-home-cargas__header {
@@ -247,19 +276,38 @@
     }
 
     .avicore-operario-home-cargas__body--empty {
-        @apply items-center justify-center py-6 text-center;
+        @apply items-center justify-center py-5 text-center;
+        min-height: 12rem;
     }
 
     .avicore-operario-home-cargas__empty {
-        @apply flex max-w-[15rem] flex-col items-center gap-3;
+        @apply flex max-w-[16rem] flex-col items-center gap-3;
+    }
+
+    .avicore-operario-home-cargas__empty-copy {
+        @apply space-y-1;
     }
 
     .avicore-operario-home-cargas__empty-icon {
-        @apply flex size-14 items-center justify-center rounded-2xl bg-avicore-soft text-avicore-primary ring-1 ring-avicore-primary/15;
+        @apply flex size-12 items-center justify-center rounded-2xl bg-avicore-soft text-avicore-primary ring-1 ring-avicore-primary/15;
     }
 
     .avicore-operario-home-cargas__empty-text {
-        @apply text-sm font-medium leading-relaxed text-avicore-muted;
+        @apply text-sm font-semibold leading-snug text-avicore-text;
+    }
+
+    .avicore-operario-home-cargas__empty-hint {
+        @apply text-sm leading-snug text-avicore-muted;
+    }
+
+    .avicore-operario-home-cargas__empty-cta {
+        @apply inline-flex min-h-11 items-center justify-center rounded-full bg-avicore-primary px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(31,94,59,0.24)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-operario-home-cargas__empty-cta {
+            @apply transition-transform duration-150 ease-out active:scale-95;
+        }
     }
 
     .avicore-operario-home-cargas__list {
@@ -285,11 +333,11 @@
     }
 
     .avicore-operario-header:not(.avicore-operario-header--home) {
-        @apply sticky top-0 z-20 bg-transparent pb-3;
+        @apply fixed inset-x-0 top-0 z-40 bg-transparent pb-3;
     }
 
     .avicore-operario-header:not(.avicore-operario-header--home) .avicore-operario-header__bar {
-        @apply rounded-2xl border border-avicore-border-strong/60 bg-avicore-card/90 px-3 py-2.5 shadow-[0_8px_22px_rgba(15,23,42,0.05)] ring-1 ring-avicore-primary/5 backdrop-blur-sm;
+        @apply mx-auto max-w-lg rounded-2xl border border-avicore-border-strong/60 bg-avicore-card/90 px-3 py-2.5 shadow-[0_8px_22px_rgba(15,23,42,0.05)] ring-1 ring-avicore-primary/5 backdrop-blur-sm;
     }
 
     .avicore-operario-header__bar {
@@ -350,13 +398,44 @@
         @apply bg-amber-50 text-amber-800;
     }
 
+    .avicore-operario-primary-action {
+        @apply flex min-h-16 items-center gap-3 rounded-[1.25rem] border border-avicore-primary/20 bg-avicore-primary text-left text-white shadow-[0_10px_24px_rgba(31,94,59,0.28)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+        padding: 0.85rem 1rem;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-operario-primary-action {
+            @apply transition-[transform,box-shadow] duration-150 ease-out active:scale-[0.99];
+        }
+    }
+
+    .avicore-operario-primary-action__icon {
+        @apply flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/25;
+    }
+
+    .avicore-operario-primary-action__copy {
+        @apply min-w-0 flex-1;
+    }
+
+    .avicore-operario-primary-action__title {
+        @apply block text-[0.95rem] font-bold leading-tight;
+    }
+
+    .avicore-operario-primary-action__description {
+        @apply mt-0.5 block text-[0.74rem] font-medium leading-snug text-white/85;
+    }
+
+    .avicore-operario-primary-action__chevron {
+        @apply text-white/75;
+    }
+
     /* ── KPI y filas de carga (Inicio) ─────────────────────────────── */
     .avicore-operario-kpi-grid {
-        @apply grid grid-cols-3 gap-2.5;
+        @apply grid grid-cols-2 gap-2.5;
     }
 
     .avicore-operario-kpi-card {
-        @apply flex min-h-[7.75rem] flex-col items-center justify-center rounded-2xl border border-avicore-border-strong/80 bg-avicore-card px-2 py-3 text-center shadow-[0_8px_20px_rgba(15,23,42,0.06)];
+        @apply flex min-h-[6.75rem] flex-col items-center justify-center rounded-2xl border border-avicore-border-strong/80 bg-avicore-card px-2 py-3 text-center shadow-[0_8px_20px_rgba(15,23,42,0.06)];
     }
 
     .avicore-operario-kpi-card--featured {
@@ -381,6 +460,22 @@
 
     .avicore-operario-kpi-card--muted .avicore-operario-kpi-card__value {
         @apply text-avicore-muted;
+    }
+
+    .avicore-operario-kpi-card--pending {
+        @apply border-amber-200/90 bg-amber-50;
+    }
+
+    .avicore-operario-kpi-card--pending .avicore-operario-kpi-card__icon-shell {
+        @apply bg-amber-100 text-amber-700 ring-1 ring-amber-200;
+    }
+
+    .avicore-operario-kpi-card--pending .avicore-operario-kpi-card__value {
+        @apply text-sm font-bold leading-tight text-amber-800;
+    }
+
+    .avicore-operario-kpi-card--pending .avicore-operario-kpi-card__label {
+        @apply text-amber-700/90;
     }
 
     .avicore-operario-kpi-card__icon-shell {
@@ -427,7 +522,7 @@
 
     /* ── Cargar: hub de tipos ──────────────────────────────────────── */
     .avicore-operario-cargar-types {
-        @apply flex flex-1 flex-col gap-4;
+        @apply flex flex-col gap-4 rounded-2xl border border-avicore-border-strong/80 bg-avicore-card px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)];
     }
 
     .avicore-operario-cargar-alert {
@@ -477,7 +572,7 @@
     }
 
     .avicore-operario-carga-tile--soon {
-        @apply border-dashed border-avicore-border-strong bg-avicore-surface opacity-80;
+        @apply border-dashed border-avicore-border-strong bg-white/65;
     }
 
     .avicore-operario-carga-tile__icon {
@@ -493,7 +588,7 @@
     }
 
     .avicore-operario-carga-tile--soon .avicore-operario-carga-tile__label {
-        @apply text-avicore-muted;
+        @apply text-slate-500;
     }
 
     .avicore-operario-carga-tile__hint {
@@ -515,8 +610,21 @@
 
     /* ── Barra inferior (integrada, ícono activo sobresale) ────────── */
     .avicore-operario-tab-bar {
-        @apply fixed inset-x-0 bottom-0 z-40 overflow-visible rounded-t-[1.75rem] border-t border-avicore-border/60 bg-white shadow-[0_-10px_28px_rgba(15,23,42,0.1)];
+        @apply fixed inset-x-0 bottom-0 z-40 overflow-visible rounded-t-[1.75rem] bg-white shadow-[0_-10px_28px_rgba(15,23,42,0.1)];
         padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .avicore-operario-tab-bar__edge {
+        @apply pointer-events-none absolute inset-x-0 top-0 z-[1] block w-full;
+        height: 0.28rem;
+    }
+
+    .avicore-operario-tab-bar__edge-line {
+        fill: none;
+        stroke: url(#avicoreTabBarLine);
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
     }
 
     .avicore-operario-tab-bar__inner {
@@ -529,27 +637,29 @@
         @apply relative flex min-h-11 flex-col items-center justify-end gap-1.5 px-1 pb-0.5 text-[0.6875rem] font-medium text-avicore-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
 
-    .avicore-operario-tab-bar__item[data-current] {
-        @apply text-avicore-primary;
-    }
-
     .avicore-operario-tab-bar__icon-wrap {
         @apply relative z-10 flex size-6 items-center justify-center;
     }
 
-    .avicore-operario-tab-bar__item--active,
-    .avicore-operario-tab-bar__item[data-current] {
+    .avicore-operario-tab-bar__item--active {
         @apply text-avicore-primary;
     }
 
-    .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__icon-wrap,
-    .avicore-operario-tab-bar__item[data-current] .avicore-operario-tab-bar__icon-wrap {
-        @apply -mt-7 size-[3.25rem] -translate-y-2 rounded-full border-[3px] border-white bg-avicore-primary text-white shadow-[0_8px_22px_rgba(31,94,59,0.35)];
+    .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__icon-wrap {
+        @apply -mt-5 size-12 rounded-full border-[3px] border-white bg-avicore-primary text-white shadow-[0_8px_22px_rgba(31,94,59,0.35)];
+        transform: translateY(-0.35rem);
     }
 
-    .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__label,
-    .avicore-operario-tab-bar__item[data-current] .avicore-operario-tab-bar__label {
-        @apply font-semibold;
+    .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__label {
+        @apply font-bold text-avicore-primary;
+    }
+
+    .avicore-operario-tab-bar__item:not(.avicore-operario-tab-bar__item--active) .avicore-operario-tab-bar__icon-wrap {
+        @apply size-9 rounded-full bg-avicore-soft text-avicore-primary ring-1 ring-avicore-primary/20;
+    }
+
+    .avicore-operario-tab-bar__item:not(.avicore-operario-tab-bar__item--active) .avicore-operario-tab-bar__label {
+        @apply font-semibold text-avicore-primary;
     }
 
     .avicore-operario-tab-bar__label {
@@ -569,14 +679,14 @@
             @apply transition-[color,font-weight,opacity] duration-300 ease-out;
         }
 
-        .avicore-operario-tab-bar__item:not(.avicore-operario-tab-bar__item--active):not([data-current]) .avicore-operario-tab-bar__label {
+        .avicore-operario-tab-bar__item:not(.avicore-operario-tab-bar__item--active) .avicore-operario-tab-bar__label {
             @apply opacity-80;
         }
     }
 
     /* ── Home nav v4: línea full width + grilla real ─────────────── */
     .avicore-operario-header--home {
-        @apply isolate overflow-visible bg-transparent px-0 pb-0;
+        @apply fixed inset-x-0 top-0 z-40 isolate overflow-visible bg-transparent px-0 pb-0;
         padding-top: 0;
     }
 
@@ -588,9 +698,11 @@
     }
 
     .avicore-home-nav {
-        --nav-x: clamp(0.9rem, 4vw, 1.35rem);
-        --nav-safe-top: max(0.35rem, calc(env(safe-area-inset-top, 0px) + 0.2rem));
-        --nav-height: 5.1rem;
+        --nav-x: var(--operario-nav-x);
+        --nav-safe-top: var(--operario-nav-safe-top);
+        --nav-height: var(--operario-nav-height);
+        --nav-curve-bottom: calc((66 / 92) * (var(--nav-height) + var(--nav-safe-top)));
+        --nav-account-avatar: 2.45rem;
 
         position: relative;
         height: calc(var(--nav-height) + var(--nav-safe-top));
@@ -632,7 +744,7 @@
             minmax(0, clamp(8.6rem, 37vw, 10.6rem));
         align-items: start;
         column-gap: 0.35rem;
-        height: 4rem;
+        height: var(--nav-height);
         padding-inline: var(--nav-x);
     }
 
@@ -667,13 +779,16 @@
         grid-column: 3;
         justify-self: end;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 2.45rem;
+        grid-template-columns: minmax(0, 1fr) var(--nav-account-avatar);
         align-items: center;
-        gap: 0.45rem;
+        gap: 0.5rem;
         width: 100%;
         min-width: 0;
         overflow: hidden;
-        padding-top: 0.78rem;
+        padding-top: max(
+            0.25rem,
+            calc(var(--nav-curve-bottom) - var(--nav-safe-top) - var(--nav-account-avatar))
+        );
         background: transparent;
         border: 0;
         box-shadow: none;
@@ -681,8 +796,13 @@
     }
 
     .avicore-home-nav__account-copy {
+        display: flex;
+        min-height: var(--nav-account-avatar);
         min-width: 0;
+        flex-direction: column;
+        justify-content: center;
         overflow: hidden;
+        padding-left: clamp(1.3rem, 6vw, 2rem);
         text-align: right;
     }
 
@@ -719,6 +839,8 @@
         width: 2.45rem !important;
         height: 2.45rem !important;
         min-width: 2.45rem;
+        align-self: center;
+        justify-self: end;
         background: var(--color-avicore-card) !important;
         color: var(--color-avicore-primary);
         border: 1.5px solid color-mix(in srgb, var(--color-avicore-primary) 28%, white);
@@ -734,18 +856,12 @@
     }
 
     @media (max-width: 380px) {
-        .avicore-home-nav {
-            --nav-x: 0.75rem;
-            --nav-height: 4.85rem;
-        }
-
         .avicore-home-nav__grid {
             grid-template-columns:
                 minmax(0, 7.8rem)
                 minmax(0, 1fr)
                 minmax(0, 9.2rem);
             column-gap: 0.25rem;
-            height: 3.75rem;
         }
 
         .avicore-home-nav__brand {
@@ -753,9 +869,12 @@
         }
 
         .avicore-home-nav__account {
-            grid-template-columns: minmax(0, 1fr) 2.25rem;
-            gap: 0.35rem;
-            padding-top: 0.72rem;
+            --nav-account-avatar: 2.25rem;
+            gap: 0.4rem;
+        }
+
+        .avicore-home-nav__account-copy {
+            padding-left: 1.2rem;
         }
 
         .avicore-home-nav__avatar {

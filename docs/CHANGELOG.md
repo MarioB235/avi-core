@@ -7,6 +7,15 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ## 2026-06-26
 
+- **[operario|fix]** Post-auditoría msg 3 (sesión navbar): KPI Objetivo oculto (`avicore-defer`); grilla KPI 2 columnas; icono `calendar` en pestaña Historial; limpieza CSS `[data-current]` en dock; tests `OperarioHomeTest` (seleccionarGalpon negativo), `OperarioNavTest` (historial activa). — `home.blade.php`, `operario.css`, `OperarioNav.php`, `OperarioHomeTest.php`, `OperarioNavTest.php`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`, `reglas.md`, `arbol-proyecto.md`, `estandares-codigo.md`, `tokens-componentes.md`
+- **[ui|operario]** Nav home: `padding-left` en bloque usuario para separarlo de la curva SVG. — `operario.css`
+- **[ui|operario]** Revert nav usuario (sin fondo/tipografía compacta); Cargar/Historial alineados a Inicio (hero sin min-height, sheet compartida, card tipos de carga). — `operario.css`, `patrones-mobile-operario.md`
+- **[ui|operario]** Ajustes finos Inicio/Cargar/Historial: usuario nav alineado (fondo translúcido, tipografía compacta), sheet `pt`/`mt` unificados, CTA compacta, heroes Cargar/Historial más bajos, tiles «Próximamente» legibles, dock activo menos alto, copy «Estado de hoy del galpón.». — `operario.css`, `home-hero.blade.php`, `bottom-nav.blade.php`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`
+- **[ui|operario]** Fix scroll: navbar home en layout (fuera del hero) con `z-40`; hoja `z-10` ya no lo tapa al scrollear. — `operario-mobile.blade.php`, `home-hero.blade.php`, `cargar-hero.blade.php`, `historial-hero.blade.php`, `operario.css`, `patrones-mobile-operario.md`
+- **[ui|operario]** Inicio: más aire entre chip galpón y hoja (`pb` hero + menos solape `-mt-6`). — `operario.css`
+- **[ui|operario]** Inicio operativo: CTA «Registrar producción», KPIs cortos (Maples/Cargas hoy, Objetivo pendiente ámbar), hero compacto, vacío útil con «Cargar ahora», dock Cargar destacado. — `primary-action.blade.php`, `home.blade.php`, `home-hero.blade.php`, `bottom-nav.blade.php`, `operario.css`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`, `tokens-componentes.md`
+- **[ui|operario]** Inicio: hero sin `min-height` fijo (altura por contenido); menos padding bajo chip galpón y solape de hoja (`-mt-6`) para acercar «Resumen del día». — `operario.css`
+- **[ui|operario]** Navbar superior fijo en heroes (logo/usuario + línea ogee permanecen al scrollear); header contextual legacy también `fixed`; tokens `--operario-nav-*` en shell home. — `operario.css`, `patrones-mobile-operario.md`
 - **[operario|fix]** Post-auditoría msg 3: tests HTTP Historial (tab activa, empty state, registros del día); excepción `!important` documentada en avatar home-nav; gradiente SVG nav con tokens `--color-avicore-*`; EOL `historial-hero`. — `OperarioBottomNavTest.php`, `operario.css`, `header.blade.php`, `historial-hero.blade.php`, `patrones-mobile-operario.md`, `tokens-componentes.md`, `pantallas-flujos.md`, `arbol-proyecto.md`, `estandares-codigo.md`
 
 ## 2026-06-23
