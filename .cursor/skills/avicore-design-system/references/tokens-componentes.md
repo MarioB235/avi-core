@@ -35,8 +35,8 @@ Ver [`refined-agro-principios.md`](refined-agro-principios.md), [`motion-y-feedb
 | `background-desktop.jpg` | Fondo ≥1024px — idem |
 | `admin-home-hero.jpg` | Hero Inicio admin (≥1024px) — fuente PNG/JPG en `resources/images/brand/`; degradado inferior documentado como excepción clean |
 | `admin-home-hero-mobile.jpg` | Reservado — hero Inicio admin en móvil (pendiente asset) |
-| `operario-home-hero.jpg` | Hero Inicio operario — fuente PNG en `resources/images/brand/`; render en `<x-operario.home-hero>` |
-| `operario-cargar-hero.jpg` | Hero hub Cargar operario — interior de galpón (pasillo, jaulas, luz natural); fuente PNG en `resources/images/brand/`; render en `<x-operario.cargar-hero>` |
+| `operario-home-hero.jpg` | *(legacy)* Fuente PNG en `resources/images/brand/` — ya no se renderiza; hero Inicio usa degradado CSS en `operario.css` |
+| `operario-cargar-hero.jpg` | *(legacy)* Fuente PNG en `resources/images/brand/` — ya no se renderiza; hero Cargar usa degradado CSS en `operario.css` |
 
 Tras cambiar fondos JPEG/PNG: `python scripts/optimize-brand-assets.py` (comprime fondos y sincroniza logo + `public/`).
 
@@ -77,6 +77,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `avicore-text` / `muted` | Texto principal y secundario |
 | `avicore-border` / `border-strong` | Bordes de inputs y paneles |
 | `avicore-success` / `warning` / `danger` / `info` | Estados semánticos |
+| `--avicore-operario-brand-surface` | Degradado heroes operario (body `.avicore-operario-body`, `__media`, shell) — `@theme` en `app.css` |
 
 ## Componentes UI
 
@@ -98,9 +99,10 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger` **o** `wire:model` (Livewire); panel centrado; focus trap; `applyOpenSideEffects` sincroniza scroll/foco al cerrar vía entangle |
 | `x-ui.sheet` | Bottom sheet Alpine — slot `trigger` **o** `wire:model`; panel anclado abajo (slide-up), handle, safe-area; auth recuperación contraseña |
 | `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», bottom sheet (`x-ui.sheet`); enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
-| `x-operario.home-hero` | Inicio — foto sin scrim + header + saludo (`primerNombre` desde Livewire) + chip galpón en un solo bloque (`home-hero.blade.php`) |
-| `x-operario.cargar-hero` | Hub Cargar — foto sin scrim; header `photo-overlay` (texto blanco, logo sin círculo); chip galpón solo lectura |
-| `x-operario.header` | Barra operario — variante Inicio (dentro del hero) o contextual (título + chip galpón) |
+| `x-operario.home-hero` | Inicio — fondo degradado suave + header + saludo (`primerNombre` desde Livewire) + chip galpón en un solo bloque (`home-hero.blade.php`) |
+| `x-operario.cargar-hero` | Hub Cargar — mismo fondo degradado suave que Inicio; header estándar; chip galpón solo lectura |
+| `x-operario.historial-hero` | Historial — mismo hero/header que Inicio; chip galpón solo lectura |
+| `x-operario.header` | Barra operario — variante hero (grilla logo/usuario + divisor ogee inferior; gradiente SVG con tokens `--color-avicore-*`) o contextual (título + chip en tarjeta) |
 | `x-operario.bottom-nav` | Barra inferior integrada — 3 pestañas; ítem activo con círculo verde sobresaliente; datos desde `OperarioNav` |
 
 ## Layouts
@@ -109,7 +111,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 |--------|---------|-----|
 | Público | `components/layouts/public.blade.php` | Login, cambio de contraseña — split marca + tarjeta (≥1024px); móvil: logo apilado + bottom sheet (`.avicore-auth-mobile-brand`, `.avicore-auth-card`); partial `auth-brand-panel` |
 | Admin | `components/layouts/admin.blade.php` | Shell `.avicore-admin-*`: sidebar sticky verde (`bg-avicore-primary`, nav clara, labels de sección) + drawer Alpine (móvil), header y main con gutter común (`avicore-admin-gutter`); partials `admin-sidebar-inner`, `admin-nav`, `admin-header-toolbar`, `admin-menu-trigger` |
-| Operario | `components/layouts/operario-mobile.blade.php` | Shell `.avicore-operario-shell` — header `<x-operario.header>` omitido en páginas hero (`operarioIsHeroPage`: Inicio + Cargar) + barra inferior `<x-operario.bottom-nav>`; datos de galpón vía `OperarioLayoutComposer`; pestañas/títulos vía `OperarioNav` |
+| Operario | `components/layouts/operario-mobile.blade.php` | Shell `.avicore-operario-shell` — header `<x-operario.header>` omitido en páginas hero (`operarioIsHeroPage`: Inicio + Cargar + Historial) + barra inferior `<x-operario.bottom-nav>`; datos de galpón vía `OperarioLayoutComposer`; pestañas/títulos vía `OperarioNav` |
 
 ## Quality gates
 
