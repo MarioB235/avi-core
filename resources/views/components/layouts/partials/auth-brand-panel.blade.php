@@ -1,6 +1,6 @@
 <div class="avicore-auth-brand__inner">
     <div class="avicore-auth-brand__identity">
-        <x-ui.logo subtitle="Gestión operativa avícola" size="hero" />
+        <x-ui.logo subtitle="Gestión operativa avícola" size="hero" entrance />
     </div>
 
     <div class="avicore-auth-brand__copy">
