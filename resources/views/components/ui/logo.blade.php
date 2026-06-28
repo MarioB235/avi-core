@@ -4,6 +4,7 @@
     'showName' => true,
     'stacked' => false,
     'theme' => 'default',
+    'entrance' => false,
 ])
 
 @php
@@ -38,11 +39,11 @@
         default => '',
     };
 
-    $logoClass = match ($size) {
+    $logoClass = trim(match ($size) {
         'hero' => 'avicore-logo avicore-logo--hero',
         'auth-mobile' => 'avicore-logo avicore-logo--auth-mobile'.($stacked ? ' avicore-logo--stacked' : ''),
         default => 'avicore-logo',
-    };
+    }.($entrance ? ' avicore-logo--entrance' : ''));
 
     $gapClass = match (true) {
         $stacked && $size === 'auth-mobile' => 'gap-0.5',
@@ -57,7 +58,8 @@
     };
 
     $textWrapperClass = match (true) {
-        $stacked => 'min-w-0',
+        $stacked && $size === 'auth-mobile' => 'min-w-0 w-full text-center',
+        $stacked => 'min-w-0 text-center',
         $size === 'hero' => 'flex min-w-0 flex-col justify-center text-left',
         default => 'min-w-0 text-left',
     };
@@ -69,31 +71,79 @@
         'sm' => ['width' => 32, 'height' => 32],
         default => ['width' => 40, 'height' => 40],
     };
+
+    $orbitLayout = $entrance && $showName && in_array($size, ['auth-mobile', 'hero'], true);
+    $orbitFieldClass = $size === 'hero'
+        ? 'avicore-logo__orbit-field avicore-logo__orbit-field--hero'
+        : 'avicore-logo__orbit-field avicore-logo__orbit-field--stacked';
+
+    $orbitReserveClass = match ($size) {
+        'auth-mobile' => 'h-20 w-full sm:h-24',
+        'hero' => 'w-24 shrink-0 sm:w-28 lg:w-36 xl:w-40',
+        default => '',
+    };
 @endphp
 
 <div
-    {{ $attributes->merge(['class' => trim("{$logoClass} {$wrapperClass}")]) }}
+    {{ $attributes->merge(['class' => trim($orbitLayout ? "{$logoClass}" : "{$logoClass} {$wrapperClass}")]) }}
     @unless($showName) role="img" aria-label="AviCore" @endunless
 >
-    <div @class(['shrink-0 self-center', $imageShellClass])>
-        <img
-            src="{{ asset('images/brand/logo-avicore.png') }}"
-            alt=""
-            @if($showName) aria-hidden="true" @endif
-            class="object-contain {{ $imageClass }}"
-            width="{{ $imageDimensions['width'] }}"
-            height="{{ $imageDimensions['height'] }}"
-            decoding="async"
-            fetchpriority="{{ $size === 'hero' ? 'high' : 'auto' }}"
-        />
-    </div>
+    @if ($orbitLayout)
+        <div class="{{ $orbitFieldClass }}">
+            <div class="avicore-logo__orbit-anchor">
+                <div
+                    class="avicore-logo__orbit-reserve {{ $orbitReserveClass }}"
+                    aria-hidden="true"
+                ></div>
 
-    @if ($showName)
-        <div class="{{ $textWrapperClass }} avicore-logo__text">
-            <p class="{{ $nameClass }}">AviCore</p>
-            @if ($subtitle)
-                <p class="{{ $subtitleClass }}">{{ $subtitle }}</p>
-            @endif
+                <div class="avicore-logo__orbit-text-stage">
+                    <div class="{{ $textWrapperClass }} avicore-logo__text">
+                        <p class="{{ $nameClass }}">AviCore</p>
+                        @if ($subtitle)
+                            <p class="{{ $subtitleClass }}">{{ $subtitle }}</p>
+                        @endif
+                    </div>
+
+                    <div class="avicore-logo__orbit-pivot">
+                        <div class="avicore-logo__orbit-spinner">
+                            <div @class(['avicore-logo__mark', $imageShellClass])>
+                                <img
+                                    src="{{ asset('images/brand/logo-avicore.png') }}"
+                                    alt=""
+                                    aria-hidden="true"
+                                    class="object-contain {{ $imageClass }}"
+                                    width="{{ $imageDimensions['width'] }}"
+                                    height="{{ $imageDimensions['height'] }}"
+                                    decoding="async"
+                                    fetchpriority="{{ $size === 'hero' ? 'high' : 'auto' }}"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+    @else
+        <div @class(['shrink-0 self-center', $imageShellClass])>
+            <img
+                src="{{ asset('images/brand/logo-avicore.png') }}"
+                alt=""
+                @if($showName) aria-hidden="true" @endif
+                class="object-contain {{ $imageClass }}"
+                width="{{ $imageDimensions['width'] }}"
+                height="{{ $imageDimensions['height'] }}"
+                decoding="async"
+                fetchpriority="{{ $size === 'hero' ? 'high' : 'auto' }}"
+            />
+        </div>
+
+        @if ($showName)
+            <div class="{{ $textWrapperClass }} avicore-logo__text">
+                <p class="{{ $nameClass }}">AviCore</p>
+                @if ($subtitle)
+                    <p class="{{ $subtitleClass }}">{{ $subtitle }}</p>
+                @endif
+            </div>
+        @endif
     @endif
 </div>

@@ -1,6 +1,6 @@
 # Patrones mobile — Operario
 
-Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.header>` · Nav: `<x-operario.bottom-nav>`.
+Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.header>` · Menú cuenta: `<x-operario.user-menu>` · Nav: `<x-operario.bottom-nav>`.
 
 ## Principios
 
@@ -24,6 +24,7 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 ## Header contextual
 
 - **Inicio / Cargar / Historial:** `avicore-home-nav` — barra **fija** en el layout (`operario-mobile`, fuera del scroll); `z-40` por encima de la hoja de contenido. `__shape` blanco + `__line-main` con gradiente fade en tokens de marca. El saludo y chip galpón scrollean debajo.
+- **Cuenta del usuario:** `<x-operario.user-menu>` en el avatar del header (home nav y barra contextual). **Dropdown** anclado al trigger (`role="menu"`), no modal: Perfil (subvista con nombre, documento, correo, empresa, rol) y Cerrar sesión (`POST` + CSRF). Alpine: `open` + `view` (`menu` \| `profile`); cierre con Escape, click fuera y al volver de perfil. Rol visible con `UserRole::label()` (nav home y menú). Touch ≥44px en trigger e ítems; estilos en `operario.css` (`.avicore-operario-user-menu__*`).
 - **Rutas legacy / futuras:** barra contextual con el mismo estilo elevado (`header` sin `isHomePage`).
 - Galpón seleccionado: chip verde sólido (`avicore-primary`); sin galpón: chip ámbar con icono warehouse.
 - Subtítulo hero «Estado de hoy del galpón.» en `text-avicore-primary/90`.
@@ -50,8 +51,8 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 ## Historial operario
 
 - `<x-operario.historial-hero>` — hero con degradado suave (igual que Inicio/Cargar); chip galpón solo lectura (vacío → enlace `?abrir_galpon=1`).
-- `.avicore-operario-home-sheet` — lista de registros del día (mismo panel que «Últimas cargas» en Inicio) + bloque «Tu cuenta» con cierre de sesión.
-- Tests HTTP: `OperarioBottomNavTest` (tab activa, icono `calendar` en Historial, empty state, registros del día); `OperarioNavTest` (pestaña activa y `headerTitle` por ruta, incl. `operario.historial`); `OperarioHomeTest` (rechazo `seleccionarGalpon`: empresa ajena, mantenimiento, inactivo).
+- `.avicore-operario-home-sheet` — lista de registros del día (mismo panel que «Últimas cargas» en Inicio) + bloque «Tu cuenta» con cierre de sesión (complementario al menú del header).
+- Tests HTTP: `OperarioBottomNavTest` (tab activa, icono `calendar` en Historial, empty state, registros del día); `OperarioNavTest` (pestaña activa y `headerTitle` por ruta, incl. `operario.historial`); `OperarioHomeTest` (rechazo `seleccionarGalpon`: empresa ajena, mantenimiento, inactivo); `OperarioUserMenuTest` (menú cuenta en home/cargar/historial, ARIA, perfil, logout).
 
 ## Motion (operario)
 

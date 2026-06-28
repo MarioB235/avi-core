@@ -5,6 +5,10 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-06-28
+
+- **[ui|operario]** Menú cuenta operario (`x-operario.user-menu`): dropdown desde avatar (Perfil + Cerrar sesión), rol con `label()` en nav home; estilos en `operario.css`; `avicore-defer` variant flat en `x-ui.user-avatar`. Logo auth con `entrance` (órbita isotipo en `hero`/`auth-mobile`). Tests `OperarioUserMenuTest`, `PublicLayoutTest`, `LogoComponentTest`. — `user-menu.blade.php`, `header.blade.php`, `logo.blade.php`, `app.css`, `operario.css`, `public.blade.php`, `auth-brand-panel.blade.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`, `tokens-componentes.md`, `motion-y-feedback.md`, `arbol-proyecto.md`, `estandares-codigo.md`
+
 ## 2026-06-26
 
 - **[operario|fix]** Post-auditoría msg 3 (sesión navbar): KPI Objetivo oculto (`avicore-defer`); grilla KPI 2 columnas; icono `calendar` en pestaña Historial; limpieza CSS `[data-current]` en dock; tests `OperarioHomeTest` (seleccionarGalpon negativo), `OperarioNavTest` (historial activa). — `home.blade.php`, `operario.css`, `OperarioNav.php`, `OperarioHomeTest.php`, `OperarioNavTest.php`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`, `reglas.md`, `arbol-proyecto.md`, `estandares-codigo.md`, `tokens-componentes.md`

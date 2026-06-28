@@ -63,6 +63,13 @@ Siempre envolver transform/scale:
 
 Con `reduce`: solo cambios de color, sin scale.
 
+## Logo auth (`entrance`)
+
+- Prop `entrance` en `x-ui.logo` con `size="hero"` o `auth-mobile` + `showName`: isotipo orbita el wordmark y aterriza en posición final (CSS en `app.css`, clases `avicore-logo__orbit-*`).
+- Duración 2200ms, `ease-in-out`; contrarrotación del mark para legibilidad.
+- Solo en pantallas públicas (login / cambio de contraseña); no en header operario (`size="sm"` sin `entrance`).
+- Envolver animaciones en `@media (prefers-reduced-motion: no-preference)` — sin órbita si el usuario pide menos movimiento.
+
 ## Prohibido
 
 - `animate-bounce`, `animate-pulse` decorativo en contenido

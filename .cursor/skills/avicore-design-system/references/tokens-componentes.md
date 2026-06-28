@@ -57,7 +57,8 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `active:scale-[0.98]` / `active:scale-95` | Botones/listas móvil | Dentro de `@media (prefers-reduced-motion: no-preference)` |
 | `md:hover:*` | Admin sidebar, tablas, cards | No en operario como único feedback |
 | `backdrop-blur-md` | `.avicore-operario-tab-bar`, modales | No en fondo global ni cards KPI |
-| Alpine `x-transition` 250–300ms | Drawer admin, modales, bottom sheet operario | Un panel a la vez |
+| Órbita logo auth (`entrance`) | `x-ui.logo` en login (`hero` / `auth-mobile`) | 2200ms ease-in-out; `prefers-reduced-motion` desactiva animación (`app.css`) |
+| Alpine `x-transition` 150–300ms | Drawer admin, modales, bottom sheet operario, menú cuenta operario | Un panel a la vez |
 
 ## Anti-patrones (no implementar)
 
@@ -89,7 +90,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.alert` | `info`, `success`, `warning`, `danger` |
 | `x-ui.snackbar-host` | Toast fijo — fondo sólido suave por variante (`success` = `avicore-soft`, texto oscuro); `context` (`operario` \| `default`), auto-cierre ~4,5s, botón cerrar, evento `snackbar-show`; flash `status` + `status_variant` |
 | `x-ui.badge` | Estados semánticos; variante `sidebar` para badges sobre fondo verde |
-| `x-ui.logo` | Marca — `public/images/brand/logo-avicore.png` + subtítulo opcional; `theme="on-primary"` en sidebar admin (texto blanco, icono sobre fondo blanco); `stacked` + `size="auth-mobile"` en login móvil |
+| `x-ui.logo` | Marca — `public/images/brand/logo-avicore.png` + subtítulo opcional; `entrance` (órbita isotipo en `hero` / `auth-mobile` con `showName`) en auth; `theme="on-primary"` en sidebar admin (texto blanco, icono sobre fondo blanco); `stacked` + `size="auth-mobile"` en login móvil |
 | `x-ui.icon` | SVG inline por nombre (`menu`, `document`, `lock`, `eye`, `circle-x`, `mail`, `message-circle-check`, …) — nav, inputs, acciones; fuente Lucide en `resources/images/icons/` |
 | `x-ui.kpi-card` | Label + valor + hint; prop `icon` opcional; para dashboard e Inicio admin |
 | `x-ui.nav-link` | Sidebar admin — props `icon`, `active`, `disabled` |
@@ -103,7 +104,8 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-operario.home-hero` | Inicio — fondo degradado suave + saludo horario compacto + chip galpón (`home-hero.blade.php`); nav fijo va en layout |
 | `x-operario.cargar-hero` | Hub Cargar — mismo fondo degradado suave que Inicio; header estándar; chip galpón solo lectura |
 | `x-operario.historial-hero` | Historial — mismo hero/header que Inicio; chip galpón solo lectura |
-| `x-operario.header` | Barra operario — variante hero (grilla logo/usuario + divisor ogee inferior; gradiente SVG con tokens `--color-avicore-*`) o contextual (título + chip en tarjeta) |
+| `x-operario.header` | Barra operario — variante hero (grilla logo/usuario + divisor ogee inferior; gradiente SVG con tokens `--color-avicore-*`) o contextual (título + chip en tarjeta); integra `<x-operario.user-menu>` |
+| `x-operario.user-menu` | Menú cuenta operario — dropdown desde avatar (`x-ui.user-avatar`); Perfil (subvista) + Cerrar sesión; ARIA `menu` / `menuitem`; props `size`, `avatarClass` |
 | `x-operario.bottom-nav` | Barra inferior integrada — 3 pestañas (Inicio `home`, Cargar `plus`, Historial `calendar`); ítem activo con círculo verde sobresaliente; datos desde `OperarioNav` |
 
 ## Layouts
