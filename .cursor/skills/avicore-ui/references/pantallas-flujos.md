@@ -36,8 +36,8 @@ Permitir el acceso seguro al sistema.
 
 ### Presentación (MVP implementado)
 
-- Layout público en **split** (≥1024px): panel de marca a la izquierda (`auth-brand-panel`: logo `hero` y copy en columna alineada), tarjeta de login a la derecha.
-- En **móvil** (<1024px): fondo `login-background.jpg` (granja al atardecer), logo apilado centrado sobre la foto y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
+- Layout público en **split** (≥1024px): panel de marca a la izquierda (`auth-brand-panel`: logo `hero` con animación de entrada `entrance` y copy en columna alineada), tarjeta de login a la derecha.
+- En **móvil** (<1024px): fondo `login-background.jpg` (granja al atardecer), logo apilado centrado sobre la foto (`entrance` — órbita del isotipo alrededor del wordmark) y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
 - **Modo demo (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`):** credencial única `000000000` / `Avicore2026!` y selector de perfil; autentica al usuario seedeado del rol elegido (`DemoLoginService`). No visible en producción.
@@ -145,7 +145,7 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 
 ## 5. Pantalla: Vista móvil del operario
 
-**Estado MVP (2026-06-26):** implementado en `/operario` — shell móvil con **barra inferior integrada** (3 pestañas: Inicio · Cargar · Historial; inactivos con círculo soft verde; ítem activo con círculo verde sobresaliente; Historial usa icono `calendar`), **heroes compactos** con degradado suave, CTA «Registrar producción» en hoja, KPIs «Maples hoy / Cargas hoy» (grilla 2 columnas; KPI Objetivo `avicore-defer` hasta regla de meta), últimas cargas con vacío accionable. Header hero fijo: grilla logo/usuario + línea ogee (`avicore-home-nav`). Nav: `OperarioNav`; layout hero: `operarioIsHeroPage` (Inicio + Cargar + Historial).
+**Estado MVP (2026-06-26):** implementado en `/operario` — shell móvil con **barra inferior integrada** (3 pestañas: Inicio · Cargar · Historial; inactivos con círculo soft verde; ítem activo con círculo verde sobresaliente; Historial usa icono `calendar`), **heroes compactos** con degradado suave, CTA «Registrar producción» en hoja, KPIs «Maples hoy / Cargas hoy» (grilla 2 columnas; KPI Objetivo `avicore-defer` hasta regla de meta), últimas cargas con vacío accionable. Header hero fijo: grilla logo/usuario + línea ogee (`avicore-home-nav`); avatar abre **menú cuenta** (`x-operario.user-menu`: dropdown Perfil + Cerrar sesión). Nav: `OperarioNav`; layout hero: `operarioIsHeroPage` (Inicio + Cargar + Historial).
 
 ### Navegación móvil (3 pestañas)
 
@@ -153,9 +153,9 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 |---------|------|-----------|
 | Inicio | `/operario` | Hero compacto, saludo, selector galpón, CTA «Registrar producción», KPIs del día, últimas cargas |
 | Cargar | `/operario/cargar` | Hero degradado + hoja con tipos; formulario huevos en diálogo centrado (`x-ui.dialog` + `wire:model`); deep link `?form=huevos` o `/operario/carga/huevos`; chip galpón solo lectura (vacío → enlace `?abrir_galpon=1` en Inicio) |
-| Historial | `/operario/historial` | Hero degradado (`x-operario.historial-hero`), registros del día (mismo panel que Inicio) + bloque cuenta (cerrar sesión); chip galpón solo lectura |
+| Historial | `/operario/historial` | Hero degradado (`x-operario.historial-hero`), registros del día (mismo panel que Inicio) + bloque cuenta (cerrar sesión); chip galpón solo lectura; menú cuenta en header |
 
-En **Inicio**, el header fijo muestra logo + usuario; el galpón se elige con chip desplegable en el hero («Estado de hoy del galpón.»). La hoja blanca abre con CTA verde a Cargar, KPIs Maples/Cargas (2 columnas) y lista de cargas (vacío con botón «Cargar ahora»). Dock: inactivos con círculo soft; activo elevado con círculo sólido.
+En **Inicio**, el header fijo muestra logo + usuario (rol con `label()`); el avatar abre menú cuenta (perfil y logout). El galpón se elige con chip desplegable en el hero («Estado de hoy del galpón.»). La hoja blanca abre con CTA verde a Cargar, KPIs Maples/Cargas (2 columnas) y lista de cargas (vacío con botón «Cargar ahora»). Dock: inactivos con círculo soft; activo elevado con círculo sólido.
 
 ### Objetivo
 

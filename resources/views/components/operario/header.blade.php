@@ -52,14 +52,13 @@
                                 {{ auth()->user()->name }}
                             </p>
                             <p class="avicore-home-nav__account-role">
-                                Operario
+                                {{ auth()->user()->rol->label() }}
                             </p>
                         </div>
 
-                        <x-ui.user-avatar
-                            :name="auth()->user()->name"
+                        <x-operario.user-menu
                             size="sm"
-                            class="avicore-home-nav__avatar"
+                            avatar-class="avicore-home-nav__avatar shrink-0"
                         />
                     </div>
                 </div>
@@ -85,10 +84,9 @@
                 @endif
             </div>
 
-            <x-ui.user-avatar
-                :name="auth()->user()->name"
+            <x-operario.user-menu
                 size="sm"
-                class="avicore-operario-header__avatar shrink-0"
+                avatar-class="avicore-operario-header__avatar shrink-0"
             />
         @endif
     </div>

@@ -27,6 +27,7 @@
                 subtitle="Gestión operativa avícola"
                 size="auth-mobile"
                 stacked
+                entrance
             />
         </div>
 

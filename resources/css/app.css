@@ -582,6 +582,179 @@
         @apply gap-0.5;
     }
 
+    .avicore-logo--entrance.avicore-logo--stacked {
+        --avicore-logo-orbit-reserve: 5rem;
+        --avicore-logo-orbit-gap: 0.125rem;
+        --avicore-logo-orbit-text-half: 1.625rem;
+        --avicore-logo-orbit-radius: calc(
+            var(--avicore-logo-orbit-reserve) / 2 +
+            var(--avicore-logo-orbit-gap) +
+            var(--avicore-logo-orbit-text-half)
+        );
+    }
+
+    @media (min-width: 640px) {
+        .avicore-logo--entrance.avicore-logo--stacked {
+            --avicore-logo-orbit-reserve: 6rem;
+            --avicore-logo-orbit-text-half: 1.875rem;
+        }
+    }
+
+    .avicore-logo--entrance.avicore-logo--hero {
+        --avicore-logo-orbit-reserve: 6rem;
+        --avicore-logo-orbit-gap: 1rem;
+        --avicore-logo-orbit-text-half: 5.5rem;
+        --avicore-logo-orbit-radius: calc(
+            var(--avicore-logo-orbit-reserve) / 2 +
+            var(--avicore-logo-orbit-gap) +
+            var(--avicore-logo-orbit-text-half)
+        );
+    }
+
+    @media (min-width: 640px) {
+        .avicore-logo--entrance.avicore-logo--hero {
+            --avicore-logo-orbit-reserve: 7rem;
+            --avicore-logo-orbit-gap: 1.25rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .avicore-logo--entrance.avicore-logo--hero {
+            --avicore-logo-orbit-reserve: 9rem;
+            --avicore-logo-orbit-gap: 1.5rem;
+            --avicore-logo-orbit-text-half: 6.5rem;
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .avicore-logo--entrance.avicore-logo--hero {
+            --avicore-logo-orbit-reserve: 10rem;
+        }
+    }
+
+    .avicore-logo__orbit-field--stacked {
+        @apply flex w-full flex-col items-center;
+    }
+
+    .avicore-logo--auth-mobile.avicore-logo--stacked .avicore-logo__orbit-anchor {
+        @apply flex w-full flex-col items-center gap-0.5;
+    }
+
+    .avicore-logo__orbit-field--stacked .avicore-logo__orbit-anchor {
+        @apply inline-flex flex-col items-center gap-0.5;
+    }
+
+    .avicore-logo--auth-mobile.avicore-logo--stacked .avicore-logo__orbit-text-stage {
+        @apply w-full text-center;
+    }
+
+    .avicore-logo__orbit-field--hero {
+        @apply flex items-center;
+    }
+
+    .avicore-logo__orbit-anchor {
+        @apply relative overflow-visible;
+    }
+
+    .avicore-logo__orbit-field--hero .avicore-logo__orbit-anchor {
+        @apply inline-flex items-center gap-4 sm:gap-5 lg:gap-6;
+    }
+
+    .avicore-logo__orbit-text-stage {
+        @apply relative overflow-visible;
+    }
+
+    .avicore-logo__orbit-reserve {
+        @apply pointer-events-none shrink-0;
+    }
+
+    .avicore-logo__orbit-field--stacked .avicore-logo__orbit-reserve {
+        height: var(--avicore-logo-orbit-reserve);
+    }
+
+    .avicore-logo__orbit-field--hero .avicore-logo__orbit-reserve {
+        width: var(--avicore-logo-orbit-reserve);
+    }
+
+    .avicore-logo__orbit-pivot {
+        pointer-events: none;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        overflow: visible;
+        transform: translate(-50%, -50%);
+    }
+
+    .avicore-logo__orbit-spinner {
+        position: relative;
+        width: 0;
+        height: 0;
+        overflow: visible;
+        transform-origin: 0 0;
+    }
+
+    .avicore-logo__mark {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 10;
+        display: block;
+        width: max-content;
+        height: max-content;
+    }
+
+    .avicore-logo--entrance.avicore-logo--stacked .avicore-logo__mark {
+        transform: translate(-50%, calc(-50% - var(--avicore-logo-orbit-radius))) rotate(0deg);
+    }
+
+    .avicore-logo--entrance.avicore-logo--hero .avicore-logo__mark {
+        transform: translate(calc(-50% - var(--avicore-logo-orbit-radius)), -50%) rotate(0deg);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-logo--entrance .avicore-logo__orbit-spinner {
+            animation: avicore-logo-orbit-spin 2200ms ease-in-out both;
+        }
+
+        .avicore-logo--entrance.avicore-logo--stacked .avicore-logo__mark {
+            animation: avicore-logo-orbit-counter-spin-stacked 2200ms ease-in-out both;
+        }
+
+        .avicore-logo--entrance.avicore-logo--hero .avicore-logo__mark {
+            animation: avicore-logo-orbit-counter-spin-hero 2200ms ease-in-out both;
+        }
+    }
+
+    @keyframes avicore-logo-orbit-spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes avicore-logo-orbit-counter-spin-stacked {
+        from {
+            transform: translate(-50%, calc(-50% - var(--avicore-logo-orbit-radius))) rotate(0deg);
+        }
+
+        to {
+            transform: translate(-50%, calc(-50% - var(--avicore-logo-orbit-radius))) rotate(-360deg);
+        }
+    }
+
+    @keyframes avicore-logo-orbit-counter-spin-hero {
+        from {
+            transform: translate(calc(-50% - var(--avicore-logo-orbit-radius)), -50%) rotate(0deg);
+        }
+
+        to {
+            transform: translate(calc(-50% - var(--avicore-logo-orbit-radius)), -50%) rotate(-360deg);
+        }
+    }
+
     .avicore-auth-brand__copy {
         @apply max-w-md pt-6 lg:max-w-lg lg:pt-8;
     }

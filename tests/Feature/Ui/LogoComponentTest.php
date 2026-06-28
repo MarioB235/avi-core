@@ -44,4 +44,24 @@ class LogoComponentTest extends TestCase
         $this->assertStringContainsString('aria-label="AviCore"', $html);
         $this->assertStringNotContainsString('aria-hidden="true"', $html);
     }
+
+    public function test_entrance_hero_variant_renders_orbit_layout(): void
+    {
+        $html = Blade::render('<x-ui.logo size="hero" entrance subtitle="Gestión operativa avícola" />');
+
+        $this->assertStringContainsString('avicore-logo--entrance', $html);
+        $this->assertStringContainsString('avicore-logo__orbit-field--hero', $html);
+        $this->assertStringContainsString('avicore-logo__orbit-spinner', $html);
+        $this->assertStringContainsString('avicore-logo__orbit-text-stage', $html);
+    }
+
+    public function test_entrance_auth_mobile_stacked_variant_renders_orbit_layout(): void
+    {
+        $html = Blade::render('<x-ui.logo size="auth-mobile" stacked entrance subtitle="Gestión operativa avícola" />');
+
+        $this->assertStringContainsString('avicore-logo--entrance', $html);
+        $this->assertStringContainsString('avicore-logo__orbit-field--stacked', $html);
+        $this->assertStringContainsString('avicore-logo__orbit-spinner', $html);
+        $this->assertStringContainsString('avicore-logo__orbit-text-stage', $html);
+    }
 }
