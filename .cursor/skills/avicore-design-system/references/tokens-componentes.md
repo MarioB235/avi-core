@@ -105,7 +105,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-operario.cargar-hero` | Hub Cargar — mismo fondo degradado suave que Inicio; header estándar; chip galpón solo lectura |
 | `x-operario.historial-hero` | Historial — mismo hero/header que Inicio; chip galpón solo lectura |
 | `x-operario.header` | Barra operario — variante hero (grilla logo/usuario + divisor ogee inferior; gradiente SVG con tokens `--color-avicore-*`) o contextual (título + chip en tarjeta); integra `<x-operario.user-menu>` |
-| `x-operario.user-menu` | Menú cuenta operario — dropdown desde avatar (`x-ui.user-avatar`); Perfil (subvista) + Cerrar sesión; ARIA `menu` / `menuitem`; props `size`, `avatarClass` |
+| `x-operario.user-menu` | Menú cuenta operario — dropdown desde avatar (`x-ui.user-avatar` con look operario: primario + borde blanco + iniciales blancas); Perfil (subvista) + Cerrar sesión; ARIA `menu` / `menuitem`; props `size`, `avatarClass` |
 | `x-operario.bottom-nav` | Barra inferior integrada — 3 pestañas (Inicio `home`, Cargar `plus`, Historial `calendar`); ítem activo con círculo verde sobresaliente; datos desde `OperarioNav` |
 
 ## Layouts

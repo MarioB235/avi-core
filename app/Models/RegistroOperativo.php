@@ -73,6 +73,15 @@ class RegistroOperativo extends Model
         return $query->whereDate('created_at', today());
     }
 
+    public function scopeEnFecha(Builder $query, ?string $fecha): Builder
+    {
+        if ($fecha === null || $fecha === '') {
+            return $query;
+        }
+
+        return $query->whereDate('created_at', $fecha);
+    }
+
     public function cantidadResumen(): string
     {
         $formatInt = fn (?int $value): string => number_format((int) $value, 0, ',', '.');
@@ -86,6 +95,15 @@ class RegistroOperativo extends Model
                 $this->muertes ? $formatInt($this->muertes).' muertes' : null,
                 $this->alimento_kg ? number_format((float) $this->alimento_kg, 2, ',', '.').' kg' : null,
             ])->filter()->implode(' · '),
+        };
+    }
+
+    public function esMortalidad(): bool
+    {
+        return match ($this->tipo) {
+            RegistroOperativoTipo::Muertes => true,
+            RegistroOperativoTipo::Combinado => (int) $this->muertes > 0,
+            default => false,
         };
     }
 }

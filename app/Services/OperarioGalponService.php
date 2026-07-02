@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Galpon;
 use App\Models\RegistroOperativo;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
@@ -72,53 +73,20 @@ class OperarioGalponService
     }
 
     /**
-     * @return Collection<int, RegistroOperativo>
+     * Historial del operario: todos los tipos activos, orden cronológico descendente (más reciente primero).
      */
-    public function ultimasCargasDelDia(User $user): Collection
+    public function historialCargasQuery(User $user, ?string $fecha = null): Builder
     {
         if ($user->empresa_id === null) {
-            return new Collection;
+            return RegistroOperativo::query()->whereRaw('1 = 0');
         }
 
         return RegistroOperativo::query()
             ->forEmpresa($user->empresa_id)
             ->where('user_id', $user->id)
             ->activos()
-            ->delDia()
-            ->with('galpon')
-            ->latest('created_at')
-            ->limit(10)
-            ->get();
-    }
-
-    public function cantidadCargasDelDia(User $user): int
-    {
-        if ($user->empresa_id === null) {
-            return 0;
-        }
-
-        return RegistroOperativo::query()
-            ->forEmpresa($user->empresa_id)
-            ->where('user_id', $user->id)
-            ->activos()
-            ->delDia()
-            ->count();
-    }
-
-    public function maplesProducidosHoy(User $user): int
-    {
-        if ($user->empresa_id === null) {
-            return 0;
-        }
-
-        $huevos = RegistroOperativo::query()
-            ->forEmpresa($user->empresa_id)
-            ->where('user_id', $user->id)
-            ->activos()
-            ->delDia()
-            ->sum('huevos');
-
-        return intdiv((int) $huevos, 30);
+            ->enFecha($fecha)
+            ->orderByDesc('created_at');
     }
 
     public function etiquetaGalpon(?Galpon $galpon): string

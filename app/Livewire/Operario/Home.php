@@ -4,6 +4,8 @@ namespace App\Livewire\Operario;
 
 use App\Enums\GalponEstado;
 use App\Models\Galpon;
+use App\Models\Lote;
+use App\Services\OperarioGalponResumenService;
 use App\Services\OperarioGalponService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
@@ -78,22 +80,31 @@ class Home extends Component
         $this->dispatch('snackbar-show', message: 'Galpón actualizado.', variant: 'success');
     }
 
-    public function render(OperarioGalponService $operarioGalponService): View
-    {
+    public function render(
+        OperarioGalponService $operarioGalponService,
+        OperarioGalponResumenService $operarioGalponResumenService,
+    ): View {
         $user = auth()->user();
         $galpon = $operarioGalponService->galponActual($user);
         $hora = now()->hour;
 
         /** @var Collection<int, Galpon> $galpones */
         $galpones = $operarioGalponService->galponesDisponibles($user);
+        $resumen = $galpon !== null ? $operarioGalponResumenService->resumen($galpon) : null;
+
+        /** @var Collection<int, int> $edadSemanasPorLote */
+        $edadSemanasPorLote = $resumen !== null
+            ? $resumen['lotes']->mapWithKeys(
+                fn (Lote $lote): array => [$lote->id => $operarioGalponResumenService->edadSemanas($lote)]
+            )
+            : collect();
 
         return view('livewire.operario.home', [
             'galpon' => $galpon,
             'galpones' => $galpones,
             'galponEtiqueta' => $operarioGalponService->etiquetaGalpon($galpon),
-            'ultimasCargas' => $operarioGalponService->ultimasCargasDelDia($user)->take(3),
-            'cargasCompletadasHoy' => $operarioGalponService->cantidadCargasDelDia($user),
-            'maplesProducidosHoy' => $operarioGalponService->maplesProducidosHoy($user),
+            'resumen' => $resumen,
+            'edadSemanasPorLote' => $edadSemanasPorLote,
             'saludo' => match (true) {
                 $hora < 12 => 'Buenos días',
                 $hora < 19 => 'Buenas tardes',

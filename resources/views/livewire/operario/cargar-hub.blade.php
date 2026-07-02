@@ -26,16 +26,13 @@
                 <button
                     type="button"
                     wire:click="abrirFormularioHuevos"
-                    @class([
-                        'avicore-operario-carga-tile',
-                        'avicore-operario-carga-tile--featured' => $galpon !== null,
-                    ])
+                    class="avicore-operario-carga-tile avicore-operario-carga-tile--action"
                 >
                     <span class="avicore-operario-carga-tile__icon">
                         <x-ui.icon name="egg" class="size-6" />
                     </span>
                     <span class="avicore-operario-carga-tile__label">Huevos</span>
-                    <span class="avicore-operario-carga-tile__hint">Producción del día</span>
+                    <span class="avicore-operario-carga-tile__badge">Producción del día</span>
                 </button>
 
                 <div class="avicore-operario-carga-tile avicore-operario-carga-tile--soon" aria-disabled="true">

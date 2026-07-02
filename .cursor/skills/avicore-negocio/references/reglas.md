@@ -56,9 +56,10 @@
 2. Si hay varios lotes en el galpón, la producción se asigna al galpón completo.
 3. La unidad principal es el huevo.
 4. 1 maple equivale a 30 huevos.
-5. **avicore-defer:** objetivo diario por galpón (KPI «Objetivo» en Inicio operario) — pendiente definir meta y umbral por empresa/galpón.
-6. El cajón es configurable por empresa.
-7. Los reportes del MVP muestran huevos.
+5. **Inicio operario — acumulado:** huevos y muertes acumuladas del galpón seleccionado se calculan desde la `fecha_ingreso` más antigua entre lotes con estado `activo` o `en_produccion` del galpón; registros anteriores a esa ventana no cuentan. Sin lotes activos, no hay ventana de acumulado.
+6. **avicore-defer:** objetivo diario por galpón (KPI «Objetivo» en Inicio operario) — pendiente definir meta y umbral por empresa/galpón.
+7. El cajón es configurable por empresa.
+8. Los reportes del MVP muestran huevos.
 
 ---
 

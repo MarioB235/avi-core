@@ -21,21 +21,81 @@ class OperarioGalponServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_maples_producidos_hoy_divides_total_eggs_by_thirty(): void
+    public function test_historial_cargas_query_scopes_by_user_and_company(): void
     {
         [$operario, $galpon] = $this->createOperarioConGalpon();
+
+        $propio = RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 900,
+            ]);
+
+        $otroOperario = User::factory()->create([
+            'empresa_id' => $operario->empresa_id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+        ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $otroOperario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 300,
+            ]);
+
+        $otraEmpresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $otraGranja = Granja::factory()->create(['empresa_id' => $otraEmpresa->id]);
+        $galponAjeno = Galpon::factory()->forGranja($otraGranja)->create();
+        $operarioAjeno = User::factory()->create([
+            'empresa_id' => $otraEmpresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+        ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galponAjeno, $operarioAjeno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 1200,
+            ]);
+
+        $registros = app(OperarioGalponService::class)
+            ->historialCargasQuery($operario)
+            ->get();
+
+        $this->assertCount(1, $registros);
+        $this->assertTrue($registros->contains('id', $propio->id));
+    }
+
+    public function test_historial_cargas_query_filters_by_fecha(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+        $ayer = now()->subDay()->toDateString();
 
         RegistroOperativo::factory()
             ->forGalponAndUser($galpon, $operario)
             ->create([
                 'tipo' => RegistroOperativoTipo::Huevos,
-                'huevos' => 1500,
+                'huevos' => 500,
+                'created_at' => now()->subDay()->setTime(8, 0),
             ]);
 
-        $this->assertSame(
-            50,
-            app(OperarioGalponService::class)->maplesProducidosHoy($operario)
-        );
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 700,
+                'created_at' => now()->setTime(10, 0),
+            ]);
+
+        $registros = app(OperarioGalponService::class)
+            ->historialCargasQuery($operario, $ayer)
+            ->get();
+
+        $this->assertCount(1, $registros);
+        $this->assertSame(500, $registros->first()->huevos);
     }
 
     public function test_galpon_actual_returns_null_for_galpon_from_other_company(): void
@@ -135,36 +195,6 @@ class OperarioGalponServiceTest extends TestCase
         $this->assertCount(1, $galpones);
         $this->assertTrue($galpones->contains('id', $galpon->id));
         $this->assertFalse($galpones->contains('nombre', 'Galpón ajeno'));
-    }
-
-    public function test_ultimas_cargas_del_dia_scopes_by_user_and_company(): void
-    {
-        [$operario, $galpon] = $this->createOperarioConGalpon();
-
-        RegistroOperativo::factory()
-            ->forGalponAndUser($galpon, $operario)
-            ->create([
-                'tipo' => RegistroOperativoTipo::Huevos,
-                'huevos' => 900,
-            ]);
-
-        $otroOperario = User::factory()->create([
-            'empresa_id' => $operario->empresa_id,
-            'rol' => UserRole::Operario,
-            'must_change_password' => false,
-        ]);
-
-        RegistroOperativo::factory()
-            ->forGalponAndUser($galpon, $otroOperario)
-            ->create([
-                'tipo' => RegistroOperativoTipo::Huevos,
-                'huevos' => 300,
-            ]);
-
-        $cargas = app(OperarioGalponService::class)->ultimasCargasDelDia($operario);
-
-        $this->assertCount(1, $cargas);
-        $this->assertSame(900, $cargas->first()->huevos);
     }
 
     /**
