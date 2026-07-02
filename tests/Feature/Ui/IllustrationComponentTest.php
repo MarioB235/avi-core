@@ -17,6 +17,7 @@ class IllustrationComponentTest extends TestCase
             'operario-ave' => ['operario-ave', ['viewBox="0 0 500 500"', 'fill="#0A592B"']],
             'operario-huevo' => ['operario-huevo', ['viewBox="0 0 500 500"', 'fill="#085F2F"']],
             'operario-reloj' => ['operario-reloj', ['viewBox="0 0 500 500"', 'fill="#095F2F"']],
+            'operario-vacuna' => ['operario-vacuna', ['viewBox="0 0 500 500"', 'fill="#0F623A"']],
         ];
     }
 

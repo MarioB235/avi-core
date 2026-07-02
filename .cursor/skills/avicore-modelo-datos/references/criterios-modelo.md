@@ -29,6 +29,7 @@ Detalle de columnas en [`esquema-bd.md`](esquema-bd.md).
 | **users** | Login por documento; único por `(empresa_id, documento)`; documento único global si `empresa_id` null (Admin AviCore); contraseña temporal obliga cambio |
 | **granjas / galpones / lotes** | Jerarquía empresa → granja → galpón → lote; carga por galpón |
 | **registros_operativos** | Fecha/hora = `created_at`; anulación lógica con motivo |
+| **vacunaciones** | Registro por lote y tipo de vacuna; tabla separada de `registros_operativos`; historial operario las fusiona con cargas |
 | **movimientos_aves** | *Planificado* — traslados, ajustes, cierres; ver `avicore-contexto/references/plan-desarrollo.md` |
 | **auditorias** | *Planificado* — acciones críticas; ver `avicore-contexto/references/plan-desarrollo.md` |
 | **alertas** | *Planificado* — dashboard y supervisión; ver `avicore-contexto/references/plan-desarrollo.md` |

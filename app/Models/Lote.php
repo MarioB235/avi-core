@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'empresa_id',
@@ -45,5 +46,10 @@ class Lote extends Model
     public function galpon(): BelongsTo
     {
         return $this->belongsTo(Galpon::class);
+    }
+
+    public function vacunaciones(): HasMany
+    {
+        return $this->hasMany(Vacunacion::class);
     }
 }

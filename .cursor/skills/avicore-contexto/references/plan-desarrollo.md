@@ -192,7 +192,8 @@ Solo nombres de bloque; el DDL vive en `avicore-modelo-datos/references/esquema-
 | Movimientos de aves | `movimientos_aves` | Traslados, ajustes, cierres |
 | Anulación y auditoría (fase 16) | `auditorias` | Acciones críticas |
 | Dashboard (fase 17) | `alertas` | Supervisión |
-| Sanidad / vacunas | `vacunaciones` o módulo `Sanidad/` | **Post-MVP** — plan sanitario; no en hub Cargar operario |
+| Sanidad / vacunas (plan completo) | módulo `Sanidad/` o calendario sanitario | **Post-MVP** — stock, calendario y reportes sanitarios |
+| Vacunación operario (registro por lote) | `vacunaciones` | **Hecho MVP (2026-07-02)** — hub Cargar + `RegistrarVacunacionAction`; ver `esquema-bd.md` y `pantallas-flujos.md` §8.5 |
 | Multiempresa / config (fase 6–7) | `configuraciones_empresa` | Maple, logos, módulos |
 | Dashboard | `Livewire/Dashboard/`, `DashboardService` | Tarjetas, KPIs |
 | Reportes (fase 19) | `Livewire/Reportes/`, `ReporteService` | PDF/Excel |

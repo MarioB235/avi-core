@@ -166,6 +166,40 @@
         @apply pl-3;
     }
 
+    .avicore-select {
+        @apply min-h-11 rounded-lg border bg-avicore-card py-2.5 pl-3 pr-10 text-sm text-avicore-text outline-none transition-colors disabled:cursor-not-allowed disabled:bg-gray-50 disabled:opacity-70;
+    }
+
+    .avicore-select-field {
+        @apply relative;
+    }
+
+    .avicore-select-trigger {
+        @apply min-h-11 rounded-lg border bg-avicore-card px-3 py-2.5 text-sm outline-none transition-colors focus-visible:border-avicore-primary;
+    }
+
+    .avicore-select-panel {
+        @apply absolute inset-x-0 top-full z-50 mt-1.5 overflow-hidden rounded-xl border border-avicore-border-strong bg-avicore-card shadow-[0_12px_32px_rgba(15,23,42,0.14)] ring-1 ring-avicore-primary/10;
+    }
+
+    .avicore-select-list {
+        @apply max-h-56 overflow-y-auto p-1;
+    }
+
+    .avicore-select-option {
+        @apply flex min-h-11 w-full items-center rounded-lg px-3 py-2.5 text-left text-sm text-avicore-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-select-option {
+            @apply transition-colors duration-150 ease-out active:scale-[0.98];
+        }
+    }
+
+    .avicore-select-option--active {
+        @apply bg-avicore-primary/8 font-medium text-avicore-text ring-1 ring-avicore-primary/12;
+    }
+
     .avicore-page-title {
         @apply text-xl font-semibold tracking-tight text-avicore-text sm:text-2xl;
     }
