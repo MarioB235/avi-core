@@ -4,13 +4,17 @@ namespace Tests\Feature\Services;
 
 use App\Enums\EmpresaEstado;
 use App\Enums\GalponEstado;
+use App\Enums\LoteEstado;
 use App\Enums\RegistroOperativoTipo;
 use App\Enums\UserRole;
+use App\Enums\VacunaTipo;
 use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
+use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\User;
+use App\Models\Vacunacion;
 use App\Services\OperarioGalponService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -96,6 +100,105 @@ class OperarioGalponServiceTest extends TestCase
 
         $this->assertCount(1, $registros);
         $this->assertSame(500, $registros->first()->huevos);
+    }
+
+    public function test_historial_paginado_merges_vacunaciones_newest_first(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+        $lote = Lote::factory()->forGalpon($galpon)->create([
+            'codigo' => 'L-VAC',
+            'estado' => LoteEstado::EnProduccion,
+        ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 900,
+                'created_at' => now()->subHour(),
+            ]);
+
+        Vacunacion::factory()
+            ->forLote($lote, $operario)
+            ->create([
+                'vacuna' => VacunaTipo::Gumboro,
+                'created_at' => now(),
+            ]);
+
+        $items = app(OperarioGalponService::class)
+            ->historialPaginado($operario)
+            ->items();
+
+        $this->assertCount(2, $items);
+        $this->assertTrue($items[0]->esVacunacion);
+        $this->assertStringContainsString('Gumboro', $items[0]->label);
+        $this->assertFalse($items[1]->esVacunacion);
+        $this->assertStringContainsString('900 huevos', $items[1]->label);
+    }
+
+    public function test_historial_paginado_filters_vacunaciones_by_fecha(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+        $lote = Lote::factory()->forGalpon($galpon)->create([
+            'estado' => LoteEstado::EnProduccion,
+        ]);
+        $ayer = now()->subDay()->toDateString();
+
+        Vacunacion::factory()
+            ->forLote($lote, $operario)
+            ->create([
+                'vacuna' => VacunaTipo::Newcastle,
+                'created_at' => now()->subDay()->setTime(9, 0),
+            ]);
+
+        Vacunacion::factory()
+            ->forLote($lote, $operario)
+            ->create([
+                'vacuna' => VacunaTipo::Pox,
+                'created_at' => now()->setTime(11, 0),
+            ]);
+
+        $items = app(OperarioGalponService::class)
+            ->historialPaginado($operario, $ayer)
+            ->items();
+
+        $this->assertCount(1, $items);
+        $this->assertStringContainsString('Newcastle', $items[0]->label);
+    }
+
+    public function test_historial_paginado_excludes_vacunaciones_from_other_company(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+        $lote = Lote::factory()->forGalpon($galpon)->create([
+            'estado' => LoteEstado::EnProduccion,
+        ]);
+
+        Vacunacion::factory()
+            ->forLote($lote, $operario)
+            ->create(['vacuna' => VacunaTipo::Bronquitis]);
+
+        $otraEmpresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $otraGranja = Granja::factory()->create(['empresa_id' => $otraEmpresa->id]);
+        $galponAjeno = Galpon::factory()->forGranja($otraGranja)->create();
+        $operarioAjeno = User::factory()->create([
+            'empresa_id' => $otraEmpresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+        ]);
+        $loteAjeno = Lote::factory()->forGalpon($galponAjeno)->create([
+            'estado' => LoteEstado::EnProduccion,
+        ]);
+
+        Vacunacion::factory()
+            ->forLote($loteAjeno, $operarioAjeno)
+            ->create(['vacuna' => VacunaTipo::Pox]);
+
+        $items = app(OperarioGalponService::class)
+            ->historialPaginado($operario)
+            ->items();
+
+        $this->assertCount(1, $items);
+        $this->assertStringContainsString('Bronquitis', $items[0]->label);
     }
 
     public function test_galpon_actual_returns_null_for_galpon_from_other_company(): void

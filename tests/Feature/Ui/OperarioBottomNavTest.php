@@ -3,11 +3,13 @@
 namespace Tests\Feature\Ui;
 
 use App\Enums\EmpresaEstado;
+use App\Enums\LoteEstado;
 use App\Enums\RegistroOperativoTipo;
 use App\Enums\UserRole;
 use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
+use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -82,7 +84,7 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee('avicore-operario-home-hero__galpon--empty', false)
             ->assertSee('Sin seleccionar · Elegí en Inicio', false)
             ->assertSee('abrir_galpon=1', false)
-            ->assertSee('Cuando cargues huevos o muertes, van a aparecer acá.', false)
+            ->assertSee('Cuando cargues huevos, muertes o vacunaciones, van a aparecer acá.', false)
             ->assertSee('viewBox="0 0 500 500"', false)
             ->assertSee('fill="#095F2F"', false)
             ->assertDontSee('wire:transition="operario-chrome"', false);
@@ -187,6 +189,34 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee('avicore-dialog', false)
             ->assertSee('¿Cuántos huevos?', false)
             ->assertSee('wire:click="abrirFormularioHuevos"', false)
+            ->assertDontSee('wire:transition="operario-chrome"', false);
+    }
+
+    public function test_carga_vacunacion_highlights_cargar_tab_and_opens_dialog_from_deep_link(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create();
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => $galpon->id,
+        ]);
+
+        Lote::factory()->forGalpon($galpon)->create([
+            'estado' => LoteEstado::EnProduccion,
+        ]);
+
+        $this->actingAs($operario)
+            ->get(route('operario.cargar', ['form' => 'vacunacion']))
+            ->assertOk()
+            ->assertSee('avicore-operario-tab-bar__item--active', false)
+            ->assertSee('avicore-dialog', false)
+            ->assertSee('Vacunación de hoy', false)
+            ->assertSee('¿Qué lote vacunaste?', false)
+            ->assertSee('wire:click="abrirFormularioVacunacion"', false)
             ->assertDontSee('wire:transition="operario-chrome"', false);
     }
 

@@ -4,9 +4,15 @@ namespace App\Livewire\Operario;
 
 use App\Actions\Operacion\RegistrarCargaHuevosAction;
 use App\Actions\Operacion\RegistrarCargaMuertesAction;
+use App\Actions\Operacion\RegistrarVacunacionAction;
+use App\Enums\VacunaTipo;
 use App\Models\Galpon;
+use App\Models\Lote;
+use App\Services\OperarioGalponResumenService;
 use App\Services\OperarioGalponService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -19,15 +25,23 @@ class CargarHub extends Component
 
     public bool $dialogMuertesAbierto = false;
 
+    public bool $dialogVacunacionAbierto = false;
+
     public string $huevos = '';
 
     public string $muertes = '';
 
-    public function mount(OperarioGalponService $operarioGalponService): void
-    {
+    public string $loteId = '';
+
+    public string $vacuna = '';
+
+    public function mount(
+        OperarioGalponService $operarioGalponService,
+        OperarioGalponResumenService $operarioGalponResumenService,
+    ): void {
         $form = request()->query('form');
 
-        if (! in_array($form, ['huevos', 'muertes'], true)) {
+        if (! in_array($form, ['huevos', 'muertes', 'vacunacion'], true)) {
             return;
         }
 
@@ -42,8 +56,15 @@ class CargarHub extends Component
             return;
         }
 
-        $this->resetFormularioMuertes();
-        $this->dialogMuertesAbierto = true;
+        if ($form === 'muertes') {
+            $this->resetFormularioMuertes();
+            $this->dialogMuertesAbierto = true;
+
+            return;
+        }
+
+        $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService);
+        $this->dialogVacunacionAbierto = true;
     }
 
     public function abrirFormularioHuevos(OperarioGalponService $operarioGalponService): void
@@ -77,6 +98,28 @@ class CargarHub extends Component
     {
         if (! $abierto) {
             $this->resetFormularioMuertes();
+        }
+    }
+
+    public function abrirFormularioVacunacion(
+        OperarioGalponService $operarioGalponService,
+        OperarioGalponResumenService $operarioGalponResumenService,
+    ): void {
+        if (! $this->ensureGalponSeleccionado($operarioGalponService)) {
+            return;
+        }
+
+        $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService);
+        $this->dialogVacunacionAbierto = true;
+    }
+
+    public function updatedDialogVacunacionAbierto(
+        bool $abierto,
+        OperarioGalponService $operarioGalponService,
+        OperarioGalponResumenService $operarioGalponResumenService,
+    ): void {
+        if (! $abierto) {
+            $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService);
         }
     }
 
@@ -138,14 +181,66 @@ class CargarHub extends Component
         $this->dispatch('snackbar-show', message: 'Muertes guardadas.', variant: 'success');
     }
 
-    public function render(OperarioGalponService $operarioGalponService): View
-    {
+    public function guardarVacunacion(
+        RegistrarVacunacionAction $registrarVacunacion,
+        OperarioGalponService $operarioGalponService,
+        OperarioGalponResumenService $operarioGalponResumenService,
+    ): void {
+        $validated = $this->validate([
+            'loteId' => ['required', 'integer', 'min:1'],
+            'vacuna' => ['required', Rule::enum(VacunaTipo::class)],
+        ], [
+            'loteId.required' => 'Elegí el lote a vacunar.',
+            'vacuna.required' => 'Elegí la vacuna aplicada.',
+        ]);
+
+        $galpon = $this->resolveGalponParaGuardar($operarioGalponService, 'dialogVacunacionAbierto');
+
+        if ($galpon === null) {
+            return;
+        }
+
+        $lote = Lote::query()
+            ->forEmpresa((int) auth()->user()->empresa_id)
+            ->whereKey((int) $validated['loteId'])
+            ->first();
+
+        if ($lote === null) {
+            $this->addError('loteId', 'El lote seleccionado no es válido.');
+
+            return;
+        }
+
+        $registrarVacunacion->execute(
+            auth()->user(),
+            $galpon,
+            $lote,
+            VacunaTipo::from($validated['vacuna']),
+            null,
+        );
+
+        $this->dialogVacunacionAbierto = false;
+        $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService);
+        $this->dispatch('snackbar-show', message: 'Vacunación guardada.', variant: 'success');
+    }
+
+    public function render(
+        OperarioGalponService $operarioGalponService,
+        OperarioGalponResumenService $operarioGalponResumenService,
+    ): View {
         $user = auth()->user();
         $galpon = $operarioGalponService->galponActual($user);
+
+        /** @var Collection<int, Lote> $lotesActivos */
+        $lotesActivos = $galpon !== null
+            ? $operarioGalponResumenService->lotesActivos($galpon)
+            : new Collection;
 
         return view('livewire.operario.cargar-hub', [
             'galpon' => $galpon,
             'galponEtiqueta' => $operarioGalponService->etiquetaGalpon($galpon),
+            'lotesActivos' => $lotesActivos,
+            'vacunas' => VacunaTipo::options(),
         ]);
     }
 
@@ -185,6 +280,26 @@ class CargarHub extends Component
     private function resetFormularioMuertes(): void
     {
         $this->reset(['muertes']);
+        $this->resetValidation();
+    }
+
+    private function resetFormularioVacunacion(
+        OperarioGalponService $operarioGalponService,
+        OperarioGalponResumenService $operarioGalponResumenService,
+    ): void {
+        $galpon = $operarioGalponService->galponActual(auth()->user());
+        $loteId = '';
+
+        if ($galpon !== null) {
+            $lotes = $operarioGalponResumenService->lotesActivos($galpon);
+
+            if ($lotes->count() === 1) {
+                $loteId = (string) $lotes->first()->id;
+            }
+        }
+
+        $this->reset(['vacuna']);
+        $this->loteId = $loteId;
         $this->resetValidation();
     }
 

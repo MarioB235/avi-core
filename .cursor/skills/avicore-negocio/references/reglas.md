@@ -73,6 +73,19 @@
 
 ---
 
+## 6.5 Vacunación (operario MVP)
+
+1. La vacunación se registra **por lote** en el galpón de trabajo del operario.
+2. Tipos MVP (`VacunaTipo`): Newcastle, Bronquitis, Gumboro, Encefalomielitis, Pox — catálogo fijo en enum.
+3. Solo lotes con estado `activo` o `en_produccion` del galpón seleccionado.
+4. El lote debe pertenecer al galpón y a la misma `empresa_id` del usuario.
+5. Mismo criterio de permisos y galpón disponible que huevos/muertes: `GalponPolicy::view` vía `RegistrarVacunacionAction`.
+6. Persistencia en tabla `vacunaciones` (no en `registros_operativos`).
+7. Historial operario incluye vacunaciones activas del usuario, mezcladas con `registros_operativos` por `created_at` descendente (`OperarioHistorialItem`).
+8. **avicore-defer:** plan sanitario completo (calendario, dosis, stock vacunas) — fuera del hub operario; ver `plan-desarrollo.md`.
+
+---
+
 ## 7. Alimento
 
 1. El MVP no maneja stock de alimento.

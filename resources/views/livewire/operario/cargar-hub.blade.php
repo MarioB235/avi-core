@@ -22,7 +22,7 @@
                 </div>
             @endunless
 
-            <div class="avicore-operario-carga-grid avicore-operario-carga-grid--pair">
+            <div class="avicore-operario-carga-grid avicore-operario-carga-grid--triple">
                 <button
                     type="button"
                     wire:click="abrirFormularioHuevos"
@@ -46,6 +46,18 @@
                     <span class="avicore-operario-carga-tile__label">Muertes</span>
                     <span class="avicore-operario-carga-tile__badge">Cuántas aves murieron</span>
                 </button>
+
+                <button
+                    type="button"
+                    wire:click="abrirFormularioVacunacion"
+                    class="avicore-operario-carga-tile avicore-operario-carga-tile--action avicore-operario-carga-tile--wide"
+                >
+                    <span class="avicore-operario-carga-tile__icon">
+                        <x-ui.illustration name="operario-vacuna" />
+                    </span>
+                    <span class="avicore-operario-carga-tile__label">Vacunación</span>
+                    <span class="avicore-operario-carga-tile__badge">Registrá por lote</span>
+                </button>
             </div>
         </section>
     </div>
@@ -57,6 +69,13 @@
 
         <x-ui.dialog wire:model="dialogMuertesAbierto" title="Muertes de hoy">
             @include('livewire.operario.partials.carga-muertes-form')
+        </x-ui.dialog>
+
+        <x-ui.dialog wire:model="dialogVacunacionAbierto" title="Vacunación de hoy">
+            @include('livewire.operario.partials.carga-vacunacion-form', [
+                'lotesActivos' => $lotesActivos,
+                'vacunas' => $vacunas,
+            ])
         </x-ui.dialog>
     @endif
 </div>

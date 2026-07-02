@@ -67,7 +67,7 @@
                             @if ($fecha)
                                 No hay registros para esta fecha.
                             @else
-                                Cuando cargues huevos o muertes, van a aparecer acá.
+                                Cuando cargues huevos, muertes o vacunaciones, van a aparecer acá.
                             @endif
                         </p>
                     </div>
@@ -75,15 +75,16 @@
                     <ul class="avicore-operario-historial-list">
                         @foreach ($registros as $carga)
                             <li
-                                wire:key="historial-registro-{{ $carga->id }}"
+                                wire:key="historial-{{ $carga->key }}"
                                 @class([
                                     'avicore-operario-historial-list__item',
-                                    'avicore-operario-historial-list__item--muertes' => $carga->esMortalidad(),
+                                    'avicore-operario-historial-list__item--muertes' => $carga->esMortalidad,
+                                    'avicore-operario-historial-list__item--vacunacion' => $carga->esVacunacion,
                                 ])
                             >
                                 <div class="avicore-operario-historial-list__copy min-w-0 flex-1">
                                     <p class="avicore-operario-historial-list__label">
-                                        {{ $carga->cantidadResumen() }}
+                                        {{ $carga->label }}
                                     </p>
                                     @if ($carga->observacion)
                                         <p class="avicore-operario-historial-list__note">
@@ -93,12 +94,12 @@
                                 </div>
                                 <time
                                     class="avicore-operario-historial-list__time"
-                                    datetime="{{ $carga->created_at->toIso8601String() }}"
+                                    datetime="{{ $carga->createdAt->toIso8601String() }}"
                                 >
                                     @if ($fecha)
-                                        {{ $carga->created_at->format('H:i') }}
+                                        {{ $carga->createdAt->format('H:i') }}
                                     @else
-                                        {{ $carga->created_at->format('d/m H:i') }}
+                                        {{ $carga->createdAt->format('d/m H:i') }}
                                     @endif
                                 </time>
                             </li>

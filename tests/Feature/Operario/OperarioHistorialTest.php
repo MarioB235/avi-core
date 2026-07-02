@@ -3,14 +3,18 @@
 namespace Tests\Feature\Operario;
 
 use App\Enums\EmpresaEstado;
+use App\Enums\LoteEstado;
 use App\Enums\RegistroOperativoTipo;
 use App\Enums\UserRole;
+use App\Enums\VacunaTipo;
 use App\Livewire\Operario\Historial;
 use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
+use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\User;
+use App\Models\Vacunacion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -49,6 +53,38 @@ class OperarioHistorialTest extends TestCase
             ->assertDontSee('Huevos ·', false)
             ->assertDontSee('Muertes ·', false)
             ->assertSeeInOrder(['3 muertes', '900 huevos'], false);
+    }
+
+    public function test_historial_lists_vacunaciones_mixed_with_registros_newest_first(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+        $lote = Lote::factory()->forGalpon($galpon)->create([
+            'codigo' => 'L-VAC',
+            'estado' => LoteEstado::EnProduccion,
+        ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 600,
+                'created_at' => now()->subMinutes(30),
+            ]);
+
+        Vacunacion::factory()
+            ->forLote($lote, $operario)
+            ->create([
+                'vacuna' => VacunaTipo::Gumboro,
+                'created_at' => now(),
+            ]);
+
+        Livewire::actingAs($operario)
+            ->test(Historial::class)
+            ->assertSee('Gumboro', false)
+            ->assertSee('L-VAC', false)
+            ->assertSee('600 huevos', false)
+            ->assertSee('avicore-operario-historial-list__item--vacunacion', false)
+            ->assertSeeInOrder(['Gumboro', '600 huevos'], false);
     }
 
     public function test_historial_filters_by_selected_date(): void
