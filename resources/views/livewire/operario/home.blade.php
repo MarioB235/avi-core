@@ -27,75 +27,89 @@
             </section>
         @else
             <section class="avicore-operario-home-summary" aria-label="Estado del galpón">
-                <div class="avicore-operario-kpi-grid">
-                    <article class="avicore-operario-kpi-card avicore-operario-kpi-card--featured">
-                        <span class="avicore-operario-kpi-card__icon-shell">
-                            <x-ui.icon name="users" class="size-5" />
-                        </span>
-                        <p class="avicore-operario-kpi-card__value">
-                            {{ number_format($resumen['aves_actuales'], 0, ',', '.') }}
-                        </p>
-                        <p class="avicore-operario-kpi-card__label">Aves actuales</p>
-                    </article>
-
-                    <article class="avicore-operario-kpi-card">
-                        <span class="avicore-operario-kpi-card__icon-shell">
-                            <x-ui.icon name="egg" class="size-5" />
-                        </span>
-                        <p class="avicore-operario-kpi-card__value">
-                            {{ number_format($resumen['huevos_hoy'], 0, ',', '.') }}
-                        </p>
-                        <p class="avicore-operario-kpi-card__label">
-                            Huevos hoy
-                            <span class="avicore-operario-kpi-card__hint">
-                                ({{ number_format($resumen['maples_hoy'], 0, ',', '.') }} maples)
+                <div class="avicore-operario-kpi-grid avicore-operario-kpi-grid--duo">
+                    <article class="avicore-operario-kpi-panel avicore-operario-kpi-panel--aves">
+                        <header class="avicore-operario-kpi-panel__head">
+                            <span class="avicore-operario-carga-tile__icon" aria-hidden="true">
+                                <x-ui.illustration name="operario-ave" />
                             </span>
-                        </p>
+                            <h3 class="avicore-operario-kpi-panel__title">Aves</h3>
+                        </header>
+
+                        <div class="avicore-operario-kpi-panel__metrics">
+                            <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--alive">
+                                <p class="avicore-operario-kpi-panel__value">
+                                    {{ number_format($resumen['aves_actuales'], 0, ',', '.') }}
+                                </p>
+                                <p class="avicore-operario-kpi-panel__label">En el galpón ahora</p>
+                            </div>
+
+                            <div @class([
+                                'avicore-operario-kpi-panel__metric',
+                                'avicore-operario-kpi-panel__metric--warm',
+                                'avicore-operario-kpi-panel__metric--warm-alert' => $resumen['muertes_hoy'] > 0,
+                            ])>
+                                <p class="avicore-operario-kpi-panel__value">
+                                    {{ number_format($resumen['muertes_hoy'], 0, ',', '.') }}
+                                </p>
+                                <p class="avicore-operario-kpi-panel__label">Murieron hoy</p>
+                            </div>
+                        </div>
+
+                        @if ($resumen['muertes_acumuladas'] > 0)
+                            <p class="avicore-operario-kpi-panel__note">
+                                <span class="avicore-operario-kpi-panel__note-dot" aria-hidden="true"></span>
+                                {{ number_format($resumen['muertes_acumuladas'], 0, ',', '.') }} muertes en total desde el ingreso.
+                            </p>
+                        @endif
                     </article>
 
-                    <article @class([
-                        'avicore-operario-kpi-card',
-                        'avicore-operario-kpi-card--danger' => $resumen['muertes_hoy'] > 0,
-                    ])>
-                        <span class="avicore-operario-kpi-card__icon-shell">
-                            <x-ui.icon name="bell" class="size-5" />
-                        </span>
-                        <p class="avicore-operario-kpi-card__value">
-                            {{ number_format($resumen['muertes_hoy'], 0, ',', '.') }}
-                        </p>
-                        <p class="avicore-operario-kpi-card__label">Muertes hoy</p>
-                    </article>
+                    <article class="avicore-operario-kpi-panel avicore-operario-kpi-panel--huevos">
+                        <header class="avicore-operario-kpi-panel__head">
+                            <span class="avicore-operario-carga-tile__icon" aria-hidden="true">
+                                <x-ui.illustration name="operario-huevo" />
+                            </span>
+                            <h3 class="avicore-operario-kpi-panel__title">Huevos</h3>
+                        </header>
 
-                    <article class="avicore-operario-kpi-card">
-                        <span class="avicore-operario-kpi-card__icon-shell">
-                            <x-ui.icon name="clipboard-list" class="size-5" />
-                        </span>
-                        <p class="avicore-operario-kpi-card__value">
-                            {{ number_format($resumen['huevos_acumulados'], 0, ',', '.') }}
-                        </p>
-                        <p class="avicore-operario-kpi-card__label">
-                            Producción acumulada
-                            <span class="avicore-operario-kpi-card__hint">desde ingreso del lote</span>
-                        </p>
+                        <div class="avicore-operario-kpi-panel__metrics">
+                            <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--outline">
+                                <p class="avicore-operario-kpi-panel__value">
+                                    {{ number_format($resumen['huevos_hoy'], 0, ',', '.') }}
+                                </p>
+                                <p class="avicore-operario-kpi-panel__label">
+                                    Juntados hoy
+                                    <span class="avicore-operario-kpi-panel__hint">
+                                        ({{ number_format($resumen['maples_hoy'], 0, ',', '.') }} maples)
+                                    </span>
+                                </p>
+                            </div>
+
+                            <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--outline">
+                                <p class="avicore-operario-kpi-panel__value">
+                                    {{ number_format($resumen['huevos_acumulados'], 0, ',', '.') }}
+                                </p>
+                                <p class="avicore-operario-kpi-panel__label">
+                                    Total del lote
+                                    <span class="avicore-operario-kpi-panel__hint">
+                                        ({{ number_format($resumen['maples_acumulados'], 0, ',', '.') }} maples)
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
                     </article>
                 </div>
-
-                @if ($resumen['muertes_acumuladas'] > 0)
-                    <p class="avicore-operario-home-summary__footnote avicore-operario-home-summary__footnote--danger">
-                        {{ number_format($resumen['muertes_acumuladas'], 0, ',', '.') }} muertes acumuladas desde ingreso del lote.
-                    </p>
-                @endif
             </section>
 
             <section class="avicore-operario-home-lotes" aria-label="Lotes en galpón">
                 <div class="avicore-operario-home-section__head">
                     <p class="avicore-operario-home-section__eyebrow">Lotes</p>
-                    <h2 class="avicore-operario-home-section__title">En producción</h2>
+                    <h2 class="avicore-operario-home-section__title">Activos en este galpón</h2>
                 </div>
 
                 @if ($resumen['multiples_lotes'])
                     <p class="avicore-operario-home-lotes__notice">
-                        Este galpón tiene más de un lote activo. La producción se asigna al galpón completo.
+                        Hay más de un lote. Los números se cuentan para todo el galpón junto.
                     </p>
                 @endif
 
@@ -110,8 +124,9 @@
                                 <div class="avicore-operario-home-lotes__copy min-w-0 flex-1">
                                     <p class="avicore-operario-home-lotes__code">{{ $lote->codigo }}</p>
                                     <p class="avicore-operario-home-lotes__meta">
-                                        {{ $edadSemanasPorLote[$lote->id] ?? 0 }} semanas
-                                        · {{ number_format($lote->cantidad_inicial, 0, ',', '.') }} inicio
+                                        {{ number_format($lote->cantidad_inicial, 0, ',', '.') }} aves
+                                        · desde el {{ $lote->fecha_ingreso->format('d/m/Y') }}
+                                        · {{ $edadSemanasPorLote[$lote->id] ?? 0 }} semanas
                                     </p>
                                 </div>
                                 <span class="avicore-operario-home-lotes__badge">

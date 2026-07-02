@@ -170,7 +170,7 @@ Permitir carga rápida desde celular.
 
 **Inicio:** saludo, chip galpón (selector), KPIs del galpón (aves, huevos/muertes hoy, acumulado), lista de lotes activos.
 
-**Cargar:** tipos de carga (Huevos activo; Muertes/Alimento/Combinada próximamente), alerta sin galpón, diálogo huevos.
+**Cargar:** solo Huevos y Muertes (2 tiles grandes); sin alimento ni combinada en móvil operario. Preguntas directas en diálogo.
 
 **Historial:** listado completo del operario, filtro por fecha, paginación.
 
@@ -231,17 +231,35 @@ Permitir elegir galpón de trabajo.
 
 ---
 
-## 8–10. Cargas operario (pendientes)
+## 8. Pantalla: Carga de muertes
 
-**Estado:** planificado — fases 13–15 en [`avicore-contexto/references/plan-desarrollo.md`](../../avicore-contexto/references/plan-desarrollo.md) §2. Reglas de negocio en [`avicore-negocio/references/reglas.md`](../../avicore-negocio/references/reglas.md). Placeholders en hub `/operario/cargar`.
+**Estado MVP (2026-07-02):** formulario muertes en diálogo centrado desde hub `/operario/cargar` (`CargarHub` + `x-ui.dialog`); solo cantidad obligatoria; descuenta `aves_actuales`; deep link `/operario/carga/muertes` → redirect con `?form=muertes` (`CargaMuertes` usa vista `livewire._redirect-placeholder`). Evento tiempo real: pendiente (Bloque 6).
 
-| Pantalla | Fase | Nota breve |
-|----------|------|------------|
-| Carga de muertes | 13 | Cantidad obligatoria; descuenta aves vivas |
-| Carga de alimento | 14 | Kilos con decimales; sin stock en MVP |
-| Carga combinada | 15 | Al menos un dato (huevos, muertes o alimento) |
+### Campos
 
-Detalle de campos y validaciones se añadirá aquí al implementar cada pantalla.
+- Galpón actual (contexto en hero; no se repite en el diálogo).
+- Cantidad de muertes.
+
+### Reglas
+
+- Fecha y hora automática.
+- Cantidad obligatoria (> 0) y no mayor que aves vivas del galpón.
+- Requiere galpón disponible; sin galpón o galpón no disponible → redirección a `/operario` con selector abierto.
+- `RegistrarCargaMuertesAction` valida empresa, permiso (`GalponPolicy`), estado del galpón y stock de aves (bloqueo pesimista en transacción).
+- Debe emitir evento en tiempo real.
+
+---
+
+## 9–10. Cargas operario (parcial)
+
+**Estado:** huevos y muertes implementados en hub `/operario/cargar`; alimento y combinada pendientes (fases 14–15). Reglas en [`avicore-negocio/references/reglas.md`](../../avicore-negocio/references/reglas.md).
+
+| Pantalla | Fase | Estado |
+|----------|------|--------|
+| Carga de huevos | 12 | Hecho — diálogo en hub; `RegistrarCargaHuevosAction` |
+| Carga de muertes | 13 | Hecho — diálogo en hub; `RegistrarCargaMuertesAction`; deep link `?form=muertes` |
+| Carga de alimento | 14 | Pendiente — kilos; **fuera del hub operario móvil** (encargado/admin o fase posterior) |
+| Carga combinada | 15 | **Defer** — dos cargas rápidas en lugar de formulario mixto |
 
 ---
 

@@ -7,8 +7,8 @@
     <div class="avicore-operario-home-sheet">
         <section class="avicore-operario-cargar-types" aria-label="Tipos de carga">
             <div class="avicore-operario-home-section__head">
-                <p class="avicore-operario-home-section__eyebrow">Registro</p>
-                <h2 class="avicore-operario-home-section__title">Tipo de carga</h2>
+                <p class="avicore-operario-home-section__eyebrow">Carga del día</p>
+                <h2 class="avicore-operario-home-section__title">¿Qué querés registrar?</h2>
             </div>
 
             @unless ($galpon)
@@ -17,54 +17,46 @@
                         <x-ui.icon name="warehouse" class="size-5" />
                     </span>
                     <p class="avicore-operario-cargar-alert__text">
-                        Elegí un galpón en Inicio antes de cargar datos.
+                        Primero elegí un galpón en Inicio.
                     </p>
                 </div>
             @endunless
 
-            <div class="avicore-operario-carga-grid">
+            <div class="avicore-operario-carga-grid avicore-operario-carga-grid--pair">
                 <button
                     type="button"
                     wire:click="abrirFormularioHuevos"
                     class="avicore-operario-carga-tile avicore-operario-carga-tile--action"
                 >
                     <span class="avicore-operario-carga-tile__icon">
-                        <x-ui.icon name="egg" class="size-6" />
+                        <x-ui.illustration name="operario-huevo" />
                     </span>
                     <span class="avicore-operario-carga-tile__label">Huevos</span>
-                    <span class="avicore-operario-carga-tile__badge">Producción del día</span>
+                    <span class="avicore-operario-carga-tile__badge">Cuántos juntaste hoy</span>
                 </button>
 
-                <div class="avicore-operario-carga-tile avicore-operario-carga-tile--soon" aria-disabled="true">
+                <button
+                    type="button"
+                    wire:click="abrirFormularioMuertes"
+                    class="avicore-operario-carga-tile avicore-operario-carga-tile--action"
+                >
                     <span class="avicore-operario-carga-tile__icon">
-                        <x-ui.icon name="users" class="size-6" />
+                        <x-ui.illustration name="operario-ave" />
                     </span>
                     <span class="avicore-operario-carga-tile__label">Muertes</span>
-                    <span class="avicore-operario-carga-tile__badge">Próximamente</span>
-                </div>
-
-                <div class="avicore-operario-carga-tile avicore-operario-carga-tile--soon" aria-disabled="true">
-                    <span class="avicore-operario-carga-tile__icon">
-                        <x-ui.icon name="layers" class="size-6" />
-                    </span>
-                    <span class="avicore-operario-carga-tile__label">Alimento</span>
-                    <span class="avicore-operario-carga-tile__badge">Próximamente</span>
-                </div>
-
-                <div class="avicore-operario-carga-tile avicore-operario-carga-tile--soon" aria-disabled="true">
-                    <span class="avicore-operario-carga-tile__icon">
-                        <x-ui.icon name="clipboard-list" class="size-6" />
-                    </span>
-                    <span class="avicore-operario-carga-tile__label">Combinada</span>
-                    <span class="avicore-operario-carga-tile__badge">Próximamente</span>
-                </div>
+                    <span class="avicore-operario-carga-tile__badge">Cuántas aves murieron</span>
+                </button>
             </div>
         </section>
     </div>
 
     @if ($galpon)
-        <x-ui.dialog wire:model="dialogHuevosAbierto" title="Carga de huevos">
+        <x-ui.dialog wire:model="dialogHuevosAbierto" title="Huevos de hoy">
             @include('livewire.operario.partials.carga-huevos-form')
+        </x-ui.dialog>
+
+        <x-ui.dialog wire:model="dialogMuertesAbierto" title="Muertes de hoy">
+            @include('livewire.operario.partials.carga-muertes-form')
         </x-ui.dialog>
     @endif
 </div>

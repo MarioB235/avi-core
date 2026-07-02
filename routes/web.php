@@ -7,6 +7,7 @@ use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Livewire\Auth\ChangePassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Operario\CargaHuevos;
+use App\Livewire\Operario\CargaMuertes;
 use App\Livewire\Operario\CargarHub;
 use App\Livewire\Operario\Historial;
 use App\Livewire\Operario\Home as OperarioHome;
@@ -36,6 +37,7 @@ Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
         Route::livewire('/cargar', CargarHub::class)->name('cargar');
         Route::livewire('/historial', Historial::class)->name('historial');
         Route::livewire('/carga/huevos', CargaHuevos::class)->name('carga.huevos');
+        Route::livewire('/carga/muertes', CargaMuertes::class)->name('carga.muertes');
     });
 });
 
