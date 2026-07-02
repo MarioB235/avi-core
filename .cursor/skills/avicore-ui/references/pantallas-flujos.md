@@ -145,17 +145,17 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 
 ## 5. Pantalla: Vista móvil del operario
 
-**Estado MVP (2026-06-26):** implementado en `/operario` — shell móvil con **barra inferior integrada** (3 pestañas: Inicio · Cargar · Historial; inactivos con círculo soft verde; ítem activo con círculo verde sobresaliente; Historial usa icono `calendar`), **heroes compactos** con degradado suave, CTA «Registrar producción» en hoja, KPIs «Maples hoy / Cargas hoy» (grilla 2 columnas; KPI Objetivo `avicore-defer` hasta regla de meta), últimas cargas con vacío accionable. Header hero fijo: grilla logo/usuario + línea ogee (`avicore-home-nav`); avatar abre **menú cuenta** (`x-operario.user-menu`: dropdown Perfil + Cerrar sesión). Nav: `OperarioNav`; layout hero: `operarioIsHeroPage` (Inicio + Cargar + Historial).
+**Estado MVP (2026-06-28):** implementado en `/operario` — shell móvil con **barra inferior integrada** (3 pestañas: Inicio · Cargar · Historial; inactivos con círculo soft verde; ítem activo con círculo verde sobresaliente; Historial usa icono `calendar`), **heroes compactos** con degradado suave, **panel de estado del galpón** (KPIs por galpón seleccionado: aves, huevos/muertes hoy, acumulado desde ingreso de lotes activos, lista de lotes con edad; galpón solo en chip del hero; sin enlace duplicado a Historial). Header hero fijo: grilla logo/usuario + línea ogee (`avicore-home-nav`); avatar abre **menú cuenta** (`x-operario.user-menu`: dropdown Perfil + Cerrar sesión). Nav: `OperarioNav`; layout hero: `operarioIsHeroPage` (Inicio + Cargar + Historial).
 
 ### Navegación móvil (3 pestañas)
 
 | Pestaña | Ruta | Contenido |
 |---------|------|-----------|
-| Inicio | `/operario` | Hero compacto, saludo, selector galpón, CTA «Registrar producción», KPIs del día, últimas cargas |
+| Inicio | `/operario` | Hero compacto, saludo, selector galpón, resumen KPI (aves, huevos/muertes hoy, acumulado, lotes activos) |
 | Cargar | `/operario/cargar` | Hero degradado + hoja con tipos; formulario huevos en diálogo centrado (`x-ui.dialog` + `wire:model`); deep link `?form=huevos` o `/operario/carga/huevos`; chip galpón solo lectura (vacío → enlace `?abrir_galpon=1` en Inicio) |
-| Historial | `/operario/historial` | Hero degradado (`x-operario.historial-hero`), registros del día (mismo panel que Inicio) + bloque cuenta (cerrar sesión); chip galpón solo lectura; menú cuenta en header |
+| Historial | `/operario/historial` | Hero degradado; listado de **todos** los registros del operario (todos los tipos), orden descendente; filtro opcional `?fecha=` (validado: `date`, no futura; error visible); paginación 20; ítems sin icono; chip galpón solo lectura |
 
-En **Inicio**, el header fijo muestra logo + usuario (rol con `label()`); el avatar abre menú cuenta (perfil y logout). El galpón se elige con chip desplegable en el hero («Estado de hoy del galpón.»). La hoja blanca abre con CTA verde a Cargar, KPIs Maples/Cargas (2 columnas) y lista de cargas (vacío con botón «Cargar ahora»). Dock: inactivos con círculo soft; activo elevado con círculo sólido.
+En **Inicio**, el header fijo muestra logo + usuario (rol con `label()`); el avatar abre menú cuenta (perfil y logout). El galpón se elige con chip desplegable en el hero («Estado de hoy del galpón.»). La hoja blanca muestra KPIs y lotes activos del galpón seleccionado (`OperarioGalponResumenService`; edad de lote vía `edadSemanas()`), sin repetir el nombre del galpón ni enlace a Historial. Sin galpón: mensaje para elegir uno. Cargar e Historial por pestañas del dock.
 
 ### Objetivo
 
@@ -166,17 +166,15 @@ Permitir carga rápida desde celular.
 - Operario.
 - Encargado, si necesita cargar.
 
-### Elementos
+### Elementos (por pestaña)
 
-- Logo AviCore.
-- Galpón actual.
-- Botón cambiar galpón.
-- Botón Huevos.
-- Botón Muertes.
-- Botón Alimento.
-- Botón Carga combinada.
-- Últimas cargas del día.
-- Estado de guardado.
+**Inicio:** saludo, chip galpón (selector), KPIs del galpón (aves, huevos/muertes hoy, acumulado), lista de lotes activos.
+
+**Cargar:** tipos de carga (Huevos activo; Muertes/Alimento/Combinada próximamente), alerta sin galpón, diálogo huevos.
+
+**Historial:** listado completo del operario, filtro por fecha, paginación.
+
+**Compartido:** logo, menú cuenta (avatar), dock inferior (Inicio · Cargar · Historial).
 
 ### Flujo
 

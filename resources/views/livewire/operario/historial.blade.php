@@ -5,80 +5,112 @@
     />
 
     <div class="avicore-operario-home-sheet">
-        <section class="avicore-operario-home-cargas" aria-label="Registros de hoy">
+        <section class="avicore-operario-home-cargas" aria-label="Historial de cargas">
             <div class="avicore-operario-home-cargas__header">
                 <div class="avicore-operario-home-cargas__heading">
                     <span class="avicore-operario-home-cargas__heading-icon" aria-hidden="true">
                         <x-ui.icon name="clock" class="size-4" />
                     </span>
                     <div class="min-w-0">
-                        <p class="avicore-operario-home-section__eyebrow">Hoy</p>
-                        <h2 class="avicore-operario-home-section__title">Registros del día</h2>
+                        <p class="avicore-operario-home-section__eyebrow">Tus cargas</p>
+                        <h2 class="avicore-operario-home-section__title">
+                            @if ($fechaEtiqueta)
+                                Registros del {{ $fechaEtiqueta }}
+                            @else
+                                Todos los registros
+                            @endif
+                        </h2>
+                        <p class="avicore-operario-home-cargas__subtitle">
+                            Huevos, muertes y más · del más reciente al anterior.
+                        </p>
                     </div>
                 </div>
             </div>
 
+            <div class="avicore-operario-historial-filter">
+                <label for="historial-fecha" class="avicore-operario-historial-filter__label">
+                    Filtrar por fecha
+                </label>
+                <div class="avicore-operario-historial-filter__row">
+                    <input
+                        id="historial-fecha"
+                        type="date"
+                        wire:model.live="fecha"
+                        class="avicore-operario-historial-filter__input"
+                        max="{{ now()->format('Y-m-d') }}"
+                    />
+                    @if ($fecha)
+                        <button
+                            type="button"
+                            wire:click="verTodasLasFechas"
+                            class="avicore-operario-historial-filter__clear"
+                        >
+                            Ver todas
+                        </button>
+                    @endif
+                </div>
+                @error('fecha')
+                    <p class="text-sm font-medium text-red-600" role="alert">{{ $message }}</p>
+                @enderror
+            </div>
+
             <div @class([
                 'avicore-operario-home-cargas__body',
-                'avicore-operario-home-cargas__body--empty' => $ultimasCargas->isEmpty(),
+                'avicore-operario-home-cargas__body--empty' => $registros->isEmpty(),
             ])>
-                @if ($ultimasCargas->isEmpty())
+                @if ($registros->isEmpty())
                     <div class="avicore-operario-home-cargas__empty">
                         <span class="avicore-operario-home-cargas__empty-icon" aria-hidden="true">
                             <x-ui.icon name="clipboard-list" class="size-6" />
                         </span>
                         <p class="avicore-operario-home-cargas__empty-text">
-                            Cuando registres huevos u otros datos, aparecerán acá.
+                            @if ($fecha)
+                                No hay registros para esta fecha.
+                            @else
+                                Cuando registres huevos, muertes u otros datos, aparecerán acá.
+                            @endif
                         </p>
                     </div>
                 @else
-                    <ul class="avicore-operario-home-cargas__list">
-                        @foreach ($ultimasCargas as $carga)
-                            <li>
-                                <div class="avicore-operario-load-item avicore-operario-load-item--static">
-                                    <span class="avicore-operario-load-item__icon">
-                                        <x-ui.icon name="egg" class="size-4" />
-                                    </span>
-                                    <span class="min-w-0 flex-1">
-                                        <span class="avicore-operario-load-item__title">
-                                            {{ $carga->tipo->label() }} · {{ $carga->cantidadResumen() }}
-                                        </span>
-                                        <span class="avicore-operario-load-item__meta">
-                                            {{ $carga->galpon?->displayName() }}
-                                        </span>
-                                        @if ($carga->observacion)
-                                            <span class="avicore-operario-load-item__meta mt-0.5 block">
-                                                {{ $carga->observacion }}
-                                            </span>
-                                        @endif
-                                    </span>
-                                    <span class="avicore-operario-load-item__time">
-                                        {{ $carga->created_at->format('H:i') }}
-                                    </span>
+                    <ul class="avicore-operario-historial-list">
+                        @foreach ($registros as $carga)
+                            <li
+                                wire:key="historial-registro-{{ $carga->id }}"
+                                @class([
+                                    'avicore-operario-historial-list__item',
+                                    'avicore-operario-historial-list__item--muertes' => $carga->esMortalidad(),
+                                ])
+                            >
+                                <div class="avicore-operario-historial-list__copy min-w-0 flex-1">
+                                    <p class="avicore-operario-historial-list__label">
+                                        {{ $carga->cantidadResumen() }}
+                                    </p>
+                                    @if ($carga->observacion)
+                                        <p class="avicore-operario-historial-list__note">
+                                            {{ $carga->observacion }}
+                                        </p>
+                                    @endif
                                 </div>
+                                <time
+                                    class="avicore-operario-historial-list__time"
+                                    datetime="{{ $carga->created_at->toIso8601String() }}"
+                                >
+                                    @if ($fecha)
+                                        {{ $carga->created_at->format('H:i') }}
+                                    @else
+                                        {{ $carga->created_at->format('d/m H:i') }}
+                                    @endif
+                                </time>
                             </li>
                         @endforeach
                     </ul>
+
+                    @if ($registros->hasPages())
+                        <div class="avicore-operario-historial-pagination">
+                            {{ $registros->links() }}
+                        </div>
+                    @endif
                 @endif
-            </div>
-        </section>
-
-        <section class="avicore-operario-historial-account" aria-label="Tu cuenta">
-            <div class="avicore-operario-home-section__head">
-                <p class="avicore-operario-home-section__eyebrow">Sesión</p>
-                <h2 class="avicore-operario-home-section__title">Tu cuenta</h2>
-            </div>
-
-            <div class="avicore-operario-historial-account__card">
-                <p class="text-sm font-semibold text-avicore-text">{{ auth()->user()->name }}</p>
-                <p class="mt-0.5 text-xs text-avicore-muted">{{ auth()->user()->documento }}</p>
-
-                <form method="POST" action="{{ route('logout') }}" class="mt-4">
-                    @csrf
-                    <x-ui.button type="submit" variant="secondary" class="w-full">
-                        Cerrar sesión
-                    </x-ui.button>
-                </form>
             </div>
         </section>
     </div>
