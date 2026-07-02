@@ -8,8 +8,8 @@
         <section class="avicore-operario-home-cargas" aria-label="Historial de cargas">
             <div class="avicore-operario-home-cargas__header">
                 <div class="avicore-operario-home-cargas__heading">
-                    <span class="avicore-operario-home-cargas__heading-icon" aria-hidden="true">
-                        <x-ui.icon name="clock" class="size-4" />
+                    <span class="avicore-operario-carga-tile__icon" aria-hidden="true">
+                        <x-ui.illustration name="operario-reloj" />
                     </span>
                     <div class="min-w-0">
                         <p class="avicore-operario-home-section__eyebrow">Tus cargas</p>
@@ -21,7 +21,7 @@
                             @endif
                         </h2>
                         <p class="avicore-operario-home-cargas__subtitle">
-                            Huevos, muertes y más · del más reciente al anterior.
+                            Del más reciente al más antiguo.
                         </p>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
 
             <div class="avicore-operario-historial-filter">
                 <label for="historial-fecha" class="avicore-operario-historial-filter__label">
-                    Filtrar por fecha
+                    Ver otro día
                 </label>
                 <div class="avicore-operario-historial-filter__row">
                     <input
@@ -60,14 +60,14 @@
             ])>
                 @if ($registros->isEmpty())
                     <div class="avicore-operario-home-cargas__empty">
-                        <span class="avicore-operario-home-cargas__empty-icon" aria-hidden="true">
-                            <x-ui.icon name="clipboard-list" class="size-6" />
+                        <span class="avicore-operario-carga-tile__icon" aria-hidden="true">
+                            <x-ui.illustration name="operario-reloj" />
                         </span>
                         <p class="avicore-operario-home-cargas__empty-text">
                             @if ($fecha)
                                 No hay registros para esta fecha.
                             @else
-                                Cuando registres huevos, muertes u otros datos, aparecerán acá.
+                                Cuando cargues huevos o muertes, van a aparecer acá.
                             @endif
                         </p>
                     </div>

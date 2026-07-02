@@ -7,7 +7,7 @@
 | **1 — Base** | **Hecho** | Laravel 13, Livewire 4, Tailwind 4, layouts, UI base, PostgreSQL + `migrate` OK |
 | **2 — Seguridad** | **En curso** | Login + cambio obligatorio implementados; roles/CRUD usuarios pendiente |
 | **4 — Estructura avícola** | **Parcial** | Migraciones + seeder demo mínimo (1 granja, 2 galpones, 1 lote); sin CRUD admin |
-| **5 — Operación móvil** | **Parcial** | Home operario, selector galpón, carga huevos; muertes/alimento/combinada pendientes |
+| **5 — Operación móvil** | **Parcial** | Home operario, selector galpón, carga huevos y muertes (hub 2 tiles); alimento/combinada fuera del móvil operario |
 | 3, 6–7 | Pendiente | Según orden de la sección 2 |
 
 Detalle técnico del Bloque 1: [`arbol-proyecto.md`](arbol-proyecto.md) · entorno local: [`arranque-local.md`](arranque-local.md).
@@ -144,8 +144,8 @@ Dashboard refleja la carga
 - [x] Layout móvil (home Livewire en `/operario`).
 - [x] Selector galpón (`/operario/galpon`) + último galpón en `users.ultimo_galpon_id`.
 - [x] Carga huevos (`/operario/carga/huevos`).
-- [ ] Carga muertes.
-- [ ] Carga alimento.
+- [x] Carga muertes.
+- [ ] Carga alimento (admin/encargado; no hub operario móvil en MVP).
 - [ ] Últimas cargas (listado del día implementado; ampliar tipos al sumar cargas).
 
 ---
@@ -192,6 +192,7 @@ Solo nombres de bloque; el DDL vive en `avicore-modelo-datos/references/esquema-
 | Movimientos de aves | `movimientos_aves` | Traslados, ajustes, cierres |
 | Anulación y auditoría (fase 16) | `auditorias` | Acciones críticas |
 | Dashboard (fase 17) | `alertas` | Supervisión |
+| Sanidad / vacunas | `vacunaciones` o módulo `Sanidad/` | **Post-MVP** — plan sanitario; no en hub Cargar operario |
 | Multiempresa / config (fase 6–7) | `configuraciones_empresa` | Maple, logos, módulos |
 | Dashboard | `Livewire/Dashboard/`, `DashboardService` | Tarjetas, KPIs |
 | Reportes (fase 19) | `Livewire/Reportes/`, `ReporteService` | PDF/Excel |

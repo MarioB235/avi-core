@@ -67,8 +67,9 @@
 
 1. Las muertes se cargan por galpón.
 2. Si hay varios lotes, la mortalidad se asigna al galpón completo.
-3. Las muertes descuentan aves vivas.
-4. No se permite que aves vivas quede negativo.
+3. Las muertes descuentan aves vivas (`aves_actuales` del galpón).
+4. No se permite que aves vivas quede negativo; `RegistrarCargaMuertesAction` valida cantidad > 0 y ≤ aves vivas (transacción con `lockForUpdate` en el galpón).
+5. Mismo criterio de permisos y empresa que huevos: `GalponPolicy::view`, `empresa_id` y galpón disponible para carga.
 
 ---
 

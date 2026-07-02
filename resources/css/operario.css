@@ -260,11 +260,7 @@
     }
 
     .avicore-operario-home-cargas__heading {
-        @apply flex min-w-0 items-start gap-3;
-    }
-
-    .avicore-operario-home-cargas__heading-icon {
-        @apply flex size-9 shrink-0 items-center justify-center rounded-xl bg-avicore-primary text-white shadow-[0_6px_16px_rgba(31,94,59,0.28)];
+        @apply flex min-w-0 items-start gap-2.5;
     }
 
     .avicore-operario-home-cargas__subtitle {
@@ -286,10 +282,6 @@
 
     .avicore-operario-home-cargas__empty-copy {
         @apply space-y-1;
-    }
-
-    .avicore-operario-home-cargas__empty-icon {
-        @apply flex size-12 items-center justify-center rounded-2xl bg-avicore-soft text-avicore-primary ring-1 ring-avicore-primary/15;
     }
 
     .avicore-operario-home-cargas__empty-text {
@@ -434,6 +426,156 @@
         @apply grid grid-cols-2 gap-2.5;
     }
 
+    .avicore-operario-kpi-grid--duo {
+        @apply grid-cols-1 gap-3.5;
+    }
+
+    .avicore-operario-kpi-panel {
+        @apply relative overflow-hidden rounded-[1.35rem] border border-avicore-border/70 bg-avicore-card p-4 shadow-[0_10px_28px_rgba(31,94,59,0.07)];
+    }
+
+    .avicore-operario-kpi-panel--aves {
+        @apply border-avicore-primary/25 bg-gradient-to-b from-avicore-soft/70 via-avicore-card to-avicore-card shadow-[0_12px_32px_rgba(31,94,59,0.12)];
+    }
+
+    .avicore-operario-kpi-panel--aves::before {
+        content: '';
+        @apply absolute inset-x-0 top-0 h-1 bg-avicore-primary;
+    }
+
+    .avicore-operario-kpi-panel--huevos {
+        @apply border-avicore-secondary/30 bg-gradient-to-b from-avicore-soft/45 via-avicore-card to-avicore-card shadow-[0_12px_32px_rgba(58,125,68,0.1)];
+    }
+
+    .avicore-operario-kpi-panel--huevos::before {
+        content: '';
+        @apply absolute inset-x-0 top-0 h-1 bg-avicore-secondary;
+    }
+
+    .avicore-operario-kpi-panel--huevos .avicore-operario-kpi-panel__title {
+        @apply text-avicore-secondary;
+    }
+
+    .avicore-operario-kpi-panel__head {
+        @apply mb-3.5 flex items-center gap-2.5;
+    }
+
+    .avicore-operario-kpi-panel__title {
+        @apply text-base font-bold leading-tight text-avicore-primary;
+    }
+
+    .avicore-operario-kpi-panel__metrics {
+        @apply grid grid-cols-2 gap-2.5;
+    }
+
+    .avicore-operario-kpi-panel__metric {
+        @apply rounded-2xl px-2.5 py-3 text-center;
+    }
+
+    .avicore-operario-kpi-panel__metric--alive {
+        @apply border border-avicore-primary/30 bg-avicore-soft shadow-[inset_0_1px_0_rgba(255,255,255,0.65)];
+    }
+
+    .avicore-operario-kpi-panel__metric--warm {
+        @apply border border-avicore-primary/15 bg-stone-50;
+    }
+
+    .avicore-operario-kpi-panel__metric--warm-alert {
+        @apply border-red-200/80 bg-red-50/40;
+    }
+
+    .avicore-operario-kpi-panel__metric--warm-alert .avicore-operario-kpi-panel__value {
+        @apply text-avicore-danger;
+    }
+
+    .avicore-operario-kpi-panel__metric--outline {
+        @apply border border-avicore-secondary/30 bg-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)];
+    }
+
+    .avicore-operario-kpi-panel--huevos .avicore-operario-kpi-panel__metric--outline:first-child {
+        @apply border-avicore-primary/25 bg-avicore-soft/35;
+    }
+
+    .avicore-operario-kpi-panel__value {
+        @apply text-[1.65rem] font-bold leading-none tracking-tight text-avicore-primary;
+    }
+
+    .avicore-operario-kpi-panel__label {
+        @apply mt-2 text-[0.6875rem] font-semibold leading-snug text-avicore-muted;
+    }
+
+    .avicore-operario-kpi-panel__hint {
+        @apply mt-0.5 block text-[0.625rem] font-medium leading-tight text-avicore-muted/85;
+    }
+
+    .avicore-operario-kpi-panel__note {
+        @apply mt-3 flex items-start gap-2 rounded-xl border border-avicore-primary/15 bg-avicore-soft/55 px-2.5 py-2 text-left text-[0.6875rem] font-medium leading-snug text-avicore-primary;
+    }
+
+    .avicore-operario-kpi-panel__note-dot {
+        @apply mt-1.5 size-1.5 shrink-0 rounded-full bg-avicore-primary;
+    }
+
+    .avicore-operario-kpi-panel--featured {
+        @apply border-avicore-primary/30 bg-avicore-primary text-white shadow-[0_12px_28px_rgba(31,94,59,0.32)];
+    }
+
+    .avicore-operario-kpi-panel--featured .avicore-operario-kpi-panel__icon {
+        @apply bg-white/15 text-white ring-white/25;
+    }
+
+    .avicore-operario-kpi-panel--featured .avicore-operario-kpi-panel__title {
+        @apply text-white;
+    }
+
+    .avicore-operario-kpi-panel--featured .avicore-operario-kpi-panel__metric {
+        @apply bg-white/10 ring-white/20;
+    }
+
+    .avicore-operario-kpi-panel--featured .avicore-operario-kpi-panel__value {
+        @apply text-white;
+    }
+
+    .avicore-operario-kpi-panel--featured .avicore-operario-kpi-panel__label {
+        @apply text-white/85;
+    }
+
+    .avicore-operario-kpi-panel__metric--danger {
+        @apply bg-red-500/15 ring-red-200/40;
+    }
+
+    .avicore-operario-kpi-panel--featured .avicore-operario-kpi-panel__metric--danger {
+        @apply bg-red-950/25 ring-red-300/30;
+    }
+
+    .avicore-operario-kpi-panel--featured .avicore-operario-kpi-panel__metric--danger .avicore-operario-kpi-panel__value {
+        @apply text-red-100;
+    }
+
+    .avicore-operario-kpi-panel:not(.avicore-operario-kpi-panel--featured) .avicore-operario-kpi-panel__metric--danger .avicore-operario-kpi-panel__value {
+        @apply text-avicore-danger;
+    }
+
+    .avicore-operario-kpi-panel--featured .avicore-operario-kpi-panel__label {
+        @apply text-white/85;
+    }
+
+    .avicore-operario-kpi-panel__metric--danger .avicore-operario-kpi-panel__label {
+        @apply text-red-100/90;
+    }
+
+    .avicore-operario-kpi-panel:not(.avicore-operario-kpi-panel--featured) .avicore-operario-kpi-panel__metric--danger .avicore-operario-kpi-panel__label {
+        @apply text-avicore-danger/90;
+    }
+
+    .avicore-operario-kpi-panel__note--danger {
+        @apply text-red-100/90;
+    }
+
+    .avicore-operario-kpi-panel:not(.avicore-operario-kpi-panel--featured) .avicore-operario-kpi-panel__note--danger {
+        @apply text-avicore-danger;
+    }
+
     .avicore-operario-kpi-card {
         @apply flex min-h-[6.75rem] flex-col items-center justify-center rounded-2xl border border-avicore-border-strong/80 bg-avicore-card px-2 py-3 text-center shadow-[0_8px_20px_rgba(15,23,42,0.06)];
     }
@@ -557,11 +699,16 @@
     }
 
     .avicore-operario-home-lotes__list {
-        @apply overflow-hidden rounded-xl border border-avicore-border/80 bg-avicore-card divide-y divide-avicore-border/70;
+        @apply space-y-2.5;
     }
 
     .avicore-operario-home-lotes__item {
-        @apply flex min-h-11 items-center justify-between gap-3 px-3.5 py-2.5;
+        @apply relative flex min-h-11 items-center justify-between gap-3 overflow-hidden rounded-2xl border border-avicore-primary/25 bg-gradient-to-b from-avicore-soft/50 to-avicore-card py-3 pr-3.5 pl-4 shadow-[0_8px_22px_rgba(31,94,59,0.08)];
+    }
+
+    .avicore-operario-home-lotes__item::before {
+        content: '';
+        @apply absolute inset-y-0 left-0 w-1 bg-avicore-primary/80;
     }
 
     .avicore-operario-home-lotes__code {
@@ -573,7 +720,7 @@
     }
 
     .avicore-operario-home-lotes__badge {
-        @apply shrink-0 rounded-full bg-avicore-soft px-2 py-0.5 text-[0.625rem] font-semibold text-avicore-primary ring-1 ring-avicore-primary/15;
+        @apply shrink-0 rounded-full border border-avicore-primary/20 bg-avicore-soft px-2.5 py-0.5 text-[0.625rem] font-semibold text-avicore-primary;
     }
 
     .avicore-operario-load-item {
@@ -710,6 +857,10 @@
         @apply grid grid-cols-2 gap-3;
     }
 
+    .avicore-operario-carga-grid--pair .avicore-operario-carga-tile {
+        @apply min-h-[8.25rem];
+    }
+
     .avicore-operario-carga-tile {
         @apply flex min-h-[7.5rem] flex-col items-center justify-center rounded-2xl px-3 py-4 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
@@ -738,6 +889,10 @@
 
     .avicore-operario-carga-tile__icon {
         @apply flex size-11 items-center justify-center rounded-xl bg-avicore-soft text-avicore-muted ring-1 ring-avicore-primary/10;
+    }
+
+    .avicore-operario-carga-tile__icon .avicore-ui-illustration {
+        @apply size-8;
     }
 
     .avicore-operario-carga-tile--action .avicore-operario-carga-tile__label {

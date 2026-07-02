@@ -9,10 +9,10 @@
     <div class="avicore-operario-home-hero__content">
         <div class="avicore-operario-home-hero__greeting">
             <h1 class="avicore-operario-home-hero__title">
-                Nueva carga
+                Registrar
             </h1>
             <p class="avicore-operario-home-hero__subtitle">
-                Elegí el tipo de registro para continuar.
+                Tocá el dato que querés cargar.
             </p>
 
             @if ($hasGalpon)

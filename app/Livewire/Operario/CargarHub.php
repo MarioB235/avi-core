@@ -3,6 +3,8 @@
 namespace App\Livewire\Operario;
 
 use App\Actions\Operacion\RegistrarCargaHuevosAction;
+use App\Actions\Operacion\RegistrarCargaMuertesAction;
+use App\Models\Galpon;
 use App\Services\OperarioGalponService;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
@@ -15,32 +17,38 @@ class CargarHub extends Component
 {
     public bool $dialogHuevosAbierto = false;
 
+    public bool $dialogMuertesAbierto = false;
+
     public string $huevos = '';
+
+    public string $muertes = '';
 
     public function mount(OperarioGalponService $operarioGalponService): void
     {
-        if (request()->query('form') !== 'huevos') {
+        $form = request()->query('form');
+
+        if (! in_array($form, ['huevos', 'muertes'], true)) {
             return;
         }
 
-        $user = auth()->user();
-        $galpon = $operarioGalponService->galponActual($user);
+        if (! $this->ensureGalponSeleccionado($operarioGalponService)) {
+            return;
+        }
 
-        if ($galpon === null) {
-            $this->redirectToHomeConSelectorGalpon();
+        if ($form === 'huevos') {
+            $this->resetFormularioHuevos();
+            $this->dialogHuevosAbierto = true;
 
             return;
         }
 
-        $this->resetFormularioHuevos();
-        $this->dialogHuevosAbierto = true;
+        $this->resetFormularioMuertes();
+        $this->dialogMuertesAbierto = true;
     }
 
     public function abrirFormularioHuevos(OperarioGalponService $operarioGalponService): void
     {
-        if ($operarioGalponService->galponActual(auth()->user()) === null) {
-            $this->redirectToHomeConSelectorGalpon();
-
+        if (! $this->ensureGalponSeleccionado($operarioGalponService)) {
             return;
         }
 
@@ -55,6 +63,23 @@ class CargarHub extends Component
         }
     }
 
+    public function abrirFormularioMuertes(OperarioGalponService $operarioGalponService): void
+    {
+        if (! $this->ensureGalponSeleccionado($operarioGalponService)) {
+            return;
+        }
+
+        $this->resetFormularioMuertes();
+        $this->dialogMuertesAbierto = true;
+    }
+
+    public function updatedDialogMuertesAbierto(bool $abierto): void
+    {
+        if (! $abierto) {
+            $this->resetFormularioMuertes();
+        }
+    }
+
     public function guardarHuevos(
         RegistrarCargaHuevosAction $registrarCargaHuevos,
         OperarioGalponService $operarioGalponService,
@@ -66,12 +91,9 @@ class CargarHub extends Component
             'huevos.min' => 'La cantidad debe ser mayor a cero.',
         ]);
 
-        $galpon = $operarioGalponService->galponActual(auth()->user());
+        $galpon = $this->resolveGalponParaGuardar($operarioGalponService, 'dialogHuevosAbierto');
 
         if ($galpon === null) {
-            $this->dialogHuevosAbierto = false;
-            $this->redirectToHomeConSelectorGalpon();
-
             return;
         }
 
@@ -84,7 +106,36 @@ class CargarHub extends Component
 
         $this->dialogHuevosAbierto = false;
         $this->resetFormularioHuevos();
-        $this->dispatch('snackbar-show', message: 'Carga de huevos guardada.', variant: 'success');
+        $this->dispatch('snackbar-show', message: 'Huevos guardados.', variant: 'success');
+    }
+
+    public function guardarMuertes(
+        RegistrarCargaMuertesAction $registrarCargaMuertes,
+        OperarioGalponService $operarioGalponService,
+    ): void {
+        $validated = $this->validate([
+            'muertes' => ['required', 'integer', 'min:1'],
+        ], [
+            'muertes.required' => 'Ingresá la cantidad de muertes.',
+            'muertes.min' => 'La cantidad debe ser mayor a cero.',
+        ]);
+
+        $galpon = $this->resolveGalponParaGuardar($operarioGalponService, 'dialogMuertesAbierto');
+
+        if ($galpon === null) {
+            return;
+        }
+
+        $registrarCargaMuertes->execute(
+            auth()->user(),
+            $galpon,
+            (int) $validated['muertes'],
+            null,
+        );
+
+        $this->dialogMuertesAbierto = false;
+        $this->resetFormularioMuertes();
+        $this->dispatch('snackbar-show', message: 'Muertes guardadas.', variant: 'success');
     }
 
     public function render(OperarioGalponService $operarioGalponService): View
@@ -98,9 +149,42 @@ class CargarHub extends Component
         ]);
     }
 
+    private function ensureGalponSeleccionado(OperarioGalponService $operarioGalponService): bool
+    {
+        if ($operarioGalponService->galponActual(auth()->user()) !== null) {
+            return true;
+        }
+
+        $this->redirectToHomeConSelectorGalpon();
+
+        return false;
+    }
+
+    private function resolveGalponParaGuardar(
+        OperarioGalponService $operarioGalponService,
+        string $dialogProperty,
+    ): ?Galpon {
+        $galpon = $operarioGalponService->galponActual(auth()->user());
+
+        if ($galpon !== null) {
+            return $galpon;
+        }
+
+        $this->{$dialogProperty} = false;
+        $this->redirectToHomeConSelectorGalpon();
+
+        return null;
+    }
+
     private function resetFormularioHuevos(): void
     {
         $this->reset(['huevos']);
+        $this->resetValidation();
+    }
+
+    private function resetFormularioMuertes(): void
+    {
+        $this->reset(['muertes']);
         $this->resetValidation();
     }
 

@@ -1,15 +1,15 @@
-<form wire:submit="guardarHuevos" class="space-y-4">
+<form wire:submit="guardarMuertes" class="space-y-4">
     <div>
         <x-ui.input
-            label="¿Cuántos huevos?"
+            label="¿Cuántas aves murieron?"
             type="number"
             inputmode="numeric"
             min="1"
-            wire:model="huevos"
-            placeholder="Ejemplo: 1250"
+            wire:model="muertes"
+            placeholder="Ejemplo: 12"
             required
         />
-        @error('huevos')
+        @error('muertes')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>

@@ -37,6 +37,8 @@ class IconComponentTest extends TestCase
             'logout' => ['logout', ['M21 12H9', 'm16 17 5-5-5-5']],
             'warehouse' => ['warehouse', ['M22 8.35V20', 'M6 18h12']],
             'users' => ['users', ['M16 21v-2', 'circle cx="9"']],
+            'bird' => ['bird', ['M3.4 18H12', 'M7 18a6']],
+            'egg' => ['egg', ['M12 22c6.23']],
         ];
     }
 
