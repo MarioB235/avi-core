@@ -37,6 +37,7 @@ class OperarioHomeResumenTest extends TestCase
             ->test(Home::class)
             ->assertSee('Seleccioná un galpón para ver el estado.', false)
             ->assertDontSee('Aves actuales', false)
+            ->assertDontSee('En el galpón ahora', false)
             ->assertDontSee('Últimas cargas', false);
     }
 
@@ -56,11 +57,13 @@ class OperarioHomeResumenTest extends TestCase
         Livewire::actingAs($operario)
             ->test(Home::class)
             ->assertSee('10.500', false)
-            ->assertSee('Aves actuales', false)
+            ->assertSee('En el galpón ahora', false)
             ->assertSee('900', false)
-            ->assertSee('Huevos hoy', false)
+            ->assertSee('Juntados hoy', false)
+            ->assertSee('Total del lote', false)
             ->assertSee($lote->codigo, false)
-            ->assertSee('inicio', false)
+            ->assertSee('desde el', false)
+            ->assertSee('semanas', false)
             ->assertDontSee('Ver historial', false)
             ->assertDontSee('Últimas cargas', false);
     }
@@ -86,7 +89,7 @@ class OperarioHomeResumenTest extends TestCase
         Livewire::actingAs($operario)
             ->test(Home::class)
             ->assertSee('600', false)
-            ->assertSee('Huevos hoy', false);
+            ->assertSee('Juntados hoy', false);
     }
 
     public function test_resumen_service_accumulated_huevos_respect_lote_ingreso_window(): void
@@ -131,7 +134,8 @@ class OperarioHomeResumenTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(Home::class)
-            ->assertSee('más de un lote activo', false)
+            ->assertSee('más de un lote', false)
+            ->assertSee('todo el galpón junto', false)
             ->assertSee('L-2026-02', false);
     }
 
@@ -161,9 +165,9 @@ class OperarioHomeResumenTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(Home::class)
-            ->assertSee('Muertes hoy', false)
-            ->assertSee('muertes acumuladas', false)
-            ->assertSee('7 muertes acumuladas', false);
+            ->assertSee('Murieron hoy', false)
+            ->assertSee('muertes en total desde el ingreso', false)
+            ->assertSee('7 muertes en total desde el ingreso', false);
     }
 
     public function test_resumen_service_maples_from_huevos(): void

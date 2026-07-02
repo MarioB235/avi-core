@@ -140,6 +140,10 @@
 }
 
 @layer components {
+    .avicore-ui-illustration {
+        @apply block shrink-0;
+    }
+
     .avicore-input--plain {
         @apply px-3;
     }

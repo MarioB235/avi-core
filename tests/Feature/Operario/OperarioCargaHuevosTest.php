@@ -63,7 +63,7 @@ class OperarioCargaHuevosTest extends TestCase
         Livewire::actingAs($operario)
             ->test(Home::class)
             ->assertSee('1.500', false)
-            ->assertSee('Huevos hoy', false)
+            ->assertSee('Juntados hoy', false)
             ->assertSee($galponA->displayName());
 
         Livewire::actingAs($operario)

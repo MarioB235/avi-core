@@ -12,7 +12,7 @@
                 Historial
             </h1>
             <p class="avicore-operario-home-hero__subtitle">
-                Huevos, muertes y más · consultá todo tu historial.
+                Todo lo que cargaste, del más nuevo al más viejo.
             </p>
 
             @if ($hasGalpon)

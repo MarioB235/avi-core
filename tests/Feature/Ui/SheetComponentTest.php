@@ -55,7 +55,7 @@ class SheetComponentTest extends TestCase
             ->call('abrirFormularioHuevos')
             ->assertSee('avicore-dialog', false)
             ->assertSee('avicore-dialog__panel', false)
-            ->assertSee('Cantidad de huevos', false)
+            ->assertSee('¿Cuántos huevos?', false)
             ->assertSee('dialogHuevosAbierto', false);
     }
 }

@@ -11,7 +11,7 @@
                 ¡{{ $saludo }}!
             </h1>
             <p class="avicore-operario-home-hero__subtitle">
-                Estado de hoy del galpón.
+                Resumen de hoy del galpón que elegiste.
             </p>
 
             {{ $galponSelector }}
