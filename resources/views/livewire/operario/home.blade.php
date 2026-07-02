@@ -10,108 +10,118 @@
     </x-operario.home-hero>
 
     <div class="avicore-operario-home-sheet">
-        <x-operario.primary-action :href="route('operario.cargar')" />
-
-        <section class="avicore-operario-home-summary" aria-label="Resumen de hoy">
-            <div class="avicore-operario-home-section__head">
-                <p class="avicore-operario-home-section__eyebrow">Hoy</p>
-                <h2 class="avicore-operario-home-section__title">Resumen del día</h2>
-            </div>
-
-            <div class="avicore-operario-kpi-grid">
-                <article class="avicore-operario-kpi-card avicore-operario-kpi-card--featured">
-                    <span class="avicore-operario-kpi-card__icon-shell">
-                        <x-ui.icon name="egg" class="size-5" />
-                    </span>
-                    <p class="avicore-operario-kpi-card__value">{{ number_format($maplesProducidosHoy, 0, ',', '.') }}</p>
-                    <p class="avicore-operario-kpi-card__label">Maples hoy</p>
-                </article>
-                <article class="avicore-operario-kpi-card">
-                    <span class="avicore-operario-kpi-card__icon-shell">
-                        <x-ui.icon name="clipboard-list" class="size-5" />
-                    </span>
-                    <p class="avicore-operario-kpi-card__value">{{ $cargasCompletadasHoy }}</p>
-                    <p class="avicore-operario-kpi-card__label">Cargas hoy</p>
-                </article>
-                {{-- avicore-defer: objetivo diario por galpón, cuando exista meta en reglas.md --}}
-            </div>
-        </section>
-
-        <section
-            @class([
-                'avicore-operario-home-cargas',
-                'avicore-operario-home-cargas--empty' => $ultimasCargas->isEmpty(),
-            ])
-            aria-label="Últimas cargas"
-        >
-            <div class="avicore-operario-home-cargas__header">
-                <div class="avicore-operario-home-cargas__heading">
-                    <span class="avicore-operario-home-cargas__heading-icon" aria-hidden="true">
-                        <x-ui.icon name="clock" class="size-4" />
-                    </span>
-                    <div class="min-w-0">
-                        <h2 class="avicore-operario-home-section__title">Últimas cargas</h2>
-                        <p class="avicore-operario-home-cargas__subtitle">Registros de hoy</p>
-                    </div>
+        @if ($galpon === null)
+            <section class="avicore-operario-home-summary avicore-operario-home-summary--empty" aria-label="Estado del galpón">
+                <div class="avicore-operario-home-summary__empty">
+                    <p class="avicore-operario-home-summary__empty-text">
+                        Seleccioná un galpón para ver el estado.
+                    </p>
+                    <button
+                        type="button"
+                        wire:click="toggleSelectorGalpon"
+                        class="avicore-operario-home-summary__empty-action"
+                    >
+                        Elegir galpón
+                    </button>
                 </div>
-                @if ($ultimasCargas->isNotEmpty())
-                    <a href="{{ route('operario.historial') }}" wire:navigate class="avicore-operario-home-section__link">
-                        Ver todo
-                        <x-ui.icon name="chevron-right" class="size-3.5" />
-                    </a>
-                @endif
-            </div>
-
-            <div @class([
-                'avicore-operario-home-cargas__body',
-                'avicore-operario-home-cargas__body--empty' => $ultimasCargas->isEmpty(),
-            ])>
-                @if ($ultimasCargas->isEmpty())
-                    <div class="avicore-operario-home-cargas__empty">
-                        <span class="avicore-operario-home-cargas__empty-icon" aria-hidden="true">
-                            <x-ui.icon name="clipboard-list" class="size-6" />
+            </section>
+        @else
+            <section class="avicore-operario-home-summary" aria-label="Estado del galpón">
+                <div class="avicore-operario-kpi-grid">
+                    <article class="avicore-operario-kpi-card avicore-operario-kpi-card--featured">
+                        <span class="avicore-operario-kpi-card__icon-shell">
+                            <x-ui.icon name="users" class="size-5" />
                         </span>
-                        <div class="avicore-operario-home-cargas__empty-copy">
-                            <p class="avicore-operario-home-cargas__empty-text">
-                                Todavía no hay cargas hoy.
-                            </p>
-                            <p class="avicore-operario-home-cargas__empty-hint">
-                                Registrá la primera carga del galpón.
-                            </p>
-                        </div>
-                        <a
-                            href="{{ route('operario.cargar') }}"
-                            wire:navigate
-                            class="avicore-operario-home-cargas__empty-cta"
-                        >
-                            Cargar ahora
-                        </a>
-                    </div>
+                        <p class="avicore-operario-kpi-card__value">
+                            {{ number_format($resumen['aves_actuales'], 0, ',', '.') }}
+                        </p>
+                        <p class="avicore-operario-kpi-card__label">Aves actuales</p>
+                    </article>
+
+                    <article class="avicore-operario-kpi-card">
+                        <span class="avicore-operario-kpi-card__icon-shell">
+                            <x-ui.icon name="egg" class="size-5" />
+                        </span>
+                        <p class="avicore-operario-kpi-card__value">
+                            {{ number_format($resumen['huevos_hoy'], 0, ',', '.') }}
+                        </p>
+                        <p class="avicore-operario-kpi-card__label">
+                            Huevos hoy
+                            <span class="avicore-operario-kpi-card__hint">
+                                ({{ number_format($resumen['maples_hoy'], 0, ',', '.') }} maples)
+                            </span>
+                        </p>
+                    </article>
+
+                    <article @class([
+                        'avicore-operario-kpi-card',
+                        'avicore-operario-kpi-card--danger' => $resumen['muertes_hoy'] > 0,
+                    ])>
+                        <span class="avicore-operario-kpi-card__icon-shell">
+                            <x-ui.icon name="bell" class="size-5" />
+                        </span>
+                        <p class="avicore-operario-kpi-card__value">
+                            {{ number_format($resumen['muertes_hoy'], 0, ',', '.') }}
+                        </p>
+                        <p class="avicore-operario-kpi-card__label">Muertes hoy</p>
+                    </article>
+
+                    <article class="avicore-operario-kpi-card">
+                        <span class="avicore-operario-kpi-card__icon-shell">
+                            <x-ui.icon name="clipboard-list" class="size-5" />
+                        </span>
+                        <p class="avicore-operario-kpi-card__value">
+                            {{ number_format($resumen['huevos_acumulados'], 0, ',', '.') }}
+                        </p>
+                        <p class="avicore-operario-kpi-card__label">
+                            Producción acumulada
+                            <span class="avicore-operario-kpi-card__hint">desde ingreso del lote</span>
+                        </p>
+                    </article>
+                </div>
+
+                @if ($resumen['muertes_acumuladas'] > 0)
+                    <p class="avicore-operario-home-summary__footnote avicore-operario-home-summary__footnote--danger">
+                        {{ number_format($resumen['muertes_acumuladas'], 0, ',', '.') }} muertes acumuladas desde ingreso del lote.
+                    </p>
+                @endif
+            </section>
+
+            <section class="avicore-operario-home-lotes" aria-label="Lotes en galpón">
+                <div class="avicore-operario-home-section__head">
+                    <p class="avicore-operario-home-section__eyebrow">Lotes</p>
+                    <h2 class="avicore-operario-home-section__title">En producción</h2>
+                </div>
+
+                @if ($resumen['multiples_lotes'])
+                    <p class="avicore-operario-home-lotes__notice">
+                        Este galpón tiene más de un lote activo. La producción se asigna al galpón completo.
+                    </p>
+                @endif
+
+                @if ($resumen['lotes']->isEmpty())
+                    <p class="avicore-operario-home-lotes__empty">
+                        No hay lotes activos en este galpón.
+                    </p>
                 @else
-                    <ul class="avicore-operario-home-cargas__list">
-                        @foreach ($ultimasCargas as $carga)
-                            <li>
-                                <a href="{{ route('operario.historial') }}" wire:navigate class="avicore-operario-load-item">
-                                    <span class="avicore-operario-load-item__icon">
-                                        <x-ui.icon name="egg" class="size-4" />
-                                    </span>
-                                    <span class="min-w-0 flex-1">
-                                        <span class="avicore-operario-load-item__title">
-                                            {{ $carga->tipo->label() }} · {{ $carga->cantidadResumen() }}
-                                        </span>
-                                        <span class="avicore-operario-load-item__meta">
-                                            {{ $carga->galpon?->displayName() }}
-                                        </span>
-                                    </span>
-                                    <span class="avicore-operario-load-item__time">
-                                        {{ $carga->created_at->format('H:i') }}
-                                    </span>
-                                </a>
+                    <ul class="avicore-operario-home-lotes__list">
+                        @foreach ($resumen['lotes'] as $lote)
+                            <li wire:key="home-lote-{{ $lote->id }}" class="avicore-operario-home-lotes__item">
+                                <div class="avicore-operario-home-lotes__copy min-w-0 flex-1">
+                                    <p class="avicore-operario-home-lotes__code">{{ $lote->codigo }}</p>
+                                    <p class="avicore-operario-home-lotes__meta">
+                                        {{ $edadSemanasPorLote[$lote->id] ?? 0 }} semanas
+                                        · {{ number_format($lote->cantidad_inicial, 0, ',', '.') }} inicio
+                                    </p>
+                                </div>
+                                <span class="avicore-operario-home-lotes__badge">
+                                    {{ $lote->estado->label() }}
+                                </span>
                             </li>
                         @endforeach
                     </ul>
                 @endif
-            </div>
-        </section>
+            </section>
+        @endif
     </div>
 </div>

@@ -5,8 +5,24 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-07-02
+
+- **[operario|fix]** Post-auditoría msg 3: validación de `fecha` en Historial (`date`, no futura; error visible); tests ampliados (multiempresa, paginación, alimento/combinado, resumen muertes/maples); limpieza métodos huérfanos en `OperarioGalponService`; edad de lote vía `OperarioGalponResumenService::edadSemanas()`. — `Historial.php`, `historial.blade.php`, `Home.php`, `home.blade.php`, `OperarioGalponService.php`, `OperarioHistorialTest.php`, `OperarioHomeResumenTest.php`, `OperarioGalponServiceTest.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`, `arbol-proyecto.md`, `estandares-codigo.md`
+
 ## 2026-06-28
 
+- **[ui|operario]** Inicio: sin cabecera duplicada del galpón ni enlace «Ver historial» (chip en hero + dock). — `home.blade.php`, `operario.css`, `OperarioHomeResumenTest.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`
+- **[ui|operario]** Hub Cargar: tile activo con borde verde sólido, card informativa y feedback táctil (`--action`); próximamente en dashed atenuado. — `cargar-hub.blade.php`, `operario.css`, `patrones-mobile-operario.md`
+- **[ui|operario]** Hub Cargar: sin card contenedora en tipos de carga (alineado a secciones de Inicio). — `operario.css`, `patrones-mobile-operario.md`
+- **[ui|operario]** Hub Cargar: tile Huevos con mismo diseño que cards «Próximamente» (borde punteado, badge); sin variante verde `--featured`. — `cargar-hub.blade.php`, `operario.css`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`
+- **[ui|operario]** Inicio: sin CTA «Registrar producción» en hoja (Cargar solo por navbar inferior). — `home.blade.php`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`
+- **[ui|operario]** Inicio: panel de estado del galpón (KPIs por galpón seleccionado — aves, huevos/muertes hoy, acumulado desde ingreso de lotes activos, lista de lotes con edad); sin «Últimas cargas» (enlace a Historial). — `OperarioGalponResumenService.php`, `Home.php`, `home.blade.php`, `operario.css`, `LoteEstado.php`, `OperarioHomeResumenTest.php`, `OperarioBottomNavTest.php`, `OperarioCargaHuevosTest.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`, `reglas.md`
+- **[ui|operario]** Historial: registros de mortalidad en rojo (`avicore-danger`, `esMortalidad()`). — `RegistroOperativo.php`, `historial.blade.php`, `operario.css`, `OperarioHistorialTest.php`, `patrones-mobile-operario.md`
+- **[ui|operario]** Historial: lista simple de ítems (cantidad + hora; sin galpón ni «Tipo · cantidad» redundante). — `historial.blade.php`, `operario.css`, `OperarioBottomNavTest.php`, `OperarioHistorialTest.php`, `patrones-mobile-operario.md`
+- **[ui|operario]** Historial ampliado: todos los tipos y fechas del operario, filtro por fecha opcional, orden cronológico descendente, paginación 20. — `Historial.php`, `historial.blade.php`, `historial-hero.blade.php`, `OperarioGalponService.php`, `RegistroOperativo.php`, `operario.css`, `OperarioHistorialTest.php`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`
+- **[ui|operario]** Historial: ítems de «Registros del día» sin icono por fila (card solo texto + hora). — `historial.blade.php`, `operario.css`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`
+- **[ui|operario]** Avatar menú cuenta unificado: círculo primario, iniciales blancas, borde blanco y sombra suave; touch 2.75rem en nav home. — `operario.css`, `patrones-mobile-operario.md`, `tokens-componentes.md`
+- **[ui|operario]** Historial sin bloque «Tu cuenta» (logout solo en menú avatar); borde blanco en avatar del menú usuario (home-nav y header). — `historial.blade.php`, `operario.css`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`
 - **[ui|operario]** Menú cuenta operario (`x-operario.user-menu`): dropdown desde avatar (Perfil + Cerrar sesión), rol con `label()` en nav home; estilos en `operario.css`; `avicore-defer` variant flat en `x-ui.user-avatar`. Logo auth con `entrance` (órbita isotipo en `hero`/`auth-mobile`). Tests `OperarioUserMenuTest`, `PublicLayoutTest`, `LogoComponentTest`. — `user-menu.blade.php`, `header.blade.php`, `logo.blade.php`, `app.css`, `operario.css`, `public.blade.php`, `auth-brand-panel.blade.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`, `tokens-componentes.md`, `motion-y-feedback.md`, `arbol-proyecto.md`, `estandares-codigo.md`
 
 ## 2026-06-26
