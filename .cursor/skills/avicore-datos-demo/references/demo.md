@@ -40,7 +40,7 @@ Con `APP_ENV=local` y `AVICORE_DEMO_LOGIN=true` (ver `.env.example`), en `/login
 
 - Documento: `000000000`
 - Contraseña: `Avicore2026!`
-- **Perfil demo:** selector de rol (resuelve al usuario seedeado correspondiente vía `DemoLoginService`).
+- **Perfil demo:** `x-ui.select` de rol (resuelve al usuario seedeado correspondiente vía `DemoLoginService`).
 
 Desactivar para entornos reales: `AVICORE_DEMO_LOGIN=false` o despliegue fuera de `local`.
 

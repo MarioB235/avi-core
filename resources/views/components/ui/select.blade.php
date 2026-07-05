@@ -35,6 +35,10 @@
     {{ $attributes->only('class')->merge(['class' => 'avicore-select-field space-y-1.5']) }}
     x-data="{
         open: false,
+        placement: 'below',
+        listMaxHeight: '14rem',
+        collisionPadding: 8,
+        preferredListHeightPx: 224,
         value: @if ($wireModel)
             @if ($wireModelLive)
                 @entangle($wireModel).live
@@ -62,7 +66,36 @@
         isSelected(optionValue) {
             return String(this.value) === String(optionValue);
         },
+        syncPanelPosition() {
+            if (! this.open || ! this.$refs.trigger) {
+                return;
+            }
+
+            const rect = this.$refs.trigger.getBoundingClientRect();
+            const padding = this.collisionPadding;
+            const spaceBelow = window.innerHeight - rect.bottom - padding;
+            const spaceAbove = rect.top - padding;
+            const openBelow = spaceBelow >= spaceAbove;
+
+            this.placement = openBelow ? 'below' : 'above';
+
+            const available = Math.max(openBelow ? spaceBelow : spaceAbove, 88);
+            const height = Math.min(this.preferredListHeightPx, available);
+
+            this.listMaxHeight = `${height}px`;
+        },
+        toggleOpen() {
+            if (this.open) {
+                this.open = false;
+
+                return;
+            }
+
+            this.open = true;
+            this.$nextTick(() => this.syncPanelPosition());
+        },
     }"
+    x-on:resize.window="if (open) syncPanelPosition()"
     @click.outside="open = false"
     @keydown.escape.window="if (open) open = false"
 >
@@ -76,13 +109,14 @@
         <button
             type="button"
             id="{{ $selectId }}"
+            x-ref="trigger"
             @if ($name) name="{{ $name }}" @endif
             @if ($hasError) aria-invalid="true" @endif
             @if ($isRequired) aria-required="true" @endif
             aria-haspopup="listbox"
             :aria-expanded="open"
             @if ($selectId) aria-controls="{{ $selectId }}-listbox" @endif
-            @click="open = ! open"
+            x-on:click="toggleOpen()"
             @class([
                 'avicore-select-trigger flex w-full items-center justify-between gap-2 text-left',
                 'border-avicore-danger' => $hasError,
@@ -115,8 +149,9 @@
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 -translate-y-1"
             class="avicore-select-panel"
+            x-bind:class="placement === 'above' ? 'avicore-select-panel--above' : 'avicore-select-panel--below'"
         >
-            <ul class="avicore-select-list">
+            <ul class="avicore-select-list" x-bind:style="{ maxHeight: listMaxHeight }">
                 <template x-for="option in options" :key="option.value">
                     <li>
                         <button

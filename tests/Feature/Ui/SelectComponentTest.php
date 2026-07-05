@@ -28,6 +28,23 @@ class SelectComponentTest extends TestCase
         $this->assertStringContainsString('m6 9 6 6 6-6', $html);
     }
 
+    public function test_select_includes_collision_positioning_hooks(): void
+    {
+        $html = Blade::render(<<<'BLADE'
+            <x-ui.select
+                label="Vacuna"
+                name="vacuna"
+                placeholder="Elegí una vacuna"
+                :options="['newcastle' => 'Newcastle (La Sota)']"
+            />
+        BLADE);
+
+        $this->assertStringContainsString('syncPanelPosition', $html);
+        $this->assertStringContainsString('avicore-select-panel--below', $html);
+        $this->assertStringContainsString('avicore-select-panel--above', $html);
+        $this->assertStringContainsString('listMaxHeight', $html);
+    }
+
     public function test_select_renders_error_state(): void
     {
         $html = Blade::render(<<<'BLADE'
