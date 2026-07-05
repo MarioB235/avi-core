@@ -5,8 +5,17 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-07-04
+
+- **[ui|operario]** KPIs Huevos en Inicio: métricas «Juntados hoy» y «Total del lote» con fondo blanco sólido (`bg-white`); se elimina tinte `avicore-soft` en la primera caja. — `operario.css`, `patrones-mobile-operario.md`
+- **[ui|operario]** KPI «Murieron hoy» en Inicio: fondo blanco, contador siempre en `avicore-danger`; borde rojo más marcado solo si `muertes_hoy > 0`. — `operario.css`, `patrones-mobile-operario.md`
+- **[ui|auth]** Login demo: selector «Perfil demo» con `x-ui.select` (mismo componente que vacunación operario); `demoRoleOptions` solo si demo habilitado. — `login.blade.php`, `Login.php`, `LoginViewTest.php`, `pantallas-flujos.md`, `demo.md`
+- **[ui|design-system]** `x-ui.select`: flip vertical (`--above`/`--below`), altura de lista dinámica según viewport (`syncPanelPosition`), recálculo en `resize`. — `select.blade.php`, `app.css`, `SelectComponentTest.php`, `tokens-componentes.md`, `estandares-codigo.md`, `arbol-proyecto.md`
+
 ## 2026-07-02
 
+- **[operario|feature]** Carga de vacunación en hub operario: tabla `vacunaciones`, `VacunaTipo`, `RegistrarVacunacionAction`, diálogo en `CargarHub` con `x-ui.select`, historial unificado (`OperarioHistorialItem`, `historialPaginado`), ruta `/operario/carga/vacunacion`, ilustración `operario-vacuna`. — migración, modelos, Actions, Livewire, `x-ui.select`, tests Feature, `esquema-bd.md`, `criterios-modelo.md`, `reglas.md`, `pantallas-flujos.md`, `patrones-mobile-operario.md`, `tokens-componentes.md`, `arbol-proyecto.md`, `plan-desarrollo.md`, `estandares-codigo.md`
+- **[operario|fix]** Post-auditoría msg 3 (vacunación): `wire:model.defer` en selects, opción activa más suave (`primary/8`), botón Guardar sin `transition-colors`, DI `OperarioGalponResumenService` en `CargarHub`; tests historial merge, deep link HTTP vacunación, Action/hub multiempresa y galpón caído. — `select.blade.php`, `carga-vacunacion-form.blade.php`, `app.css`, `CargarHub.php`, tests operario/service/ui
 - **[operario|fix]** Post-auditoría msg 3 (carga muertes + UI): tests multiempresa en Action (`AuthorizationException`), redirect galpón no disponible (`CargaMuertes` + `guardarMuertes`), deep link HTTP `?form=muertes`, assert `operario-reloj` en historial; `CargarHub` con `ensureGalponSeleccionado` / `resolveGalponParaGuardar`; `SheetComponentTest` alineado a copy «¿Cuántos huevos?». — `CargarHub.php`, `OperarioCargaMuertesTest.php`, `OperarioBottomNavTest.php`, `SheetComponentTest.php`, `arbol-proyecto.md`, `estandares-codigo.md`, `patrones-mobile-operario.md`, `pantallas-flujos.md`
 - **[ui|operario]** Historial: chip galpón vuelve a icono `warehouse` (como Cargar); se elimina ilustración `operario-galpon.svg`. — `historial-hero.blade.php`, `operario.css`, `IllustrationComponentTest.php`, `patrones-mobile-operario.md`, `tokens-componentes.md`
 - **[ui|operario]** Ilustraciones `operario-reloj` en Historial (cabecera/empty, contenedor KPI); tiles Cargar con `operario-huevo` / `operario-ave`. — `operario-reloj.svg`, `historial.blade.php`, `cargar-hub.blade.php`, `operario.css`, `IllustrationComponentTest.php`, `patrones-mobile-operario.md`, `tokens-componentes.md`

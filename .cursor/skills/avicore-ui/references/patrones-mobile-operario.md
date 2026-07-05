@@ -20,7 +20,7 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 - Ítems inactivos: círculo soft verde (`size-9`), label semibold en `avicore-primary` (clase `--active` en Blade; sin atributo `data-current`).
 - `wire:navigate.hover` en links del dock; transición de página con `wire:transition="operario-page"` (View Transitions API) + morph suave del ítem activo (300ms).
 - Cambio de galpón **solo** en Inicio (chip desplegable en hero).
-- Sin galpón al intentar cargar: redirect a Inicio con selector abierto — flash `abrirSelectorGalpon` (`CargarHub`, `CargaHuevos`, `CargaMuertes`); enlace del chip vacío en hero Cargar/Historial puede usar `?abrir_galpon=1` (ambos los consume `Home`). `CargarHub` centraliza la comprobación en `ensureGalponSeleccionado` / `resolveGalponParaGuardar`.
+- Sin galpón al intentar cargar: redirect a Inicio con selector abierto — flash `abrirSelectorGalpon` (`CargarHub`, `CargaHuevos`, `CargaMuertes`, `CargaVacunacion`); enlace del chip vacío en hero Cargar/Historial puede usar `?abrir_galpon=1` (ambos los consume `Home`). `CargarHub` centraliza la comprobación en `ensureGalponSeleccionado` / `resolveGalponParaGuardar`.
 
 ## Header contextual
 
@@ -37,7 +37,7 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 - `<x-operario.home-hero>` — bloque único con fondo degradado suave, header, saludo horario compacto («¡Buenos días!» — sin repetir nombre; ya está en nav) + subtítulo «Resumen de hoy del galpón que elegiste.» y chip galpón desplegable (icono `warehouse`; vacío = ámbar + «Sin seleccionar»).
 - Heroes Inicio/Cargar/Historial comparten **misma altura** (sin `min-height` fijo; contenido + chip galpón) y hoja `.avicore-operario-home-sheet` con `margin-top: -2rem` / `padding-top: 1.35rem`.
 - **Inicio sin CTA a Cargar** — la navegación a `/operario/cargar` es solo por la pestaña inferior del dock (no se usa `x-operario.primary-action` en la hoja).
-- **Resumen galpón** — 2 paneles con banda superior verde (`primary` aves · `secondary` huevos), borde y degradado `avicore-soft`; cajas con borde verde suave; nota en pill `soft`. Iconos KPI: ilustraciones en `avicore-operario-carga-tile__icon` (mismo contenedor que tiles Cargar: `size-11`, `rounded-xl`).
+- **Resumen galpón** — 2 paneles con banda superior verde (`primary` aves · `secondary` huevos), borde y degradado `avicore-soft`; métrica «En el galpón ahora» con fondo `soft`; «Murieron hoy» con fondo blanco, contador en `avicore-danger` y borde rojo suave (más marcado si `muertes_hoy > 0`); métricas de huevos con fondo blanco (`bg-white`) y borde `secondary/30`; nota en pill `soft`. Iconos KPI: ilustraciones en `avicore-operario-carga-tile__icon` (mismo contenedor que tiles Cargar: `size-11`, `rounded-xl`).
 - **Lotes activos** — una línea por lote; cada ítem es card con borde `primary/25`, franja lateral verde y degradado `soft`.
 - Sin galpón: empty «Seleccioná un galpón…» + botón elegir; KPIs y lotes ocultos.
 - Historial solo por pestaña inferior del dock (sin enlace en hoja).
@@ -48,7 +48,7 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 
 ## Formularios de carga
 
-- Hub **Cargar** (`/operario/cargar`): hero «Registrar» + «¿Qué querés registrar?»; grilla **2 tiles** (`--pair`: Huevos · Muertes) sin alimento/combinada en móvil operario. Tiles con ilustraciones `operario-huevo` / `operario-ave` (mismas que Inicio). Tile activo (`--action`): borde sólido primario, badge en lenguaje llano («Cuántos juntaste hoy», «Cuántas aves murieron»). Diálogos `x-ui.dialog` con preguntas directas y botón «Guardar». Snackbar: «Huevos guardados.» / «Muertes guardadas.»
+- Hub **Cargar** (`/operario/cargar`): hero «Registrar» + «¿Qué querés registrar?»; grilla **3 tiles** (`--triple`: Huevos · Muertes arriba; Vacunación ancho abajo) sin alimento/combinada en móvil operario. Tiles con ilustraciones `operario-huevo` / `operario-ave` / `operario-vacuna`. Tile activo (`--action`): borde sólido primario, badge en lenguaje llano («Cuántos juntaste hoy», «Cuántas aves murieron», «Registrá por lote»). Diálogos `x-ui.dialog` con preguntas directas y botón «Guardar» (`!transition-none` en vacunación para evitar parpadeo). Vacunación: `x-ui.select` con `wire:model.defer` (lote + vacuna). Snackbar: «Huevos guardados.» / «Muertes guardadas.» / «Vacunación guardada.»
 - Inputs numéricos grandes; botón guardar ancho completo en móvil.
 - Validación inline; sin modales innecesarios.
 - Tras guardar: feedback claro (toast o redirect a historial).
@@ -56,8 +56,8 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 ## Historial operario
 
 - `<x-operario.historial-hero>` — hero con degradado suave (igual que Inicio/Cargar); chip galpón con icono `warehouse` (vacío → enlace `?abrir_galpon=1`); copy «Todo lo que cargaste, del más nuevo al más viejo.».
-- `.avicore-operario-home-sheet` — **todos** los registros activos del operario (huevos, muertes, alimento, combinado), orden **cronológico descendente** (más reciente arriba). Cabecera y empty con `operario-reloj` en `avicore-operario-carga-tile__icon` (igual que KPIs Inicio y tiles Cargar). Lista simple `.avicore-operario-historial-list`: una línea con cantidad (`cantidadResumen()`, sin repetir tipo ni galpón), observación opcional debajo, fecha/hora a la derecha; ítems de mortalidad (tipo `muertes` o combinado con muertes) en `text-avicore-danger` (`.avicore-operario-historial-list__item--muertes`). Filtro opcional por fecha (`?fecha=`; validación Livewire: `date`, `before_or_equal:today`; error visible con `role="alert"`); paginación Livewire (20). Cuenta/logout solo en menú avatar del header.
-- Tests: `OperarioHistorialTest` (tipos, filtro, fechas inválidas/futuras, paginación, multiempresa); `OperarioBottomNavTest` (HTTP historial + ilustración `operario-reloj`); `IllustrationComponentTest`; `OperarioNavTest`; `OperarioUserMenuTest`.
+- `.avicore-operario-home-sheet` — **todos** los registros activos del operario (`registros_operativos` + `vacunaciones`), orden **cronológico descendente** (más reciente arriba). Cabecera y empty con `operario-reloj` en `avicore-operario-carga-tile__icon` (igual que KPIs Inicio y tiles Cargar). Lista simple `.avicore-operario-historial-list`: una línea con resumen (`cantidadResumen()` o `Vacunacion::cantidadResumen()`), observación opcional debajo, fecha/hora a la derecha; ítems de mortalidad en `text-avicore-danger` (`.avicore-operario-historial-list__item--muertes`); vacunaciones en verde primario (`.avicore-operario-historial-list__item--vacunacion`). Filtro opcional por fecha (`?fecha=`; validación Livewire: `date`, `before_or_equal:today`; error visible con `role="alert"`); paginación Livewire (20). Cuenta/logout solo en menú avatar del header.
+- Tests: `OperarioHistorialTest` (tipos, vacunaciones mezcladas, filtro, fechas inválidas/futuras, paginación, multiempresa); `OperarioCargaVacunacionTest`; `OperarioGalponServiceTest` (`historialPaginado` con vacunaciones); `OperarioBottomNavTest` (HTTP historial + deep link `?form=vacunacion` + ilustración `operario-reloj`); `IllustrationComponentTest`; `OperarioNavTest`; `OperarioUserMenuTest`; `SelectComponentTest`.
 
 ## Motion (operario)
 

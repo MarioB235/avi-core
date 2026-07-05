@@ -18,10 +18,14 @@ erDiagram
     empresas ||--o{ galpones : tiene
     empresas ||--o{ lotes : tiene
     empresas ||--o{ registros_operativos : tiene
+    empresas ||--o{ vacunaciones : tiene
     granjas ||--o{ galpones : contiene
     galpones ||--o{ lotes : aloja
     galpones ||--o{ registros_operativos : recibe
+    galpones ||--o{ vacunaciones : recibe
+    lotes ||--o{ vacunaciones : vacunado
     users ||--o{ registros_operativos : registra
+    users ||--o{ vacunaciones : registra
 ```
 
 ---
@@ -123,6 +127,27 @@ erDiagram
 | motivo_anulacion | text | Sí | |
 | created_at, updated_at | timestamp | No | Fecha/hora de carga = created_at |
 
+### `vacunaciones`
+
+Registro operativo de vacunación por lote (tabla propia; no es fila en `registros_operativos`). Historial operario une ambas fuentes vía `OperarioGalponService::historialPaginado`.
+
+| Campo | Tipo | Null | Notas |
+|-------|------|------|-------|
+| id | bigint PK | No | |
+| empresa_id | FK | No | |
+| galpon_id | FK galpones | No | Galpón de trabajo al registrar |
+| lote_id | FK lotes | No | Lote vacunado |
+| user_id | FK users | No | Operario que registra |
+| vacuna | string | No | Enum `VacunaTipo` (`newcastle`, `bronquitis`, `gumboro`, `encefalomielitis`, `pox`) |
+| observacion | text | Sí | |
+| estado | string | No | `activo`, `anulado` — mismo criterio que registros operativos |
+| anulado_at | timestamp | Sí | |
+| anulado_por | FK users | Sí | |
+| motivo_anulacion | text | Sí | |
+| created_at, updated_at | timestamp | No | Fecha/hora de carga = created_at |
+
+**Relación:** `Lote::vacunaciones()` · resumen en UI: `Vacunacion::cantidadResumen()` («Vacuna {tipo} · lote {código}»).
+
 ---
 
 ## Índices recomendados
@@ -131,6 +156,7 @@ erDiagram
 |-------|--------|
 | Varias | `empresa_id` |
 | registros_operativos | `galpon_id`, `created_at`, `tipo` |
+| vacunaciones | `empresa_id`, `(lote_id, created_at)`, `(galpon_id, created_at)` |
 | lotes | `estado` |
 | users | `(empresa_id, documento)` único |
 | users | `documento` único parcial (`empresa_id IS NULL`, Admin AviCore) |

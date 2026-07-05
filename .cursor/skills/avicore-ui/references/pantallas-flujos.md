@@ -40,7 +40,7 @@ Permitir el acceso seguro al sistema.
 - En **móvil** (<1024px): fondo `login-background.jpg` (granja al atardecer), logo apilado centrado sobre la foto (`entrance` — órbita del isotipo alrededor del wordmark) y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
-- **Modo demo (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`):** credencial única `000000000` / `Avicore2026!` y selector de perfil; autentica al usuario seedeado del rol elegido (`DemoLoginService`). No visible en producción.
+- **Modo demo (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`):** credencial única `000000000` / `Avicore2026!` y selector de perfil (`x-ui.select`, mismo componente que vacunación en operario); autentica al usuario seedeado del rol elegido (`DemoLoginService`). No visible en producción.
 - Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre un diálogo con contacto de soporte (WhatsApp y correo configurables en `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
 
 ### Validaciones
@@ -152,8 +152,8 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 | Pestaña | Ruta | Contenido |
 |---------|------|-----------|
 | Inicio | `/operario` | Hero compacto, saludo, selector galpón, resumen KPI (aves, huevos/muertes hoy, acumulado, lotes activos) |
-| Cargar | `/operario/cargar` | Hero degradado + hoja con tipos; formulario huevos en diálogo centrado (`x-ui.dialog` + `wire:model`); deep link `?form=huevos` o `/operario/carga/huevos`; chip galpón solo lectura (vacío → enlace `?abrir_galpon=1` en Inicio) |
-| Historial | `/operario/historial` | Hero degradado; listado de **todos** los registros del operario (todos los tipos), orden descendente; filtro opcional `?fecha=` (validado: `date`, no futura; error visible); paginación 20; ítems sin icono; chip galpón solo lectura |
+| Cargar | `/operario/cargar` | Hero degradado + hoja con tipos (Huevos · Muertes · Vacunación); diálogos `x-ui.dialog`; deep link `?form=huevos|muertes|vacunacion` o rutas redirect `/operario/carga/*`; chip galpón solo lectura (vacío → enlace `?abrir_galpon=1` en Inicio) |
+| Historial | `/operario/historial` | Hero degradado; listado de **todos** los registros del operario (`registros_operativos` + `vacunaciones`), orden descendente; filtro opcional `?fecha=` (validado: `date`, no futura; error visible); paginación 20; ítems sin icono; chip galpón solo lectura |
 
 En **Inicio**, el header fijo muestra logo + usuario (rol con `label()`); el avatar abre menú cuenta (perfil y logout). El galpón se elige con chip desplegable en el hero («Estado de hoy del galpón.»). La hoja blanca muestra KPIs y lotes activos del galpón seleccionado (`OperarioGalponResumenService`; edad de lote vía `edadSemanas()`), sin repetir el nombre del galpón ni enlace a Historial. Sin galpón: mensaje para elegir uno. Cargar e Historial por pestañas del dock.
 
@@ -170,17 +170,19 @@ Permitir carga rápida desde celular.
 
 **Inicio:** saludo, chip galpón (selector), KPIs del galpón (aves, huevos/muertes hoy, acumulado), lista de lotes activos.
 
-**Cargar:** solo Huevos y Muertes (2 tiles grandes); sin alimento ni combinada en móvil operario. Preguntas directas en diálogo.
+**Cargar:** Huevos, Muertes y Vacunación (grilla `--triple`: dos tiles arriba + vacunación ancho en fila inferior); sin alimento ni combinada en móvil operario. Preguntas directas en diálogo; vacunación usa `x-ui.select` (lote + tipo de vacuna).
 
-**Historial:** listado completo del operario, filtro por fecha, paginación.
+**Historial:** listado completo del operario (cargas + vacunaciones), filtro por fecha, paginación.
 
 **Compartido:** logo, menú cuenta (avatar), dock inferior (Inicio · Cargar · Historial).
 
 ### Flujo
 
 ```text
-Seleccionar tipo de carga en hub → diálogo centrado con formulario (solo cantidad) → guardar → snackbar → permanece en hub Cargar
+Seleccionar tipo de carga en hub → diálogo centrado con formulario → guardar → snackbar → permanece en hub Cargar
 ```
+
+Huevos/muertes: solo cantidad. Vacunación: lote activo del galpón + tipo de vacuna (`VacunaTipo`); auto-selección de lote si hay uno solo.
 
 ---
 
@@ -250,14 +252,35 @@ Permitir elegir galpón de trabajo.
 
 ---
 
+## 8.5 Pantalla: Carga de vacunación
+
+**Estado MVP (2026-07-02):** formulario vacunación en diálogo centrado desde hub `/operario/cargar` (`CargarHub` + `x-ui.dialog` + `partials/carga-vacunacion-form`); lote y vacuna obligatorios; `x-ui.select` con `wire:model.defer` (sin re-render del botón Guardar al elegir); deep link `/operario/carga/vacunacion` → redirect con `?form=vacunacion` (`CargaVacunacion` usa vista `livewire._redirect-placeholder`). Evento tiempo real: pendiente (Bloque 6).
+
+### Campos
+
+- Galpón actual (contexto en hero; no se repite en el diálogo).
+- Lote a vacunar (solo lotes activos/en producción del galpón).
+- Tipo de vacuna (`VacunaTipo`).
+
+### Reglas
+
+- Fecha y hora automática (`created_at`).
+- Requiere galpón disponible; sin galpón o galpón no disponible → redirección a `/operario` con selector abierto.
+- `RegistrarVacunacionAction` valida empresa, permiso (`GalponPolicy`), estado del galpón, pertenencia lote↔galpón y estado del lote.
+- Sin lotes activos: mensaje en el diálogo (no se muestra formulario).
+- Snackbar: «Vacunación guardada.»
+
+---
+
 ## 9–10. Cargas operario (parcial)
 
-**Estado:** huevos y muertes implementados en hub `/operario/cargar`; alimento y combinada pendientes (fases 14–15). Reglas en [`avicore-negocio/references/reglas.md`](../../avicore-negocio/references/reglas.md).
+**Estado:** huevos, muertes y vacunación implementados en hub `/operario/cargar`; alimento y combinada pendientes (fases 14–15). Reglas en [`avicore-negocio/references/reglas.md`](../../avicore-negocio/references/reglas.md).
 
 | Pantalla | Fase | Estado |
 |----------|------|--------|
 | Carga de huevos | 12 | Hecho — diálogo en hub; `RegistrarCargaHuevosAction` |
 | Carga de muertes | 13 | Hecho — diálogo en hub; `RegistrarCargaMuertesAction`; deep link `?form=muertes` |
+| Carga de vacunación | — | Hecho — diálogo en hub; `RegistrarVacunacionAction`; deep link `?form=vacunacion` |
 | Carga de alimento | 14 | Pendiente — kilos; **fuera del hub operario móvil** (encargado/admin o fase posterior) |
 | Carga combinada | 15 | **Defer** — dos cargas rápidas en lugar de formulario mixto |
 

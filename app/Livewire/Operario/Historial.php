@@ -44,8 +44,7 @@ class Historial extends Component
         $galpon = $user ? $operarioGalponService->galponActual($user) : null;
 
         $registros = $operarioGalponService
-            ->historialCargasQuery($user, $this->fecha)
-            ->paginate(20);
+            ->historialPaginado($user, $this->fecha, 20, $this->getPage());
 
         $fechaEtiqueta = $this->fecha !== null
             ? Carbon::parse($this->fecha)->locale('es')->isoFormat('D MMM')

@@ -42,7 +42,7 @@ Tras cambiar fondos JPEG/PNG: `python scripts/optimize-brand-assets.py` (comprim
 
 **Iconos Lucide:** fuente preferida en `resources/images/icons/` (nombres kebab-case); `App\Support\IconSvg` carga el SVG del disco cuando existe y, si no, usa fallback inline en `components/ui/icons/inline.blade.php`. En pantalla: `x-ui.icon` con `stroke="currentColor"` (color vía Tailwind).
 
-**Ilustraciones KPI / marca:** SVG a color en `resources/images/illustrations/` (`operario-ave`, `operario-huevo`, `operario-reloj`); `App\Support\IllustrationSvg` + `x-ui.illustration` (viewBox responsivo, sin envoltorio Lucide). Contenedor unificado en KPIs Inicio, tiles Cargar e Historial: `.avicore-operario-carga-tile__icon` (`size-11`, `rounded-xl`).
+**Ilustraciones KPI / marca:** SVG a color en `resources/images/illustrations/` (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`); `App\Support\IllustrationSvg` + `x-ui.illustration` (viewBox responsivo, sin envoltorio Lucide). Contenedor unificado en KPIs Inicio, tiles Cargar e Historial: `.avicore-operario-carga-tile__icon` (`size-11`, `rounded-xl`).
 
 Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card` (elevación `shadow-sm`/`shadow-md`, excepción documentada frente a cards KPI). Panel de marca escritorio: `.avicore-auth-brand` alinea logo (`x-ui.logo` size `hero`) y copy en columna (`auth-brand-panel`). Fondos referenciados desde Vite en `resources/css/app.css`.
 
@@ -88,13 +88,14 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 |------------|-------------------|
 | `x-ui.button` | `primary`, `secondary`, `danger`, `ghost` — min-h 44px, `focus-visible` |
 | `x-ui.input` | `aria-invalid`, estados error, `hint`, `toggle-password` (un solo toggle visible); icono leading en `avicore-primary`, toggle ojo en `avicore-muted` |
+| `x-ui.select` | Lista desplegable custom (Alpine + listbox): trigger `.avicore-select-trigger`, panel `.avicore-select-panel--below` \| `--above` (flip según espacio en viewport vía `syncPanelPosition()`), lista `.avicore-select-list` con `maxHeight` dinámico; opción activa `.avicore-select-option--active` (`bg-avicore-primary/8` + texto `avicore-text`, ring suave); `wire:model` vía `@entangle` — **defer por defecto** (`.live` solo con `wire:model.live`); en formularios operario preferir `wire:model.defer`; `placeholder` + `options`; recálculo en `resize` mientras está abierto |
 | `x-ui.card` | Borde simple, sin sombra; `padding`: `default`, `compact`, `none` |
 | `x-ui.alert` | `info`, `success`, `warning`, `danger` |
 | `x-ui.snackbar-host` | Toast fijo — fondo sólido suave por variante (`success` = `avicore-soft`, texto oscuro); `context` (`operario` \| `default`), auto-cierre ~4,5s, botón cerrar, evento `snackbar-show`; flash `status` + `status_variant` |
 | `x-ui.badge` | Estados semánticos; variante `sidebar` para badges sobre fondo verde |
 | `x-ui.logo` | Marca — `public/images/brand/logo-avicore.png` + subtítulo opcional; `entrance` (órbita isotipo en `hero` / `auth-mobile` con `showName`) en auth; `theme="on-primary"` en sidebar admin (texto blanco, icono sobre fondo blanco); `stacked` + `size="auth-mobile"` en login móvil |
 | `x-ui.icon` | SVG inline por nombre (`menu`, `document`, `lock`, `eye`, `circle-x`, `mail`, `message-circle-check`, …) — nav, inputs, acciones; fuente Lucide en `resources/images/icons/` |
-| `x-ui.illustration` | Ilustración SVG a color por nombre (`operario-ave`, `operario-huevo`, `operario-reloj`, …) — KPIs, tiles Cargar, Historial; fuente en `resources/images/illustrations/` |
+| `x-ui.illustration` | Ilustración SVG a color por nombre (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`, …) — KPIs, tiles Cargar, Historial; fuente en `resources/images/illustrations/` |
 | `x-ui.kpi-card` | Label + valor + hint; prop `icon` opcional; para dashboard e Inicio admin |
 | `x-ui.nav-link` | Sidebar admin — props `icon`, `active`, `disabled` |
 | `x-ui.empty-state` | Empty state con icono, título y descripción |

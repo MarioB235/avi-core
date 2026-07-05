@@ -61,6 +61,10 @@ class LoginViewTest extends TestCase
 
         $this->assertStringContainsString('name="demoRole"', $html);
         $this->assertStringContainsString('Perfil demo', $html);
+        $this->assertStringContainsString('avicore-select-trigger', $html);
+        $this->assertStringContainsString('avicore-select-panel', $html);
+        $this->assertStringContainsString('role="listbox"', $html);
+        $this->assertStringContainsString('Operario', $html);
         $this->assertStringContainsString('Modo demo — solo desarrollo local', $html);
         $this->assertStringContainsString('Admin AviCore', $html);
     }

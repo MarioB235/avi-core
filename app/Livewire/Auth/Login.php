@@ -76,8 +76,14 @@ class Login extends Component
 
     public function render()
     {
-        return view('livewire.auth.login', [
-            'demoRoles' => UserRole::cases(),
-        ]);
+        $viewData = [];
+
+        if ($this->demoLoginEnabled) {
+            $viewData['demoRoleOptions'] = collect(UserRole::cases())
+                ->mapWithKeys(fn (UserRole $role): array => [$role->value => $role->label()])
+                ->all();
+        }
+
+        return view('livewire.auth.login', $viewData);
     }
 }

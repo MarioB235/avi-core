@@ -14,7 +14,12 @@
         @enderror
     </div>
 
-    <x-ui.button type="submit" class="w-full py-4 text-base" wire:loading.attr="disabled">
+    <x-ui.button
+        type="submit"
+        class="w-full py-4 text-base"
+        wire:loading.attr="disabled"
+        wire:target="guardarMuertes"
+    >
         Guardar
     </x-ui.button>
 </form>
