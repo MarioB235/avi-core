@@ -40,7 +40,7 @@ Permitir el acceso seguro al sistema.
 - En **móvil** (<1024px): fondo `login-background.jpg` (granja al atardecer), logo apilado centrado sobre la foto (`entrance` — órbita del isotipo alrededor del wordmark) y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
-- **Modo demo (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`):** credencial única `000000000` / `Avicore2026!` y selector de perfil; autentica al usuario seedeado del rol elegido (`DemoLoginService`). No visible en producción.
+- **Modo demo (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`):** credencial única `000000000` / `Avicore2026!` y selector de perfil (`x-ui.select`, mismo componente que vacunación en operario); autentica al usuario seedeado del rol elegido (`DemoLoginService`). No visible en producción.
 - Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre un diálogo con contacto de soporte (WhatsApp y correo configurables en `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
 
 ### Validaciones

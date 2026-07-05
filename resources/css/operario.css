@@ -477,23 +477,19 @@
     }
 
     .avicore-operario-kpi-panel__metric--warm {
-        @apply border border-avicore-primary/15 bg-stone-50;
+        @apply border border-red-200/70 bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.8)];
     }
 
-    .avicore-operario-kpi-panel__metric--warm-alert {
-        @apply border-red-200/80 bg-red-50/40;
-    }
-
-    .avicore-operario-kpi-panel__metric--warm-alert .avicore-operario-kpi-panel__value {
+    .avicore-operario-kpi-panel__metric--warm .avicore-operario-kpi-panel__value {
         @apply text-avicore-danger;
     }
 
-    .avicore-operario-kpi-panel__metric--outline {
-        @apply border border-avicore-secondary/30 bg-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)];
+    .avicore-operario-kpi-panel__metric--warm-alert {
+        @apply border-red-300/90;
     }
 
-    .avicore-operario-kpi-panel--huevos .avicore-operario-kpi-panel__metric--outline:first-child {
-        @apply border-avicore-primary/25 bg-avicore-soft/35;
+    .avicore-operario-kpi-panel__metric--outline {
+        @apply border border-avicore-secondary/30 bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.8)];
     }
 
     .avicore-operario-kpi-panel__value {

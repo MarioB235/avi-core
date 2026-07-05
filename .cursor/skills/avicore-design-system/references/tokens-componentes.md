@@ -88,7 +88,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 |------------|-------------------|
 | `x-ui.button` | `primary`, `secondary`, `danger`, `ghost` — min-h 44px, `focus-visible` |
 | `x-ui.input` | `aria-invalid`, estados error, `hint`, `toggle-password` (un solo toggle visible); icono leading en `avicore-primary`, toggle ojo en `avicore-muted` |
-| `x-ui.select` | Lista desplegable custom (Alpine + listbox): trigger `.avicore-select-trigger`, panel `.avicore-select-panel`, opción activa `.avicore-select-option--active` (`bg-avicore-primary/8` + texto `avicore-text`, ring suave); `wire:model` vía `@entangle` — **defer por defecto** (`.live` solo con `wire:model.live`); en formularios operario preferir `wire:model.defer`; `placeholder` + `options` |
+| `x-ui.select` | Lista desplegable custom (Alpine + listbox): trigger `.avicore-select-trigger`, panel `.avicore-select-panel--below` \| `--above` (flip según espacio en viewport vía `syncPanelPosition()`), lista `.avicore-select-list` con `maxHeight` dinámico; opción activa `.avicore-select-option--active` (`bg-avicore-primary/8` + texto `avicore-text`, ring suave); `wire:model` vía `@entangle` — **defer por defecto** (`.live` solo con `wire:model.live`); en formularios operario preferir `wire:model.defer`; `placeholder` + `options`; recálculo en `resize` mientras está abierto |
 | `x-ui.card` | Borde simple, sin sombra; `padding`: `default`, `compact`, `none` |
 | `x-ui.alert` | `info`, `success`, `warning`, `danger` |
 | `x-ui.snackbar-host` | Toast fijo — fondo sólido suave por variante (`success` = `avicore-soft`, texto oscuro); `context` (`operario` \| `default`), auto-cierre ~4,5s, botón cerrar, evento `snackbar-show`; flash `status` + `status_variant` |

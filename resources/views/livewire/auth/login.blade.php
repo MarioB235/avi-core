@@ -28,25 +28,14 @@
             />
 
             @if ($demoLoginEnabled)
-                <div class="space-y-1.5">
-                    <label for="demoRole" class="block text-sm font-medium text-avicore-text">
-                        Perfil demo
-                    </label>
-                    <select
-                        id="demoRole"
-                        name="demoRole"
-                        wire:model="demoRole"
-                        class="avicore-input avicore-input--plain block w-full min-h-11 rounded-lg border border-avicore-border-strong bg-avicore-card px-3 py-2.5 text-sm text-avicore-text outline-none transition-colors focus:border-avicore-primary"
-                    >
-                        @foreach ($demoRoles as $role)
-                            <option value="{{ $role->value }}">{{ $role->label() }}</option>
-                        @endforeach
-                    </select>
-                    <p class="text-xs text-avicore-muted">Modo demo — solo desarrollo local</p>
-                    @error('demoRole')
-                        <p class="text-sm text-avicore-danger" role="alert">{{ $message }}</p>
-                    @enderror
-                </div>
+                <x-ui.select
+                    label="Perfil demo"
+                    name="demoRole"
+                    wire:model="demoRole"
+                    :options="$demoRoleOptions"
+                    hint="Modo demo — solo desarrollo local"
+                    required
+                />
             @endif
 
             <label class="flex min-h-11 cursor-pointer items-center gap-2 text-sm text-avicore-muted">

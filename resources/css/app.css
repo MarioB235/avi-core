@@ -179,11 +179,19 @@
     }
 
     .avicore-select-panel {
-        @apply absolute inset-x-0 top-full z-50 mt-1.5 overflow-hidden rounded-xl border border-avicore-border-strong bg-avicore-card shadow-[0_12px_32px_rgba(15,23,42,0.14)] ring-1 ring-avicore-primary/10;
+        @apply absolute inset-x-0 z-50 overflow-hidden rounded-xl border border-avicore-border-strong bg-avicore-card shadow-[0_12px_32px_rgba(15,23,42,0.14)] ring-1 ring-avicore-primary/10;
+    }
+
+    .avicore-select-panel--below {
+        @apply top-full mt-1.5;
+    }
+
+    .avicore-select-panel--above {
+        @apply bottom-full mb-1.5;
     }
 
     .avicore-select-list {
-        @apply max-h-56 overflow-y-auto p-1;
+        @apply overflow-y-auto p-1;
     }
 
     .avicore-select-option {
