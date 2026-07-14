@@ -728,7 +728,7 @@
     }
 
     .avicore-operario-historial-list {
-        @apply overflow-hidden rounded-xl border border-avicore-border/80 bg-avicore-card divide-y divide-avicore-border/70;
+        @apply overflow-hidden rounded-xl border border-avicore-border-strong/70 bg-avicore-card divide-y divide-avicore-border-strong/60;
     }
 
     .avicore-operario-historial-list__item {
@@ -764,28 +764,28 @@
     }
 
     .avicore-operario-historial-filter {
-        @apply mt-3.5 space-y-1.5;
-    }
-
-    .avicore-operario-historial-filter__label {
-        @apply block text-xs font-semibold uppercase tracking-wide text-avicore-muted;
+        @apply mt-3.5 mb-1 rounded-2xl border border-avicore-border-strong/70 bg-avicore-soft/55 p-3;
     }
 
     .avicore-operario-historial-filter__row {
-        @apply flex flex-wrap items-center gap-2;
+        @apply flex items-stretch gap-2;
     }
 
-    .avicore-operario-historial-filter__input {
-        @apply min-h-11 min-w-0 flex-1 rounded-xl border border-avicore-border-strong/80 bg-avicore-surface px-3 py-2 text-sm font-medium text-avicore-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    .avicore-operario-historial-filter__picker {
+        @apply min-w-0 flex-1;
+    }
+
+    .avicore-operario-historial-filter__picker .avicore-date-picker-trigger {
+        @apply w-full rounded-xl border-avicore-border-strong bg-avicore-card shadow-sm;
     }
 
     .avicore-operario-historial-filter__clear {
-        @apply inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl border border-avicore-border-strong/80 bg-avicore-card px-3 text-sm font-semibold text-avicore-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+        @apply inline-flex min-h-11 shrink-0 items-center justify-center self-stretch rounded-xl px-3 text-sm font-semibold text-avicore-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
 
     @media (prefers-reduced-motion: no-preference) {
         .avicore-operario-historial-filter__clear {
-            @apply transition-colors duration-150 ease-out active:bg-avicore-soft;
+            @apply transition-colors duration-150 ease-out active:bg-avicore-soft active:underline;
         }
     }
 

@@ -40,7 +40,7 @@ Permitir el acceso seguro al sistema.
 - En **móvil** (<1024px): fondo `login-background.jpg` (granja al atardecer), logo apilado centrado sobre la foto (`entrance` — órbita del isotipo alrededor del wordmark) y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
-- **Modo demo (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`):** credencial única `000000000` / `Avicore2026!` y selector de perfil (`x-ui.select`, mismo componente que vacunación en operario); autentica al usuario seedeado del rol elegido (`DemoLoginService`). No visible en producción.
+- **Modo demo (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`):** mantener visibles Documento y Contraseña con credencial única `000000000` / `Avicore2026!`; el rol cambia solo con el selector de perfil (`x-ui.select`, mismo componente que vacunación en operario). Autentica al usuario seedeado del rol elegido (`DemoLoginService`). No visible en producción.
 - Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre un diálogo con contacto de soporte (WhatsApp y correo configurables en `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
 
 ### Validaciones
@@ -153,7 +153,7 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 |---------|------|-----------|
 | Inicio | `/operario` | Hero compacto, saludo, selector galpón, resumen KPI (aves, huevos/muertes hoy, acumulado, lotes activos) |
 | Cargar | `/operario/cargar` | Hero degradado + hoja con tipos (Huevos · Muertes · Vacunación); diálogos `x-ui.dialog`; deep link `?form=huevos|muertes|vacunacion` o rutas redirect `/operario/carga/*`; chip galpón solo lectura (vacío → enlace `?abrir_galpon=1` en Inicio) |
-| Historial | `/operario/historial` | Hero degradado; listado de **todos** los registros del operario (`registros_operativos` + `vacunaciones`), orden descendente; filtro opcional `?fecha=` (validado: `date`, no futura; error visible); paginación 20; ítems sin icono; chip galpón solo lectura |
+| Historial | `/operario/historial` | Hero degradado; listado de **todos** los registros del operario (`registros_operativos` + `vacunaciones`), orden descendente; filtro opcional `?fecha=` vía `x-ui.date-picker` (calendario custom bottom sheet; validado: `date`, no futura; un solo error vigente visible en el picker); paginación 20; ítems sin icono; chip galpón solo lectura |
 
 En **Inicio**, el header fijo muestra logo + usuario (rol con `label()`); el avatar abre menú cuenta (perfil y logout). El galpón se elige con chip desplegable en el hero («Estado de hoy del galpón.»). La hoja blanca muestra KPIs y lotes activos del galpón seleccionado (`OperarioGalponResumenService`; edad de lote vía `edadSemanas()`), sin repetir el nombre del galpón ni enlace a Historial. Sin galpón: mensaje para elegir uno. Cargar e Historial por pestañas del dock.
 
@@ -172,7 +172,7 @@ Permitir carga rápida desde celular.
 
 **Cargar:** Huevos, Muertes, Vacunación y (si el rol puede crear lote) **Nuevo lote** — grilla 2×2 con `--quad` para perfiles autorizados; operario ve grilla `--triple` (Huevos · Muertes arriba; Vacunación ancho abajo). Sin alimento ni combinada en móvil operario. Preguntas directas en diálogo; vacunación usa `x-ui.select` (lote + tipo de vacuna); nuevo lote: select galpón, checkboxes Blanca/Colorada, cantidad por tipo, fecha nacimiento.
 
-**Historial:** listado completo del operario (cargas + vacunaciones), filtro por fecha, paginación.
+**Historial:** listado completo del operario (cargas + vacunaciones), filtro por fecha con `x-ui.date-picker` (sin `input type="date"` nativo; error de validación visible bajo el trigger), paginación.
 
 **Compartido:** logo, menú cuenta (avatar), dock inferior (Inicio · Cargar · Historial).
 
@@ -318,4 +318,3 @@ Permitir elegir galpón de trabajo.
 | Usuarios | 5 | Esta guía + permisos |
 | Auditoría | 16 | Esta guía + tabla `auditorias` (cuando exista migración) |
 | Reportes | 19 | `avicore-reportes/references/reportes.md` |
-

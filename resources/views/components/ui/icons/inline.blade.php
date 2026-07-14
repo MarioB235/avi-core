@@ -151,6 +151,10 @@
         <path d="m6 9 6 6 6-6" />
         @break
 
+    @case('chevron-left')
+        <path d="m15 18-6-6 6-6" />
+        @break
+
     @case('chevron-right')
         <path d="m9 18 6-6-6-6" />
         @break
