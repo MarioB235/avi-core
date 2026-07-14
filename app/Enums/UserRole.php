@@ -30,4 +30,20 @@ enum UserRole: string
     {
         return ! $this->isOperario();
     }
+
+    public function canAccessOperarioMobile(): bool
+    {
+        return match ($this) {
+            self::Operario, self::Dueno, self::Administrativo, self::Encargado => true,
+            self::AdminAvicore => false,
+        };
+    }
+
+    public function canCreateLote(): bool
+    {
+        return match ($this) {
+            self::Dueno, self::Administrativo, self::Encargado => true,
+            self::AdminAvicore, self::Operario => false,
+        };
+    }
 }

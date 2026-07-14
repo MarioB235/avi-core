@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Operario;
 
+use App\Actions\Lote\RegistrarLoteAction;
 use App\Actions\Operacion\RegistrarCargaHuevosAction;
 use App\Actions\Operacion\RegistrarCargaMuertesAction;
 use App\Actions\Operacion\RegistrarVacunacionAction;
+use App\Enums\TipoHuevo;
 use App\Enums\VacunaTipo;
 use App\Models\Galpon;
 use App\Models\Lote;
@@ -12,7 +14,9 @@ use App\Services\OperarioGalponResumenService;
 use App\Services\OperarioGalponService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -27,6 +31,8 @@ class CargarHub extends Component
 
     public bool $dialogVacunacionAbierto = false;
 
+    public bool $dialogLoteAbierto = false;
+
     public string $huevos = '';
 
     public string $muertes = '';
@@ -35,13 +41,36 @@ class CargarHub extends Component
 
     public string $vacuna = '';
 
+    public string $loteGalponId = '';
+
+    public bool $tipoBlanco = false;
+
+    public bool $tipoColor = false;
+
+    public string $cantidadBlanco = '';
+
+    public string $cantidadColor = '';
+
+    public string $fechaNacimiento = '';
+
     public function mount(
         OperarioGalponService $operarioGalponService,
         OperarioGalponResumenService $operarioGalponResumenService,
     ): void {
         $form = request()->query('form');
 
-        if (! in_array($form, ['huevos', 'muertes', 'vacunacion'], true)) {
+        if (! in_array($form, ['huevos', 'muertes', 'vacunacion', 'lote'], true)) {
+            return;
+        }
+
+        if ($form === 'lote') {
+            if (! auth()->user()->rol->canCreateLote()) {
+                return;
+            }
+
+            $this->resetFormularioLote($operarioGalponService);
+            $this->dialogLoteAbierto = true;
+
             return;
         }
 
@@ -65,6 +94,23 @@ class CargarHub extends Component
 
         $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService);
         $this->dialogVacunacionAbierto = true;
+    }
+
+    public function abrirFormularioLote(OperarioGalponService $operarioGalponService): void
+    {
+        if (! auth()->user()->rol->canCreateLote()) {
+            return;
+        }
+
+        $this->resetFormularioLote($operarioGalponService);
+        $this->dialogLoteAbierto = true;
+    }
+
+    public function updatedDialogLoteAbierto(bool $abierto, OperarioGalponService $operarioGalponService): void
+    {
+        if (! $abierto) {
+            $this->resetFormularioLote($operarioGalponService);
+        }
     }
 
     public function abrirFormularioHuevos(OperarioGalponService $operarioGalponService): void
@@ -224,6 +270,90 @@ class CargarHub extends Component
         $this->dispatch('snackbar-show', message: 'Vacunación guardada.', variant: 'success');
     }
 
+    public function guardarLote(
+        RegistrarLoteAction $registrarLote,
+        OperarioGalponService $operarioGalponService,
+    ): void {
+        if (! auth()->user()->rol->canCreateLote()) {
+            return;
+        }
+
+        $rules = [
+            'loteGalponId' => ['required', 'integer', 'min:1'],
+            'fechaNacimiento' => ['required', 'date', 'before_or_equal:today'],
+        ];
+
+        if ($this->tipoBlanco) {
+            $rules['cantidadBlanco'] = ['required', 'integer', 'min:1'];
+        }
+
+        if ($this->tipoColor) {
+            $rules['cantidadColor'] = ['required', 'integer', 'min:1'];
+        }
+
+        $validated = $this->validate($rules, [
+            'loteGalponId.required' => 'Elegí el galpón.',
+            'fechaNacimiento.required' => 'Ingresá la fecha aproximada de nacimiento.',
+            'fechaNacimiento.before_or_equal' => 'La fecha de nacimiento no puede ser futura.',
+            'cantidadBlanco.required' => 'Ingresá la cantidad para huevo blanco.',
+            'cantidadBlanco.min' => 'La cantidad debe ser mayor a cero.',
+            'cantidadColor.required' => 'Ingresá la cantidad para huevo colorado.',
+            'cantidadColor.min' => 'La cantidad debe ser mayor a cero.',
+        ]);
+
+        if (! $this->tipoBlanco && ! $this->tipoColor) {
+            $this->addError('tiposHuevo', 'Marcá al menos un tipo de ave.');
+
+            return;
+        }
+
+        $galpon = $operarioGalponService->galponDisponibleParaUsuario(
+            auth()->user(),
+            (int) $validated['loteGalponId'],
+        );
+
+        if ($galpon === null) {
+            $this->addError('loteGalponId', 'El galpón seleccionado no es válido.');
+
+            return;
+        }
+
+        $cantidadesPorTipo = [];
+
+        if ($this->tipoBlanco) {
+            $cantidadesPorTipo[TipoHuevo::Blanco->value] = (int) $validated['cantidadBlanco'];
+        }
+
+        if ($this->tipoColor) {
+            $cantidadesPorTipo[TipoHuevo::Color->value] = (int) $validated['cantidadColor'];
+        }
+
+        try {
+            $lotes = $registrarLote->execute(
+                auth()->user(),
+                $galpon,
+                $cantidadesPorTipo,
+                Carbon::parse($validated['fechaNacimiento']),
+            );
+        } catch (ValidationException $exception) {
+            foreach ($exception->errors() as $field => $messages) {
+                $this->addError($field, $messages[0]);
+            }
+
+            return;
+        }
+
+        $this->dialogLoteAbierto = false;
+        $this->resetFormularioLote($operarioGalponService);
+
+        $codigos = $lotes->pluck('codigo')->join(', ');
+        $mensaje = $lotes->count() === 1
+            ? "Lote {$codigos} registrado."
+            : "Lotes registrados: {$codigos}.";
+
+        $this->dispatch('snackbar-show', message: $mensaje, variant: 'success');
+    }
+
     public function render(
         OperarioGalponService $operarioGalponService,
         OperarioGalponResumenService $operarioGalponResumenService,
@@ -241,6 +371,9 @@ class CargarHub extends Component
             'galponEtiqueta' => $operarioGalponService->etiquetaGalpon($galpon),
             'lotesActivos' => $lotesActivos,
             'vacunas' => VacunaTipo::options(),
+            'puedeRegistrarLote' => auth()->user()->rol->canCreateLote(),
+            'galponesDisponibles' => $operarioGalponService->galponesDisponibles(auth()->user()),
+            'tiposHuevoUi' => TipoHuevo::optionsUi(),
         ]);
     }
 
@@ -300,6 +433,32 @@ class CargarHub extends Component
 
         $this->reset(['vacuna']);
         $this->loteId = $loteId;
+        $this->resetValidation();
+    }
+
+    private function resetFormularioLote(OperarioGalponService $operarioGalponService): void
+    {
+        $galpon = $operarioGalponService->galponActual(auth()->user());
+        $loteGalponId = '';
+
+        if ($galpon !== null) {
+            $loteGalponId = (string) $galpon->id;
+        } else {
+            $primerGalpon = $operarioGalponService->galponesDisponibles(auth()->user())->first();
+
+            if ($primerGalpon !== null) {
+                $loteGalponId = (string) $primerGalpon->id;
+            }
+        }
+
+        $this->reset([
+            'tipoBlanco',
+            'tipoColor',
+            'cantidadBlanco',
+            'cantidadColor',
+            'fechaNacimiento',
+        ]);
+        $this->loteGalponId = $loteGalponId;
         $this->resetValidation();
     }
 

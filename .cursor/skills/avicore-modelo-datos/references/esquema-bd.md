@@ -157,7 +157,7 @@ Registro operativo de vacunación por lote (tabla propia; no es fila en `registr
 | Varias | `empresa_id` |
 | registros_operativos | `galpon_id`, `created_at`, `tipo` |
 | vacunaciones | `empresa_id`, `(lote_id, created_at)`, `(galpon_id, created_at)` |
-| lotes | `estado` |
+| lotes | `estado`, `(empresa_id, codigo)` único |
 | users | `(empresa_id, documento)` único |
 | users | `documento` único parcial (`empresa_id IS NULL`, Admin AviCore) |
 

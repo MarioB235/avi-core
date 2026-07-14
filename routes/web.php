@@ -7,6 +7,7 @@ use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Livewire\Auth\ChangePassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Operario\CargaHuevos;
+use App\Livewire\Operario\CargaLote;
 use App\Livewire\Operario\CargaMuertes;
 use App\Livewire\Operario\CargarHub;
 use App\Livewire\Operario\CargaVacunacion;
@@ -40,6 +41,7 @@ Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
         Route::livewire('/carga/huevos', CargaHuevos::class)->name('carga.huevos');
         Route::livewire('/carga/muertes', CargaMuertes::class)->name('carga.muertes');
         Route::livewire('/carga/vacunacion', CargaVacunacion::class)->name('carga.vacunacion');
+        Route::livewire('/carga/lote', CargaLote::class)->name('carga.lote');
     });
 });
 

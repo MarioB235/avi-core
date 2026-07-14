@@ -12,7 +12,7 @@ class EnsureOperarioAccess
     {
         $user = $request->user();
 
-        if ($user === null || ! $user->rol->isOperario()) {
+        if ($user === null || ! $user->rol->canAccessOperarioMobile()) {
             return redirect()->route($user?->homeRouteName() ?? 'login');
         }
 

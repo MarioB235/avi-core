@@ -170,7 +170,7 @@ Permitir carga rápida desde celular.
 
 **Inicio:** saludo, chip galpón (selector), KPIs del galpón (aves, huevos/muertes hoy, acumulado), lista de lotes activos.
 
-**Cargar:** Huevos, Muertes y Vacunación (grilla `--triple`: dos tiles arriba + vacunación ancho en fila inferior); sin alimento ni combinada en móvil operario. Preguntas directas en diálogo; vacunación usa `x-ui.select` (lote + tipo de vacuna).
+**Cargar:** Huevos, Muertes, Vacunación y (si el rol puede crear lote) **Nuevo lote** — grilla 2×2 con `--quad` para perfiles autorizados; operario ve grilla `--triple` (Huevos · Muertes arriba; Vacunación ancho abajo). Sin alimento ni combinada en móvil operario. Preguntas directas en diálogo; vacunación usa `x-ui.select` (lote + tipo de vacuna); nuevo lote: select galpón, checkboxes Blanca/Colorada, cantidad por tipo, fecha nacimiento.
 
 **Historial:** listado completo del operario (cargas + vacunaciones), filtro por fecha, paginación.
 
@@ -269,6 +269,27 @@ Permitir elegir galpón de trabajo.
 - `RegistrarVacunacionAction` valida empresa, permiso (`GalponPolicy`), estado del galpón, pertenencia lote↔galpón y estado del lote.
 - Sin lotes activos: mensaje en el diálogo (no se muestra formulario).
 - Snackbar: «Vacunación guardada.»
+
+---
+
+## 8.6 Pantalla: Alta de lote nuevo
+
+**Estado MVP (2026-07-05):** formulario en diálogo desde hub `/operario/cargar` (`CargarHub` + `partials/carga-lote-form`); tile «Nuevo lote» en grilla 2×2 (`--quad`); **oculto para operario** (`UserRole::canCreateLote()`). Deep link `/operario/carga/lote` → `?form=lote` (`CargaLote` redirect-only).
+
+### Campos
+
+- Galpón (`disponiblesParaCarga()` de la empresa).
+- Tipo de ave / huevo: multi-selección UI «Blanca» / «Colorada» → `TipoHuevo` (`blanco` / `color`); un lote por tipo marcado.
+- Fecha aproximada de nacimiento (`fecha_nacimiento`).
+- Cantidad por tipo marcado → `cantidad_inicial` de cada lote.
+
+### Reglas
+
+- `codigo` generado en servidor: `{codigo_galpon}-{YYYYMMDD}-{B|C}-{secuencia}`; `fecha_ingreso` = hoy al registrar.
+- `estado` inicial `activo`; suma `cantidad_inicial` a `aves_actuales` del galpón (transacción + lock).
+- `LotePolicy::create` + `RegistrarLoteAction`.
+- Snackbar con código(s) generados: «Lote {codigo} registrado.» o «Lotes registrados: …».
+- Tests: `OperarioCargaLoteTest` (flujo hub, Action, gating por rol, bordes Livewire); deep link HTTP `?form=lote` en `OperarioBottomNavTest`.
 
 ---
 
