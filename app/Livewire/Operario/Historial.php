@@ -4,7 +4,6 @@ namespace App\Livewire\Operario;
 
 use App\Services\OperarioGalponService;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
@@ -46,15 +45,11 @@ class Historial extends Component
         $registros = $operarioGalponService
             ->historialPaginado($user, $this->fecha, 20, $this->getPage());
 
-        $fechaEtiqueta = $this->fecha !== null
-            ? Carbon::parse($this->fecha)->locale('es')->isoFormat('D MMM')
-            : null;
-
         return view('livewire.operario.historial', [
             'galpon' => $galpon,
             'registros' => $registros,
             'galponEtiqueta' => $operarioGalponService->etiquetaGalpon($galpon),
-            'fechaEtiqueta' => $fechaEtiqueta,
+            'fechaError' => $this->getErrorBag()->first('fecha'),
         ]);
     }
 
@@ -62,6 +57,7 @@ class Historial extends Component
     {
         if ($this->fecha === null || $this->fecha === '') {
             $this->fecha = null;
+            $this->resetErrorBag('fecha');
 
             return;
         }
@@ -77,7 +73,12 @@ class Historial extends Component
 
         if ($validator->fails()) {
             $this->fecha = null;
+            $this->resetErrorBag('fecha');
             $this->addError('fecha', (string) $validator->errors()->first('fecha'));
+
+            return;
         }
+
+        $this->resetErrorBag('fecha');
     }
 }

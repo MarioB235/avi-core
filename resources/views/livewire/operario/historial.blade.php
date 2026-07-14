@@ -14,8 +14,8 @@
                     <div class="min-w-0">
                         <p class="avicore-operario-home-section__eyebrow">Tus cargas</p>
                         <h2 class="avicore-operario-home-section__title">
-                            @if ($fechaEtiqueta)
-                                Registros del {{ $fechaEtiqueta }}
+                            @if ($fecha)
+                                Registros del día
                             @else
                                 Todos los registros
                             @endif
@@ -28,16 +28,17 @@
             </div>
 
             <div class="avicore-operario-historial-filter">
-                <label for="historial-fecha" class="avicore-operario-historial-filter__label">
-                    Ver otro día
-                </label>
+                <label for="historial-fecha" class="sr-only">Fecha</label>
                 <div class="avicore-operario-historial-filter__row">
-                    <input
+                    <x-ui.date-picker
                         id="historial-fecha"
-                        type="date"
+                        name="fecha"
+                        placeholder="Elegí un día"
+                        panel-title="Elegí un día"
                         wire:model.live="fecha"
-                        class="avicore-operario-historial-filter__input"
-                        max="{{ now()->format('Y-m-d') }}"
+                        :max="now()->toDateString()"
+                        :error="$fechaError"
+                        class="avicore-operario-historial-filter__picker"
                     />
                     @if ($fecha)
                         <button
@@ -49,9 +50,6 @@
                         </button>
                     @endif
                 </div>
-                @error('fecha')
-                    <p class="text-sm font-medium text-red-600" role="alert">{{ $message }}</p>
-                @enderror
             </div>
 
             <div @class([

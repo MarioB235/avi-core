@@ -47,6 +47,9 @@ class OperarioHistorialTest extends TestCase
         Livewire::actingAs($operario)
             ->test(Historial::class)
             ->assertSee('Todos los registros', false)
+            ->assertSee('avicore-date-picker-trigger', false)
+            ->assertSee('entangle', false)
+            ->assertDontSee('type="date"', false)
             ->assertSee('3 muertes', false)
             ->assertSee('900 huevos', false)
             ->assertSee('avicore-operario-historial-list__item--muertes', false)
@@ -113,10 +116,12 @@ class OperarioHistorialTest extends TestCase
         Livewire::actingAs($operario)
             ->test(Historial::class)
             ->set('fecha', $ayer->toDateString())
+            ->assertSee('Registros del día', false)
             ->assertSee('500 huevos', false)
             ->assertDontSee('2 muertes', false)
             ->call('verTodasLasFechas')
             ->assertSet('fecha', null)
+            ->assertSee('Todos los registros', false)
             ->assertSee('2 muertes', false)
             ->assertSee('500 huevos', false);
     }
@@ -129,9 +134,14 @@ class OperarioHistorialTest extends TestCase
             ->test(Historial::class)
             ->set('fecha', 'no-es-fecha')
             ->assertHasErrors(['fecha'])
+            ->assertSee('La fecha seleccionada no es válida.', false)
+            ->assertSee('avicore-date-picker-trigger--error', false)
             ->assertSet('fecha', null)
             ->set('fecha', now()->addDay()->toDateString())
             ->assertHasErrors(['fecha'])
+            ->assertSee('La fecha no puede ser futura.', false)
+            ->assertDontSee('La fecha seleccionada no es válida.', false)
+            ->assertSee('avicore-date-picker-trigger--error', false)
             ->assertSet('fecha', null);
     }
 

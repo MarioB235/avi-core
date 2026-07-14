@@ -5,8 +5,18 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-07-14
+
+- **[operario|fix]** Post-auditoría msg 3 (Historial + date-picker): `validarFecha` hace `resetErrorBag('fecha')` antes de `addError` (un solo mensaje vigente); error visible vía `fechaError` → `:error` en `x-ui.date-picker`; `dayAriaLabel` parlante en celdas; tests de mensaje visible, bag `$errors` y BottomNav alineado al date-picker. — `Historial.php`, `historial.blade.php`, `date-picker.blade.php`, `OperarioHistorialTest.php`, `DatePickerComponentTest.php`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`, `tokens-componentes.md`, `arbol-proyecto.md`, `estandares-codigo.md`
+- **[ui|operario]** Historial: la fecha concreta solo en el date picker; título «Registros del día» / «Todos los registros» (sin repetir «7 jul»). — `Historial.php`, `historial.blade.php`, `OperarioHistorialTest.php`, `patrones-mobile-operario.md`
+- **[ui|operario]** Historial: se elimina el label «Ver otro día» (redundante con el título); quedan date picker + «Ver todas» cuando hay filtro. — `historial.blade.php`, `operario.css`, `patrones-mobile-operario.md`
+- **[ui|operario]** Historial: filtro con más contraste — bloque `avicore-soft`, date picker en card blanca, «Ver todas» como acción texto en toolbar (deja de ser segunda caja). — `historial.blade.php`, `operario.css`, `patrones-mobile-operario.md`
+- **[ui|operario]** Historial: filtro fecha en columna (picker + «Ver todas» a ancho completo) para alinear altura y touch targets en mobile. — `operario.css`, `historial.blade.php`, `patrones-mobile-operario.md`
+- **[ui|design-system]** `x-ui.date-picker`: calendario custom (Alpine + bottom sheet) con `min`/`max`/`today`, CTA «Hoy» y `wire:model` vía `@entangle`; Historial operario deja de usar `input type="date"` nativo. — `date-picker.blade.php`, `app.css`, `operario.css`, `historial.blade.php`, `DatePickerComponentTest.php`, `OperarioHistorialTest.php`, `tokens-componentes.md`, `pantallas-flujos.md`, `patrones-mobile-operario.md`, `arbol-proyecto.md`, `estandares-codigo.md`
+
 ## 2026-07-05
 
+- **[docs|auth]** Login demo local: se elimina la tabla de perfiles/credenciales del material reutilizable; queda una sola instrucción con documento y contraseña fijos, y el rol cambia únicamente con `Perfil demo`. — `docs/plantillas/desarrollo.html`, `pantallas-flujos.md`
 - **[operario|feature]** Alta de lote nuevo en hub Cargar: `RegistrarLoteAction`, `LotePolicy`, índice único `(empresa_id, codigo)`, código `{galpón}-{YYYYMMDD}-{B|C}-{sec}`; formulario con galpón, tipos Blanca/Colorada (un lote por tipo), fecha nacimiento y cantidad; tile «Nuevo lote» en grilla 2×2 (oculto para operario); ruta `/operario/carga/lote`; `EnsureOperarioAccess` ampliado a dueño/administrativo/encargado. — `app/Actions/Lote/`, `LotePolicy.php`, migración, `CargarHub`, `carga-lote-form`, `UserRole`, `TipoHuevo`, tests, `reglas.md`, `permisos.md`, `pantallas-flujos.md`, `patrones-mobile-operario.md`, `esquema-bd.md`, `arbol-proyecto.md`
 - **[operario|fix]** Post-auditoría msg 3 (alta lote): tests Livewire bordes (fecha futura, galpón no disponible/ajeno, administrativo HTTP+registro, operario no persiste); deep link HTTP `?form=lote` en `OperarioBottomNavTest`; limpieza imports `CargaLote`; `avicore-defer` ilustración tile lote. — `OperarioCargaLoteTest.php`, `OperarioBottomNavTest.php`, `CargaLote.php`, `cargar-hub.blade.php`, `patrones-mobile-operario.md`, `estandares-codigo.md`, `arbol-proyecto.md`
 
