@@ -869,6 +869,10 @@
         @apply col-span-2 max-w-[calc(50%-0.375rem)] justify-self-center min-h-[8.25rem];
     }
 
+    .avicore-operario-carga-grid--quad .avicore-operario-carga-tile {
+        @apply min-h-[8.25rem];
+    }
+
     .avicore-operario-carga-tile {
         @apply flex min-h-[7.5rem] flex-col items-center justify-center rounded-2xl px-3 py-4 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }

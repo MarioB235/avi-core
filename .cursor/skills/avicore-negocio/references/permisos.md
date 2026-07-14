@@ -108,8 +108,9 @@ Puede:
 
 | Rol | Home tras login | Rutas protegidas |
 |---|---|---|
-| Operario | `/operario` | Solo `/operario`; `/admin` redirige a `/operario` |
-| Dueño, Administrativo, Encargado, Admin AviCore | `/admin` | Solo `/admin`; `/operario` redirige a `/admin` |
+| Operario | `/operario` | `/operario` (carga operativa); `/admin` redirige a `/operario` |
+| Dueño, Administrativo, Encargado | `/admin` | `/admin` (panel); también pueden acceder a `/operario` (vista móvil) para carga y alta de lote |
+| Admin AviCore | `/admin` | Solo `/admin`; `/operario` redirige a `/admin` |
 
 Si `must_change_password`, todas las rutas autenticadas excepto `/password/change` redirigen al cambio obligatorio.
 
@@ -144,4 +145,5 @@ No puede:
 
 | Modelo | Policy | Reglas |
 |--------|--------|--------|
-| `Galpon` | `GalponPolicy` | `viewAny` y `view` si el usuario tiene `empresa_id` y coincide con `galpon.empresa_id`. El acceso a rutas `/operario` lo restringe además `EnsureOperarioAccess` (solo rol operario). La selección y carga validan galpón disponible en `OperarioGalponService` y `RegistrarCargaHuevosAction`. |
+| `Galpon` | `GalponPolicy` | `viewAny` y `view` si el usuario tiene `empresa_id` y coincide con `galpon.empresa_id`. El acceso a rutas `/operario` lo restringe `EnsureOperarioAccess` (operario, dueño, administrativo, encargado). La selección y carga validan galpón disponible en `OperarioGalponService` y Actions de carga. |
+| `Lote` | `LotePolicy` | `create` si `empresa_id` y rol `canCreateLote()` (dueño, administrativo, encargado). Alta vía `RegistrarLoteAction` desde hub Cargar (tile oculto para operario). |

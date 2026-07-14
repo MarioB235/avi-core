@@ -192,6 +192,30 @@ class OperarioBottomNavTest extends TestCase
             ->assertDontSee('wire:transition="operario-chrome"', false);
     }
 
+    public function test_carga_lote_highlights_cargar_tab_and_opens_dialog_from_deep_link(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create();
+
+        $encargado = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Encargado,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => $galpon->id,
+        ]);
+
+        $this->actingAs($encargado)
+            ->get(route('operario.cargar', ['form' => 'lote']))
+            ->assertOk()
+            ->assertSee('avicore-operario-tab-bar__item--active', false)
+            ->assertSee('avicore-dialog', false)
+            ->assertSee('Nuevo lote', false)
+            ->assertSee('¿En qué galpón ingresás el lote?', false)
+            ->assertSee('wire:click="abrirFormularioLote"', false)
+            ->assertDontSee('wire:transition="operario-chrome"', false);
+    }
+
     public function test_carga_vacunacion_highlights_cargar_tab_and_opens_dialog_from_deep_link(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);

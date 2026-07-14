@@ -47,6 +47,7 @@
 4. La reapertura de lote cerrado requiere perfil superior y auditoría.
 5. El tipo de huevo se define en el lote.
 6. No se debe usar solamente fecha de nacimiento como identificador.
+7. **Alta de lote (hub Cargar):** solo perfiles con permiso «Crear lote» (dueño, administrativo, encargado; **no** operario). `fecha_ingreso` = día del registro (hoy). `codigo` generado en servidor: `{codigo_galpon}-{YYYYMMDD}-{B|C}-{secuencia}` (B=blanco, C=color; secuencia por galpón + día + tipo). Índice único `(empresa_id, codigo)`. Si el usuario marca ambos tipos (Blanca y Colorada), se crea **un lote por tipo**. `cantidad_inicial` suma a `aves_actuales` del galpón (transacción + `lockForUpdate`). Estado inicial: `activo`. Validación vía `LotePolicy::create` + `RegistrarLoteAction`.
 
 ---
 

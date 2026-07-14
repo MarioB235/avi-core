@@ -5,6 +5,11 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-07-05
+
+- **[operario|feature]** Alta de lote nuevo en hub Cargar: `RegistrarLoteAction`, `LotePolicy`, índice único `(empresa_id, codigo)`, código `{galpón}-{YYYYMMDD}-{B|C}-{sec}`; formulario con galpón, tipos Blanca/Colorada (un lote por tipo), fecha nacimiento y cantidad; tile «Nuevo lote» en grilla 2×2 (oculto para operario); ruta `/operario/carga/lote`; `EnsureOperarioAccess` ampliado a dueño/administrativo/encargado. — `app/Actions/Lote/`, `LotePolicy.php`, migración, `CargarHub`, `carga-lote-form`, `UserRole`, `TipoHuevo`, tests, `reglas.md`, `permisos.md`, `pantallas-flujos.md`, `patrones-mobile-operario.md`, `esquema-bd.md`, `arbol-proyecto.md`
+- **[operario|fix]** Post-auditoría msg 3 (alta lote): tests Livewire bordes (fecha futura, galpón no disponible/ajeno, administrativo HTTP+registro, operario no persiste); deep link HTTP `?form=lote` en `OperarioBottomNavTest`; limpieza imports `CargaLote`; `avicore-defer` ilustración tile lote. — `OperarioCargaLoteTest.php`, `OperarioBottomNavTest.php`, `CargaLote.php`, `cargar-hub.blade.php`, `patrones-mobile-operario.md`, `estandares-codigo.md`, `arbol-proyecto.md`
+
 ## 2026-07-04
 
 - **[ui|operario]** KPIs Huevos en Inicio: métricas «Juntados hoy» y «Total del lote» con fondo blanco sólido (`bg-white`); se elimina tinte `avicore-soft` en la primera caja. — `operario.css`, `patrones-mobile-operario.md`

@@ -26,11 +26,11 @@ avi-core/
 
 **Auth (Bloque 2):** Livewire `Auth/Login`, `Auth/ChangePassword`; middleware en `bootstrap/app.php`; rutas `/dev/*` solo en entorno `local`. Contacto de recuperación MVP: `config/avicore.php` + `SupportContactService` + `x-auth.support-contact-dialog`. Login demo local: `DemoLoginService` + `x-ui.select` «Perfil demo» en `/login` (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN`).
 
-**Operario (slice mínimo):** Livewire `Operario/Home`, `Operario/CargarHub`, `Operario/CargaHuevos`, `Operario/CargaMuertes`, `Operario/CargaVacunacion` (redirect-only), `Operario/Historial`; rutas `/operario`, `/operario/cargar`, `/operario/carga/huevos`, `/operario/carga/muertes`, `/operario/carga/vacunacion`, `/operario/historial`; shell con `x-operario.header`, `x-operario.user-menu`, `x-operario.home-hero`, `x-operario.primary-action`, `x-operario.cargar-hero`, `x-operario.historial-hero`, `x-operario.bottom-nav`, `x-ui.snackbar-host`, `x-ui.select`; carga huevos, muertes y vacunación en hub vía `x-ui.dialog` (`partials/carga-huevos-form`, `partials/carga-muertes-form`, `partials/carga-vacunacion-form`); selector galpón en `Home` + `partials/galpon-chip-selector`; `OperarioGalponService` (`galponDisponibleParaUsuario`, `galponActual`, `seleccionarGalpon`, `galponesDisponibles`, `historialCargasQuery`, `historialPaginado`), `OperarioGalponResumenService` (`resumen`, `edadSemanas`, `lotesActivos`, KPIs y acumulados por galpón), `RegistrarCargaHuevosAction`, `RegistrarCargaMuertesAction`, `RegistrarVacunacionAction`, `Support\OperarioHistorialItem`, `VacunaTipo`, `GalponPolicy`, `OperarioLayoutComposer`, `Support\OperarioNav` (pestañas, iconos y títulos de header).
+**Operario (slice mínimo):** Livewire `Operario/Home`, `Operario/CargarHub`, `Operario/CargaHuevos`, `Operario/CargaMuertes`, `Operario/CargaVacunacion`, `Operario/CargaLote` (redirect-only), `Operario/Historial`; rutas `/operario`, `/operario/cargar`, `/operario/carga/huevos`, `/operario/carga/muertes`, `/operario/carga/vacunacion`, `/operario/carga/lote`, `/operario/historial`; shell con `x-operario.header`, `x-operario.user-menu`, `x-operario.home-hero`, `x-operario.primary-action`, `x-operario.cargar-hero`, `x-operario.historial-hero`, `x-operario.bottom-nav`, `x-ui.snackbar-host`, `x-ui.select`; carga huevos, muertes, vacunación y nuevo lote en hub vía `x-ui.dialog` (`partials/carga-huevos-form`, `partials/carga-muertes-form`, `partials/carga-vacunacion-form`, `partials/carga-lote-form`); selector galpón en `Home` + `partials/galpon-chip-selector`; `OperarioGalponService` (`galponDisponibleParaUsuario`, `galponActual`, `seleccionarGalpon`, `galponesDisponibles`, `historialCargasQuery`, `historialPaginado`), `OperarioGalponResumenService` (`resumen`, `edadSemanas`, `lotesActivos`, KPIs y acumulados por galpón), `RegistrarCargaHuevosAction`, `RegistrarCargaMuertesAction`, `RegistrarVacunacionAction`, `RegistrarLoteAction`, `Support\OperarioHistorialItem`, `VacunaTipo`, `GalponPolicy`, `LotePolicy`, `OperarioLayoutComposer`, `Support\OperarioNav` (pestañas, iconos y títulos de header). `EnsureOperarioAccess`: operario + dueño/administrativo/encargado.
 
 **Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php`; `tests/Feature/Services/DemoLoginServiceTest.php`; `tests/Feature/Ui/LoginViewTest.php` (render login, demo `x-ui.select` + listbox); `tests/Feature/Ui/PublicLayoutTest.php` (shell login móvil + panel marca desktop, logo `entrance`); `tests/Feature/Ui/LogoComponentTest.php` (variantes logo, órbita `entrance`); `tests/Feature/Ui/SelectComponentTest.php` (contrato `x-ui.select`, posicionamiento flip).
 
-**Tests operario:** `tests/Feature/Operario/OperarioCargaHuevosTest.php` (flujo E2E, multiempresa, galpón no disponible, redirect sin galpón y apertura automática del selector, Action rechaza mantenimiento), `tests/Feature/Operario/OperarioCargaMuertesTest.php` (flujo E2E muertes, descuento `aves_actuales`, rechazo si supera stock, Action multiempresa y mantenimiento, redirect `CargaMuertes` y `guardarMuertes` sin galpón disponible, query `form=muertes`), `tests/Feature/Operario/OperarioCargaVacunacionTest.php` (flujo E2E vacunación, validación lote/vacuna, Action multiempresa/galpón/lote, hub rechaza lote ajeno, redirect `CargaVacunacion` y `guardarVacunacion` sin galpón, query `form=vacunacion`), `tests/Feature/Operario/OperarioHomeTest.php` (`seleccionarGalpon` rechaza galpón ajeno, en mantenimiento o inactivo), `tests/Feature/Operario/OperarioHomeResumenTest.php` (KPIs galpón, lotes, acumulado, muertes, maples, edad vía service), `tests/Feature/Operario/OperarioHistorialTest.php` (tipos, vacunaciones mezcladas, filtro fecha validado, paginación, multiempresa), `tests/Feature/Services/OperarioGalponServiceTest.php` (`galponDisponibleParaUsuario`, `historialCargasQuery`, `historialPaginado` con vacunaciones, multiempresa, selección), `tests/Feature/Support/OperarioNavTest.php` (pestaña activa y `headerTitle` por ruta, incl. `operario.historial` e icono `calendar`), `tests/Feature/Ui/OperarioBottomNavTest.php` (dock, transiciones, heroes Inicio/Cargar/Historial, tab activa y `aria-current`, icono `calendar` en Historial, ilustración `operario-reloj` en historial HTTP, empty/populated historial HTTP, diálogos huevos/muertes/vacunación vía deep link, chip galpón vacío/activo, KPI maples), `tests/Feature/Ui/IllustrationComponentTest.php` (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`), `tests/Feature/Ui/SelectComponentTest.php` (`x-ui.select` listbox), `tests/Feature/Ui/OperarioUserMenuTest.php` (menú cuenta en home/cargar/historial, ARIA, perfil, logout), `tests/Feature/Ui/DialogComponentTest.php`, `tests/Feature/Ui/SheetComponentTest.php` (diálogo huevos en `CargarHub`), `tests/Feature/Ui/SnackbarHostTest.php` (host en layout, evento `snackbar-show`, flash `status`).
+**Tests operario:** … `OperarioCargaVacunacionTest.php` …, `OperarioCargaLoteTest.php` (alta lote, codigo/secuencia, multi-tipo, gating operario, administrativo HTTP+registro, Action/policy, validación Livewire fecha/galpón, deep link `form=lote`), `OperarioBottomNavTest.php` (deep link HTTP `?form=lote`), `OperarioHomeTest.php` …
 
 **Layout Livewire (oficial):** `resources/views/layouts/app.blade.php` — usado por componentes de página completa (`config/livewire.php` → `layouts::app`).
 
@@ -44,6 +44,7 @@ Reverb, Echo y PWA quedan para fases posteriores del plan.
 app/
 ├── Actions/
 │   ├── Auth/                 # AttemptLoginAction, ChangePasswordAction
+│   ├── Lote/                 # RegistrarLoteAction
 │   └── Operacion/            # RegistrarCargaHuevosAction, RegistrarCargaMuertesAction, RegistrarVacunacionAction
 ├── Enums/                    # EmpresaEstado, UserRole, GalponEstado, LoteEstado, TipoHuevo, VacunaTipo, RegistroOperativo*
 ├── Http/
@@ -52,7 +53,7 @@ app/
 │       └── Composers/        # AdminHomeComposer, OperarioLayoutComposer
 ├── Livewire/
 │   ├── Auth/                 # Login, ChangePassword
-│   └── Operario/             # Home, CargarHub, CargaHuevos, CargaMuertes, CargaVacunacion, Historial
+│   └── Operario/             # Home, CargarHub, CargaHuevos, CargaMuertes, CargaVacunacion, CargaLote, Historial
 ├── Models/
 │   ├── Concerns/             # BelongsToEmpresa
 │   ├── Empresa.php
@@ -63,7 +64,8 @@ app/
 │   ├── Vacunacion.php
 │   └── User.php
 ├── Policies/
-│   └── GalponPolicy.php
+│   ├── GalponPolicy.php
+│   └── LotePolicy.php
 ├── Providers/
 │   └── AppServiceProvider.php
 ├── Services/

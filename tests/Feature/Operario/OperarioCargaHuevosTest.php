@@ -102,7 +102,7 @@ class OperarioCargaHuevosTest extends TestCase
             ->assertHasErrors(['galponId']);
     }
 
-    public function test_dueno_is_redirected_away_from_operario_routes(): void
+    public function test_dueno_can_access_operario_cargar_but_not_admin_as_operario(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
 
@@ -113,8 +113,12 @@ class OperarioCargaHuevosTest extends TestCase
         ]);
 
         $this->actingAs($dueno)
-            ->get(route('operario.home'))
-            ->assertRedirect(route('admin.home'));
+            ->get(route('operario.cargar'))
+            ->assertOk();
+
+        $this->actingAs($dueno)
+            ->get(route('admin.home'))
+            ->assertOk();
     }
 
     public function test_carga_huevos_redirects_to_selector_when_no_galpon_selected(): void
