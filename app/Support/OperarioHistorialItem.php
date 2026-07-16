@@ -15,10 +15,14 @@ readonly class OperarioHistorialItem
         public ?string $observacion,
         public bool $esMortalidad,
         public bool $esVacunacion,
+        public string $tipoEtiqueta,
+        public string $galponEtiqueta,
     ) {}
 
     public static function fromRegistro(RegistroOperativo $registro): self
     {
+        $registro->loadMissing('galpon');
+
         return new self(
             key: 'registro-'.$registro->id,
             createdAt: $registro->created_at,
@@ -26,12 +30,14 @@ readonly class OperarioHistorialItem
             observacion: $registro->observacion,
             esMortalidad: $registro->esMortalidad(),
             esVacunacion: false,
+            tipoEtiqueta: $registro->tipo->label(),
+            galponEtiqueta: $registro->galpon?->displayName() ?? '—',
         );
     }
 
     public static function fromVacunacion(Vacunacion $vacunacion): self
     {
-        $vacunacion->loadMissing('lote');
+        $vacunacion->loadMissing(['lote', 'galpon']);
 
         return new self(
             key: 'vacunacion-'.$vacunacion->id,
@@ -40,6 +46,8 @@ readonly class OperarioHistorialItem
             observacion: $vacunacion->observacion,
             esMortalidad: false,
             esVacunacion: true,
+            tipoEtiqueta: 'Vacunación',
+            galponEtiqueta: $vacunacion->galpon?->displayName() ?? '—',
         );
     }
 }

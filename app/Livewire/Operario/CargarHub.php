@@ -4,6 +4,7 @@ namespace App\Livewire\Operario;
 
 use App\Enums\TipoHuevo;
 use App\Enums\VacunaTipo;
+use App\Livewire\Operario\Concerns\ManagesGalponSelector;
 use App\Livewire\Operario\Concerns\ManagesHuevosForm;
 use App\Livewire\Operario\Concerns\ManagesLoteForm;
 use App\Livewire\Operario\Concerns\ManagesMuertesForm;
@@ -22,6 +23,7 @@ use Livewire\Component;
 #[Title('Cargar')]
 class CargarHub extends Component
 {
+    use ManagesGalponSelector;
     use ManagesHuevosForm;
     use ManagesLoteForm;
     use ManagesMuertesForm;
@@ -31,6 +33,8 @@ class CargarHub extends Component
         OperarioGalponService $operarioGalponService,
         OperarioGalponResumenService $operarioGalponResumenService,
     ): void {
+        $this->bootGalponSelector($operarioGalponService);
+
         $form = request()->query('form');
 
         if (! in_array($form, ['huevos', 'muertes', 'vacunacion', 'lote'], true)) {
@@ -76,6 +80,7 @@ class CargarHub extends Component
     ): View {
         $user = auth()->user();
         $galpon = $operarioGalponService->galponActual($user);
+        $galpones = $operarioGalponService->galponesDisponibles($user);
 
         /** @var Collection<int, Lote> $lotesActivos */
         $lotesActivos = $galpon !== null
@@ -84,11 +89,12 @@ class CargarHub extends Component
 
         return view('livewire.operario.cargar-hub', [
             'galpon' => $galpon,
+            'galpones' => $galpones,
             'galponEtiqueta' => $operarioGalponService->etiquetaGalpon($galpon),
             'lotesActivos' => $lotesActivos,
             'vacunas' => VacunaTipo::options(),
-            'puedeRegistrarLote' => auth()->user()->rol->canCreateLote(),
-            'galponesDisponibles' => $operarioGalponService->galponesDisponibles(auth()->user()),
+            'puedeRegistrarLote' => $user->rol->canCreateLote(),
+            'galponesDisponibles' => $galpones,
             'tiposHuevoUi' => TipoHuevo::optionsUi(),
         ]);
     }
@@ -99,7 +105,7 @@ class CargarHub extends Component
             return true;
         }
 
-        $this->redirectToHomeConSelectorGalpon();
+        $this->selectorGalponAbierto = true;
 
         return false;
     }
@@ -115,14 +121,8 @@ class CargarHub extends Component
         }
 
         $this->{$dialogProperty} = false;
-        $this->redirectToHomeConSelectorGalpon();
+        $this->selectorGalponAbierto = true;
 
         return null;
-    }
-
-    private function redirectToHomeConSelectorGalpon(): void
-    {
-        session()->flash('abrirSelectorGalpon', true);
-        $this->redirectRoute('operario.home', navigate: true);
     }
 }

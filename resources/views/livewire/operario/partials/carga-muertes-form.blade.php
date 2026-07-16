@@ -20,6 +20,7 @@
         wire:loading.attr="disabled"
         wire:target="guardarMuertes"
     >
-        Guardar
+        <span wire:loading.remove wire:target="guardarMuertes">Guardar</span>
+        <span wire:loading wire:target="guardarMuertes">Guardando…</span>
     </x-ui.button>
 </form>

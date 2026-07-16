@@ -1,8 +1,19 @@
-<div class="avicore-operario-cargar">
+<div
+    @class([
+        'avicore-operario-cargar',
+        'avicore-operario-cargar--selector-open' => $selectorGalponAbierto,
+    ])
+    x-data
+    :class="{ 'avicore-operario-cargar--selector-open': $wire.selectorGalponAbierto }"
+>
     <x-operario.cargar-hero
         :galpon-etiqueta="$galponEtiqueta"
         :has-galpon="$galpon !== null"
-    />
+    >
+        <x-slot:galponSelector>
+            @include('livewire.operario.partials.galpon-chip-selector')
+        </x-slot:galponSelector>
+    </x-operario.cargar-hero>
 
     <div class="avicore-operario-home-sheet">
         <section class="avicore-operario-cargar-types" aria-label="Tipos de carga">
@@ -17,7 +28,7 @@
                         <x-ui.icon name="warehouse" class="size-5" />
                     </span>
                     <p class="avicore-operario-cargar-alert__text">
-                        Primero elegí un galpón en Inicio.
+                        Primero elegí un galpón con el chip de arriba.
                     </p>
                 </div>
             @endunless

@@ -28,6 +28,7 @@ Stack: **Laravel 13, PostgreSQL, Livewire 4, Tailwind 4, Alpine.js (Livewire), P
 | Cualquier implementación | `avicore-negocio` | `references/reglas.md`, `references/permisos.md` |
 | Pantallas / UI | `avicore-ui` | `references/pantallas-flujos.md` |
 | UI operario móvil | `avicore-ui` | `references/patrones-mobile-operario.md` |
+| UI operario escritorio | `avicore-ui` | `references/patrones-desktop-operario.md` |
 | UI admin web | `avicore-ui` | `references/patrones-web-admin.md` |
 | Tokens / componentes | `avicore-design-system` | `references/tokens-componentes.md` |
 | Refined Agro (motion, elevación) | `avicore-design-system` | `references/refined-agro-principios.md`, `motion-y-feedback.md`, `elevacion-y-superficies.md` |

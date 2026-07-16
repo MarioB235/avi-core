@@ -111,12 +111,11 @@ class OperarioCargaMuertesTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(CargaMuertes::class)
-            ->assertRedirect(route('operario.home'));
+            ->assertRedirect(route('operario.cargar', ['abrir_galpon' => 1]));
 
-        $this->actingAs($operario);
-        session(['abrirSelectorGalpon' => true]);
-
-        Livewire::test(Home::class)
+        Livewire::actingAs($operario)
+            ->withQueryParams(['abrir_galpon' => '1'])
+            ->test(CargarHub::class)
             ->assertSet('selectorGalponAbierto', true);
     }
 
@@ -141,7 +140,7 @@ class OperarioCargaMuertesTest extends TestCase
             ->assertSet('dialogMuertesAbierto', true);
     }
 
-    public function test_abrir_formulario_muertes_sin_galpon_redirige_y_flashea_selector(): void
+    public function test_abrir_formulario_muertes_sin_galpon_abre_selector(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
@@ -157,8 +156,8 @@ class OperarioCargaMuertesTest extends TestCase
         Livewire::actingAs($operario)
             ->test(CargarHub::class)
             ->call('abrirFormularioMuertes')
-            ->assertRedirect(route('operario.home'))
-            ->assertSessionHas('abrirSelectorGalpon', true);
+            ->assertSet('selectorGalponAbierto', true)
+            ->assertSet('dialogMuertesAbierto', false);
     }
 
     public function test_registrar_carga_muertes_action_rejects_unavailable_galpon(): void
@@ -205,10 +204,10 @@ class OperarioCargaMuertesTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(CargaMuertes::class)
-            ->assertRedirect(route('operario.home'));
+            ->assertRedirect(route('operario.cargar', ['abrir_galpon' => 1]));
     }
 
-    public function test_guardar_muertes_redirects_when_galpon_became_unavailable(): void
+    public function test_guardar_muertes_abre_selector_when_galpon_became_unavailable(): void
     {
         [$operario, $galpon] = $this->createOperarioConGalpon();
         $operario->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
@@ -223,8 +222,8 @@ class OperarioCargaMuertesTest extends TestCase
 
         $component
             ->call('guardarMuertes')
-            ->assertRedirect(route('operario.home'))
-            ->assertSessionHas('abrirSelectorGalpon', true);
+            ->assertSet('selectorGalponAbierto', true)
+            ->assertSet('dialogMuertesAbierto', false);
 
         $this->assertSame(0, RegistroOperativo::query()->count());
     }

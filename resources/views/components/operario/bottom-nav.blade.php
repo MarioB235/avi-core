@@ -4,7 +4,7 @@
     $tabs = OperarioNav::tabs();
 @endphp
 
-<nav class="avicore-operario-tab-bar" aria-label="Navegación operario">
+<nav class="avicore-operario-tab-bar lg:hidden" aria-label="Navegación operario">
     <svg
         class="avicore-operario-tab-bar__edge"
         viewBox="0 0 390 4"

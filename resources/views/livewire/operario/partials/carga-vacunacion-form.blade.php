@@ -36,7 +36,8 @@
             wire:loading.attr="disabled"
             wire:target="guardarVacunacion"
         >
-            Guardar
+            <span wire:loading.remove wire:target="guardarVacunacion">Guardar</span>
+            <span wire:loading wire:target="guardarVacunacion">Guardando…</span>
         </x-ui.button>
     @endif
 </form>

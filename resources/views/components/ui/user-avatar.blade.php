@@ -16,6 +16,7 @@
 
     $sizeClass = match ($size) {
         'sm' => 'avicore-user-avatar--sm',
+        'nav' => 'avicore-user-avatar--nav',
         default => 'avicore-user-avatar--md',
     };
 @endphp

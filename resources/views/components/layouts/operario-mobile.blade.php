@@ -17,28 +17,32 @@
         'avicore-operario-shell',
         'avicore-operario-shell--home' => $operarioIsHeroPage ?? false,
     ])>
-        @if ($operarioIsHeroPage ?? false)
-            <x-operario.header :is-home-page="true" />
-        @else
-            <div wire:transition="operario-chrome">
-                <x-operario.header
-                    :title="$operarioHeaderTitle ?? 'Operario'"
-                    :subtitle="$operarioHeaderSubtitle ?? null"
-                    :has-galpon="$operarioHasGalpon ?? false"
-                />
-            </div>
-        @endif
+        <x-operario.sidebar-nav />
 
-        <main @class([
-            'avicore-operario-main',
-            'avicore-operario-main--home' => $operarioIsHeroPage ?? false,
-        ])>
-            <div wire:transition="operario-page" class="avicore-operario-page">
-                {{ $slot }}
-            </div>
-        </main>
+        <div class="avicore-operario-shell__workspace">
+            @if ($operarioIsHeroPage ?? false)
+                <x-operario.header :is-home-page="true" />
+            @else
+                <div wire:transition="operario-chrome">
+                    <x-operario.header
+                        :title="$operarioHeaderTitle ?? 'Operario'"
+                        :subtitle="$operarioHeaderSubtitle ?? null"
+                        :has-galpon="$operarioHasGalpon ?? false"
+                    />
+                </div>
+            @endif
 
-        <x-operario.bottom-nav />
+            <main @class([
+                'avicore-operario-main',
+                'avicore-operario-main--home' => $operarioIsHeroPage ?? false,
+            ])>
+                <div wire:transition="operario-page" class="avicore-operario-page">
+                    {{ $slot }}
+                </div>
+            </main>
+
+            <x-operario.bottom-nav />
+        </div>
     </div>
 
     <x-ui.snackbar-host context="operario" />

@@ -1,8 +1,16 @@
-<div class="avicore-operario-historial">
+<div
+    class="avicore-operario-historial"
+    x-data
+    :class="{ 'avicore-operario-historial--selector-open': $wire.selectorGalponAbierto }"
+>
     <x-operario.historial-hero
         :galpon-etiqueta="$galponEtiqueta"
         :has-galpon="$galpon !== null"
-    />
+    >
+        <x-slot:galponSelector>
+            @include('livewire.operario.partials.galpon-chip-selector')
+        </x-slot:galponSelector>
+    </x-operario.historial-hero>
 
     <div class="avicore-operario-home-sheet">
         <section class="avicore-operario-home-cargas" aria-label="Historial de cargas">
@@ -83,6 +91,11 @@
                                 <div class="avicore-operario-historial-list__copy min-w-0 flex-1">
                                     <p class="avicore-operario-historial-list__label">
                                         {{ $carga->label }}
+                                    </p>
+                                    <p class="avicore-operario-historial-list__meta">
+                                        <span>{{ $carga->tipoEtiqueta }}</span>
+                                        <span aria-hidden="true">·</span>
+                                        <span>{{ $carga->galponEtiqueta }}</span>
                                     </p>
                                     @if ($carga->observacion)
                                         <p class="avicore-operario-historial-list__note">

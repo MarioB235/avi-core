@@ -33,7 +33,21 @@ class SnackbarHostTest extends TestCase
             ->assertSee('avicore-snackbar-host', false)
             ->assertSee('avicore-snackbar-host--operario', false)
             ->assertSee('role="status"', false)
-            ->assertSee('Cerrar notificación', false);
+            ->assertSee('Cerrar notificación', false)
+            ->assertSee('scheduleClose', false)
+            ->assertSee('4500', false);
+    }
+
+    public function test_snackbar_host_css_anchors_desktop_bottom_right(): void
+    {
+        $css = file_get_contents(resource_path('css/app.css'));
+
+        $this->assertNotFalse($css);
+        $this->assertStringContainsString('.avicore-snackbar-host--operario', $css);
+        $this->assertStringContainsString('@media (min-width: 1024px)', $css);
+        $this->assertStringContainsString('right-6', $css);
+        $this->assertStringContainsString('bottom-6', $css);
+        $this->assertStringContainsString('justify-end', $css);
     }
 
     public function test_operario_home_dispatches_snackbar_after_galpon_selection(): void

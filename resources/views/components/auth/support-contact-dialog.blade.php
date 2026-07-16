@@ -1,4 +1,4 @@
-{{-- Recuperación de contraseña: panel inferior móvil vía x-ui.sheet (no x-ui.dialog). --}}
+{{-- Recuperación de contraseña: x-ui.sheet (bottom sheet móvil / diálogo centrado en desktop). --}}
 @props([
     'trigger' => '¿Olvidaste tu contraseña?',
     'dialogTitle' => 'Recuperar contraseña',

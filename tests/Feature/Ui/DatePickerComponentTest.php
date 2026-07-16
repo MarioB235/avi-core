@@ -23,6 +23,7 @@ class DatePickerComponentTest extends TestCase
         $this->assertStringContainsString('avicore-date-picker-trigger', $html);
         $this->assertStringContainsString('avicore-date-picker-panel', $html);
         $this->assertStringContainsString('avicore-date-picker-grid', $html);
+        $this->assertStringContainsString('lg:translate-y-0', $html);
         $this->assertStringContainsString('role="dialog"', $html);
         $this->assertStringContainsString('Elegí un día', $html);
         $this->assertStringContainsString('Hoy', $html);
