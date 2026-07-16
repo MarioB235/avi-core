@@ -14,6 +14,37 @@
         padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
     }
 
+    /* Tablet: shell más ancho, sigue con bottom nav (sidebar desde lg) */
+    @media (min-width: 768px) and (max-width: 1023.98px) {
+        .avicore-operario-shell {
+            @apply max-w-3xl;
+        }
+
+        .avicore-operario-tab-bar__inner {
+            @apply max-w-3xl;
+        }
+
+        .avicore-operario-header:not(.avicore-operario-header--home) .avicore-operario-header__bar {
+            @apply max-w-3xl;
+        }
+
+        .avicore-operario-kpi-grid--duo {
+            @apply grid-cols-2 gap-3;
+        }
+
+        .avicore-operario-carga-grid--triple {
+            @apply grid-cols-3;
+        }
+
+        .avicore-operario-carga-grid--triple .avicore-operario-carga-tile--wide {
+            @apply col-span-1 max-w-none justify-self-stretch;
+        }
+
+        .avicore-operario-home-sheet {
+            @apply px-5;
+        }
+    }
+
     .avicore-operario-shell--home {
         @apply bg-avicore-card;
         padding-bottom: 0;
@@ -136,7 +167,7 @@
 
     .avicore-operario-cargar-hero__galpon,
     .avicore-operario-historial-hero__galpon {
-        @apply pointer-events-none;
+        @apply pointer-events-auto;
     }
 
     a.avicore-operario-cargar-hero__galpon,
@@ -198,7 +229,7 @@
     }
 
     .avicore-operario-galpon-selector__option {
-        @apply flex min-h-11 w-full flex-col items-start rounded-xl px-3 py-2.5 text-left active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+        @apply flex min-h-11 w-full flex-col items-start rounded-xl px-3 py-2.5 text-left active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary md:hover:bg-avicore-soft;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -208,7 +239,7 @@
     }
 
     .avicore-operario-galpon-selector__option--active {
-        @apply bg-avicore-soft ring-1 ring-avicore-primary/30;
+        @apply bg-avicore-soft ring-1 ring-avicore-primary/30 md:hover:bg-avicore-soft;
     }
 
     .avicore-operario-galpon-selector__empty {
@@ -232,6 +263,16 @@
     }
 
     .avicore-operario-home--selector-open .avicore-operario-home-sheet {
+        @apply z-10;
+    }
+
+    .avicore-operario-cargar--selector-open .avicore-operario-home-hero,
+    .avicore-operario-historial--selector-open .avicore-operario-home-hero {
+        @apply z-50;
+    }
+
+    .avicore-operario-cargar--selector-open .avicore-operario-home-sheet,
+    .avicore-operario-historial--selector-open .avicore-operario-home-sheet {
         @apply z-10;
     }
 
@@ -739,6 +780,10 @@
         @apply text-sm font-semibold leading-snug text-avicore-text;
     }
 
+    .avicore-operario-historial-list__meta {
+        @apply mt-0.5 hidden items-center gap-1.5 text-xs font-medium text-avicore-muted md:flex;
+    }
+
     .avicore-operario-historial-list__note {
         @apply mt-0.5 text-xs font-medium leading-snug text-avicore-muted;
     }
@@ -1147,48 +1192,37 @@
     }
 
     /*
-     * Avatar cuenta operario: círculo primario, iniciales blancas, borde blanco (legible sobre hero).
-     * Excepción !important: x-ui.user-avatar trae size/ring/shadow de app.css; el shell operario los pisa.
-     * avicore-defer: variant operario en x-ui.user-avatar si se reutiliza fuera del menú.
+     * Avatar cuenta operario — Refined Agro:
+     * - Header claro: disco primario + iniciales blancas (sombra suave).
+     * - Chrome verde (home + sidebar): disco blanco + iniciales primarias.
+     * Tamaño home: CSS var --nav-account-avatar (responsive); size prop `nav` en avatar.
      */
     .avicore-operario-user-menu__trigger .avicore-user-avatar {
-        @apply flex items-center justify-center rounded-full border-2 border-white bg-avicore-primary font-bold text-white shadow-[0_4px_14px_rgba(31,94,59,0.28)];
+        @apply flex items-center justify-center rounded-full bg-avicore-primary font-semibold tracking-tight text-white shadow-sm;
         --tw-ring-width: 0;
         --tw-ring-shadow: 0 0 #0000;
     }
 
-    .avicore-home-nav__avatar {
-        width: var(--nav-account-avatar) !important;
-        height: var(--nav-account-avatar) !important;
+    .avicore-home-nav__avatar.avicore-operario-user-menu__trigger .avicore-user-avatar,
+    .avicore-operario-user-menu--sidebar .avicore-operario-user-menu__trigger .avicore-user-avatar {
+        @apply bg-white font-semibold text-avicore-primary shadow-[0_1px_3px_rgba(0,0,0,0.14)];
+    }
+
+    button.avicore-home-nav__avatar.avicore-operario-user-menu__trigger {
+        width: var(--nav-account-avatar);
+        height: var(--nav-account-avatar);
         min-width: var(--nav-account-avatar);
-        align-self: center;
-        justify-self: end;
-        background: transparent !important;
-        border: 0 !important;
-        box-shadow: none !important;
-        outline: none !important;
-        color: inherit;
-        --tw-ring-width: 0;
-        --tw-ring-shadow: 0 0 #0000;
-    }
-
-    .avicore-home-nav__avatar.avicore-operario-user-menu__trigger {
         min-height: var(--nav-account-avatar);
-        min-width: var(--nav-account-avatar);
+        @apply self-center justify-self-end border-0 bg-transparent shadow-none outline-none;
+        --tw-ring-width: 0;
+        --tw-ring-shadow: 0 0 #0000;
     }
 
     .avicore-home-nav__avatar.avicore-operario-user-menu__trigger .avicore-user-avatar {
-        width: 100% !important;
-        height: 100% !important;
+        width: 100%;
+        height: 100%;
         min-width: 0;
         font-size: clamp(0.72rem, 2.4vw, 0.82rem);
-    }
-
-    .avicore-operario-header__avatar.avicore-operario-user-menu__trigger .avicore-user-avatar {
-        width: 2.25rem !important;
-        height: 2.25rem !important;
-        min-width: 2.25rem;
-        font-size: 0.75rem;
     }
 
     @media (max-width: 380px) {
@@ -1226,14 +1260,51 @@
         @apply relative z-10 inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
 
+    .avicore-operario-user-menu--sidebar .avicore-operario-user-menu__trigger {
+        @apply focus-visible:outline-white;
+    }
+
     @media (prefers-reduced-motion: no-preference) {
         .avicore-operario-user-menu__trigger {
             @apply transition-transform duration-150 ease-out active:scale-95;
         }
+
+        .avicore-operario-user-menu__trigger .avicore-user-avatar {
+            @apply transition-[background-color,box-shadow,color] duration-150 ease-out;
+        }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .avicore-home-nav__avatar.avicore-operario-user-menu__trigger:hover .avicore-user-avatar,
+        .avicore-operario-user-menu--sidebar .avicore-operario-user-menu__trigger:hover .avicore-user-avatar {
+            @apply md:bg-avicore-soft;
+        }
+
+        .avicore-operario-header__avatar.avicore-operario-user-menu__trigger:hover .avicore-user-avatar {
+            @apply md:bg-avicore-secondary;
+        }
     }
 
     .avicore-operario-user-menu__panel {
-        @apply absolute right-0 top-[calc(100%+0.5rem)] z-[60] w-[min(17rem,calc(100vw-1.5rem))] origin-top-right overflow-hidden rounded-2xl border border-avicore-border/80 bg-avicore-card shadow-[0_16px_40px_rgba(15,23,42,0.14)] ring-1 ring-avicore-primary/5;
+        @apply z-[60] w-[min(17rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-avicore-border/80 bg-avicore-card shadow-[0_16px_40px_rgba(15,23,42,0.14)] ring-1 ring-avicore-primary/5;
+    }
+
+    .avicore-operario-user-menu__panel--portal {
+        @apply fixed;
+    }
+
+    .avicore-operario-user-menu__panel--sidebar {
+        @apply origin-bottom-right;
+    }
+
+    .avicore-operario-user-menu__panel:not(.avicore-operario-user-menu__panel--sidebar) {
+        @apply origin-top-right;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .avicore-operario-user-menu__item {
+            @apply md:hover:bg-avicore-soft;
+        }
     }
 
     .avicore-operario-user-menu__header {
@@ -1302,5 +1373,174 @@
 
     .avicore-operario-user-menu__profile-list dd {
         @apply mt-0.5 text-sm font-semibold text-avicore-text;
+    }
+
+    /* ── Escritorio (≥1024px): sidebar + contenido ancho ─────────── */
+    @media (min-width: 1024px) {
+        .avicore-operario-body {
+            @apply bg-avicore-surface;
+            background-image: none;
+        }
+
+        .avicore-operario-shell {
+            @apply mx-0 grid min-h-svh w-full max-w-none grid-cols-[auto_minmax(0,1fr)] gap-0 pb-0;
+            padding-bottom: 0;
+        }
+
+        .avicore-operario-shell--home {
+            --operario-dock-clearance: 0;
+        }
+
+        .avicore-operario-shell:not(.avicore-operario-shell--home) {
+            --operario-contextual-header-offset: 0;
+            padding-top: 0;
+        }
+
+        .avicore-operario-shell__workspace {
+            @apply flex min-h-svh min-w-0 flex-col;
+        }
+
+        .avicore-operario-sidebar {
+            @apply sticky top-0 z-30 flex h-svh w-64 shrink-0 flex-col overflow-y-auto border-r border-black/10 bg-avicore-primary text-white shadow-lg;
+            background-image: linear-gradient(180deg, var(--color-avicore-primary) 0%, #184930 100%);
+        }
+
+        .avicore-operario-sidebar__brand {
+            @apply flex items-start justify-between gap-3 border-b border-white/10 px-4 py-5 sm:px-5;
+        }
+
+        .avicore-operario-sidebar__section-label {
+            @apply px-5 pb-2 pt-4 text-[0.6875rem] font-semibold uppercase tracking-wider text-white/45;
+        }
+
+        .avicore-operario-sidebar__nav {
+            @apply flex flex-col gap-0.5 px-3;
+        }
+
+        .avicore-operario-sidebar__footer {
+            @apply mt-auto border-t border-white/10 px-3 py-4;
+        }
+
+        .avicore-operario-sidebar__footer .avicore-operario-sidebar__section-label {
+            @apply px-2 pt-0;
+        }
+
+        .avicore-operario-sidebar__user {
+            @apply mb-3 flex items-center gap-3 rounded-xl bg-white/10 px-3 py-2.5;
+        }
+
+        .avicore-operario-sidebar .avicore-nav-link {
+            @apply text-white/80;
+        }
+
+        .avicore-operario-sidebar .avicore-nav-link__icon {
+            @apply text-white/70;
+        }
+
+        .avicore-operario-sidebar .avicore-nav-link--active {
+            @apply bg-white/15 text-white shadow-sm;
+        }
+
+        .avicore-operario-sidebar .avicore-nav-link--active .avicore-nav-link__icon {
+            @apply text-white;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .avicore-operario-sidebar .avicore-nav-link:hover {
+                @apply bg-white/10 text-white;
+            }
+
+            .avicore-operario-sidebar .avicore-nav-link:hover .avicore-nav-link__icon {
+                @apply text-white;
+            }
+
+            .avicore-operario-historial-list__item {
+                @apply transition-colors duration-200 ease-out hover:bg-avicore-soft/55;
+            }
+
+            button.avicore-operario-carga-tile--action {
+                @apply hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(31,94,59,0.18)];
+            }
+        }
+
+        .avicore-operario-header--home {
+            @apply static inset-auto z-auto overflow-visible px-0 pb-0;
+            padding-top: 0;
+        }
+
+        .avicore-operario-header--home .avicore-home-nav {
+            @apply hidden;
+        }
+
+        .avicore-operario-header:not(.avicore-operario-header--home) {
+            @apply static inset-x-auto top-auto z-auto bg-transparent px-6 pb-0 pt-6;
+        }
+
+        .avicore-operario-header:not(.avicore-operario-header--home) .avicore-operario-header__bar {
+            @apply mx-auto max-w-6xl rounded-2xl border border-avicore-border-strong/60 bg-avicore-card px-4 py-3 shadow-[0_8px_22px_rgba(15,23,42,0.05)] ring-1 ring-avicore-primary/5;
+        }
+
+        .avicore-operario-main {
+            @apply flex-1 px-6 py-4 lg:px-8 lg:py-6;
+        }
+
+        .avicore-operario-main--home {
+            @apply p-0;
+        }
+
+        .avicore-operario-home-hero__content {
+            padding-top: 0;
+        }
+
+        .avicore-operario-home-hero__greeting {
+            @apply px-6 pb-10 pt-8 lg:px-8 lg:pt-10;
+            margin-top: 0;
+        }
+
+        .avicore-operario-home-hero__title {
+            font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+        }
+
+        .avicore-operario-home-sheet {
+            @apply mx-auto w-full max-w-6xl gap-6 rounded-t-[2rem] px-6 pb-8 lg:px-8;
+            margin-top: -1.5rem;
+            padding-bottom: 2rem;
+        }
+
+        .avicore-operario-home-sheet:has(.avicore-operario-home-summary:not(.avicore-operario-home-summary--empty)) {
+            @apply xl:grid xl:grid-cols-[1.15fr_0.85fr] xl:items-start;
+        }
+
+        .avicore-operario-kpi-grid--duo {
+            @apply grid-cols-2 gap-4;
+        }
+
+        .avicore-operario-carga-grid--triple {
+            @apply grid-cols-3;
+        }
+
+        .avicore-operario-carga-grid--triple .avicore-operario-carga-tile--wide {
+            @apply col-span-1 max-w-none justify-self-stretch;
+        }
+
+        .avicore-operario-carga-grid--quad {
+            @apply grid-cols-4;
+        }
+
+        .avicore-operario-carga-tile {
+            @apply min-h-[9rem];
+        }
+
+        .avicore-operario-historial-list__item {
+            @apply rounded-xl px-3 py-3;
+        }
+
+        .avicore-operario-historial-filter {
+            @apply max-w-md;
+        }
+
+        .avicore-operario-galpon-selector__panel {
+            @apply max-w-md;
+        }
     }
 }

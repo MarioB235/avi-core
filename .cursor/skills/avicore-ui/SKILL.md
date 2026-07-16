@@ -13,6 +13,7 @@ El usuario indica **Modo: web** o **Modo: operario**.
 |------------|-----------|
 | [`references/pantallas-flujos.md`](references/pantallas-flujos.md) | Pantallas, campos, flujos |
 | [`references/patrones-mobile-operario.md`](references/patrones-mobile-operario.md) | **Modo operario** — thumb zone, bottom nav, sin hover |
+| [`references/patrones-desktop-operario.md`](references/patrones-desktop-operario.md) | **Operario escritorio** — sidebar, contenido ancho, grillas |
 | [`references/patrones-web-admin.md`](references/patrones-web-admin.md) | **Modo web** — sidebar, tablas, KPI, drawer |
 | [`references/checklist-ui-por-pantalla.md`](references/checklist-ui-por-pantalla.md) | Checklist antes de cerrar UI |
 | `avicore-design-system` | `refined-agro-principios`, `tokens-componentes`, `ejemplos-snippet` |
@@ -28,7 +29,8 @@ El usuario indica **Modo: web** o **Modo: operario**.
 
 ## Modo operario
 
-- Leer `patrones-mobile-operario.md`.
+- Leer `patrones-mobile-operario.md` (< 1024px).
+- Leer `patrones-desktop-operario.md` (≥ 1024px).
 - Vista móvil simplificada; galpón visible; `wire:navigate` en nav.
 - Sin `hover` como feedback principal; botones ≥ 44px; `active:` táctil.
 - Confirmación al guardar; últimas cargas del día.

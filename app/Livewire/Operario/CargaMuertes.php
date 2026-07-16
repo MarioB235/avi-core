@@ -15,8 +15,7 @@ class CargaMuertes extends Component
     public function mount(OperarioGalponService $operarioGalponService): void
     {
         if ($operarioGalponService->galponActual(auth()->user()) === null) {
-            session()->flash('abrirSelectorGalpon', true);
-            $this->redirectRoute('operario.home', navigate: true);
+            $this->redirectRoute('operario.cargar', ['abrir_galpon' => 1], navigate: true);
 
             return;
         }

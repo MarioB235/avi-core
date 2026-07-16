@@ -342,11 +342,11 @@
                 class="avicore-date-picker-panel"
                 x-show="open"
                 x-transition:enter="transition ease-out duration-300 motion-reduce:transition-none"
-                x-transition:enter-start="translate-y-full opacity-0"
+                x-transition:enter-start="translate-y-full opacity-0 lg:translate-y-0"
                 x-transition:enter-end="translate-y-0 opacity-100"
                 x-transition:leave="transition ease-in duration-200 motion-reduce:transition-none"
                 x-transition:leave-start="translate-y-0 opacity-100"
-                x-transition:leave-end="translate-y-full opacity-0"
+                x-transition:leave-end="translate-y-full opacity-0 lg:translate-y-0"
                 x-on:click.stop
             >
                 <div class="avicore-date-picker-panel__handle" aria-hidden="true"></div>

@@ -11,7 +11,6 @@ use App\Enums\VacunaTipo;
 use App\Livewire\Operario\CargarHub;
 use App\Livewire\Operario\CargaVacunacion;
 use App\Livewire\Operario\Historial;
-use App\Livewire\Operario\Home;
 use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
@@ -89,12 +88,11 @@ class OperarioCargaVacunacionTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(CargaVacunacion::class)
-            ->assertRedirect(route('operario.home'));
+            ->assertRedirect(route('operario.cargar', ['abrir_galpon' => 1]));
 
-        $this->actingAs($operario);
-        session(['abrirSelectorGalpon' => true]);
-
-        Livewire::test(Home::class)
+        Livewire::actingAs($operario)
+            ->withQueryParams(['abrir_galpon' => '1'])
+            ->test(CargarHub::class)
             ->assertSet('selectorGalponAbierto', true);
     }
 
@@ -277,10 +275,10 @@ class OperarioCargaVacunacionTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(CargaVacunacion::class)
-            ->assertRedirect(route('operario.home'));
+            ->assertRedirect(route('operario.cargar', ['abrir_galpon' => 1]));
     }
 
-    public function test_guardar_vacunacion_redirects_when_galpon_became_unavailable(): void
+    public function test_guardar_vacunacion_abre_selector_when_galpon_became_unavailable(): void
     {
         [$operario, $galpon, $lote] = $this->createOperarioConGalponYLote();
         $operario->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
@@ -292,8 +290,8 @@ class OperarioCargaVacunacionTest extends TestCase
             ->set('loteId', (string) $lote->id)
             ->set('vacuna', VacunaTipo::Newcastle->value)
             ->call('guardarVacunacion')
-            ->assertRedirect(route('operario.home'))
-            ->assertSessionHas('abrirSelectorGalpon', true);
+            ->assertSet('selectorGalponAbierto', true)
+            ->assertSet('dialogVacunacionAbierto', false);
 
         $this->assertSame(0, Vacunacion::query()->count());
     }

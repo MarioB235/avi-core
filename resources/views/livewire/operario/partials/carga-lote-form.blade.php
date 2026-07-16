@@ -80,6 +80,7 @@
         wire:loading.attr="disabled"
         wire:target="guardarLote"
     >
-        Guardar
+        <span wire:loading.remove wire:target="guardarLote">Guardar</span>
+        <span wire:loading wire:target="guardarLote">Guardando…</span>
     </x-ui.button>
 </form>

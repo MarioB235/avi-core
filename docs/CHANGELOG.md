@@ -5,6 +5,18 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-07-16
+
+- **[docs]** Pasada cierre msg 4 (operario desktop + post-auditoría): mapa `00-contexto` → `patrones-desktop-operario`; tokens (`user-avatar` size `nav`, user-menu clamp, `sidebar-nav`, heroes con chip interactivo); patrones mobile/desktop; `arbol-proyecto`; `estandares-codigo` (SnackbarHost/UserMenu tests). — `00-contexto.md`, `tokens-componentes.md`, `patrones-*-operario.md`, `arbol-proyecto.md`, `estandares-codigo.md`
+- **[fix|operario]** Post-auditoría msg 3: una query `galponesDisponibles` en hub; clamp vertical menú cuenta; avatar sin `!important` + size `nav`; `avicore-defer` en `historialPaginado`; tests snackbar desktop y user-menu clamp. — `CargarHub.php`, `user-menu.blade.php`, `user-avatar.blade.php`, `operario.css`, `OperarioGalponService.php`, `SnackbarHostTest.php`, `OperarioUserMenuTest.php`
+- **[ui|operario]** Avatar cuenta: disco blanco/iniciales verdes sobre chrome primario; primario limpio en header claro (sin borde doble). — `operario.css`, patrones operario, `tokens-componentes.md`
+- **[ui|operario]** Menú cuenta: panel teleport + posición fija (no se corta en sidebar). — `user-menu.blade.php`, `operario.css`, `OperarioUserMenuTest.php`, `tokens-componentes.md`
+- **[ui|snackbar]** Desktop abajo-derecha; tarjeta con franja lateral; auto-cierre ~4,5s (pausa hover; ×/Escape). — `snackbar-host.blade.php`, `app.css`, `tokens-componentes.md`, patrones operario
+- **[ui|operario]** Optimizaciones desktop/móvil: menú cuenta en sidebar; snackbar sin dock en `lg+`; selector de galpón en Cargar/Historial; meta tipo/galpón en historial (≥md); shell tablet `md–lg`; «Guardando…» en formularios de carga. — `ManagesGalponSelector.php`, `sidebar-nav`, heroes, `operario.css`, `app.css`, tests Operario/Ui
+- **[ui|overlay]** `x-ui.sheet` y `x-ui.date-picker`: bottom sheet en móvil; diálogo centrado en escritorio (≥1024px). — `app.css`, `sheet.blade.php`, `date-picker.blade.php`, `tokens-componentes.md`
+- **[ui|select]** Opciones de lista (`x-ui.select` y chip galpón operario) con `md:hover` en escritorio. — `app.css`, `operario.css`, `tokens-componentes.md`
+- **[ui|operario]** Shell operario responsive escritorio (≥1024px): sidebar verde con `OperarioNav`, contenido ancho, KPIs y grillas de carga en columnas, bottom nav solo móvil. — `sidebar-nav.blade.php`, `operario-mobile.blade.php`, `operario.css`, `patrones-desktop-operario.md`, `pantallas-flujos.md`, `OperarioBottomNavTest.php`
+
 ## 2026-07-15
 
 - **[docs|auth]** Pasada cierre msg 4: alineación login demo (selector perfil, `executeDemo`, toggle input disabled, tests auth/UI); refs `tokens-componentes.md`, `estandares-codigo.md`, `pantallas-flujos.md`, `arbol-proyecto.md`, `arranque-local.md`

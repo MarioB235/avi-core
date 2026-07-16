@@ -34,6 +34,7 @@ class SheetComponentTest extends TestCase
         $this->assertStringContainsString('role="dialog"', $html);
         $this->assertStringContainsString('openSheet()', $html);
         $this->assertStringContainsString('translate-y-full', $html);
+        $this->assertStringContainsString('lg:translate-y-0', $html);
         $this->assertStringContainsString('data-sheet-initial-focus', $html);
     }
 

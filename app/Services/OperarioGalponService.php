@@ -110,11 +110,13 @@ class OperarioGalponService
         int $perPage = 20,
         ?int $page = null,
     ): LengthAwarePaginator {
+        // avicore-defer: paginación en memoria (registros + vacunaciones), revisar si historial > ~500 ítems/usuario o latencia >300ms
         if ($user->empresa_id === null) {
             return new LengthAwarePaginator([], 0, $perPage);
         }
 
         $registros = $this->historialCargasQuery($user, $fecha)
+            ->with('galpon')
             ->get()
             ->map(fn (RegistroOperativo $registro): OperarioHistorialItem => OperarioHistorialItem::fromRegistro($registro));
 
@@ -123,7 +125,7 @@ class OperarioGalponService
             ->where('user_id', $user->id)
             ->activos()
             ->enFecha($fecha)
-            ->with('lote')
+            ->with(['lote', 'galpon'])
             ->orderByDesc('created_at')
             ->get()
             ->map(fn (Vacunacion $vacunacion): OperarioHistorialItem => OperarioHistorialItem::fromVacunacion($vacunacion));

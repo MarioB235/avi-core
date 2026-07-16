@@ -41,7 +41,7 @@ Permitir el acceso seguro al sistema.
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
 - **Modo demo local** (`APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`): documento y contraseña quedan vacíos y deshabilitados (sin lógica de credenciales); el acceso es solo con el selector **Perfil** (`x-ui.select` + `wire:model.live`), que autentica al usuario seedeado del rol (`DemoLoginService` + `AttemptLoginAction::executeDemo`). Tras login, redirect **full page** (sin Livewire `navigate`) para cambiar de layout público al admin u operario móvil. Fuera de local o con flag en `false`: login normal por documento + contraseña.
-- Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre un diálogo con contacto de soporte (WhatsApp y correo configurables en `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
+- Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre contacto de soporte (`x-ui.sheet`: bottom sheet en móvil, diálogo centrado en escritorio ≥1024px; WhatsApp y correo vía `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
 
 ### Validaciones
 
@@ -145,15 +145,15 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 
 ## 5. Pantalla: Vista móvil del operario
 
-**Estado MVP (2026-06-28):** implementado en `/operario` — shell móvil con **barra inferior integrada** (3 pestañas: Inicio · Cargar · Historial; inactivos con círculo soft verde; ítem activo con círculo verde sobresaliente; Historial usa icono `calendar`), **heroes compactos** con degradado suave, **panel de estado del galpón** (KPIs por galpón seleccionado: aves, huevos/muertes hoy, acumulado desde ingreso de lotes activos, lista de lotes con edad; galpón solo en chip del hero; sin enlace duplicado a Historial). Header hero fijo: grilla logo/usuario + línea ogee (`avicore-home-nav`); avatar abre **menú cuenta** (`x-operario.user-menu`: dropdown Perfil + Cerrar sesión). Nav: `OperarioNav`; layout hero: `operarioIsHeroPage` (Inicio + Cargar + Historial).
+**Estado MVP (2026-06-28):** implementado en `/operario` — shell responsive: **móvil** con barra inferior integrada (3 pestañas: Inicio · Cargar · Historial); **escritorio (≥1024px)** con sidebar verde (`x-operario.sidebar-nav`), contenido ancho (`max-w-6xl`) y bottom nav oculta. Detalle visual: `patrones-desktop-operario.md`. Heroes compactos con degradado suave, **panel de estado del galpón** (KPIs por galpón seleccionado: aves, huevos/muertes hoy, acumulado desde ingreso de lotes activos, lista de lotes con edad; galpón solo en chip del hero; sin enlace duplicado a Historial). Header hero fijo en móvil: grilla logo/usuario + línea ogee (`avicore-home-nav`); en escritorio el nav superior se oculta y la cuenta vive en sidebar. Avatar abre **menú cuenta** (`x-operario.user-menu`: dropdown Perfil + Cerrar sesión). Nav: `OperarioNav`; layout hero: `operarioIsHeroPage` (Inicio + Cargar + Historial).
 
 ### Navegación móvil (3 pestañas)
 
 | Pestaña | Ruta | Contenido |
 |---------|------|-----------|
 | Inicio | `/operario` | Hero compacto, saludo, selector galpón, resumen KPI (aves, huevos/muertes hoy, acumulado, lotes activos) |
-| Cargar | `/operario/cargar` | Hero degradado + hoja con tipos (Huevos · Muertes · Vacunación); diálogos `x-ui.dialog`; deep link `?form=huevos|muertes|vacunacion` o rutas redirect `/operario/carga/*`; chip galpón solo lectura (vacío → enlace `?abrir_galpon=1` en Inicio) |
-| Historial | `/operario/historial` | Hero degradado; listado de **todos** los registros del operario (`registros_operativos` + `vacunaciones`), orden descendente; filtro opcional `?fecha=` vía `x-ui.date-picker` (calendario custom bottom sheet; validado: `date`, no futura; un solo error vigente visible en el picker); paginación 20; ítems sin icono; chip galpón solo lectura |
+| Cargar | `/operario/cargar` | Hero + hoja con tipos; chip galpón interactivo; sin galpón → selector en página; diálogos `x-ui.dialog`; deep link `?form=` o `/operario/carga/*` (sin galpón → `?abrir_galpon=1`) |
+| Historial | `/operario/historial` | Hero degradado; listado completo; chip galpón interactivo; filtro `?fecha=` vía `x-ui.date-picker`; meta tipo·galpón desde `md:`; paginación 20 |
 
 En **Inicio**, el header fijo muestra logo + usuario (rol con `label()`); el avatar abre menú cuenta (perfil y logout). El galpón se elige con chip desplegable en el hero («Estado de hoy del galpón.»). La hoja blanca muestra KPIs y lotes activos del galpón seleccionado (`OperarioGalponResumenService`; edad de lote vía `edadSemanas()`), sin repetir el nombre del galpón ni enlace a Historial. Sin galpón: mensaje para elegir uno. Cargar e Historial por pestañas del dock.
 
@@ -207,7 +207,7 @@ Permitir elegir galpón de trabajo.
 - `GalponPolicy::view`, `OperarioGalponService::galponDisponibleParaUsuario` y `seleccionarGalpon` refuerzan multiempresa y disponibilidad.
 - El usuario puede elegir cualquier galpón disponible de su empresa.
 - El sistema recuerda el último galpón seleccionado (`users.ultimo_galpon_id`).
-- Si el galpón recordado deja de estar disponible, la carga redirige a **Inicio** con el selector abierto (`session` flash `abrirSelectorGalpon` desde hub y deep link; `Home` también acepta `?abrir_galpon=1` desde enlaces del hero).
+- Si el galpón recordado deja de estar disponible, la carga abre el selector en la pantalla actual (`selectorGalponAbierto`); deep links sin galpón → `/operario/cargar?abrir_galpon=1`. Flash `abrirSelectorGalpon` y `?abrir_galpon=1` los consume `ManagesGalponSelector::bootGalponSelector`.
 - Tras elegir galpón: snackbar «Galpón actualizado.» (`dispatch snackbar-show`).
 
 ---

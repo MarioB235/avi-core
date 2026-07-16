@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Operario;
 
+use App\Livewire\Operario\Concerns\ManagesGalponSelector;
 use App\Services\OperarioGalponService;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
@@ -14,13 +15,15 @@ use Livewire\WithPagination;
 #[Title('Historial')]
 class Historial extends Component
 {
+    use ManagesGalponSelector;
     use WithPagination;
 
     #[Url(as: 'fecha', history: true)]
     public ?string $fecha = null;
 
-    public function mount(): void
+    public function mount(OperarioGalponService $operarioGalponService): void
     {
+        $this->bootGalponSelector($operarioGalponService);
         $this->validarFecha();
     }
 
@@ -47,6 +50,7 @@ class Historial extends Component
 
         return view('livewire.operario.historial', [
             'galpon' => $galpon,
+            'galpones' => $operarioGalponService->galponesDisponibles($user),
             'registros' => $registros,
             'galponEtiqueta' => $operarioGalponService->etiquetaGalpon($galpon),
             'fechaError' => $this->getErrorBag()->first('fecha'),

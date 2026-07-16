@@ -57,7 +57,7 @@
                         </div>
 
                         <x-operario.user-menu
-                            size="sm"
+                            size="nav"
                             avatar-class="avicore-home-nav__avatar shrink-0"
                         />
                     </div>

@@ -20,6 +20,7 @@
         wire:loading.attr="disabled"
         wire:target="guardarHuevos"
     >
-        Guardar
+        <span wire:loading.remove wire:target="guardarHuevos">Guardar</span>
+        <span wire:loading wire:target="guardarHuevos">Guardando…</span>
     </x-ui.button>
 </form>

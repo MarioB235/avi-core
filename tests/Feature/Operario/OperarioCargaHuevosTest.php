@@ -136,12 +136,11 @@ class OperarioCargaHuevosTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(CargaHuevos::class)
-            ->assertRedirect(route('operario.home'));
+            ->assertRedirect(route('operario.cargar', ['abrir_galpon' => 1]));
 
-        $this->actingAs($operario);
-        session(['abrirSelectorGalpon' => true]);
-
-        Livewire::test(Home::class)
+        Livewire::actingAs($operario)
+            ->withQueryParams(['abrir_galpon' => '1'])
+            ->test(CargarHub::class)
             ->assertSet('selectorGalponAbierto', true);
     }
 
@@ -220,7 +219,7 @@ class OperarioCargaHuevosTest extends TestCase
             ->assertSet('dialogHuevosAbierto', true);
     }
 
-    public function test_abrir_formulario_huevos_sin_galpon_redirige_y_flashea_selector(): void
+    public function test_abrir_formulario_huevos_sin_galpon_abre_selector(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
@@ -236,8 +235,8 @@ class OperarioCargaHuevosTest extends TestCase
         Livewire::actingAs($operario)
             ->test(CargarHub::class)
             ->call('abrirFormularioHuevos')
-            ->assertRedirect(route('operario.home'))
-            ->assertSessionHas('abrirSelectorGalpon', true);
+            ->assertSet('selectorGalponAbierto', true)
+            ->assertSet('dialogHuevosAbierto', false);
     }
 
     public function test_carga_huevos_rejects_zero_quantity(): void
@@ -283,7 +282,7 @@ class OperarioCargaHuevosTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(CargaHuevos::class)
-            ->assertRedirect(route('operario.home'));
+            ->assertRedirect(route('operario.cargar', ['abrir_galpon' => 1]));
     }
 
     public function test_registrar_carga_huevos_action_rejects_unavailable_galpon(): void

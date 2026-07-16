@@ -4,6 +4,7 @@
     'disabled' => false,
     'icon' => null,
     'badge' => null,
+    'ariaCurrent' => true,
 ])
 
 @php
@@ -21,7 +22,7 @@
 @endphp
 
 @if ($href && ! $disabled)
-    <a href="{{ $href }}" {{ $attributes->merge(['class' => $class]) }} @if($active) aria-current="page" @endif>
+    <a href="{{ $href }}" {{ $attributes->merge(['class' => $class]) }} @if($active && $ariaCurrent) aria-current="page" @endif>
         @if ($icon)
             <x-ui.icon :name="$icon" class="avicore-nav-link__icon size-5 shrink-0" />
         @endif

@@ -46,7 +46,7 @@ Tras cambiar fondos JPEG/PNG: `python scripts/optimize-brand-assets.py` (comprim
 
 Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card` (elevación `shadow-sm`/`shadow-md`, excepción documentada frente a cards KPI). Panel de marca escritorio: `.avicore-auth-brand` alinea logo (`x-ui.logo` size `hero`) y copy en columna (`auth-brand-panel`). Fondos referenciados desde Vite en `resources/css/app.css`.
 
-**Recuperación MVP:** `config/avicore.php` (`.env` → `AVICORE_SUPPORT_*`) + `App\Services\SupportContactService` (valida WhatsApp/correo, construye `wa.me`/`mailto` con mensaje prefijado). Vista compuesta `x-auth.support-contact-dialog` sobre **`x-ui.sheet`** (bottom sheet en auth; el nombre del componente es histórico).
+**Recuperación MVP:** `config/avicore.php` (`.env` → `AVICORE_SUPPORT_*`) + `App\Services\SupportContactService` (valida WhatsApp/correo, construye `wa.me`/`mailto` con mensaje prefijado). Vista compuesta `x-auth.support-contact-dialog` sobre **`x-ui.sheet`** (bottom sheet en móvil; diálogo centrado en escritorio ≥1024px; el nombre del componente es histórico).
 
 **Input contraseña:** `x-ui.input` con `toggle-password`; clase `.avicore-password-input` oculta el reveal nativo del navegador (un solo icono ojo). Con `disabled` en el input, el toggle también queda deshabilitado.
 
@@ -88,30 +88,31 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 |------------|-------------------|
 | `x-ui.button` | `primary`, `secondary`, `danger`, `ghost` — min-h 44px, `focus-visible` |
 | `x-ui.input` | `aria-invalid`, estados error, `hint`, `toggle-password` (un solo toggle visible; botón ojo **disabled** si el input está `disabled`); icono leading en `avicore-primary`, toggle ojo en `avicore-muted` |
-| `x-ui.select` | Lista desplegable custom (Alpine + listbox): trigger `.avicore-select-trigger`, panel `.avicore-select-panel--below` \| `--above` (flip según espacio en viewport vía `syncPanelPosition()`), lista `.avicore-select-list` con `maxHeight` dinámico; opción activa `.avicore-select-option--active` (`bg-avicore-primary/8` + texto `avicore-text`, ring suave); `wire:model` vía `@entangle` — **defer por defecto** (`.live` solo con `wire:model.live`); en formularios operario preferir `wire:model.defer`; `placeholder` + `options`; recálculo en `resize` mientras está abierto |
-| `x-ui.date-picker` | Calendario custom (Alpine + bottom sheet): trigger `.avicore-date-picker-trigger`, panel teletransportado `.avicore-date-picker-panel` (misma familia visual que `x-ui.sheet`); grilla mes con weekdays Lu–Do; props `min` / `max` / `today` / `error`; CTA «Hoy»; `dayAriaLabel` parlante en celdas; error unificado (prop o bag `$errors` → `role="alert"` + `--error`); `wire:model` vía `@entangle` (`.live` con `wire:model.live`); sin `input type="date"` nativo — uso en Historial operario (`fechaError` → `:error`) |
+| `x-ui.select` | Lista desplegable custom (Alpine + listbox): trigger `.avicore-select-trigger`, panel `.avicore-select-panel--below` \| `--above` (flip según espacio en viewport vía `syncPanelPosition()`), lista `.avicore-select-list` con `maxHeight` dinámico; opción `.avicore-select-option` con `md:hover:bg-avicore-soft` (escritorio); activa `.avicore-select-option--active` (`bg-avicore-primary/8` + texto `avicore-text`, ring suave, `md:hover:bg-avicore-primary/12`); `wire:model` vía `@entangle` — **defer por defecto** (`.live` solo con `wire:model.live`); en formularios operario preferir `wire:model.defer`; `placeholder` + `options`; recálculo en `resize` mientras está abierto |
+| `x-ui.date-picker` | Calendario custom (Alpine): trigger `.avicore-date-picker-trigger`, panel teletransportado `.avicore-date-picker-panel` — **móvil** bottom sheet (slide-up + handle); **escritorio ≥1024px** diálogo centrado (`rounded-2xl`, sin handle, fade); grilla mes Lu–Do; props `min` / `max` / `today` / `error`; CTA «Hoy»; `dayAriaLabel`; error unificado (prop o bag `$errors`); `wire:model` vía `@entangle`; sin `input type="date"` nativo — Historial operario (`fechaError` → `:error`) |
 | `x-ui.card` | Borde simple, sin sombra; `padding`: `default`, `compact`, `none` |
 | `x-ui.alert` | `info`, `success`, `warning`, `danger` |
-| `x-ui.snackbar-host` | Toast fijo — fondo sólido suave por variante (`success` = `avicore-soft`, texto oscuro); `context` (`operario` \| `default`), auto-cierre ~4,5s, botón cerrar, evento `snackbar-show`; flash `status` + `status_variant` |
+| `x-ui.snackbar-host` | Toast fijo — tarjeta `avicore-card` con franja lateral por variante, icono en chip soft; auto-cierre ~4,5s (pausa al hover/foco; cierre manual × o Escape); `context` (`operario` \| `default`); móvil centrado sobre dock / `bottom-6`; escritorio (`lg+`) anclado **abajo a la derecha**; evento `snackbar-show`; flash `status` + `status_variant` |
 | `x-ui.badge` | Estados semánticos; variante `sidebar` para badges sobre fondo verde |
 | `x-ui.logo` | Marca — `public/images/brand/logo-avicore.png` + subtítulo opcional; `entrance` (órbita isotipo en `hero` / `auth-mobile` con `showName`) en auth; `theme="on-primary"` en sidebar admin (texto blanco, icono sobre fondo blanco); `stacked` + `size="auth-mobile"` en login móvil |
 | `x-ui.icon` | SVG inline por nombre (`menu`, `document`, `lock`, `eye`, `circle-x`, `mail`, `message-circle-check`, …) — nav, inputs, acciones; fuente Lucide en `resources/images/icons/` |
 | `x-ui.illustration` | Ilustración SVG a color por nombre (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`, …) — KPIs, tiles Cargar, Historial; fuente en `resources/images/illustrations/` |
 | `x-ui.kpi-card` | Label + valor + hint; prop `icon` opcional; para dashboard e Inicio admin |
-| `x-ui.nav-link` | Sidebar admin — props `icon`, `active`, `disabled` |
+| `x-ui.nav-link` | Sidebar (admin u operario escritorio) — props `icon`, `active`, `disabled` |
 | `x-ui.empty-state` | Empty state con icono, título y descripción |
 | `x-ui.setup-checklist` | Lista de pasos de configuración inicial con badge de estado |
-| `x-ui.user-avatar` | Iniciales circulares; prop `decorative` cuando el nombre visible está al lado (header/sidebar) — si no, `role="img"` + `aria-label` |
+| `x-ui.user-avatar` | Iniciales circulares; sizes `sm` (2.25rem), `nav` (2.75rem, home-nav operario), `md` (2.5rem); prop `decorative` cuando el nombre visible está al lado (header/sidebar) — si no, `role="img"` + `aria-label` |
 | `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger` **o** `wire:model` (Livewire); panel centrado; focus trap; `applyOpenSideEffects` sincroniza scroll/foco al cerrar vía entangle |
-| `x-ui.sheet` | Bottom sheet Alpine — slot `trigger` **o** `wire:model`; panel anclado abajo (slide-up), handle, safe-area; auth recuperación contraseña |
-| `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», bottom sheet (`x-ui.sheet`); enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
+| `x-ui.sheet` | Overlay Alpine — slot `trigger` **o** `wire:model`; **móvil** bottom sheet (slide-up, handle, safe-area); **escritorio ≥1024px** panel centrado tipo diálogo (`max-w-md`, sin handle); auth recuperación contraseña |
+| `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», overlay (`x-ui.sheet` responsive); enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
 | `x-operario.primary-action` | Inicio — CTA «Registrar producción» (verde sólido, enlace a hub Cargar) |
 | `x-operario.home-hero` | Inicio — fondo degradado suave + saludo horario compacto + chip galpón (`home-hero.blade.php`); nav fijo va en layout |
-| `x-operario.cargar-hero` | Hub Cargar — mismo fondo degradado suave que Inicio; header estándar; chip galpón solo lectura |
-| `x-operario.historial-hero` | Historial — mismo hero/header que Inicio; chip galpón solo lectura |
-| `x-operario.header` | Barra operario — variante hero (grilla logo/usuario + divisor ogee inferior; gradiente SVG con tokens `--color-avicore-*`) o contextual (título + chip en tarjeta); integra `<x-operario.user-menu>` |
-| `x-operario.user-menu` | Menú cuenta operario — dropdown desde avatar (`x-ui.user-avatar` con look operario: primario + borde blanco + iniciales blancas); Perfil (subvista) + Cerrar sesión; ARIA `menu` / `menuitem`; props `size`, `avatarClass` |
-| `x-operario.bottom-nav` | Barra inferior integrada — 3 pestañas (Inicio `home`, Cargar `plus`, Historial `calendar`); ítem activo con círculo verde sobresaliente; datos desde `OperarioNav` |
+| `x-operario.cargar-hero` | Hub Cargar — mismo fondo degradado suave que Inicio; chip galpón **interactivo** (slot `galponSelector` + `ManagesGalponSelector`) |
+| `x-operario.historial-hero` | Historial — mismo hero que Inicio; chip galpón **interactivo** (mismo selector) |
+| `x-operario.header` | Barra operario — variante hero (grilla logo/usuario + divisor ogee; home usa avatar `size="nav"`) o contextual; integra `<x-operario.user-menu>`; en `lg+` el home-nav se oculta |
+| `x-operario.user-menu` | Menú cuenta — panel **teleport a `body`** + `syncPanelPosition` (clamp vertical/horizontal, `max-height` viewport); variante `sidebar` abre hacia arriba; avatar: blanco/primario sobre chrome verde, primario/blanco en header claro (sin `!important`); Perfil + Cerrar sesión; ARIA `menu` / `menuitem`; props `size`, `avatarClass`, `variant` |
+| `x-operario.sidebar-nav` | Nav escritorio (`lg+`) — logo «Carga en campo», `OperarioNav` + `x-ui.nav-link`, cuenta con `user-menu variant="sidebar"`; oculta en `< lg` |
+| `x-operario.bottom-nav` | Barra inferior integrada — 3 pestañas (Inicio `home`, Cargar `plus`, Historial `calendar`); `lg:hidden`; ítem activo con círculo verde sobresaliente; datos desde `OperarioNav` |
 
 ## Layouts
 
@@ -119,7 +120,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 |--------|---------|-----|
 | Público | `components/layouts/public.blade.php` | Login, cambio de contraseña — split marca + tarjeta (≥1024px); móvil: logo apilado + bottom sheet (`.avicore-auth-mobile-brand`, `.avicore-auth-card`); partial `auth-brand-panel` |
 | Admin | `components/layouts/admin.blade.php` | Shell `.avicore-admin-*`: sidebar sticky verde (`bg-avicore-primary`, nav clara, labels de sección) + drawer Alpine (móvil), header y main con gutter común (`avicore-admin-gutter`); partials `admin-sidebar-inner`, `admin-nav`, `admin-header-toolbar`, `admin-menu-trigger` |
-| Operario | `components/layouts/operario-mobile.blade.php` | Shell `.avicore-operario-shell` — header `<x-operario.header>` fijo en layout (hero `isHomePage` en Inicio/Cargar/Historial; contextual en rutas legacy) + barra inferior `<x-operario.bottom-nav>`; datos de galpón vía `OperarioLayoutComposer`; pestañas/títulos vía `OperarioNav` |
+| Operario | `components/layouts/operario-mobile.blade.php` | Shell responsive `.avicore-operario-shell` — **móvil:** header + `<x-operario.bottom-nav>`; **escritorio ≥1024px:** `<x-operario.sidebar-nav>` + contenido ancho; snackbar `context="operario"`; datos vía `OperarioLayoutComposer` / `OperarioNav` |
 
 ## Quality gates
 
