@@ -29,7 +29,7 @@ El arquitecto (`/avicore-architect-direct`) debe **mantener el repo al día**, n
 | Tono chat | `avicore-modo-respuesta-clara.mdc` → `avicore-contexto/references/modo-respuesta-clara.md` |
 | MCP / auth PR | `.cursor/README.md` § MCP → skill `avicore-git-pr` |
 | Contrato producto | `references/` del skill dueño → `CHANGELOG` |
-| Anti-drift tooling | `node scripts/check-agent-docs-sync.cjs` + `check-skill-references.cjs` |
+| Anti-drift tooling | `pnpm run check:agent-docs` → `check-agent-docs-sync.cjs` + `check-skill-references.cjs` (enlaces relativos en `.md`/`.mdc`/`.html`) |
 
 ---
 

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('granjas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->cascadeOnDelete();
+            $table->foreignId('empresa_id')->constrained('empresas')->restrictOnDelete();
             $table->string('nombre');
             $table->string('codigo')->nullable();
             $table->string('ubicacion')->nullable();

@@ -76,11 +76,12 @@ Mantener completos: código, comandos, tabla auditoría (msg 2) y plantilla PR (
 
 ## Flujo obligatorio
 
-### 1 — Preparación (si el usuario inicia una tarea nueva)
+### 1 — Preparación (solo si la tarea implica escritura)
 
-1. `git status` y rama actual.
-2. Si está en `main`/`master`: `git pull` (si hay remoto) y `git checkout -b [tipo]/[nombre-descriptivo]`.
-3. No commit, push ni PR salvo mensaje **5** con autorización explícita.
+1. `git status` y rama actual. Si el worktree tiene cambios ajenos sin commit/stash, detenerse y avisar.
+2. Consultas o plan **sin** modificar archivos: no crear rama ni hacer `pull` obligatorio.
+3. Si está en `main`/`master` **y** la tarea escribe código/docs: `git pull` (si hay remoto) y `git checkout -b [tipo]/[nombre-descriptivo]`.
+4. No commit, push ni PR salvo mensaje **5** con autorización explícita. En commit: **stagear rutas explícitas** (nunca `git add .` a ciegas).
 
 ### 2 — Orientación (leer antes de codear)
 
@@ -99,25 +100,11 @@ Mantener completos: código, comandos, tabla auditoría (msg 2) y plantilla PR (
 Inferir alcance: `feature` | `fix` | `refactor` | `docs` | `style` | `chore` | `hotfix`
 
 Plantillas usuario: `docs/02-avicore-mensajes-reutilizables.html`  
-**Catálogo completo:** `.cursor/skills/README.md`
+**Catálogo y enrutamiento mensaje 1 (única tabla):** [`.cursor/skills/README.md`](../skills/README.md) — no duplicar la matriz aquí.
 
 **Cierre 2→5:** `@rutas` **solo al final del mensaje 2**.
 
-**Enrutamiento mensaje 1** (elegir **uno** principal; combinar si la tarea lo pide):
-
-| Intención del usuario | Skill principal | Combinar con |
-|----------------------|-----------------|--------------|
-| Orientación / contexto | `avicore-contexto` | skill de dominio |
-| Módulo o CRUD completo | `avicore-nuevo-modulo` | `avicore-negocio`, `avicore-modelo-datos`, `avicore-ui` |
-| Solo pantalla / UI | `avicore-ui` | `avicore-design-system` |
-| Tokens / componentes base | `avicore-design-system` | `avicore-ui` si hay pantalla |
-| Reglas de negocio / permisos | `avicore-negocio` | `avicore-ui` o `avicore-modelo-datos` |
-| Solo migración / modelo / seeders | `avicore-modelo-datos` | `avicore-negocio` si afecta reglas |
-| WebSockets / dashboard en vivo | `avicore-tiempo-real` | `avicore-negocio` |
-| Seeders demo | `avicore-datos-demo` | `avicore-modelo-datos` |
-| PDF / Excel | `avicore-reportes` | `avicore-negocio` |
-| PWA | `avicore-pwa` | `avicore-ui` |
-| Ledger `avicore-defer:` | `avicore-deuda-tecnica` | — |
+Elegir **un** skill principal según la intención del usuario (mapa en el README); combinar con skills vecinos si la tarea lo pide.
 
 ### 4 — Implementar
 

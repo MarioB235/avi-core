@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('galpones', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->cascadeOnDelete();
-            $table->foreignId('granja_id')->constrained('granjas')->cascadeOnDelete();
+            $table->foreignId('empresa_id')->constrained('empresas')->restrictOnDelete();
+            $table->foreignId('granja_id')->constrained('granjas')->restrictOnDelete();
             $table->string('nombre');
             $table->string('codigo')->nullable();
             $table->unsignedInteger('capacidad')->nullable();

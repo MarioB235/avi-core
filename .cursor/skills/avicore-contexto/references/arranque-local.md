@@ -86,11 +86,11 @@ El rol `postgres` es del **servidor**, no de una base concreta; puede usarse en 
 php artisan migrate
 ```
 
-Tablas: skeleton Laravel + `empresas` + `users` (esquema AviCore). Ver [`estructura-base-datos.md`](estructura-base-datos.md).
+Tablas: skeleton Laravel + `empresas` + `users` (esquema AviCore). Ver [`esquema-bd.md`](../../avicore-modelo-datos/references/esquema-bd.md).
 
 ### Datos de prueba (login)
 
-Usuarios demo: [`10-datos-demo.md`](../10-datos-demo.md) § 6. Tras migrar, cargarlos con:
+Usuarios demo: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 6. Tras migrar, cargarlos con:
 
 ```bash
 php artisan db:seed

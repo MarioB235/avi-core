@@ -8,7 +8,7 @@ Permite registrar y consultar producción diaria por galpón: huevos, mortalidad
 
 | Fase | Contenido |
 |------|-----------|
-| **Hecho** | Bloque 1–2, slice operario mínimo (estructura avícola + carga huevos) |
+| **Hecho** | Bloque 1–2 + operario: estructura avícola, carga huevos/muertes/vacunación, alta lote, historial |
 | **Siguiente** | Ver [`avicore-contexto/references/plan-desarrollo.md`](.cursor/skills/avicore-contexto/references/plan-desarrollo.md) |
 
 ## Stack
@@ -57,7 +57,7 @@ docs/           Contexto mínimo (00-contexto, CHANGELOG, plantillas HTML)
 
 ## Licencia
 
-Por definir.
+MIT (ver `composer.json`).
 
 ## Autor
 
