@@ -34,26 +34,23 @@ Avícola Demo
 
 Cargados con `AvicoreAuthSeeder` (`php artisan db:seed`). Empresa: **Avícola Demo** (`DEMO`).
 
-### Login rápido en local
+### Login en local (selector)
 
 Con `APP_ENV=local` y `AVICORE_DEMO_LOGIN=true` (ver `.env.example`), en `/login`:
 
-- Documento: `000000000`
-- Contraseña: `Avicore2026!`
-- **Perfil demo:** `x-ui.select` de rol (resuelve al usuario seedeado correspondiente vía `DemoLoginService`).
+- Documento y contraseña: vacíos y deshabilitados (no se usan).
+- **Perfil:** `x-ui.select` de rol → autentica al usuario seedeado (`DemoLoginService` / `executeDemo`).
 
-Desactivar para entornos reales: `AVICORE_DEMO_LOGIN=false` o despliegue fuera de `local`.
+Desactivar: `AVICORE_DEMO_LOGIN=false` o entorno distinto de `local` (vuelve el login por documento + contraseña).
 
 ### Usuarios en base (mapeo por rol)
 
-| Rol | Documento | Contraseña | Cambio obligatorio |
-|---|---|---|---|
-| Admin AviCore | `900000001` | `Avicore2026!` | No |
-| Dueño | `100000001` | `Avicore2026!` | No |
-| Administrativo | `300000001` | `Avicore2026!` | No |
-| Encargado | `400000001` | `Avicore2026!` | No |
-| Operario | `200000001` | `Avicore2026!` | No |
+| Rol | Documento (seeder) | Después del login |
+|---|---|---|
+| Admin AviCore | `900000001` | `/admin` |
+| Dueño | `100000001` | `/admin` |
+| Administrativo | `300000001` | `/admin` |
+| Encargado | `400000001` | `/admin` |
+| Operario | `200000001` | `/operario` |
 
-El login por documento individual sigue disponible (útil para pruebas puntuales o flujo de cambio de contraseña con usuarios de factory en tests).
-
-Credenciales para probar login en local: [`avicore-contexto/references/arranque-local.md`](../../avicore-contexto/references/arranque-local.md) § «Datos de prueba (login)».
+Contraseña seedeada `Avicore2026!` (solo aplica si el demo está desactivado y se usa login normal). Detalle de arranque: [`arranque-local.md`](../../avicore-contexto/references/arranque-local.md) § «Datos de prueba (login)».

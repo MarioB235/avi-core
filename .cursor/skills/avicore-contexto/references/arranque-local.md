@@ -90,31 +90,24 @@ Tablas: skeleton Laravel + `empresas` + `users` (esquema AviCore). Ver [`esquema
 
 ### Datos de prueba (login)
 
-Usuarios demo: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 6. Tras migrar, cargarlos con:
+Usuarios demo: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4. Tras migrar, cargarlos con:
 
 ```bash
 php artisan db:seed
 ```
 
-**Modo rápido (solo `APP_ENV=local`, `AVICORE_DEMO_LOGIN=true`):**
+**Modo demo local** (`APP_ENV=local`, `AVICORE_DEMO_LOGIN=true`): en `/login` elegí el **Perfil** en el selector. Documento y contraseña quedan vacíos (no se usan).
 
-| Campo | Valor |
-|-------|--------|
-| Documento | `000000000` |
-| Contraseña | `Avicore2026!` |
-| Perfil | Selector en `/login` (Admin AviCore, Dueño, Administrativo, Encargado, Operario) |
+| Perfil en el select | Usuario seedeado | Después del login |
+|--------|-----------|-------------------|
+| Admin AviCore | documento `900000001` | `/admin` |
+| Dueño | documento `100000001` | `/admin` |
+| Administrativo | documento `300000001` | `/admin` |
+| Encargado | documento `400000001` | `/admin` |
+| Operario | documento `200000001` | `/operario` |
 
-El selector resuelve al usuario seedeado real de cada rol (permisos y `empresa_id` auténticos). Desactivar con `AVICORE_DEMO_LOGIN=false` o fuera de `local`.
+Desactivar con `AVICORE_DEMO_LOGIN=false`: login normal con documento + contraseña (`Avicore2026!` en seeders).
 
-**Login por documento individual** (avanzado / sin selector): sigue disponible con los documentos del seeder (`900000001`, `100000001`, etc.) y `Avicore2026!`.
-
-| Perfil | Documento | Contraseña | Después del login |
-|--------|-----------|------------|-------------------|
-| Admin AviCore | `900000001` | `Avicore2026!` | `/admin` |
-| Dueño demo | `100000001` | `Avicore2026!` | `/admin` |
-| Administrativo demo | `300000001` | `Avicore2026!` | `/admin` |
-| Encargado demo | `400000001` | `Avicore2026!` | `/admin` |
-| Operario demo | `200000001` | `Avicore2026!` | `/operario` |
 
 Rutas: `/login`, `/password/change`, `/admin`, `/operario`.
 

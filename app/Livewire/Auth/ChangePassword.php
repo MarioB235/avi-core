@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Actions\Auth\ChangePasswordAction;
+use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -35,10 +36,10 @@ class ChangePassword extends Component
 
         session()->flash('status', 'Contraseña actualizada correctamente.');
 
-        $this->redirect(route($user->homeRouteName()), navigate: true);
+        $this->redirect(route($user->homeRouteName()));
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.auth.change-password');
     }

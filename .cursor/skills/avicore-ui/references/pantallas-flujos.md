@@ -24,10 +24,10 @@ Permitir el acceso seguro al sistema.
 
 ### Campos
 
-- Documento.
-- Contraseña.
+- Documento (en local demo: visible, vacío y deshabilitado).
+- Contraseña (en local demo: visible, vacía y deshabilitada).
+- Perfil (select; solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`).
 - Recordarme (opcional).
-- Perfil demo (opcional; solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true` — ver presentación).
 
 ### Acciones
 
@@ -40,17 +40,17 @@ Permitir el acceso seguro al sistema.
 - En **móvil** (<1024px): fondo `login-background.jpg` (granja al atardecer), logo apilado centrado sobre la foto (`entrance` — órbita del isotipo alrededor del wordmark) y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
-- **Modo demo (solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`):** mantener visibles Documento y Contraseña con credencial única `000000000` / `Avicore2026!`; el rol cambia solo con el selector de perfil (`x-ui.select`, mismo componente que vacunación en operario). Autentica al usuario seedeado del rol elegido (`DemoLoginService`). No visible en producción.
+- **Modo demo local** (`APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`): documento y contraseña quedan vacíos y deshabilitados (sin lógica de credenciales); el acceso es solo con el selector **Perfil** (`x-ui.select` + `wire:model.live`), que autentica al usuario seedeado del rol (`DemoLoginService` + `AttemptLoginAction::executeDemo`). Tras login, redirect **full page** (sin Livewire `navigate`) para cambiar de layout público al admin u operario móvil. Fuera de local o con flag en `false`: login normal por documento + contraseña.
 - Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre un diálogo con contacto de soporte (WhatsApp y correo configurables en `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
 
 ### Validaciones
 
-- Documento obligatorio (máx. 50 caracteres).
-- Contraseña obligatoria.
+- **Demo local:** perfil obligatorio; documento/contraseña no se validan; errores de rate-limit y empresa inactiva en campo `demoRole`.
+- **Login normal:** documento obligatorio (máx. 50 caracteres); contraseña obligatoria.
 - Usuario activo.
 - Empresa activa (estado `activa`; no aplica a Admin AviCore).
 - Usuario no Admin AviCore sin empresa asignada no puede iniciar sesión.
-- Credenciales válidas.
+- Credenciales válidas (solo login normal).
 - Máximo 5 intentos fallidos por documento e IP en 60 segundos; luego mensaje con tiempo de espera.
 - Si el documento coincide en más de una cuenta activa con la misma contraseña, se rechaza el acceso (contactar administrador).
 

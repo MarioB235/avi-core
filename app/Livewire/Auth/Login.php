@@ -5,6 +5,7 @@ namespace App\Livewire\Auth;
 use App\Actions\Auth\AttemptLoginAction;
 use App\Enums\UserRole;
 use App\Services\DemoLoginService;
+use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -28,53 +29,46 @@ class Login extends Component
     {
         $this->demoLoginEnabled = $demoLogin->isEnabled();
 
-        if (! $this->demoLoginEnabled) {
-            return;
+        if ($this->demoLoginEnabled) {
+            $this->demoRole = UserRole::Dueno->value;
         }
-
-        $this->documento = (string) config('avicore.demo_login.documento', '');
-        $this->password = (string) config('avicore.demo_login.password', '');
-        $this->demoRole = UserRole::Dueno->value;
     }
 
-    public function login(AttemptLoginAction $attemptLogin, DemoLoginService $demoLogin): void
+    public function login(AttemptLoginAction $attemptLogin): void
     {
-        $isDemoAttempt = $this->demoLoginEnabled
-            && $demoLogin->credentialsMatch($this->documento, $this->password);
+        if ($this->demoLoginEnabled) {
+            $this->validate([
+                'demoRole' => ['required', Rule::enum(UserRole::class)],
+            ], [
+                'demoRole.required' => 'Seleccioná un perfil para continuar.',
+            ]);
 
-        $rules = [
-            'documento' => ['required', 'string', 'max:50'],
-            'password' => ['required', 'string'],
-        ];
+            $result = $attemptLogin->executeDemo($this->demoRole, $this->remember);
+        } else {
+            $this->validate([
+                'documento' => ['required', 'string', 'max:50'],
+                'password' => ['required', 'string'],
+            ], [
+                'documento.required' => 'El documento es obligatorio.',
+                'password.required' => 'La contraseña es obligatoria.',
+            ]);
 
-        if ($isDemoAttempt) {
-            $rules['demoRole'] = ['required', Rule::enum(UserRole::class)];
+            $result = $attemptLogin->execute(
+                $this->documento,
+                $this->password,
+                $this->remember,
+            );
         }
 
-        $this->validate($rules, [
-            'documento.required' => 'El documento es obligatorio.',
-            'password.required' => 'La contraseña es obligatoria.',
-            'demoRole.required' => 'Seleccioná un perfil para continuar.',
-        ]);
-
-        $demoRole = $isDemoAttempt ? $this->demoRole : null;
-
-        $result = $attemptLogin->execute(
-            $this->documento,
-            $this->password,
-            $this->remember,
-            $demoRole,
-        );
-
+        // Full page: cambia layout (público → admin u operario-mobile).
         $this->redirect(
             $result['must_change_password']
                 ? route('password.change')
                 : route($result['user']->homeRouteName()),
-            navigate: true,
         );
     }
 
-    public function render()
+    public function render(): View
     {
         $viewData = [];
 

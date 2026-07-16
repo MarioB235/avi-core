@@ -57,16 +57,20 @@ class LoginViewTest extends TestCase
         $this->app['env'] = 'local';
         config(['avicore.demo_login.enabled_flag' => true]);
 
-        $html = Livewire::test(Login::class)->html();
+        $html = Livewire::test(Login::class)
+            ->assertSet('documento', '')
+            ->assertSet('password', '')
+            ->html();
 
         $this->assertStringContainsString('name="demoRole"', $html);
-        $this->assertStringContainsString('Perfil demo', $html);
+        $this->assertStringContainsString("entangle('demoRole').live", $html);
+        $this->assertStringContainsString('Perfil', $html);
         $this->assertStringContainsString('avicore-select-trigger', $html);
-        $this->assertStringContainsString('avicore-select-panel', $html);
         $this->assertStringContainsString('role="listbox"', $html);
         $this->assertStringContainsString('Operario', $html);
-        $this->assertStringContainsString('Modo demo — solo desarrollo local', $html);
-        $this->assertStringContainsString('Admin AviCore', $html);
+        $this->assertMatchesRegularExpression('/id="documento"[^>]*disabled="disabled"/s', $html);
+        $this->assertMatchesRegularExpression('/id="password"[^>]*disabled="disabled"/s', $html);
+        $this->assertMatchesRegularExpression('/type="button"\s+disabled\b/s', $html);
     }
 
     public function test_login_hides_demo_role_select_outside_local_environment(): void
@@ -76,6 +80,8 @@ class LoginViewTest extends TestCase
         $html = Livewire::test(Login::class)->html();
 
         $this->assertStringNotContainsString('name="demoRole"', $html);
-        $this->assertStringNotContainsString('Perfil demo', $html);
+        $this->assertStringNotContainsString("entangle('demoRole')", $html);
+        $this->assertDoesNotMatchRegularExpression('/id="documento"[^>]*disabled="disabled"/s', $html);
+        $this->assertDoesNotMatchRegularExpression('/id="password"[^>]*disabled="disabled"/s', $html);
     }
 }

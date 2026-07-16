@@ -92,7 +92,7 @@ Si la BD está vacía tras `migrate`, ejecutar en Laravel Cloud (comandos del en
 php artisan db:seed --force
 ```
 
-Usuarios demo: ver [`demo.md`](../../avicore-datos-demo/references/demo.md) y sección login en [`arranque-local.md`](arranque-local.md). En Cloud **no** usar el selector demo (`AVICORE_DEMO_LOGIN=false`).
+Usuarios demo: ver [`demo.md`](../../avicore-datos-demo/references/demo.md) y sección login en [`arranque-local.md`](arranque-local.md). En Cloud **desactivar** el selector (`AVICORE_DEMO_LOGIN=false`) y usar documento + contraseña del seeder.
 
 ---
 

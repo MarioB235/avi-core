@@ -11,6 +11,12 @@
 @php
     $hasError = $error || ($name && isset($errors) && $errors->has($name));
     $inputType = $type;
+    $rawDisabled = $attributes->get('disabled');
+    $inputDisabled = $attributes->has('disabled')
+        && $rawDisabled !== false
+        && $rawDisabled !== 'false'
+        && $rawDisabled !== 0
+        && $rawDisabled !== '0';
 
     $inputModifiers = trim(collect([
         $icon ? 'avicore-input--leading-icon' : null,
@@ -50,8 +56,13 @@
         @if ($togglePassword)
             <button
                 type="button"
-                class="absolute inset-y-0 right-0 z-10 flex w-10 items-center justify-center text-avicore-muted hover:text-avicore-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary"
-                x-on:click="show = !show"
+                @disabled($inputDisabled)
+                @class([
+                    'absolute inset-y-0 right-0 z-10 flex w-10 items-center justify-center text-avicore-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary',
+                    'hover:text-avicore-text' => ! $inputDisabled,
+                    'cursor-not-allowed opacity-50' => $inputDisabled,
+                ])
+                x-on:click="if (! $el.disabled) show = !show"
                 x-bind:aria-label="show ? 'Ocultar contraseña' : 'Mostrar contraseña'"
                 x-bind:aria-pressed="show ? 'true' : 'false'"
             >

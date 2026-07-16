@@ -39,5 +39,21 @@ class InputComponentTest extends TestCase
         $this->assertStringContainsString('aria-pressed', $html);
         $this->assertStringContainsString('Mostrar contraseña', $html);
         $this->assertStringNotContainsString('tabindex="-1"', $html);
+        $this->assertDoesNotMatchRegularExpression('/type="button"\s+disabled\b/s', $html);
+    }
+
+    public function test_password_toggle_is_disabled_when_input_is_disabled(): void
+    {
+        $html = Blade::render(<<<'BLADE'
+            <x-ui.input
+                label="Contraseña"
+                name="password"
+                toggle-password
+                disabled
+            />
+        BLADE);
+
+        $this->assertMatchesRegularExpression('/type="button"\s+disabled\b/s', $html);
+        $this->assertStringContainsString('cursor-not-allowed opacity-50', $html);
     }
 }
