@@ -1,6 +1,6 @@
 # 01 — Producto AviCore
 
-> **Visión de producto:** alcance y objetivos del MVP. El detalle operativo (pantallas, campos, flujos) vive en [`02-pantallas-y-flujos.md`](02-pantallas-y-flujos.md) y [`05-reglas-de-negocio.md`](05-reglas-de-negocio.md) **solo para lo implementado**; módulos futuros en [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md).
+> **Visión de producto:** alcance y objetivos del MVP. El detalle operativo (pantallas, campos, flujos) vive en [`pantallas-flujos.md`](../../avicore-ui/references/pantallas-flujos.md) y [`reglas.md`](../../avicore-negocio/references/reglas.md) **solo para lo implementado**; módulos futuros en [`plan-desarrollo.md`](plan-desarrollo.md).
 
 ## 1. Definición general
 

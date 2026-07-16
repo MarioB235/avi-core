@@ -1,6 +1,6 @@
 # 02 — Pantallas y flujos
 
-> **Gobernanza incremental:** solo se detalla aquí lo que tiene ruta/UI en el repo. Pantallas planificadas: una línea + enlace a [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md). Al implementar, expandir la sección correspondiente en el mismo PR.
+> **Gobernanza incremental:** solo se detalla aquí lo que tiene ruta/UI en el repo. Pantallas planificadas: una línea + enlace a [`plan-desarrollo.md`](../../avicore-contexto/references/plan-desarrollo.md). Al implementar, expandir la sección correspondiente en el mismo PR.
 
 ## 1. Objetivo
 
@@ -139,7 +139,7 @@ Tras login exitoso (sin cambio de contraseña pendiente), roles no operario lleg
 
 ## 4. Pantalla: Dashboard
 
-**Estado:** planificado — fase 17 en [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md) §2; tiempo real asociado en Bloque 6. Tarjetas, filtros y actualización en vivo se documentarán al implementar `Livewire/Dashboard/`.
+**Estado:** planificado — fase 17 en [`plan-desarrollo.md`](../../avicore-contexto/references/plan-desarrollo.md) §2; tiempo real asociado en Bloque 6. Tarjetas, filtros y actualización en vivo se documentarán al implementar `Livewire/Dashboard/`.
 
 ---
 

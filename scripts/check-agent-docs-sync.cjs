@@ -95,12 +95,17 @@ const ROUTING_INTENTS = [
 ];
 
 for (const skill of ROUTING_INTENTS) {
-  if (!comando.includes(skill)) {
-    fail(`comando: falta enrutamiento mensaje 1 para ${skill}`);
-  }
   if (!skillsReadme.includes(skill)) {
     fail(`skills README: falta ${skill} en enrutamiento o catálogo`);
   }
+}
+
+if (!comando.includes('.cursor/skills/README.md') && !comando.includes('../skills/README.md')) {
+  fail('comando: debe apuntar a skills/README.md como única tabla de enrutamiento');
+}
+
+if (comando.includes('| Intención del usuario |')) {
+  fail('comando: no duplicar la matriz de enrutamiento (vive solo en skills/README.md)');
 }
 
 const removedPaths = [

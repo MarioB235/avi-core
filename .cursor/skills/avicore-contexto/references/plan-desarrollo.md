@@ -1,13 +1,13 @@
 # 12 — Plan de desarrollo
 
-## 0. Estado de avance (2026-06-20)
+## 0. Estado de avance (2026-07-15)
 
 | Bloque | Estado | Notas |
 |--------|--------|-------|
 | **1 — Base** | **Hecho** | Laravel 13, Livewire 4, Tailwind 4, layouts, UI base, PostgreSQL + `migrate` OK |
-| **2 — Seguridad** | **En curso** | Login + cambio obligatorio implementados; roles/CRUD usuarios pendiente |
-| **4 — Estructura avícola** | **Parcial** | Migraciones + seeder demo mínimo (1 granja, 2 galpones, 1 lote); sin CRUD admin |
-| **5 — Operación móvil** | **Parcial** | Home operario, selector galpón, carga huevos y muertes (hub 2 tiles); alimento/combinada fuera del móvil operario |
+| **2 — Seguridad** | **Parcial** | Login + cambio obligatorio; roles/CRUD usuarios pendiente |
+| **4 — Estructura avícola** | **Parcial** | Migraciones + seeder demo; alta de lote desde operario; sin CRUD admin completo |
+| **5 — Operación móvil** | **Parcial** | Home, selector galpón, hub Cargar (huevos, muertes, vacunación, lote), historial con filtro fecha; alimento/combinada fuera del móvil |
 | 3, 6–7 | Pendiente | Según orden de la sección 2 |
 
 Detalle técnico del Bloque 1: [`arbol-proyecto.md`](arbol-proyecto.md) · entorno local: [`arranque-local.md`](arranque-local.md).

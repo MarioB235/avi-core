@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # AviCore — Deuda técnica (`avicore-defer`)
 
-Convención en [`estandares-codigo.md`](../../../estandares-codigo.md) § Simplificación. Inspirado en el patrón de ledger de referencia [`docs/ponytail`](../../../docs/ponytail/README.md); **no** usar marcador `ponytail:` en código de producto AviCore.
+Convención en [`estandares-codigo.md`](../avicore-auditoria/references/estandares-codigo.md) § Simplificación. Ledger vía comentarios `avicore-defer:`; **no** usar marcadores de otros proyectos en código de producto AviCore.
 
 ## Convención
 
@@ -24,7 +24,7 @@ Ejemplos:
 
 ## Escaneo
 
-Buscar en el repo (excluir `vendor/`, `node_modules/`, `public/build/`, `.git`, `docs/ponytail/`):
+Buscar en el repo (excluir `vendor/`, `node_modules/`, `public/build/`, `.git`):
 
 Patrones: `# avicore-defer:`, `// avicore-defer:`, `{{-- avicore-defer:`, `/* avicore-defer:`
 

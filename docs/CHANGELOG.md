@@ -5,6 +5,16 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-07-15
+
+- **[chore|ci]** CI: `pnpm/action-setup` sin `version:` duplicada; usa `packageManager` de `package.json`. — `.github/workflows/ci.yml`
+- **[seguridad|deps]** Guzzle/psr7 parcheados (`composer audit` limpio) y `composer.lock` alineado con `composer.json`. — `composer.lock`
+- **[modelo|fix]** FKs operativas/estructura pasan a `ON DELETE RESTRICT` (anular, no borrar historial). — migraciones, `esquema-bd.md`, `reglas.md`
+- **[cursor]** Anti-drift: checker de enlaces en `.md`/`.mdc`/`.html`; matriz de skills solo en `skills/README.md`; Git prep solo con escritura y stage explícito. — `check-skill-references.cjs`, `check-agent-docs-sync.cjs`, comando, `desarrollo.html`
+- **[docs]** README/roadmap/mockup Cargar al día (huevos, muertes, vacunación, lote); licencia MIT. — `README.md`, `plan-desarrollo.md`, `chatgpt-pantallas.html`
+- **[refactor|operario]** `CargarHub` divide formularios en Concerns. — `app/Livewire/Operario/Concerns/`, `arbol-proyecto.md`
+- **[chore]** CI GitHub Actions (Postgres `avicore_test` alineado a `phpunit.xml`); proxy vía `TRUSTED_PROXIES`; `setEmpresaId` valida empresa; heroes JPG operario eliminados; script plantillas sin dead code. — `.github/workflows/ci.yml`, `bootstrap/app.php`, `EmpresaContextService.php`
+
 ## 2026-07-14
 
 - **[operario|fix]** Post-auditoría msg 3 (Historial + date-picker): `validarFecha` hace `resetErrorBag('fecha')` antes de `addError` (un solo mensaje vigente); error visible vía `fechaError` → `:error` en `x-ui.date-picker`; `dayAriaLabel` parlante en celdas; tests de mensaje visible, bag `$errors` y BottomNav alineado al date-picker. — `Historial.php`, `historial.blade.php`, `date-picker.blade.php`, `OperarioHistorialTest.php`, `DatePickerComponentTest.php`, `OperarioBottomNavTest.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`, `tokens-componentes.md`, `arbol-proyecto.md`, `estandares-codigo.md`

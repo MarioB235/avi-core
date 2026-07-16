@@ -53,7 +53,7 @@ app/
 │       └── Composers/        # AdminHomeComposer, OperarioLayoutComposer
 ├── Livewire/
 │   ├── Auth/                 # Login, ChangePassword
-│   └── Operario/             # Home, CargarHub, CargaHuevos, CargaMuertes, CargaVacunacion, CargaLote, Historial
+│   └── Operario/             # Home, CargarHub (+ Concerns/), CargaHuevos, CargaMuertes, CargaVacunacion, CargaLote, Historial
 ├── Models/
 │   ├── Concerns/             # BelongsToEmpresa
 │   ├── Empresa.php

@@ -7,6 +7,8 @@ Criterios del modelo: [`criterios-modelo.md`](criterios-modelo.md). Reglas de ne
 
 **Motor:** PostgreSQL · **Convención:** `empresa_id` en tablas operativas salvo excepciones documentadas.
 
+**Integridad referencial:** FKs de `granjas`, `galpones`, `lotes`, `registros_operativos` y `vacunaciones` usan `ON DELETE RESTRICT` (no cascade). Anulación lógica en app; no hard-delete de padres con historial o hijos.
+
 ---
 
 ## Diagrama de relaciones (implementado)

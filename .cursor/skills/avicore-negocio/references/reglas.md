@@ -23,7 +23,7 @@
 10. Usuario inactivo o empresa no activa impiden el acceso (Admin AviCore exceptuado de validación de empresa).
 11. Usuario no Admin AviCore sin `empresa_id` asignado no puede iniciar sesión.
 12. La recuperación de contraseña en MVP la realiza administrador o encargado autorizado. En login y cambio obligatorio de contraseña, el enlace «¿Olvidaste tu contraseña?» abre un diálogo con contacto de soporte (WhatsApp y/o correo desde `config/avicore.php` / `.env`, URLs validadas en `SupportContactService`); no hay reset automático por correo.
-13. Login demo local (desarrollo): credencial única + selector de perfil en `/login`; solo si `APP_ENV=local` y `AVICORE_DEMO_LOGIN=true`. Autentica al usuario seedeado del rol elegido (`DemoLoginService`) sin omitir validaciones de empresa del usuario resuelto. Detalle: [`10-datos-demo.md`](10-datos-demo.md) § 6.
+13. Login demo local (desarrollo): credencial única + selector de perfil en `/login`; solo si `APP_ENV=local` y `AVICORE_DEMO_LOGIN=true`. Autentica al usuario seedeado del rol elegido (`DemoLoginService`) sin omitir validaciones de empresa del usuario resuelto. Detalle: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 6.
 
 ---
 
@@ -111,10 +111,11 @@
 ## 9. Anulación
 
 1. Se usa “anular”, no eliminar.
-2. El registro anulado no cuenta en cálculos.
-3. El registro anulado queda en auditoría.
-4. El operario solo anula registros propios del día.
-5. Toda anulación requiere motivo obligatorio.
+2. Las FK de tablas operativas y de estructura avícola usan `ON DELETE RESTRICT` (no cascade): no se puede borrar físicamente un padre que tenga historial o hijos.
+3. El registro anulado no cuenta en cálculos.
+4. El registro anulado queda en auditoría.
+5. El operario solo anula registros propios del día.
+6. Toda anulación requiere motivo obligatorio.
 
 ---
 

@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::create('vacunaciones', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->cascadeOnDelete();
-            $table->foreignId('galpon_id')->constrained('galpones')->cascadeOnDelete();
-            $table->foreignId('lote_id')->constrained('lotes')->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('empresa_id')->constrained('empresas')->restrictOnDelete();
+            $table->foreignId('galpon_id')->constrained('galpones')->restrictOnDelete();
+            $table->foreignId('lote_id')->constrained('lotes')->restrictOnDelete();
+            $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->string('vacuna');
             $table->text('observacion')->nullable();
             $table->string('estado')->default('activo');

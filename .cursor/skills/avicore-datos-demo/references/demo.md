@@ -26,7 +26,7 @@ Avícola Demo
 - 1 lote activo en Galpón 1.
 - Operario demo con `ultimo_galpon_id` = Galpón 1.
 
-**Demo completa (planificada):** múltiples granjas/galpones, 30 días de registros, escenarios para gráficos y reportes — ver [`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md) Bloque 7 y skill `avicore-datos-demo`. No documentar aquí el detalle hasta que exista el seeder o dataset.
+**Demo completa (planificada):** múltiples granjas/galpones, 30 días de registros, escenarios para gráficos y reportes — ver [`plan-desarrollo.md`](../../avicore-contexto/references/plan-desarrollo.md) Bloque 7 y skill `avicore-datos-demo`. No documentar aquí el detalle hasta que exista el seeder o dataset.
 
 ---
 

@@ -1,6 +1,6 @@
 # 09 — Reportes y exportaciones
 
-> **Estado:** *Planificado — Bloque 7 / fase 19* ([`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md) §11 y §13). Sin módulo de reportes en código aún. Al implementar, expandir este doc con cada reporte (filtros, secciones, columnas) en el mismo PR.
+> **Estado:** *Planificado — Bloque 7 / fase 19* ([`plan-desarrollo.md`](../../avicore-contexto/references/plan-desarrollo.md) §11 y §13). Sin módulo de reportes en código aún. Al implementar, expandir este doc con cada reporte (filtros, secciones, columnas) en el mismo PR.
 
 ## Reglas generales (MVP)
 

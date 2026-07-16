@@ -35,8 +35,8 @@ Ver [`refined-agro-principios.md`](refined-agro-principios.md), [`motion-y-feedb
 | `background-desktop.jpg` | Fondo ≥1024px — idem |
 | `admin-home-hero.jpg` | Hero Inicio admin (≥1024px) — fuente PNG/JPG en `resources/images/brand/`; degradado inferior documentado como excepción clean |
 | `admin-home-hero-mobile.jpg` | Reservado — hero Inicio admin en móvil (pendiente asset) |
-| `operario-home-hero.jpg` | *(legacy)* Fuente PNG en `resources/images/brand/` — ya no se renderiza; hero Inicio usa degradado CSS en `operario.css` |
-| `operario-cargar-hero.jpg` | *(legacy)* Fuente PNG en `resources/images/brand/` — ya no se renderiza; hero Cargar usa degradado CSS en `operario.css` |
+| `operario-home-hero.jpg` | **Eliminado** — hero Inicio usa degradado CSS en `operario.css` (fuente canónica: Vite/`resources`; no duplicar en `public/images/brand/` salvo assets servidos sin build) |
+| `operario-cargar-hero.jpg` | **Eliminado** — hero Cargar usa degradado CSS en `operario.css` |
 
 Tras cambiar fondos JPEG/PNG: `python scripts/optimize-brand-assets.py` (comprime fondos y sincroniza logo + `public/`).
 

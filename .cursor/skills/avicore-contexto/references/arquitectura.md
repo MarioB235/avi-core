@@ -68,7 +68,7 @@ Toda consulta debe filtrar por empresa_id salvo Admin AviCore en modo soporte.
 
 Implementado (Bloque 2):
 
-- **`EmpresaContextService`:** resuelve `empresa_id` de la sesión; Admin AviCore puede override en sesión (`avicore.empresa_context_id`) para modo soporte futuro.
+- **`EmpresaContextService`:** resuelve `empresa_id` de la sesión; Admin AviCore puede override en sesión (`avicore.empresa_context_id`) validando que la empresa exista (modo soporte futuro).
 - **Login:** validación de empresa activa vía `Empresa::permiteLogin()` (solo estado `activa`).
 - **Middleware auth:** `EnsurePasswordChanged`, `EnsureAdminPanelAccess`, `EnsureOperarioAccess`, `RedirectIfAuthenticated`.
 

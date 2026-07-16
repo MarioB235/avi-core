@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('registros_operativos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->cascadeOnDelete();
-            $table->foreignId('galpon_id')->constrained('galpones')->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('empresa_id')->constrained('empresas')->restrictOnDelete();
+            $table->foreignId('galpon_id')->constrained('galpones')->restrictOnDelete();
+            $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->string('tipo');
             $table->unsignedInteger('huevos')->nullable();
             $table->unsignedInteger('muertes')->nullable();

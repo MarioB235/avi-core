@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('lotes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->cascadeOnDelete();
-            $table->foreignId('galpon_id')->constrained('galpones')->cascadeOnDelete();
+            $table->foreignId('empresa_id')->constrained('empresas')->restrictOnDelete();
+            $table->foreignId('galpon_id')->constrained('galpones')->restrictOnDelete();
             $table->string('codigo');
             $table->date('fecha_nacimiento');
             $table->date('fecha_ingreso');

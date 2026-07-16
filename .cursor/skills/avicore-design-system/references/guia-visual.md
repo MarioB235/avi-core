@@ -58,7 +58,7 @@ El isotipo oficial (`logo-avicore.png`) usa el verde principal `#1F5E3B` sobre f
 
 **Wordmark «AviCore»** (texto junto al isotipo en `x-ui.logo`): `font-semibold`, color primario; **sin** uppercase, tracking amplio ni tipografía decorativa. Tamaños por contexto: `hero` en panel de marca (escritorio), `auth-mobile` + `stacked` en login móvil. Detalle técnico: [`tokens-componentes.md`](tokens-componentes.md).
 
-**Auth (login y cambio de contraseña):** escritorio en split marca + tarjeta; móvil con fondo de marca, logo apilado y tarjeta tipo bottom sheet — ver [`02-pantallas-y-flujos.md`](02-pantallas-y-flujos.md) § Login.
+**Auth (login y cambio de contraseña):** escritorio en split marca + tarjeta; móvil con fondo de marca, logo apilado y tarjeta tipo bottom sheet — ver [`pantallas-flujos.md`](../../avicore-ui/references/pantallas-flujos.md) § Login.
 
 ---
 

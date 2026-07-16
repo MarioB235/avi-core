@@ -1,6 +1,6 @@
 # 08 — Tiempo real y eventos
 
-> **Estado:** *Planificado — Bloque 6* ([`12-plan-de-desarrollo.md`](12-plan-de-desarrollo.md) §10 y §13). Reverb y Echo aún no están instalados. Al implementar, expandir este doc con eventos, payloads y canales concretos en el mismo PR.
+> **Estado:** *Planificado — Bloque 6* ([`plan-desarrollo.md`](../../avicore-contexto/references/plan-desarrollo.md) §10 y §13). Reverb y Echo aún no están instalados. Al implementar, expandir este doc con eventos, payloads y canales concretos en el mismo PR.
 
 ## Reglas que ya aplican
 

@@ -4,7 +4,7 @@
 
 **Agente:** aplica los `SKILL.md` según el mensaje y el detalle del usuario. Skills de dominio se auto-invocaban cuando la descripción coincide; skills internos requieren flujo mensajes 2–5 o arquitecto.
 
-**Única tabla mensaje → skill** — el comando no duplica esta tabla; solo mantiene el enrutamiento por intención del mensaje 1.
+**Única tabla mensaje → skill** — el comando `/avicore-architect-direct` **enlaza** este README; no duplica la matriz de enrutamiento.
 
 | Mensaje | Skills que puede activar |
 |---------|-------------------------|

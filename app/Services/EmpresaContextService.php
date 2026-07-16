@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Empresa;
 use App\Models\User;
+use InvalidArgumentException;
 
 class EmpresaContextService
 {
@@ -27,6 +29,10 @@ class EmpresaContextService
         return $user->empresa_id;
     }
 
+    /**
+     * Override de soporte para Admin AviCore (modo multiempresa futuro).
+     * Solo acepta null (limpiar) o un id de empresa existente.
+     */
     public function setEmpresaId(?int $empresaId): void
     {
         $user = auth()->user();
@@ -39,6 +45,10 @@ class EmpresaContextService
             session()->forget(self::SESSION_KEY);
 
             return;
+        }
+
+        if (! Empresa::query()->whereKey($empresaId)->exists()) {
+            throw new InvalidArgumentException("Empresa inexistente: {$empresaId}");
         }
 
         session([self::SESSION_KEY => $empresaId]);
