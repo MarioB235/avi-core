@@ -14,15 +14,6 @@ class DemoLoginService
             && app()->environment('local');
     }
 
-    public function credentialsMatch(string $documento, string $password): bool
-    {
-        $expectedDocumento = (string) config('avicore.demo_login.documento', '');
-        $expectedPassword = (string) config('avicore.demo_login.password', '');
-
-        return hash_equals($expectedDocumento, trim($documento))
-            && hash_equals($expectedPassword, $password);
-    }
-
     public function resolveUser(string $roleValue): User
     {
         $role = UserRole::tryFrom($roleValue);

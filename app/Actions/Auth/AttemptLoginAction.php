@@ -21,25 +21,11 @@ class AttemptLoginAction
     /**
      * @return array{user: User, must_change_password: bool}
      */
-    public function execute(string $documento, string $password, bool $remember = false, ?string $demoRole = null): array
+    public function execute(string $documento, string $password, bool $remember = false): array
     {
         $documento = trim($documento);
 
         $this->ensureIsNotRateLimited($documento);
-
-        if ($this->demoLogin->isEnabled() && $this->demoLogin->credentialsMatch($documento, $password)) {
-            if (blank($demoRole)) {
-                throw ValidationException::withMessages([
-                    'demoRole' => 'Seleccioná un perfil para continuar.',
-                ]);
-            }
-
-            $user = $this->demoLogin->resolveUser($demoRole);
-
-            $this->assertUserMayLogin($user, $documento);
-
-            return $this->completeLogin($user, $documento, $remember);
-        }
 
         $candidates = User::query()
             ->with('empresa')
@@ -76,14 +62,36 @@ class AttemptLoginAction
         return $this->completeLogin($user, $documento, $remember);
     }
 
-    private function assertUserMayLogin(User $user, string $documento): void
+    /**
+     * Login local por selector de perfil (sin documento/contraseña).
+     *
+     * @return array{user: User, must_change_password: bool}
+     */
+    public function executeDemo(string $demoRole, bool $remember = false): array
+    {
+        if (! $this->demoLogin->isEnabled()) {
+            throw ValidationException::withMessages([
+                'demoRole' => 'El login por perfil no está disponible.',
+            ]);
+        }
+
+        $user = $this->demoLogin->resolveUser($demoRole);
+        $throttleKey = $user->documento;
+
+        $this->ensureIsNotRateLimited($throttleKey, 'demoRole');
+        $this->assertUserMayLogin($user, $throttleKey, 'demoRole');
+
+        return $this->completeLogin($user, $throttleKey, $remember);
+    }
+
+    private function assertUserMayLogin(User $user, string $documento, string $errorField = 'documento'): void
     {
         if (! $user->isAdminAvicore()) {
             if ($user->empresa_id === null) {
                 $this->hitRateLimiter($documento);
 
                 throw ValidationException::withMessages([
-                    'documento' => 'Usuario sin empresa asignada.',
+                    $errorField => 'Usuario sin empresa asignada.',
                 ]);
             }
 
@@ -91,7 +99,7 @@ class AttemptLoginAction
                 $this->hitRateLimiter($documento);
 
                 throw ValidationException::withMessages([
-                    'documento' => 'La empresa no está activa. Contactá al administrador.',
+                    $errorField => 'La empresa no está activa. Contactá al administrador.',
                 ]);
             }
         }
@@ -114,7 +122,7 @@ class AttemptLoginAction
         ];
     }
 
-    private function ensureIsNotRateLimited(string $documento): void
+    private function ensureIsNotRateLimited(string $documento, string $errorField = 'documento'): void
     {
         $key = $this->throttleKey($documento);
 
@@ -125,7 +133,7 @@ class AttemptLoginAction
         $seconds = RateLimiter::availableIn($key);
 
         throw ValidationException::withMessages([
-            'documento' => "Demasiados intentos. Probá de nuevo en {$seconds} segundos.",
+            $errorField => "Demasiados intentos. Probá de nuevo en {$seconds} segundos.",
         ]);
     }
 

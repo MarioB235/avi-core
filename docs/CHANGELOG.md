@@ -7,6 +7,10 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ## 2026-07-15
 
+- **[docs|auth]** Pasada cierre msg 4: alineación login demo (selector perfil, `executeDemo`, toggle input disabled, tests auth/UI); refs `tokens-componentes.md`, `estandares-codigo.md`, `pantallas-flujos.md`, `arbol-proyecto.md`, `arranque-local.md`
+- **[fix|auth]** Auditoría msg 3: rate-limit demo en campo `demoRole`; test empresa inactiva; tipado `render(): View`; toggle password disabled con input disabled; asserts UI demo más estrictos. — `AttemptLoginAction.php`, `Login.php`, `ChangePassword.php`, `input.blade.php`, `DemoLoginTest.php`, `LoginViewTest.php`
+- **[fix|auth]** Post-login: redirect full page (sin `navigate`) al cambiar de layout; select perfil con `wire:model.live` para que Operario llegue a `/operario` (módulo móvil). — `Login.php`, `ChangePassword.php`, `login.blade.php`, `DemoLoginTest.php`
+- **[refactor|auth]** Login local por selector de perfil: documento/contraseña vacíos y deshabilitados (sin lógica de credenciales demo); `executeDemo` + `DemoLoginService::resolveUser`. Fuera de local: login normal documento + contraseña. — `Login.php`, `login.blade.php`, `AttemptLoginAction.php`, `DemoLoginService.php`, `config/avicore.php`, `.env.example`, tests Auth/Ui/Services, `pantallas-flujos.md`, `reglas.md`, `demo.md`, `arranque-local.md`, `arbol-proyecto.md`, `desarrollo.html`
 - **[chore|ci]** CI: `pnpm/action-setup` sin `version:` duplicada; usa `packageManager` de `package.json`. — `.github/workflows/ci.yml`
 - **[seguridad|deps]** Guzzle/psr7 parcheados (`composer audit` limpio) y `composer.lock` alineado con `composer.json`. — `composer.lock`
 - **[modelo|fix]** FKs operativas/estructura pasan a `ON DELETE RESTRICT` (anular, no borrar historial). — migraciones, `esquema-bd.md`, `reglas.md`

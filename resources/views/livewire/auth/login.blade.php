@@ -13,7 +13,8 @@
                 wire:model="documento"
                 autocomplete="username"
                 placeholder="Ingresá tu número de documento"
-                required
+                :disabled="$demoLoginEnabled"
+                :required="! $demoLoginEnabled"
             />
 
             <x-ui.input
@@ -24,16 +25,17 @@
                 wire:model="password"
                 autocomplete="current-password"
                 placeholder="Ingresá tu contraseña"
-                required
+                :disabled="$demoLoginEnabled"
+                :required="! $demoLoginEnabled"
             />
 
             @if ($demoLoginEnabled)
                 <x-ui.select
-                    label="Perfil demo"
+                    label="Perfil"
                     name="demoRole"
-                    wire:model="demoRole"
+                    wire:model.live="demoRole"
                     :options="$demoRoleOptions"
-                    hint="Modo demo — solo desarrollo local"
+                    hint="Elegí el usuario demo — documento y contraseña no se usan en local"
                     required
                 />
             @endif

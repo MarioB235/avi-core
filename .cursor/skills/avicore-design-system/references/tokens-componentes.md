@@ -48,7 +48,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 
 **Recuperación MVP:** `config/avicore.php` (`.env` → `AVICORE_SUPPORT_*`) + `App\Services\SupportContactService` (valida WhatsApp/correo, construye `wa.me`/`mailto` con mensaje prefijado). Vista compuesta `x-auth.support-contact-dialog` sobre **`x-ui.sheet`** (bottom sheet en auth; el nombre del componente es histórico).
 
-**Input contraseña:** `x-ui.input` con `toggle-password`; clase `.avicore-password-input` oculta el reveal nativo del navegador (un solo icono ojo).
+**Input contraseña:** `x-ui.input` con `toggle-password`; clase `.avicore-password-input` oculta el reveal nativo del navegador (un solo icono ojo). Con `disabled` en el input, el toggle también queda deshabilitado.
 
 ## Lista blanca motion / superficie (Refined Agro)
 
@@ -87,7 +87,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | Componente | Variantes / notas |
 |------------|-------------------|
 | `x-ui.button` | `primary`, `secondary`, `danger`, `ghost` — min-h 44px, `focus-visible` |
-| `x-ui.input` | `aria-invalid`, estados error, `hint`, `toggle-password` (un solo toggle visible); icono leading en `avicore-primary`, toggle ojo en `avicore-muted` |
+| `x-ui.input` | `aria-invalid`, estados error, `hint`, `toggle-password` (un solo toggle visible; botón ojo **disabled** si el input está `disabled`); icono leading en `avicore-primary`, toggle ojo en `avicore-muted` |
 | `x-ui.select` | Lista desplegable custom (Alpine + listbox): trigger `.avicore-select-trigger`, panel `.avicore-select-panel--below` \| `--above` (flip según espacio en viewport vía `syncPanelPosition()`), lista `.avicore-select-list` con `maxHeight` dinámico; opción activa `.avicore-select-option--active` (`bg-avicore-primary/8` + texto `avicore-text`, ring suave); `wire:model` vía `@entangle` — **defer por defecto** (`.live` solo con `wire:model.live`); en formularios operario preferir `wire:model.defer`; `placeholder` + `options`; recálculo en `resize` mientras está abierto |
 | `x-ui.date-picker` | Calendario custom (Alpine + bottom sheet): trigger `.avicore-date-picker-trigger`, panel teletransportado `.avicore-date-picker-panel` (misma familia visual que `x-ui.sheet`); grilla mes con weekdays Lu–Do; props `min` / `max` / `today` / `error`; CTA «Hoy»; `dayAriaLabel` parlante en celdas; error unificado (prop o bag `$errors` → `role="alert"` + `--error`); `wire:model` vía `@entangle` (`.live` con `wire:model.live`); sin `input type="date"` nativo — uso en Historial operario (`fechaError` → `:error`) |
 | `x-ui.card` | Borde simple, sin sombra; `padding`: `default`, `compact`, `none` |

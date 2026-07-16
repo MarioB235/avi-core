@@ -27,15 +27,14 @@ return [
     | Login demo (solo local)
     |--------------------------------------------------------------------------
     |
-    | Credencial única + selector de rol en login. Activo solo si APP_ENV=local
-    | y AVICORE_DEMO_LOGIN=true (ver DemoLoginService::isEnabled()).
+    | Selector de perfil en /login. Activo solo si APP_ENV=local y
+    | AVICORE_DEMO_LOGIN=true. Documento/contraseña quedan vacíos y no se usan;
+    | el perfil resuelve al usuario seedeado (DemoLoginService::resolveUser).
     |
     */
 
     'demo_login' => [
         'enabled_flag' => env('AVICORE_DEMO_LOGIN', true),
-        'documento' => env('AVICORE_DEMO_DOCUMENTO', '000000000'),
-        'password' => env('AVICORE_DEMO_PASSWORD', 'Avicore2026!'),
         'role_documents' => [
             'admin_avicore' => '900000001',
             'dueno' => '100000001',
