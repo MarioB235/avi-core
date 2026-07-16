@@ -7,6 +7,7 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ## 2026-07-15
 
+- **[chore|ci]** CI: `pnpm/action-setup` sin `version:` duplicada; usa `packageManager` de `package.json`. — `.github/workflows/ci.yml`
 - **[seguridad|deps]** Guzzle/psr7 parcheados (`composer audit` limpio) y `composer.lock` alineado con `composer.json`. — `composer.lock`
 - **[modelo|fix]** FKs operativas/estructura pasan a `ON DELETE RESTRICT` (anular, no borrar historial). — migraciones, `esquema-bd.md`, `reglas.md`
 - **[cursor]** Anti-drift: checker de enlaces en `.md`/`.mdc`/`.html`; matriz de skills solo en `skills/README.md`; Git prep solo con escritura y stage explícito. — `check-skill-references.cjs`, `check-agent-docs-sync.cjs`, comando, `desarrollo.html`

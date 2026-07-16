@@ -49,9 +49,8 @@ jobs:
       - name: Pint
         run: vendor/bin/pint --test
 
+      # Sin `version:`: pnpm/action-setup v4 usa package.json → packageManager (pnpm@10.32.1)
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - uses: actions/setup-node@v4
         with:
