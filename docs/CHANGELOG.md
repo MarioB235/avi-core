@@ -5,6 +5,10 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-08-01
+
+- **[seguridad|deps]** CI: `guzzlehttp/guzzle` 7.15.2 y `guzzlehttp/psr7` 2.13.0 (`composer audit` limpio). — `composer.lock`
+
 ## 2026-07-16
 
 - **[fix|admin]** Post-auditoría msg 3: tests permisos usuarios (Admin AviCore+empresa, encargado sin edit/toggle, guards rol/self); `AdminUserMenuTest` en `/admin/usuarios`; limpieza CSS legacy shell admin (`.avicore-admin-sidebar*`, toolbar/masthead) en `app.css`; matriz `permisos.md` §2 (Encargado No crear/editar; fila editar explícita); assert `avicore-user-menu--sidebar` en `OperarioBottomNavTest`. — `AdminUsuariosTest.php`, `AdminUserMenuTest.php`, `OperarioBottomNavTest.php`, `app.css`, `permisos.md`, `arbol-proyecto.md`, `estandares-codigo.md`, `tokens-componentes.md`
