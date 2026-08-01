@@ -20,7 +20,7 @@ class AdminHomeViewTest extends TestCase
             'estado' => EmpresaEstado::Activa,
         ]);
 
-        $dueno = User::factory()->create([
+        $encargado = User::factory()->create([
             'empresa_id' => $empresa->id,
             'name' => 'María González',
             'documento' => '20111222',
@@ -38,27 +38,28 @@ class AdminHomeViewTest extends TestCase
             'must_change_password' => false,
         ]);
 
-        $response = $this->actingAs($dueno)->get(route('admin.home'));
+        $response = $this->actingAs($encargado)->get(route('admin.home'));
 
         $response->assertOk();
         $response->assertSee('Inicio');
         $response->assertSee('Granja Santa Elena · Encargado');
         $response->assertSee('María González');
-        $response->assertSee('¡Bienvenido de nuevo!');
-        $response->assertSee('Aquí tienes un resumen general de la operación.');
-        $response->assertSee('avicore-admin-header--toolbar');
-        $response->assertSee('avicore-home-hero');
-        $response->assertSee('avicore-home-hero__card');
-        $response->assertSee('avicore-home-hero__figure');
-        $response->assertSee('avicore-admin-main__content');
-        $response->assertDontSee('avicore-home-hero__stack');
-        $response->assertDontSee('avicore-admin-main__scroll');
-        $response->assertDontSee('avicore-admin-header--masthead');
-        $response->assertSee('images/brand/admin-home-hero.jpg');
-        $response->assertSee('Producción de hoy');
-        $response->assertSee('Sin datos');
-        $response->assertSee('Galpones activos');
-        $response->assertSee('Aún no configurado');
+        $response->assertSee('¡Buen');
+        $response->assertSee('Resumen de Granja Santa Elena · Encargado.');
+        $response->assertSee('avicore-operario-shell', false);
+        $response->assertSee('avicore-operario-home-hero', false);
+        $response->assertSee('avicore-operario-home-sheet', false);
+        $response->assertSee('avicore-home-nav', false);
+        $response->assertSee('avicore-admin-home-kpis', false);
+        $response->assertSee('avicore-kpi-card', false);
+        $response->assertSee('avicore-admin-home-actions', false);
+        $response->assertSee('avicore-admin-context', false);
+        $response->assertDontSee('avicore-operario-carga-tile', false);
+        $response->assertDontSee('avicore-operario-kpi-panel', false);
+        $response->assertDontSee('avicore-operario-galpon-chip', false);
+        $response->assertDontSee('avicore-admin-header--toolbar', false);
+        $response->assertDontSee('avicore-admin-header--masthead', false);
+        $response->assertSee('Granjas y galpones');
         $response->assertSee('Usuarios activos');
         $response->assertSee('2');
         $response->assertSee('Estado inicial');
@@ -66,14 +67,20 @@ class AdminHomeViewTest extends TestCase
         $response->assertSee('Galpones');
         $response->assertSee('Usuarios');
         $response->assertSee('Pendiente');
-        $response->assertSee('Configurar estructura');
-        $response->assertSee('Actividad reciente');
-        $response->assertSee('Aún no hay actividad registrada');
-        $response->assertSee('Notificaciones');
+        $response->assertSee('Disponible');
+        $response->assertSee('¿Qué querés gestionar?');
+        $response->assertSee('Estructura');
+        $response->assertSee('Reportes');
         $response->assertSee('Próximamente');
+        $response->assertDontSee('Cargar en galpón');
+        $response->assertDontSee(route('operario.home'));
+        $response->assertDontSee('>Campo<', false);
+        $response->assertSee('Abrir menú de cuenta');
+        $response->assertSee('avicore-user-menu--sidebar', false);
         $response->assertSee('Navegación');
         $response->assertSee('Cuenta');
-        $response->assertSee('avicore-admin-sidebar');
+        $response->assertSee('avicore-operario-sidebar', false);
+        $response->assertSee('avicore-operario-tab-bar', false);
         $response->assertSee('aria-current="page"', false);
         $response->assertDontSee('chevron-down');
         $response->assertDontSee('>3<');
@@ -159,7 +166,9 @@ class AdminHomeViewTest extends TestCase
             ->assertOk()
             ->assertSee('AviCore · Admin AviCore')
             ->assertSee('Usuarios activos')
-            ->assertSee('2');
+            ->assertSee('2')
+            ->assertDontSee('>Campo<', false)
+            ->assertDontSee(route('operario.home'), false);
     }
 
     public function test_operario_is_redirected_from_admin_home(): void

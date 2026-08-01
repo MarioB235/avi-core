@@ -30,6 +30,8 @@ avi-core/
 
 **Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php` (roles demo, empresa inactiva, operario→`/operario`); `tests/Feature/Services/DemoLoginServiceTest.php`; `tests/Feature/Ui/LoginViewTest.php` (render login, select perfil demo + campos vacíos/disabled); `tests/Feature/Ui/InputComponentTest.php` (toggle password disabled); `tests/Feature/Ui/PublicLayoutTest.php` (shell login móvil + panel marca desktop, logo `entrance`); `tests/Feature/Ui/LogoComponentTest.php` (variantes logo, órbita `entrance`); `tests/Feature/Ui/SelectComponentTest.php` (contrato `x-ui.select`, posicionamiento flip).
 
+**Tests admin:** `tests/Feature/Admin/AdminUsuariosTest.php` (CRUD multiempresa, permisos por rol — dueño/administrativo/encargado/operario/Admin AviCore, reset clave, toggle activo, guards rol admin y auto-desactivación); `tests/Feature/Services/AdminHomeServiceTest.php` (KPI usuarios activos, `setupItems`); `tests/Feature/Ui/AdminHomeViewTest.php` (Inicio gestión sin Campo, KPIs, checklist); `tests/Feature/Ui/AdminShellTest.php` (shell operario en admin, tabs Inicio·Usuarios, heroes); `tests/Feature/Ui/AdminUserMenuTest.php` (`x-ui.user-menu` en Inicio y Usuarios: portal, sidebar, home-nav).
+
 **Tests operario:** `tests/Feature/Operario/OperarioCargaHuevosTest.php` (flujo E2E, multiempresa, galpón no disponible, redirect sin galpón y apertura automática del selector, Action rechaza mantenimiento), `tests/Feature/Operario/OperarioCargaMuertesTest.php` (flujo E2E muertes, descuento `aves_actuales`, rechazo si supera stock, Action multiempresa y mantenimiento, redirect `CargaMuertes` y `guardarMuertes` sin galpón disponible, query `form=muertes`), `tests/Feature/Operario/OperarioCargaVacunacionTest.php` (flujo E2E vacunación, validación lote/vacuna, Action multiempresa/galpón/lote, hub rechaza lote ajeno, redirect `CargaVacunacion` y `guardarVacunacion` sin galpón, query `form=vacunacion`), `tests/Feature/Operario/OperarioCargaLoteTest.php` (alta lote, codigo/secuencia, multi-tipo, gating operario, administrativo HTTP+registro, Action/policy, validación Livewire fecha/galpón, deep link `form=lote`), `tests/Feature/Operario/OperarioHomeTest.php` (`seleccionarGalpon` rechaza galpón ajeno, en mantenimiento o inactivo), `tests/Feature/Operario/OperarioHomeResumenTest.php` (KPIs galpón, lotes, acumulado, muertes, maples, edad vía service), `tests/Feature/Operario/OperarioHistorialTest.php` (tipos, vacunaciones mezcladas, filtro fecha validado con mensaje visible y sin acumulación, paginación, multiempresa, date-picker), `tests/Feature/Services/OperarioGalponServiceTest.php` (`galponDisponibleParaUsuario`, `historialCargasQuery`, `historialPaginado` con vacunaciones, multiempresa, selección), `tests/Feature/Support/OperarioNavTest.php` (pestaña activa y `headerTitle` por ruta, incl. `operario.historial` e icono `calendar`), `tests/Feature/Ui/OperarioBottomNavTest.php` (dock, transiciones, heroes Inicio/Cargar/Historial, tab activa y `aria-current`, icono `calendar` en Historial, date-picker en historial HTTP, ilustración `operario-reloj`, empty/populated historial HTTP, diálogos huevos/muertes/vacunación/lote vía deep link, chip galpón vacío/activo, KPI maples), `tests/Feature/Ui/IllustrationComponentTest.php` (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`), `tests/Feature/Ui/SelectComponentTest.php` (`x-ui.select` listbox), `tests/Feature/Ui/DatePickerComponentTest.php` (contrato `x-ui.date-picker`), `tests/Feature/Ui/OperarioUserMenuTest.php` (menú cuenta portal/clamp en home/cargar/historial, ARIA, perfil, logout), `tests/Feature/Ui/DialogComponentTest.php`, `tests/Feature/Ui/SheetComponentTest.php` (diálogo huevos en `CargarHub`), `tests/Feature/Ui/SnackbarHostTest.php` (host en layout, evento `snackbar-show`, flash `status`, contrato desktop `right-6`/`bottom-6`).
 
 **Layout Livewire (oficial):** `resources/views/layouts/app.blade.php` — usado por componentes de página completa (`config/livewire.php` → `layouts::app`).
@@ -45,13 +47,16 @@ app/
 ├── Actions/
 │   ├── Auth/                 # AttemptLoginAction, ChangePasswordAction
 │   ├── Lote/                 # RegistrarLoteAction
-│   └── Operacion/            # RegistrarCargaHuevosAction, RegistrarCargaMuertesAction, RegistrarVacunacionAction
+│   ├── Operacion/            # RegistrarCargaHuevosAction, RegistrarCargaMuertesAction, RegistrarVacunacionAction
+│   └── User/                 # CreateUserAction, UpdateUserAction, ResetUserPasswordAction
 ├── Enums/                    # EmpresaEstado, UserRole, GalponEstado, LoteEstado, TipoHuevo, VacunaTipo, RegistroOperativo*
 ├── Http/
 │   ├── Middleware/           # EnsurePasswordChanged, EnsureAdminPanelAccess, EnsureOperarioAccess, RedirectIfAuthenticated
 │   └── View/
-│       └── Composers/        # AdminHomeComposer, OperarioLayoutComposer
+│       └── Composers/        # AdminHomeComposer, AdminLayoutComposer, OperarioLayoutComposer
 ├── Livewire/
+│   ├── Admin/
+│   │   └── Usuarios/         # Index (CRUD listado/alta/edición/reset)
 │   ├── Auth/                 # Login, ChangePassword
 │   └── Operario/             # Home, CargarHub (+ Concerns/: ManagesGalponSelector, ManagesHuevosForm, …), CargaHuevos, CargaMuertes, CargaVacunacion, CargaLote, Historial
 ├── Models/
@@ -65,7 +70,8 @@ app/
 │   └── User.php
 ├── Policies/
 │   ├── GalponPolicy.php
-│   └── LotePolicy.php
+│   ├── LotePolicy.php
+│   └── UserPolicy.php
 ├── Providers/
 │   └── AppServiceProvider.php
 ├── Services/
@@ -74,10 +80,12 @@ app/
 │   ├── EmpresaContextService.php
 │   ├── OperarioGalponService.php
 │   ├── OperarioGalponResumenService.php
-│   └── SupportContactService.php
+│   ├── SupportContactService.php
+│   └── TemporaryPasswordGenerator.php
 └── Support/
     ├── IconSvg.php
     ├── IllustrationSvg.php      # Ilustraciones KPI operario (SVG en resources/images/illustrations/)
+    ├── AdminNav.php             # Pestañas y títulos del shell admin (paridad operario)
     ├── OperarioHistorialItem.php
     └── OperarioNav.php          # Pestañas y títulos del shell operario
 ```
@@ -92,16 +100,17 @@ resources/
 │   ├── layouts/
 │   │   └── app.blade.php
 │   ├── components/
-│   │   ├── admin/            # home-hero
+│   │   ├── admin/            # sidebar-nav, bottom-nav, header, home-hero, page-hero
 │   │   ├── auth/             # support-contact-dialog
 │   │   ├── operario/         # bottom-nav, sidebar-nav, header, user-menu, home-hero, primary-action, cargar-hero, historial-hero
-│   │   ├── layouts/          # público, admin, operario-mobile
-│   │   │   └── partials/     # admin-nav, admin-sidebar-inner, admin-header-toolbar, admin-menu-trigger, auth-brand-panel
-│   │   └── ui/               # button, input, select, date-picker, card, badge, alert, logo, icon, illustration, dialog, sheet, kpi-card, nav-link, empty-state, setup-checklist, user-avatar, snackbar-host
+│   │   ├── layouts/          # público, admin (shell tipo operario), operario-mobile
+│   │   │   └── partials/     # auth-brand-panel
+│   │   └── ui/               # button, input, select, date-picker, card, badge, alert, logo, icon, illustration, dialog, sheet, kpi-card, nav-link, empty-state, setup-checklist, user-avatar, snackbar-host, user-menu
 │   │       └── icons/        # inline.blade.php
 │   ├── livewire/
 │   │   ├── _redirect-placeholder.blade.php
 │   │   ├── auth/             # login, change-password
+│   │   ├── admin/            # usuarios/index
 │   │   └── operario/         # home (+ partials/galpon-chip-selector, carga-huevos-form, carga-muertes-form, carga-vacunacion-form), cargar-hub, historial
 │   └── pages/
 │       ├── admin/home.blade.php
@@ -135,9 +144,10 @@ resources/
 |--------|------------------|-------------------|
 | Login / contraseña | `Livewire/Auth/` | `empresas`, `users` |
 | Inicio admin | `pages/admin/home` + `AdminHomeService` | `users` |
+| Usuarios admin | `Livewire/Admin/Usuarios/` + `Actions/User/` + `UserPolicy` | `users`, `empresas` |
 | Carga operario | `Livewire/Operario/` | `granjas`, `galpones`, `lotes`, `registros_operativos`, `vacunaciones` |
 
-Módulos pendientes (Dashboard, Reportes, CRUD usuarios, etc.): ver `plan-desarrollo.md` § 13.
+Módulos pendientes (Dashboard, Reportes, CRUD estructura, etc.): ver `plan-desarrollo.md` § 13.
 
 ---
 

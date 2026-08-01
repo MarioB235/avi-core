@@ -105,9 +105,11 @@ Tras guardar: `must_change_password` pasa a falso y redirección al home del rol
 
 ## 3.1 Pantalla: Inicio admin (MVP)
 
+**Estado MVP (2026-07-16):** shell **visual** igual al operario (sidebar `lg+`, bottom nav móvil, home-nav + sheet), con **tabs y contenido solo de gestión** (sin Campo/carga). Detalle: `patrones-web-admin.md`.
+
 ### Objetivo
 
-Landing post-login para roles con panel administrativo (Dueño, Administrativo, Encargado, Admin AviCore): contexto de empresa, KPIs en estado vacío y guía de configuración inicial.
+Landing post-login para roles con panel administrativo (Dueño, Administrativo, Encargado, Admin AviCore): contexto de empresa, KPIs de gestión, accesos a módulos de administración y guía de configuración.
 
 ### Usuarios
 
@@ -118,22 +120,68 @@ Landing post-login para roles con panel administrativo (Dueño, Administrativo, 
 
 ### Elementos
 
-- Layout admin: sidebar verde (`avicore-primary`), logo con subtítulo «Gestión operativa avícola» en blanco, secciones «Navegación» y «Cuenta», perfil con iniciales y «Colapsar menú» (escritorio).
-- Header: barra blanca sticky — título e contexto `{empresa o AviCore} · {rol}` en la misma línea; pill de fecha, campana (deshabilitada hasta módulo) y perfil con avatar a la derecha.
-- **Masthead** (escritorio): tarjeta con foto de granja, copy «¡Bienvenido de nuevo!» y KPIs en fila debajo; contenido alineado a `max-w-7xl`.
-- Hero con foto de granja (`admin-home-hero`) — **solo escritorio** (≥1024px); hero móvil reservado para asset futuro.
-- Cuatro KPIs: Producción de hoy, Galpones activos, Alertas (empty state), Usuarios activos (conteo real por empresa; Admin AviCore ve total de usuarios activos).
-- Card «Estado inicial»: checklist Granjas / Galpones / Usuarios (Pendiente) y botón «Configurar estructura» deshabilitado hasta existir módulos.
-- Card «Actividad reciente»: empty state hasta haya operación.
+- Layout: `components/layouts/admin.blade.php` reutiliza clases `avicore-operario-*`; nav `AdminNav` (Inicio · Usuarios); menú cuenta `x-ui.user-menu`.
+- Hero: saludo horario + subtítulo `Resumen de {empresa · rol}.` + chip de empresa (`avicore-admin-context`).
+- KPIs: `<x-ui.kpi-card>` — Usuarios activos (conteo real); Granjas y galpones (placeholder hasta estructura).
+- Accesos («¿Qué querés gestionar?»): tarjetas de gestión (`avicore-admin-home-action`) — Usuarios; Estructura y Reportes → «Próximamente».
+- Checklist «Estado inicial» en panel paralelo (escritorio).
+- **No incluye** paneles/tiles de carga operario (`kpi-panel`, `carga-tile`, chip de galpón) ni accesos a Cargar/Historial.
 
-### Navegación lateral (MVP)
+### Navegación (MVP)
 
-- **Inicio** — activo en `/admin`.
-- **Dashboard**, **Estructura**, **Usuarios**, **Reportes**, **Auditoría**, **Notificaciones** — visibles; ítems futuros deshabilitados con badge «Próximamente» (sin contador falso en notificaciones).
+- **Inicio** — `/admin` (hero).
+- **Usuarios** — `/admin/usuarios` (hero + CRUD; §3.2).
 
 ### Comportamiento
 
 Tras login exitoso (sin cambio de contraseña pendiente), roles no operario llegan a `/admin` con esta pantalla.
+
+---
+
+## 3.2 Pantalla: Usuarios (admin)
+
+**Estado MVP (2026-07-16):** implementado en `/admin/usuarios` — listado con búsqueda/filtros, alta/edición en diálogo, reset de contraseña temporal (mostrada una vez) y activar/desactivar.
+
+### Objetivo
+
+Gestionar el equipo de la empresa: crear usuarios con rol, editar datos, resetear contraseña temporal y desactivar cuentas.
+
+### Usuarios autorizados
+
+| Acción | Admin AviCore | Dueño | Administrativo | Encargado | Operario |
+|--------|---------------|-------|----------------|-----------|----------|
+| Ver listado | Sí (todas las empresas) | Sí (su empresa) | Sí (su empresa) | Sí (su empresa) | No |
+| Crear / editar / activar-desactivar | Sí | Sí | Sí | No | No |
+| Reset contraseña | Sí | Sí | Sí | Sí | No |
+
+Roles asignables: Dueño (dueño→operario); Administrativo (administrativo→operario); Admin AviCore (todos, con selector de empresa salvo `admin_avicore`).
+
+### Campos (alta / edición)
+
+- Nombre completo (obligatorio).
+- Documento (obligatorio; único por `empresa_id`).
+- Correo (opcional).
+- Rol (select según permisos del actor).
+- Empresa (solo Admin AviCore en alta; no aplica a rol Admin AviCore).
+- Activo (solo edición).
+
+### Acciones
+
+- Nuevo usuario → genera contraseña temporal + `must_change_password = true`; diálogo muestra la clave una sola vez.
+- Editar → actualiza datos y rol (sin cambiar empresa).
+- Reset clave → nueva temporal + `must_change_password`; no sobre sí mismo.
+- Activar / Desactivar → no sobre sí mismo.
+- Filtros: búsqueda (nombre/documento/correo), rol, estado (activos por defecto).
+
+### Presentación
+
+- Layout admin (`components.layouts.admin`) + snackbar.
+- Tabla responsive con avatar, badges de rol/estado; empty state si no hay resultados.
+- Diálogos `x-ui.dialog` para formulario y para revelar contraseña temporal.
+
+### Comportamiento
+
+Multiempresa: actores de empresa solo ven/modifican usuarios de su `empresa_id`. Operario redirigido fuera de `/admin/*`. Policy: `UserPolicy`.
 
 ---
 
@@ -315,6 +363,6 @@ Permitir elegir galpón de trabajo.
 | Granjas | 8 | Esta guía + CRUD admin |
 | Galpones | 9 | Esta guía + `avicore-modelo-datos/references/esquema-bd.md` |
 | Lotes | 10 | Esta guía + `avicore-negocio/references/reglas.md` |
-| Usuarios | 5 | Esta guía + permisos |
+| Usuarios | 5 | **Hecho MVP** — esta guía §3.2 + `permisos.md` |
 | Auditoría | 16 | Esta guía + tabla `auditorias` (cuando exista migración) |
 | Reportes | 19 | `avicore-reportes/references/reportes.md` |

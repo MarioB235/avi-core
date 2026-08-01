@@ -21,8 +21,9 @@
 | Crear granja | No | Sí | Sí | No/Opcional | No |
 | Crear galpón | No | Sí | Sí | No/Opcional | No |
 | Crear lote | No | Sí | Sí | Sí/Opcional | No |
-| Crear usuario | No | Sí | Sí | No/Opcional | No |
-| Resetear contraseña | No | Sí | Sí | Sí/Opcional | No |
+| Crear usuario | Sí | Sí | Sí | No | No |
+| Editar / activar-desactivar usuario | Sí | Sí | Sí | No | No |
+| Resetear contraseña | Sí | Sí | Sí | Sí | No |
 | Cargar huevos | No | Sí | Sí | Sí | Sí |
 | Cargar muertes | No | Sí | Sí | Sí | Sí |
 | Cargar alimento | No | Sí | Sí | Sí | Sí |
@@ -147,3 +148,4 @@ No puede:
 |--------|--------|--------|
 | `Galpon` | `GalponPolicy` | `viewAny` y `view` si el usuario tiene `empresa_id` y coincide con `galpon.empresa_id`. El acceso a rutas `/operario` lo restringe `EnsureOperarioAccess` (operario, dueño, administrativo, encargado). La selección y carga validan galpón disponible en `OperarioGalponService` y Actions de carga. |
 | `Lote` | `LotePolicy` | `create` si `empresa_id` y rol `canCreateLote()` (dueño, administrativo, encargado). Alta vía `RegistrarLoteAction` desde hub Cargar (tile oculto para operario). |
+| `User` | `UserPolicy` | `viewAny` / `view` / `create` / `update` / `resetPassword` / `toggleActive` según `UserRole::canViewUsers|canManageUsers|canResetUserPassword` y scope multiempresa (Admin AviCore ve todos). Encargado: ver listado + `resetPassword`; sin `create`/`update`/`toggleActive`. Roles asignables vía `UserRole::assignableRoles()`. CRUD en `/admin/usuarios`. |

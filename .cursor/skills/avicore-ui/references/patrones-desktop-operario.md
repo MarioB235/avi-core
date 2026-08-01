@@ -13,7 +13,7 @@ Shell: `components/layouts/operario-mobile.blade.php` (responsive) · Sidebar: `
 ## Layout escritorio
 
 1. **Grid** — `.avicore-operario-shell` pasa a `grid-cols-[auto_minmax(0,1fr)]`; workspace a la derecha.
-2. **Sidebar** — logo «Carga en campo», navegación vía `OperarioNav` + `x-ui.nav-link`, cuenta con `<x-operario.user-menu variant="sidebar">` (avatar blanco/iniciales verdes; panel teleport + clamp vertical/`max-height` para no salir del viewport). Oculta en `< lg`.
+2. **Sidebar** — logo «Carga en campo», navegación vía `OperarioNav` + `x-ui.nav-link`, cuenta con `<x-ui.user-menu variant="sidebar">` (alias `x-operario.user-menu`; avatar blanco/iniciales verdes; panel teleport + clamp). Oculta en `< lg`.
 3. **Bottom nav** — oculta con `lg:hidden`.
 4. **Fondo** — `avicore-surface` en body; sin degradado superior de marca del shell móvil.
 5. **Snackbar** — auto-cierre ~4,5s; en `lg+` abajo a la derecha (`right-6 bottom-6`); contrato en `SnackbarHostTest` (CSS).

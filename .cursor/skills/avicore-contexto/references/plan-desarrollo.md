@@ -1,11 +1,11 @@
 # 12 — Plan de desarrollo
 
-## 0. Estado de avance (2026-07-15)
+## 0. Estado de avance (2026-07-16)
 
 | Bloque | Estado | Notas |
 |--------|--------|-------|
 | **1 — Base** | **Hecho** | Laravel 13, Livewire 4, Tailwind 4, layouts, UI base, PostgreSQL + `migrate` OK |
-| **2 — Seguridad** | **Parcial** | Login + cambio obligatorio; roles/CRUD usuarios pendiente |
+| **2 — Seguridad** | **Parcial** | Login + cambio obligatorio; **CRUD usuarios admin** (`/admin/usuarios`) hecho; falta auditoría de accesos soporte |
 | **4 — Estructura avícola** | **Parcial** | Migraciones + seeder demo; alta de lote desde operario; sin CRUD admin completo |
 | **5 — Operación móvil** | **Parcial** | Home, selector galpón, hub Cargar (huevos, muertes, vacunación, lote), historial con filtro fecha; alimento/combinada fuera del móvil |
 | 3, 6–7 | Pendiente | Según orden de la sección 2 |
@@ -116,7 +116,7 @@ Dashboard refleja la carga
 - [x] Usuario activo/inactivo y empresa suspendida bloquean acceso.
 - [x] Tabla `empresas` + `users` alineados al esquema AviCore.
 - [x] Seeder demo (`AvicoreAuthSeeder`).
-- [ ] CRUD usuarios y asignación de roles (módulo 5 del plan).
+- [x] CRUD usuarios y asignación de roles (módulo 5 del plan) — `/admin/usuarios`.
 
 ---
 
@@ -197,6 +197,6 @@ Solo nombres de bloque; el DDL vive en `avicore-modelo-datos/references/esquema-
 | Multiempresa / config (fase 6–7) | `configuraciones_empresa` | Maple, logos, módulos |
 | Dashboard | `Livewire/Dashboard/`, `DashboardService` | Tarjetas, KPIs |
 | Reportes (fase 19) | `Livewire/Reportes/`, `ReporteService` | PDF/Excel |
-| Usuarios admin (fase 5) | `Livewire/Usuarios/` | CRUD usuarios |
+| Usuarios admin (fase 5) | `Livewire/Admin/Usuarios/` | **Hecho MVP (2026-07-16)** — listado, alta/edición, reset clave, activar/desactivar; ver `pantallas-flujos.md` §3.2 |
 | CRUD avícola admin | `Livewire/Galpones/`, `Livewire/Lotes/` | Granjas, galpones, lotes |
 | Tiempo real (fase 18) | `Events/`, Reverb | Ver `avicore-tiempo-real/references/eventos.md` |

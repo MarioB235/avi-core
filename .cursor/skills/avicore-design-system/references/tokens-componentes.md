@@ -33,8 +33,8 @@ Ver [`refined-agro-principios.md`](refined-agro-principios.md), [`motion-y-feedb
 | `logo-avicore.png` | Isotipo PNG — fuente `resources/images/brand/`, copia en `public/images/brand/` (`x-ui.logo`) |
 | `login-background.jpg` | Fondo login ≤1023px — fuente PNG en `resources/images/brand/login-background.png` |
 | `background-desktop.jpg` | Fondo ≥1024px — idem |
-| `admin-home-hero.jpg` | Hero Inicio admin (≥1024px) — fuente PNG/JPG en `resources/images/brand/`; degradado inferior documentado como excepción clean |
-| `admin-home-hero-mobile.jpg` | Reservado — hero Inicio admin en móvil (pendiente asset) |
+| `admin-home-hero.jpg` | Legacy — Inicio admin ya no usa masthead con foto; hero alineado a operario (degradado CSS). Asset puede quedar en brand hasta limpieza |
+| `admin-home-hero-mobile.jpg` | Legacy / reservado — no usado en shell actual |
 | `operario-home-hero.jpg` | **Eliminado** — hero Inicio usa degradado CSS en `operario.css` (fuente canónica: Vite/`resources`; no duplicar en `public/images/brand/` salvo assets servidos sin build) |
 | `operario-cargar-hero.jpg` | **Eliminado** — hero Cargar usa degradado CSS en `operario.css` |
 
@@ -102,6 +102,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.empty-state` | Empty state con icono, título y descripción |
 | `x-ui.setup-checklist` | Lista de pasos de configuración inicial con badge de estado |
 | `x-ui.user-avatar` | Iniciales circulares; sizes `sm` (2.25rem), `nav` (2.75rem, home-nav operario), `md` (2.5rem); prop `decorative` cuando el nombre visible está al lado (header/sidebar) — si no, `role="img"` + `aria-label` |
+| `x-ui.user-menu` | Menú cuenta compartido (admin + operario) — panel teleport + clamp viewport; variante `sidebar`; Perfil + Cerrar sesión; props `size`, `avatarClass`, `variant` |
 | `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger` **o** `wire:model` (Livewire); panel centrado; focus trap; `applyOpenSideEffects` sincroniza scroll/foco al cerrar vía entangle |
 | `x-ui.sheet` | Overlay Alpine — slot `trigger` **o** `wire:model`; **móvil** bottom sheet (slide-up, handle, safe-area); **escritorio ≥1024px** panel centrado tipo diálogo (`max-w-md`, sin handle); auth recuperación contraseña |
 | `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», overlay (`x-ui.sheet` responsive); enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
@@ -109,17 +110,22 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-operario.home-hero` | Inicio — fondo degradado suave + saludo horario compacto + chip galpón (`home-hero.blade.php`); nav fijo va en layout |
 | `x-operario.cargar-hero` | Hub Cargar — mismo fondo degradado suave que Inicio; chip galpón **interactivo** (slot `galponSelector` + `ManagesGalponSelector`) |
 | `x-operario.historial-hero` | Historial — mismo hero que Inicio; chip galpón **interactivo** (mismo selector) |
-| `x-operario.header` | Barra operario — variante hero (grilla logo/usuario + divisor ogee; home usa avatar `size="nav"`) o contextual; integra `<x-operario.user-menu>`; en `lg+` el home-nav se oculta |
-| `x-operario.user-menu` | Menú cuenta — panel **teleport a `body`** + `syncPanelPosition` (clamp vertical/horizontal, `max-height` viewport); variante `sidebar` abre hacia arriba; avatar: blanco/primario sobre chrome verde, primario/blanco en header claro (sin `!important`); Perfil + Cerrar sesión; ARIA `menu` / `menuitem`; props `size`, `avatarClass`, `variant` |
+| `x-operario.header` | Barra operario — variante hero o contextual; integra `<x-operario.user-menu>` (alias de `x-ui.user-menu`); en `lg+` el home-nav se oculta |
+| `x-operario.user-menu` | Alias de `x-ui.user-menu` para vistas operario |
 | `x-operario.sidebar-nav` | Nav escritorio (`lg+`) — logo «Carga en campo», `OperarioNav` + `x-ui.nav-link`, cuenta con `user-menu variant="sidebar"`; oculta en `< lg` |
 | `x-operario.bottom-nav` | Barra inferior integrada — 3 pestañas (Inicio `home`, Cargar `plus`, Historial `calendar`); `lg:hidden`; ítem activo con círculo verde sobresaliente; datos desde `OperarioNav` |
+| `x-admin.sidebar-nav` | Nav escritorio panel — mismas clases que operario; tabs `AdminNav`; subtítulo empresa |
+| `x-admin.bottom-nav` | Bottom nav panel (`lg:hidden`) — Inicio · Usuarios (solo gestión) |
+| `x-admin.header` | Home-nav en heroes o título+badge; menú `x-ui.user-menu` |
+| `x-admin.home-hero` | Saludo horario + subtítulo + slot chip empresa (Inicio) |
+| `x-admin.page-hero` | Hero de módulo (p. ej. Usuarios) alineado al home-hero |
 
 ## Layouts
 
 | Layout | Archivo | Uso |
 |--------|---------|-----|
 | Público | `components/layouts/public.blade.php` | Login, cambio de contraseña — split marca + tarjeta (≥1024px); móvil: logo apilado + bottom sheet (`.avicore-auth-mobile-brand`, `.avicore-auth-card`); partial `auth-brand-panel` |
-| Admin | `components/layouts/admin.blade.php` | Shell `.avicore-admin-*`: sidebar sticky verde (`bg-avicore-primary`, nav clara, labels de sección) + drawer Alpine (móvil), header y main con gutter común (`avicore-admin-gutter`); partials `admin-sidebar-inner`, `admin-nav`, `admin-header-toolbar`, `admin-menu-trigger` |
+| Admin | `components/layouts/admin.blade.php` | Mismo shell que operario (`.avicore-operario-*`): sidebar `lg+`, bottom nav móvil, home-nav en heroes; chrome `x-admin.sidebar-nav` / `bottom-nav` / `header` / `home-hero` / `page-hero`; tabs `AdminNav`. Estilos legacy `.avicore-admin-sidebar*` / toolbar retirados de `app.css` (post-auditoría 2026-07-16). |
 | Operario | `components/layouts/operario-mobile.blade.php` | Shell responsive `.avicore-operario-shell` — **móvil:** header + `<x-operario.bottom-nav>`; **escritorio ≥1024px:** `<x-operario.sidebar-nav>` + contenido ancho; snackbar `context="operario"`; datos vía `OperarioLayoutComposer` / `OperarioNav` |
 
 ## Quality gates
