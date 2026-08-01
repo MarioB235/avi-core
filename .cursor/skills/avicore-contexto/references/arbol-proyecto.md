@@ -28,7 +28,7 @@ avi-core/
 
 **Operario (slice mínimo):** Livewire `Operario/Home`, `Operario/CargarHub`, `Operario/CargaHuevos`, `Operario/CargaMuertes`, `Operario/CargaVacunacion`, `Operario/CargaLote` (redirect-only), `Operario/Historial`; Concerns `ManagesGalponSelector`, `ManagesHuevosForm`, `ManagesMuertesForm`, `ManagesVacunacionForm`, `ManagesLoteForm`; rutas `/operario`, `/operario/cargar`, `/operario/carga/huevos`, `/operario/carga/muertes`, `/operario/carga/vacunacion`, `/operario/carga/lote`, `/operario/historial`; shell responsive con `x-operario.sidebar-nav` (escritorio), `x-operario.header`, `x-operario.user-menu`, `x-operario.home-hero`, `x-operario.primary-action`, `x-operario.cargar-hero`, `x-operario.historial-hero`, `x-operario.bottom-nav` (móvil), `x-ui.snackbar-host`, `x-ui.select`, `x-ui.date-picker` (filtro fecha Historial); carga huevos, muertes, vacunación y nuevo lote en hub vía `x-ui.dialog` (`partials/carga-huevos-form`, `partials/carga-muertes-form`, `partials/carga-vacunacion-form`, `partials/carga-lote-form`); selector galpón en Inicio/Cargar/Historial (`ManagesGalponSelector` + `partials/galpon-chip-selector`); `OperarioGalponService` (`galponDisponibleParaUsuario`, `galponActual`, `seleccionarGalpon`, `galponesDisponibles`, `historialCargasQuery`, `historialPaginado` — defer: merge en memoria), `OperarioGalponResumenService` (`resumen`, `edadSemanas`, `lotesActivos`, KPIs y acumulados por galpón), `RegistrarCargaHuevosAction`, `RegistrarCargaMuertesAction`, `RegistrarVacunacionAction`, `RegistrarLoteAction`, `Support\OperarioHistorialItem`, `VacunaTipo`, `GalponPolicy`, `LotePolicy`, `OperarioLayoutComposer`, `Support\OperarioNav` (pestañas, iconos y títulos de header). `EnsureOperarioAccess`: operario + dueño/administrativo/encargado.
 
-**Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php` (roles demo, empresa inactiva, rate-limit `demoRole`, operario→`/operario`); `tests/Feature/Services/DemoLoginServiceTest.php` (flag, rol único, Admin AviCore sin empresa, empresa DEMO ausente); `tests/Feature/Ui/LoginViewTest.php` (render login, select perfil demo + campos vacíos/disabled); `tests/Feature/Ui/InputComponentTest.php` (toggle password disabled); `tests/Feature/Ui/PublicLayoutTest.php` (shell login móvil + panel marca desktop, logo `entrance`); `tests/Feature/Ui/LogoComponentTest.php` (variantes logo, órbita `entrance`); `tests/Feature/Ui/SelectComponentTest.php` (contrato `x-ui.select`, posicionamiento flip).
+**Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php` (roles demo, empresa inactiva, rate-limit `demoRole`, operario→`/operario`); `tests/Feature/Services/DemoLoginServiceTest.php` (flag, rol único, Admin AviCore sin empresa, empresa DEMO ausente); `tests/Feature/Ui/LoginViewTest.php` (render login, select perfil demo + campos vacíos/disabled); `tests/Feature/Ui/InputComponentTest.php` (toggle password disabled); `tests/Feature/Ui/PublicLayoutTest.php` (shell login móvil + panel marca desktop, logo `entrance`); `tests/Feature/Ui/LogoComponentTest.php` (variantes logo, órbita `entrance`); `tests/Feature/Ui/SelectComponentTest.php` (contrato `x-ui.select`, posicionamiento flip); `tests/Feature/Ui/PwaInstallPromptTest.php` (manifest + banner en login/operario/admin, split `enabled`/`install_prompt`, `apple-touch-icon` + `pwa-192`).
 
 **Tests admin:** `tests/Feature/Admin/AdminUsuariosTest.php` (CRUD multiempresa, permisos por rol — dueño/administrativo/encargado/operario/Admin AviCore, reset clave, toggle activo, guards rol admin y auto-desactivación); `tests/Feature/Services/AdminHomeServiceTest.php` (KPI usuarios activos, `setupItems`); `tests/Feature/Ui/AdminHomeViewTest.php` (Inicio gestión sin Campo, KPIs, checklist); `tests/Feature/Ui/AdminShellTest.php` (shell operario en admin, tabs Inicio·Usuarios, heroes); `tests/Feature/Ui/AdminUserMenuTest.php` (`x-ui.user-menu` en Inicio y Usuarios: portal, sidebar, home-nav).
 
@@ -36,7 +36,9 @@ avi-core/
 
 **Layout Livewire (oficial):** `resources/views/layouts/app.blade.php` — usado por componentes de página completa (`config/livewire.php` → `layouts::app`).
 
-Reverb, Echo y PWA quedan para fases posteriores del plan.
+**PWA (MVP instalable, sin offline completo):** `vite-plugin-pwa` + `resources/js/pwa.js` (registro SW); manifest en `vite.config.js` → `public/build/manifest.webmanifest` tras `pnpm run build`; `config/avicore.php` → `pwa.enabled`, `pwa.install_prompt` (`AVICORE_PWA_*`); `x-ui.pwa-meta`, `x-ui.pwa-install-prompt` en layouts público, operario, admin y `layouts/app`; iconos `public/images/brand/pwa-*.png` vía `scripts/optimize-brand-assets.py`. Contrato: `avicore-pwa/references/pwa.md`.
+
+Reverb y Echo quedan para fases posteriores del plan.
 
 ---
 
@@ -105,7 +107,7 @@ resources/
 │   │   ├── operario/         # bottom-nav, sidebar-nav, header, user-menu, home-hero, primary-action, cargar-hero, historial-hero
 │   │   ├── layouts/          # público, admin (shell tipo operario), operario-mobile
 │   │   │   └── partials/     # auth-brand-panel
-│   │   └── ui/               # button, input, select, date-picker, card, badge, alert, logo, icon, illustration, dialog, sheet, kpi-card, nav-link, empty-state, setup-checklist, user-avatar, snackbar-host, user-menu
+│   │   └── ui/               # button, input, select, date-picker, card, badge, alert, logo, icon, illustration, dialog, sheet, kpi-card, nav-link, empty-state, setup-checklist, user-avatar, snackbar-host, user-menu, pwa-meta, pwa-install-prompt
 │   │       └── icons/        # inline.blade.php
 │   ├── livewire/
 │   │   ├── _redirect-placeholder.blade.php
@@ -120,7 +122,7 @@ resources/
 │   ├── icons/                  # Lucide file-backed (p. ej. bird.svg)
 │   └── illustrations/          # operario-ave, operario-huevo, operario-reloj, operario-vacuna
 ├── css/                      # Tailwind 4 + tema AviCore (`app.css`, `operario.css`)
-└── js/                       # `app.js`, `operario-navigate.js` (clase navigating en shell)
+└── js/                       # `app.js`, `pwa.js` (service worker), `operario-navigate.js` (clase navigating en shell)
 ```
 
 ---

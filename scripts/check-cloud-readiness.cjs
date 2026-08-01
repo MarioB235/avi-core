@@ -80,12 +80,40 @@ if (!envExample.includes('AVICORE_DEMO_LOGIN')) {
   ok('AVICORE_DEMO_LOGIN documentado en .env.example');
 }
 
+if (!envExample.includes('AVICORE_PWA_ENABLED')) {
+  fail('.env.example sin AVICORE_PWA_ENABLED');
+} else {
+  ok('AVICORE_PWA_ENABLED documentado en .env.example');
+}
+
+if (!envExample.includes('AVICORE_PWA_INSTALL_PROMPT')) {
+  fail('.env.example sin AVICORE_PWA_INSTALL_PROMPT');
+} else {
+  ok('AVICORE_PWA_INSTALL_PROMPT documentado en .env.example');
+}
+
+const pwaIcons = [
+  'public/images/brand/pwa-192.png',
+  'public/images/brand/pwa-512.png',
+  'public/images/brand/pwa-512-maskable.png',
+];
+
+for (const iconPath of pwaIcons) {
+  requireFile(iconPath, `Icono PWA (${path.basename(iconPath)})`);
+}
+
 const deployDoc = read('.cursor/skills/avicore-contexto/references/deploy-laravel-cloud.md');
 const expectedBuild = 'pnpm install --frozen-lockfile';
 if (!deployDoc.includes(expectedBuild)) {
   fail(`deploy-laravel-cloud.md no documenta build con ${expectedBuild}`);
 } else {
   ok('Guía deploy con build pnpm alineada');
+}
+
+if (!deployDoc.includes('npm install -g pnpm')) {
+  fail('deploy-laravel-cloud.md debe documentar npm install -g pnpm (Cloud sin corepack)');
+} else {
+  ok('Guía deploy: pnpm vía npm global (Cloud)');
 }
 
 const ci = read('.github/workflows/ci.yml');
@@ -109,7 +137,7 @@ try {
 }
 
 console.log('\n--- Simulación build (opcional local) ---');
-console.log('  corepack enable');
+console.log('  npm install -g pnpm@10.32.1');
 console.log('  pnpm install --frozen-lockfile');
 console.log('  pnpm run build');
 console.log('\n--- Antes del dashboard ---');

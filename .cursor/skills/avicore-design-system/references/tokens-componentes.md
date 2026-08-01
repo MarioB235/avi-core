@@ -31,6 +31,7 @@ Ver [`refined-agro-principios.md`](refined-agro-principios.md), [`motion-y-feedb
 | Archivo | Uso |
 |---------|-----|
 | `logo-avicore.png` | Isotipo PNG — fuente `resources/images/brand/`, copia en `public/images/brand/` (`x-ui.logo`) |
+| `pwa-192.png`, `pwa-512.png`, `pwa-512-maskable.png` | Iconos PWA — generados por `scripts/optimize-brand-assets.py`; manifest en `vite.config.js` |
 | `login-background.jpg` | Fondo login ≤1023px — fuente PNG en `resources/images/brand/login-background.png` |
 | `background-desktop.jpg` | Fondo ≥1024px — idem |
 | `admin-home-hero.jpg` | Legacy — Inicio admin ya no usa masthead con foto; hero alineado a operario (degradado CSS). Asset puede quedar en brand hasta limpieza |
@@ -38,7 +39,7 @@ Ver [`refined-agro-principios.md`](refined-agro-principios.md), [`motion-y-feedb
 | `operario-home-hero.jpg` | **Eliminado** — hero Inicio usa degradado CSS en `operario.css` (fuente canónica: Vite/`resources`; no duplicar en `public/images/brand/` salvo assets servidos sin build) |
 | `operario-cargar-hero.jpg` | **Eliminado** — hero Cargar usa degradado CSS en `operario.css` |
 
-Tras cambiar fondos JPEG/PNG: `python scripts/optimize-brand-assets.py` (comprime fondos y sincroniza logo + `public/`).
+Tras cambiar fondos JPEG/PNG o el logo: `python scripts/optimize-brand-assets.py` (comprime fondos, sincroniza logo, genera iconos PWA en `public/`).
 
 **Iconos Lucide:** fuente preferida en `resources/images/icons/` (nombres kebab-case); `App\Support\IconSvg` carga el SVG del disco cuando existe y, si no, usa fallback inline en `components/ui/icons/inline.blade.php`. En pantalla: `x-ui.icon` con `stroke="currentColor"` (color vía Tailwind).
 
@@ -103,6 +104,8 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.setup-checklist` | Lista de pasos de configuración inicial con badge de estado |
 | `x-ui.user-avatar` | Iniciales circulares; sizes `sm` (2.25rem), `nav` (2.75rem, home-nav operario), `md` (2.5rem); prop `decorative` cuando el nombre visible está al lado (header/sidebar) — si no, `role="img"` + `aria-label` |
 | `x-ui.user-menu` | Menú cuenta compartido (admin + operario) — panel teleport + clamp viewport; variante `sidebar`; Perfil + Cerrar sesión; props `size`, `avatarClass`, `variant` |
+| `x-ui.pwa-meta` | Meta PWA — manifest (`build/manifest.webmanifest`), `apple-touch-icon` (`pwa-192.png`), flags iOS; solo si `config('avicore.pwa.enabled')` |
+| `x-ui.pwa-install-prompt` | Banner inferior «Instalá AviCore» — Alpine (`beforeinstallprompt` / guía iOS), icono `pwa-192.png`, dismiss en `localStorage`; solo si `config('avicore.pwa.install_prompt')`; estilos `.avicore-pwa-install*` en `app.css` |
 | `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger` **o** `wire:model` (Livewire); panel centrado; focus trap; `applyOpenSideEffects` sincroniza scroll/foco al cerrar vía entangle |
 | `x-ui.sheet` | Overlay Alpine — slot `trigger` **o** `wire:model`; **móvil** bottom sheet (slide-up, handle, safe-area); **escritorio ≥1024px** panel centrado tipo diálogo (`max-w-md`, sin handle); auth recuperación contraseña |
 | `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», overlay (`x-ui.sheet` responsive); enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
