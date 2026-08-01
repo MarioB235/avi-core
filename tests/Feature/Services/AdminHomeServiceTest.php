@@ -137,6 +137,7 @@ class AdminHomeServiceTest extends TestCase
         $labels = array_column($items, 'label');
 
         $this->assertSame(['Granjas', 'Galpones', 'Usuarios'], $labels);
+        $this->assertSame('Disponible', $items[2]['status']);
 
         foreach ($items as $item) {
             $this->assertArrayHasKey('description', $item);

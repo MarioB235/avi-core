@@ -361,250 +361,173 @@
         @apply flex min-h-10 items-center gap-3 rounded-lg py-2 pl-3 pr-3 text-sm font-medium transition-colors duration-150;
     }
 
-    .avicore-admin-sidebar {
-        @apply sticky top-0 z-30 flex h-svh w-64 shrink-0 flex-col overflow-y-auto border-r border-black/10 bg-avicore-primary text-white shadow-lg;
-        background-image: linear-gradient(180deg, var(--color-avicore-primary) 0%, #184930 100%);
+    /* Menú cuenta compartido (x-ui.user-menu) — panel y trigger base */
+    .avicore-user-menu__trigger {
+        @apply relative z-10 inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
 
-    .avicore-admin-sidebar--drawer {
-        @apply fixed inset-y-0 left-0 z-50 h-svh w-64 shadow-2xl;
+    .avicore-user-menu--sidebar .avicore-user-menu__trigger {
+        @apply focus-visible:outline-white;
     }
 
-    .avicore-admin-sidebar__brand {
-        @apply flex items-start justify-between gap-3 border-b border-white/10 px-4 py-5 sm:px-5;
+    .avicore-user-menu__trigger .avicore-user-avatar {
+        @apply flex items-center justify-center rounded-full bg-avicore-primary font-semibold tracking-tight text-white shadow-sm;
+        --tw-ring-width: 0;
+        --tw-ring-shadow: 0 0 #0000;
     }
 
-    .avicore-admin-nav {
-        @apply flex-1 space-y-0.5 overflow-y-auto px-3 pb-2;
+    .avicore-user-menu--sidebar .avicore-user-menu__trigger .avicore-user-avatar {
+        @apply bg-white font-semibold text-avicore-primary shadow-[0_1px_3px_rgba(0,0,0,0.14)];
     }
 
-    .avicore-admin-sidebar__section-label {
-        @apply px-5 pb-2 pt-4 text-[0.6875rem] font-semibold uppercase tracking-wider text-white/45;
-    }
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-user-menu__trigger {
+            @apply transition-transform duration-150 ease-out active:scale-95;
+        }
 
-    .avicore-admin-sidebar__footer .avicore-admin-sidebar__section-label {
-        @apply px-2 pt-0;
-    }
-
-    .avicore-admin-sidebar__footer {
-        @apply mt-auto border-t border-white/10 px-3 py-4;
-    }
-
-    .avicore-admin-sidebar__close {
-        @apply inline-flex min-h-10 min-w-10 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/15;
-    }
-
-    .avicore-admin-sidebar .avicore-nav-link {
-        @apply text-white/80;
-    }
-
-    .avicore-admin-sidebar .avicore-nav-link__icon {
-        @apply text-white/70;
-    }
-
-    .avicore-admin-sidebar .avicore-nav-link:hover {
-        @apply bg-white/10 text-white;
-    }
-
-    .avicore-admin-sidebar .avicore-nav-link:hover .avicore-nav-link__icon {
-        @apply text-white;
-    }
-
-    .avicore-admin-sidebar .avicore-nav-link--active {
-        @apply bg-white/15 text-white shadow-sm;
-    }
-
-    .avicore-admin-sidebar .avicore-nav-link--active .avicore-nav-link__icon {
-        @apply text-white;
-    }
-
-    .avicore-admin-sidebar .avicore-nav-link--disabled {
-        @apply text-white/40 hover:bg-transparent hover:text-white/40;
-    }
-
-    .avicore-sidebar-user__avatar {
-        @apply bg-white/15 text-white ring-1 ring-white/20;
-    }
-
-    .avicore-admin-shell {
-        @apply flex min-h-svh bg-avicore-surface;
-    }
-
-    .avicore-admin-gutter {
-        @apply px-4 sm:px-6 lg:px-8;
-    }
-
-    .avicore-admin-main {
-        @apply flex min-w-0 flex-1 flex-col bg-avicore-surface;
-    }
-
-    /*
-     * Inicio admin — tarjeta hero con copy + KPIs debajo.
-     */
-    .avicore-home-hero {
-        @apply w-full;
-    }
-
-    .avicore-home-hero__card {
-        @apply relative overflow-hidden rounded-2xl border border-avicore-border/80 bg-avicore-card shadow-sm;
-    }
-
-    .avicore-home-hero__figure {
-        display: none;
-    }
-
-    .avicore-home-hero__img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center right;
-    }
-
-    .avicore-home-hero__scrim {
-        @apply pointer-events-none absolute inset-0;
-        background: linear-gradient(
-            90deg,
-            rgb(255 255 255 / 0.98) 0%,
-            rgb(255 255 255 / 0.88) 22%,
-            rgb(255 255 255 / 0.35) 42%,
-            transparent 62%
-        );
-    }
-
-    .avicore-home-hero__copy {
-        @apply absolute inset-y-0 left-0 flex max-w-lg flex-col justify-center px-6 py-5 sm:px-8 lg:px-10;
-    }
-
-    .avicore-home-hero__title {
-        @apply text-xl font-semibold tracking-tight text-avicore-text sm:text-2xl;
-    }
-
-    .avicore-home-hero__subtitle {
-        @apply mt-1.5 max-w-md text-sm text-avicore-muted;
-    }
-
-    .avicore-home-hero__kpis {
-        @apply mt-6;
-    }
-
-    @media (min-width: 1024px) {
-        .avicore-home-hero__figure {
-            display: block;
-            position: relative;
-            width: 100%;
-            min-height: 7rem;
-            aspect-ratio: 42 / 9;
-            overflow: hidden;
+        .avicore-user-menu__trigger .avicore-user-avatar {
+            @apply transition-[background-color,box-shadow,color] duration-150 ease-out;
         }
     }
 
-    .avicore-admin-header--toolbar {
-        @apply sticky top-0 z-20 shrink-0 border-b border-avicore-border/80 bg-avicore-card;
+    @media (hover: hover) and (pointer: fine) {
+        .avicore-user-menu--sidebar .avicore-user-menu__trigger:hover .avicore-user-avatar {
+            @apply md:bg-avicore-soft;
+        }
+
+        .avicore-user-menu__item {
+            @apply md:hover:bg-avicore-soft;
+        }
     }
 
-    .avicore-admin-header--toolbar .avicore-admin-header__inner {
-        @apply gap-4 py-3 sm:py-4;
+    .avicore-user-menu__panel {
+        @apply z-[60] w-[min(17rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-avicore-border/80 bg-avicore-card shadow-[0_16px_40px_rgba(15,23,42,0.14)] ring-1 ring-avicore-primary/5;
     }
 
-    .avicore-admin-header__title-row {
-        @apply flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0;
+    .avicore-user-menu__panel--portal {
+        @apply fixed;
     }
 
-    .avicore-admin-header__context {
-        @apply text-sm font-medium text-avicore-muted;
+    .avicore-user-menu__panel--sidebar {
+        @apply origin-bottom-right;
     }
 
-    .avicore-admin-header__actions {
-        @apply flex shrink-0 items-center gap-2 sm:gap-3;
+    .avicore-user-menu__panel:not(.avicore-user-menu__panel--sidebar) {
+        @apply origin-top-right;
     }
 
-    .avicore-admin-header__icon-btn {
-        @apply inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border border-avicore-border/80 bg-avicore-card text-avicore-muted transition-colors hover:bg-avicore-surface hover:text-avicore-text disabled:cursor-not-allowed disabled:opacity-60;
+    .avicore-user-menu__header {
+        @apply border-b border-avicore-border/70 px-4 py-3;
     }
 
-    .avicore-admin-header__user {
-        @apply flex min-w-0 items-center gap-2 rounded-xl border border-avicore-border/80 bg-avicore-card px-2 py-1.5 sm:px-3;
+    .avicore-user-menu__header-name {
+        @apply truncate text-sm font-semibold text-avicore-text;
     }
 
-    .avicore-admin-header__user-avatar {
-        @apply bg-avicore-primary text-white;
+    .avicore-user-menu__header-role {
+        @apply mt-0.5 text-xs font-medium text-avicore-primary;
     }
 
-    .avicore-date-pill--toolbar {
-        @apply hidden border-avicore-border/80 bg-avicore-card shadow-sm sm:inline-flex;
+    .avicore-user-menu__list {
+        @apply py-1;
     }
 
-    .avicore-admin-header {
-        @apply shrink-0 border-b border-avicore-border/80 bg-avicore-card px-4 sm:px-6 lg:px-8;
+    .avicore-user-menu__item {
+        @apply flex min-h-11 w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-semibold text-avicore-text focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-avicore-primary;
     }
 
-    .avicore-admin-header__inner--wide {
-        @apply mx-auto w-full max-w-7xl;
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-user-menu__item {
+            @apply transition-colors duration-150 ease-out active:bg-avicore-soft;
+        }
     }
 
-    .avicore-admin-header__inner {
-        @apply flex items-center gap-3 py-3 sm:py-4;
+    .avicore-user-menu__item--danger {
+        @apply text-avicore-danger;
     }
 
-    .avicore-admin-main__inner--wide {
-        @apply max-w-7xl;
+    .avicore-user-menu__item-icon {
+        @apply size-4 shrink-0 text-avicore-primary;
     }
 
-    .avicore-admin-main__content {
-        @apply relative flex-1;
+    .avicore-user-menu__item--danger .avicore-user-menu__item-icon {
+        @apply text-avicore-danger;
     }
 
-    .avicore-admin-main__inner--with-masthead {
-        @apply bg-transparent px-4 py-5 pb-10 sm:px-6 sm:py-6 lg:px-8 lg:pb-12;
+    .avicore-user-menu__profile-head {
+        @apply flex items-center gap-2 border-b border-avicore-border/70 px-3 py-2.5;
     }
 
-    .avicore-admin-main__inner--with-masthead.avicore-admin-main__inner--wide {
-        @apply max-w-7xl;
+    .avicore-user-menu__back {
+        @apply inline-flex min-h-9 items-center gap-1 rounded-lg px-2 text-xs font-semibold text-avicore-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
 
-    .avicore-admin-main__inner {
-        @apply mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8;
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-user-menu__back {
+            @apply transition-colors duration-150 ease-out active:bg-avicore-soft;
+        }
     }
 
-    .avicore-admin-menu-trigger {
-        @apply inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg border border-avicore-border/80 bg-avicore-card text-avicore-text transition-colors hover:border-avicore-primary/20 hover:bg-avicore-soft;
+    .avicore-user-menu__profile-title {
+        @apply text-sm font-semibold text-avicore-text;
     }
 
-    .avicore-date-pill {
-        @apply hidden shrink-0 items-center gap-2 rounded-full border border-avicore-border/80 bg-avicore-surface px-3 py-1.5 text-sm text-avicore-muted sm:inline-flex;
+    .avicore-user-menu__profile-list {
+        @apply space-y-3 px-4 py-3;
     }
 
-    .avicore-sidebar-panel--collapsed {
-        @apply w-[4.5rem];
+    .avicore-user-menu__profile-list dt {
+        @apply text-xs font-medium text-avicore-muted;
     }
 
-    .avicore-sidebar-panel--collapsed .avicore-sidebar-label,
-    .avicore-sidebar-panel--collapsed .avicore-sidebar-footer-text,
-    .avicore-sidebar-panel--collapsed .avicore-logo__text,
-    .avicore-sidebar-panel--collapsed .avicore-nav-link__badge,
-    .avicore-sidebar-panel--collapsed .avicore-admin-sidebar__section-label {
-        @apply hidden;
-    }
-
-    .avicore-sidebar-panel--collapsed .avicore-nav-link {
-        @apply justify-center px-2;
-    }
-
-    .avicore-sidebar-panel--collapsed .avicore-sidebar-user {
-        @apply justify-center px-0;
-    }
-
-    .avicore-sidebar-panel--collapsed .avicore-admin-sidebar__brand {
-        @apply justify-center px-2;
+    .avicore-user-menu__profile-list dd {
+        @apply mt-0.5 text-sm font-semibold text-avicore-text;
     }
 
     .avicore-admin-home-kpis {
-        @apply relative z-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4;
+        @apply relative z-10 grid gap-4 sm:grid-cols-2;
     }
 
     .avicore-admin-home-panels {
-        @apply mt-6 grid gap-6 lg:mt-8 lg:grid-cols-2 lg:items-start;
+        @apply mt-6 grid gap-8 lg:mt-8 lg:grid-cols-2 lg:items-start lg:gap-6;
+    }
+
+    .avicore-admin-context {
+        @apply mt-3 inline-flex max-w-full items-center gap-2 rounded-lg bg-white/15 px-3 py-1.5 text-sm font-medium text-white ring-1 ring-inset ring-white/20;
+    }
+
+    .avicore-admin-home-actions {
+        @apply grid gap-3;
+    }
+
+    .avicore-admin-home-action {
+        @apply flex flex-col gap-1 rounded-lg border border-avicore-border/80 bg-avicore-card p-4 shadow-sm;
+    }
+
+    .avicore-admin-home-action--active {
+        @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .avicore-admin-home-action--active {
+            @apply md:transition-[border-color,background-color,box-shadow] md:duration-200 md:hover:border-avicore-primary/30 md:hover:bg-avicore-soft/50 md:hover:shadow-md;
+        }
+    }
+
+    .avicore-admin-home-action--disabled {
+        @apply cursor-not-allowed opacity-70;
+    }
+
+    .avicore-admin-home-action__icon {
+        @apply mb-1 flex size-9 items-center justify-center rounded-lg bg-avicore-soft;
+    }
+
+    .avicore-admin-home-action__title {
+        @apply text-sm font-semibold text-avicore-text;
+    }
+
+    .avicore-admin-home-action__meta {
+        @apply text-sm text-avicore-muted;
     }
 
     .avicore-panel-card {
@@ -633,6 +556,20 @@
 
     .avicore-setup-item {
         @apply flex items-start gap-3 rounded-lg border border-avicore-border/80 px-4 py-3;
+    }
+
+    .avicore-setup-item--link {
+        @apply p-0 transition-colors duration-150;
+    }
+
+    .avicore-setup-item__link {
+        @apply flex w-full items-start gap-3 rounded-lg px-4 py-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .avicore-setup-item--link {
+            @apply md:hover:border-avicore-primary/30 md:hover:bg-avicore-soft/50;
+        }
     }
 
     .avicore-setup-item__icon {

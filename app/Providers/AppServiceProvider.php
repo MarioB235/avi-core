@@ -3,11 +3,14 @@
 namespace App\Providers;
 
 use App\Http\View\Composers\AdminHomeComposer;
+use App\Http\View\Composers\AdminLayoutComposer;
 use App\Http\View\Composers\OperarioLayoutComposer;
 use App\Models\Galpon;
 use App\Models\Lote;
+use App\Models\User;
 use App\Policies\GalponPolicy;
 use App\Policies\LotePolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -30,8 +33,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(Galpon::class, GalponPolicy::class);
         Gate::policy(Lote::class, LotePolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
 
         View::composer('pages.admin.home', AdminHomeComposer::class);
+        View::composer('components.layouts.admin', AdminLayoutComposer::class);
         View::composer('components.layouts.operario-mobile', OperarioLayoutComposer::class);
 
         Password::defaults(function () {

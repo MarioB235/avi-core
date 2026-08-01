@@ -46,4 +46,52 @@ enum UserRole: string
             self::AdminAvicore, self::Operario => false,
         };
     }
+
+    public function canViewUsers(): bool
+    {
+        return match ($this) {
+            self::AdminAvicore, self::Dueno, self::Administrativo, self::Encargado => true,
+            self::Operario => false,
+        };
+    }
+
+    public function canManageUsers(): bool
+    {
+        return match ($this) {
+            self::AdminAvicore, self::Dueno, self::Administrativo => true,
+            self::Encargado, self::Operario => false,
+        };
+    }
+
+    public function canResetUserPassword(): bool
+    {
+        return match ($this) {
+            self::AdminAvicore, self::Dueno, self::Administrativo, self::Encargado => true,
+            self::Operario => false,
+        };
+    }
+
+    /**
+     * Roles que este actor puede asignar al crear o editar usuarios.
+     *
+     * @return list<self>
+     */
+    public function assignableRoles(): array
+    {
+        return match ($this) {
+            self::AdminAvicore => self::cases(),
+            self::Dueno => [
+                self::Dueno,
+                self::Administrativo,
+                self::Encargado,
+                self::Operario,
+            ],
+            self::Administrativo => [
+                self::Administrativo,
+                self::Encargado,
+                self::Operario,
+            ],
+            self::Encargado, self::Operario => [],
+        };
+    }
 }

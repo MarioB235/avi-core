@@ -4,6 +4,7 @@ use App\Http\Middleware\EnsureAdminPanelAccess;
 use App\Http\Middleware\EnsureOperarioAccess;
 use App\Http\Middleware\EnsurePasswordChanged;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Livewire\Admin\Usuarios\Index as AdminUsuariosIndex;
 use App\Livewire\Auth\ChangePassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Operario\CargaHuevos;
@@ -34,6 +35,10 @@ Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
     Route::view('/admin', 'pages.admin.home')
         ->middleware(EnsureAdminPanelAccess::class)
         ->name('admin.home');
+
+    Route::middleware(EnsureAdminPanelAccess::class)->prefix('admin')->name('admin.')->group(function () {
+        Route::livewire('/usuarios', AdminUsuariosIndex::class)->name('usuarios.index');
+    });
     Route::middleware(EnsureOperarioAccess::class)->prefix('operario')->name('operario.')->group(function () {
         Route::livewire('/', OperarioHome::class)->name('home');
         Route::livewire('/cargar', CargarHub::class)->name('cargar');

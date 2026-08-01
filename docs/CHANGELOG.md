@@ -5,8 +5,18 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-08-01
+
+- **[seguridad|deps]** CI: `guzzlehttp/guzzle` 7.15.2 y `guzzlehttp/psr7` 2.13.0 (`composer audit` limpio). — `composer.lock`
+
 ## 2026-07-16
 
+- **[fix|admin]** Post-auditoría msg 3: tests permisos usuarios (Admin AviCore+empresa, encargado sin edit/toggle, guards rol/self); `AdminUserMenuTest` en `/admin/usuarios`; limpieza CSS legacy shell admin (`.avicore-admin-sidebar*`, toolbar/masthead) en `app.css`; matriz `permisos.md` §2 (Encargado No crear/editar; fila editar explícita); assert `avicore-user-menu--sidebar` en `OperarioBottomNavTest`. — `AdminUsuariosTest.php`, `AdminUserMenuTest.php`, `OperarioBottomNavTest.php`, `app.css`, `permisos.md`, `arbol-proyecto.md`, `estandares-codigo.md`, `tokens-componentes.md`
+- **[ui|admin]** Inicio Dueño desentreverado: KPIs `x-ui.kpi-card`, accesos `avicore-admin-home-action`, chip empresa (sin galpón/carga). — `pages/admin/home`, `app.css`, `AdminHomeViewTest`, `patrones-web-admin.md`, `pantallas-flujos.md` §3.1
+- **[ui|admin]** Panel Dueño sin mezcla Campo: quita tab/tile «Campo» y copy de carga; Inicio solo gestión (Usuarios · Estructura · Reportes); KPIs Equipo/Empresa. — `AdminNav`, `pages/admin/home`, tests AdminShell/Home, `patrones-web-admin.md`, `pantallas-flujos.md` §3.1
+- **[ui|admin]** Shell admin = chrome operario (sidebar/`bottom-nav`/home-nav/sheet): `AdminNav` (Inicio · Usuarios), componentes `x-admin.*`, Inicio con KPIs/accesos/checklist; partials legacy admin retirados. — `AdminNav`, `layouts/admin`, `pages/admin/home`, `AdminShellTest`, `patrones-web-admin.md`, `pantallas-flujos.md` §3.1, `tokens-componentes.md`, `arbol-proyecto.md`
+- **[ui|admin]** Armonía previa menú cuenta: `x-ui.user-menu` compartido, checklist Usuarios con enlace. — `user-menu.blade.php`, `AdminUserMenuTest`
+- **[feature|admin]** CRUD Usuarios (`/admin/usuarios`): listado multiempresa, alta/edición, reset clave temporal, activar/desactivar; `UserPolicy` + Actions; nav admin habilitada. — `Livewire/Admin/Usuarios/`, `Actions/User/`, `UserPolicy`, `UserRole`, tests Admin, `pantallas-flujos.md`, `permisos.md`, `plan-desarrollo.md`, `arbol-proyecto.md`
 - **[docs]** Pasada cierre msg 4 (operario desktop + post-auditoría): mapa `00-contexto` → `patrones-desktop-operario`; tokens (`user-avatar` size `nav`, user-menu clamp, `sidebar-nav`, heroes con chip interactivo); patrones mobile/desktop; `arbol-proyecto`; `estandares-codigo` (SnackbarHost/UserMenu tests). — `00-contexto.md`, `tokens-componentes.md`, `patrones-*-operario.md`, `arbol-proyecto.md`, `estandares-codigo.md`
 - **[fix|operario]** Post-auditoría msg 3: una query `galponesDisponibles` en hub; clamp vertical menú cuenta; avatar sin `!important` + size `nav`; `avicore-defer` en `historialPaginado`; tests snackbar desktop y user-menu clamp. — `CargarHub.php`, `user-menu.blade.php`, `user-avatar.blade.php`, `operario.css`, `OperarioGalponService.php`, `SnackbarHostTest.php`, `OperarioUserMenuTest.php`
 - **[ui|operario]** Avatar cuenta: disco blanco/iniciales verdes sobre chrome primario; primario limpio en header claro (sin borde doble). — `operario.css`, patrones operario, `tokens-componentes.md`

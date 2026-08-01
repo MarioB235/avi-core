@@ -49,13 +49,15 @@ class AdminHomeService
             ],
             [
                 'label' => 'Galpones',
-                'description' => 'Definí los galpones donde se registra la operación.',
+                'description' => 'Definí los galpones de tu empresa.',
                 'icon' => 'warehouse',
             ],
             [
                 'label' => 'Usuarios',
                 'description' => 'Invitá al equipo y asigná roles de acceso.',
                 'icon' => 'users',
+                'status' => 'Disponible',
+                'href' => route('admin.usuarios.index'),
             ],
         ];
     }

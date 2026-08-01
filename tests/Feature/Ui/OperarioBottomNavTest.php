@@ -37,7 +37,7 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee('avicore-operario-shell--home', false)
             ->assertSee('avicore-operario-shell__workspace', false)
             ->assertSee('avicore-operario-sidebar', false)
-            ->assertSee('avicore-operario-user-menu--sidebar', false)
+            ->assertSee('avicore-user-menu--sidebar', false)
             ->assertSee('Carga en campo', false)
             ->assertSee('avicore-operario-home-hero', false)
             ->assertSee('avicore-operario-home-summary', false)

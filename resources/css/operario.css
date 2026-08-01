@@ -1192,23 +1192,17 @@
     }
 
     /*
-     * Avatar cuenta operario — Refined Agro:
-     * - Header claro: disco primario + iniciales blancas (sombra suave).
+     * Avatar cuenta operario — overrides sobre x-ui.user-menu (estilos base en app.css):
+     * - Header claro: disco primario + iniciales blancas.
      * - Chrome verde (home + sidebar): disco blanco + iniciales primarias.
-     * Tamaño home: CSS var --nav-account-avatar (responsive); size prop `nav` en avatar.
+     * Tamaño home: CSS var --nav-account-avatar; size prop `nav` en avatar.
      */
-    .avicore-operario-user-menu__trigger .avicore-user-avatar {
-        @apply flex items-center justify-center rounded-full bg-avicore-primary font-semibold tracking-tight text-white shadow-sm;
-        --tw-ring-width: 0;
-        --tw-ring-shadow: 0 0 #0000;
-    }
-
-    .avicore-home-nav__avatar.avicore-operario-user-menu__trigger .avicore-user-avatar,
-    .avicore-operario-user-menu--sidebar .avicore-operario-user-menu__trigger .avicore-user-avatar {
+    .avicore-home-nav__avatar.avicore-user-menu__trigger .avicore-user-avatar,
+    .avicore-operario-sidebar .avicore-user-menu--sidebar .avicore-user-menu__trigger .avicore-user-avatar {
         @apply bg-white font-semibold text-avicore-primary shadow-[0_1px_3px_rgba(0,0,0,0.14)];
     }
 
-    button.avicore-home-nav__avatar.avicore-operario-user-menu__trigger {
+    button.avicore-home-nav__avatar.avicore-user-menu__trigger {
         width: var(--nav-account-avatar);
         height: var(--nav-account-avatar);
         min-width: var(--nav-account-avatar);
@@ -1218,7 +1212,7 @@
         --tw-ring-shadow: 0 0 #0000;
     }
 
-    .avicore-home-nav__avatar.avicore-operario-user-menu__trigger .avicore-user-avatar {
+    .avicore-home-nav__avatar.avicore-user-menu__trigger .avicore-user-avatar {
         width: 100%;
         height: 100%;
         min-width: 0;
@@ -1256,123 +1250,15 @@
         }
     }
 
-    .avicore-operario-user-menu__trigger {
-        @apply relative z-10 inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
-    }
-
-    .avicore-operario-user-menu--sidebar .avicore-operario-user-menu__trigger {
-        @apply focus-visible:outline-white;
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-        .avicore-operario-user-menu__trigger {
-            @apply transition-transform duration-150 ease-out active:scale-95;
-        }
-
-        .avicore-operario-user-menu__trigger .avicore-user-avatar {
-            @apply transition-[background-color,box-shadow,color] duration-150 ease-out;
-        }
-    }
-
     @media (hover: hover) and (pointer: fine) {
-        .avicore-home-nav__avatar.avicore-operario-user-menu__trigger:hover .avicore-user-avatar,
-        .avicore-operario-user-menu--sidebar .avicore-operario-user-menu__trigger:hover .avicore-user-avatar {
+        .avicore-home-nav__avatar.avicore-user-menu__trigger:hover .avicore-user-avatar,
+        .avicore-operario-sidebar .avicore-user-menu--sidebar .avicore-user-menu__trigger:hover .avicore-user-avatar {
             @apply md:bg-avicore-soft;
         }
 
-        .avicore-operario-header__avatar.avicore-operario-user-menu__trigger:hover .avicore-user-avatar {
+        .avicore-operario-header__avatar.avicore-user-menu__trigger:hover .avicore-user-avatar {
             @apply md:bg-avicore-secondary;
         }
-    }
-
-    .avicore-operario-user-menu__panel {
-        @apply z-[60] w-[min(17rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-avicore-border/80 bg-avicore-card shadow-[0_16px_40px_rgba(15,23,42,0.14)] ring-1 ring-avicore-primary/5;
-    }
-
-    .avicore-operario-user-menu__panel--portal {
-        @apply fixed;
-    }
-
-    .avicore-operario-user-menu__panel--sidebar {
-        @apply origin-bottom-right;
-    }
-
-    .avicore-operario-user-menu__panel:not(.avicore-operario-user-menu__panel--sidebar) {
-        @apply origin-top-right;
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-        .avicore-operario-user-menu__item {
-            @apply md:hover:bg-avicore-soft;
-        }
-    }
-
-    .avicore-operario-user-menu__header {
-        @apply border-b border-avicore-border/70 px-4 py-3;
-    }
-
-    .avicore-operario-user-menu__header-name {
-        @apply truncate text-sm font-semibold text-avicore-text;
-    }
-
-    .avicore-operario-user-menu__header-role {
-        @apply mt-0.5 text-xs font-medium text-avicore-primary;
-    }
-
-    .avicore-operario-user-menu__list {
-        @apply py-1;
-    }
-
-    .avicore-operario-user-menu__item {
-        @apply flex min-h-11 w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-semibold text-avicore-text focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-avicore-primary;
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-        .avicore-operario-user-menu__item {
-            @apply transition-colors duration-150 ease-out active:bg-avicore-soft;
-        }
-    }
-
-    .avicore-operario-user-menu__item--danger {
-        @apply text-avicore-danger;
-    }
-
-    .avicore-operario-user-menu__item-icon {
-        @apply size-4 shrink-0 text-avicore-primary;
-    }
-
-    .avicore-operario-user-menu__item--danger .avicore-operario-user-menu__item-icon {
-        @apply text-avicore-danger;
-    }
-
-    .avicore-operario-user-menu__profile-head {
-        @apply flex items-center gap-2 border-b border-avicore-border/70 px-3 py-2.5;
-    }
-
-    .avicore-operario-user-menu__back {
-        @apply inline-flex min-h-9 items-center gap-1 rounded-lg px-2 text-xs font-semibold text-avicore-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-        .avicore-operario-user-menu__back {
-            @apply transition-colors duration-150 ease-out active:bg-avicore-soft;
-        }
-    }
-
-    .avicore-operario-user-menu__profile-title {
-        @apply text-sm font-semibold text-avicore-text;
-    }
-
-    .avicore-operario-user-menu__profile-list {
-        @apply space-y-3 px-4 py-3;
-    }
-
-    .avicore-operario-user-menu__profile-list dt {
-        @apply text-xs font-medium text-avicore-muted;
-    }
-
-    .avicore-operario-user-menu__profile-list dd {
-        @apply mt-0.5 text-sm font-semibold text-avicore-text;
     }
 
     /* ── Escritorio (≥1024px): sidebar + contenido ancho ─────────── */

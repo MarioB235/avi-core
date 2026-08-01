@@ -31,19 +31,19 @@ class OperarioUserMenuTest extends TestCase
         $this->actingAs($operario)
             ->get(route('operario.home'))
             ->assertOk()
-            ->assertSee('avicore-operario-user-menu--sidebar', false)
-            ->assertSee('avicore-operario-user-menu__panel--portal', false)
+            ->assertSee('avicore-user-menu--sidebar', false)
+            ->assertSee('avicore-user-menu__panel--portal', false)
             ->assertSee('syncPanelPosition', false)
             ->assertSee('panelHeight', false)
             ->assertSee('max-height:calc(100vh', false)
             ->assertSee('x-teleport="body"', false)
-            ->assertSee('avicore-operario-user-menu__panel', false)
+            ->assertSee('avicore-user-menu__panel', false)
             ->assertSee('avicore-home-nav__account-role', false)
             ->assertSee('Operario', false)
             ->assertSee('role="menu"', false)
             ->assertSee('aria-haspopup="menu"', false)
             ->assertSee('x-bind:aria-expanded', false)
-            ->assertSee('aria-controls="operario-user-menu-', false)
+            ->assertSee('aria-controls="avicore-user-menu-', false)
             ->assertSee('Perfil', false)
             ->assertSee('Cerrar sesión', false)
             ->assertSee('Documento', false)
@@ -66,10 +66,10 @@ class OperarioUserMenuTest extends TestCase
         $this->actingAs($operario)
             ->get(route('operario.cargar'))
             ->assertOk()
-            ->assertSee('avicore-operario-user-menu__trigger', false)
+            ->assertSee('avicore-user-menu__trigger', false)
             ->assertSee('Abrir menú de cuenta', false)
             ->assertSee('aria-haspopup="menu"', false)
-            ->assertSee('aria-controls="operario-user-menu-', false);
+            ->assertSee('aria-controls="avicore-user-menu-', false);
     }
 
     public function test_operario_historial_header_renders_user_menu_trigger(): void
@@ -85,7 +85,7 @@ class OperarioUserMenuTest extends TestCase
         $this->actingAs($operario)
             ->get(route('operario.historial'))
             ->assertOk()
-            ->assertSee('avicore-operario-user-menu__trigger', false)
+            ->assertSee('avicore-user-menu__trigger', false)
             ->assertSee('Abrir menú de cuenta', false)
             ->assertSee('aria-haspopup="menu"', false);
     }
