@@ -34,7 +34,7 @@ AviCore **no requiere archivos de config en la raíz** para Laravel Cloud (a dif
 3. **Region:** la más cercana al equipo (ej. `us-east-1`, `us-east-2`). La base de datos debe estar en la **misma región** que el compute.
 4. **Settings → General:**
    - PHP **8.3**
-   - Node **20**
+   - Node **22** (misma major que CI en `.github/workflows/ci.yml`)
 5. **Build commands** (AviCore usa pnpm — `packageManager` en `package.json`):
 
 ```bash
@@ -71,6 +71,7 @@ Cargar manualmente (las de BD las inyecta Cloud al adjuntar Postgres):
 | `AVICORE_SUPPORT_WHATSAPP` | Igual que `.env.example` |
 | `AVICORE_SUPPORT_WHATSAPP_DISPLAY` | Igual que `.env.example` |
 | `AVICORE_SUPPORT_EMAIL` | Igual que `.env.example` |
+| `TRUSTED_PROXIES` | `*` (Cloud detrás de proxy; ver `.env.example` / `bootstrap/app.php`) |
 
 Opcionales recomendadas para staging:
 
@@ -101,8 +102,9 @@ Usuarios demo: ver [`demo.md`](../../avicore-datos-demo/references/demo.md) y se
 1. `GET /up` → 200.
 2. `/login` carga con estilos (`/build/assets/...`).
 3. Login con usuario seedeado (ej. documento `100000001`, contraseña del seeder).
-4. Flujo operario: `/operario`, selección galpón, carga huevos.
-5. Imágenes de marca en `/images/brand/...`.
+4. Flujo operario: `/operario`, selección galpón (chip), carga huevos; opcional vacunación e historial.
+5. Admin: `/admin`, `/admin/usuarios` (dueño/administrativo).
+6. Imágenes de marca en `/images/brand/...`.
 
 ---
 

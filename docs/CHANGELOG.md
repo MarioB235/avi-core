@@ -7,6 +7,10 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ## 2026-08-01
 
+- **[docs|chore]** Post-auditoría msg 3: `composer setup` incluye `db:seed`; punteros `check:agent-docs` en `00-contexto`; inventario `docs/CHANGELOG.md` en `.cursor/README`; `carga-lote-form` en árbol operario; `arranque-local` Node 22 + atajo setup explícito. — `composer.json`, `README.md`, `arranque-local.md`, `arbol-proyecto.md`, `00-contexto.md`, `.cursor/README.md`
+- **[docs]** Repaso consistencia: Node 22 en Cloud (=CI); README con migrate/seed; plan Bloque 5 (sin `/operario/galpon`); `pnpm-lock.yaml` en estándares; `TRUSTED_PROXIES` + smoke admin en deploy; árbol `docs/` y puntero plantillas. — `deploy-laravel-cloud.md`, `arquitectura.md`, `plan-desarrollo.md`, `README.md`, `arranque-local.md`, `arbol-proyecto.md`, `estandares-codigo.md`, `.cursor/README.md`
+- **[cursor|docs]** Plantillas delgadas (msg 1–5 cortos; sin tablas duplicadas de skills/fuentes); `check:docs-impact`; anti-drift plantillas en `check-agent-docs`. — `docs/plantillas/desarrollo.html`, `02-…html`, `00-contexto.md`, `check-docs-impact.cjs`, `check-agent-docs-sync.cjs`, `package.json`, `GOBERNANZA.md`, `avicore-cierre-tarea`, `.cursor/README.md`
+- **[chore|ci]** CI: cache Composer (`actions/cache`), `permissions: contents: read`, `fetch-depth: 1`, env de test a nivel job, `composer:v2` y `--optimize-autoloader`. — `.github/workflows/ci.yml`
 - **[seguridad|deps]** CI: `guzzlehttp/guzzle` 7.15.2 y `guzzlehttp/psr7` 2.13.0 (`composer audit` limpio). — `composer.lock`
 
 ## 2026-07-16

@@ -87,10 +87,13 @@ No implementar sin leer references del skill · lógica crítica en Blade · sal
 - **Config:** [`.cursor/README.md`](../.cursor/README.md)
 - **Gobernanza:** `avicore-evolucion-tooling/references/GOBERNANZA.md`
 - **MCP:** Context7 (`user-context7`) para API/stack; GitHub (`user-github`) solo mensaje 5
+- **Anti-drift:** `pnpm run check:agent-docs` (sync + enlaces) · `pnpm run check:docs-impact` (sugerencias por diff; mensaje 4)
 
 ---
 
 ## Regla de una sola fuente maestra
+
+**Humano mínimo en `docs/`:** `00-contexto.md` (este mapa) · `CHANGELOG.md` · plantillas copiables (`02-…html` + `plantillas/`). El detalle de producto vive en `.cursor/skills/*/references/` (una carpeta por dominio) — **no** copiar esas tablas al HTML.
 
 | Si cambia… | Editar |
 |------------|--------|
@@ -103,4 +106,4 @@ No implementar sin leer references del skill · lógica crítica en Blade · sal
 | Carpeta/clase estándar | `avicore-contexto/references/arbol-proyecto.md` |
 | Tooling agente | `.cursor/skills/README.md` + `GOBERNANZA.md` |
 
-Siempre: línea en `CHANGELOG.md`.
+Siempre: línea en `CHANGELOG.md`. Anti-drift: `pnpm run check:agent-docs` · sugerencias por diff: `pnpm run check:docs-impact`.

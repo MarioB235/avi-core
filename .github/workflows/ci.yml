@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
 
+# Menor privilegio: solo lectura del repo (GitHub Actions docs)
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -13,6 +17,16 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
+    env:
+      APP_ENV: testing
+      APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: avicore_test
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret
 
     services:
       postgres:
@@ -31,20 +45,36 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-      - uses: shivammathur/setup-php@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mbstring, pdo_pgsql, pgsql, bcmath, intl
           coverage: none
+          tools: composer:v2
 
       - name: Composer validate y audit
         run: |
           composer validate --strict
           composer audit --locked
 
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
       - name: Install PHP dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+        run: composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
 
       - name: Pint
         run: vendor/bin/pint --test
@@ -72,13 +102,4 @@ jobs:
         run: psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE avicore_test;"
 
       - name: Tests
-        env:
-          APP_ENV: testing
-          APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
-          DB_CONNECTION: pgsql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: avicore_test
-          DB_USERNAME: postgres
-          DB_PASSWORD: secret
         run: php artisan test --compact

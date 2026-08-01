@@ -10,7 +10,7 @@ El arquitecto (`/avicore-architect-direct`) debe **mantener el repo al día**, n
 |------|-----------------|
 | Flujo slash (7 pasos) | `.cursor/commands/avicore-architect-direct.md` |
 | Mensaje → skill | `.cursor/skills/README.md` (única tabla) |
-| Plantillas usuario | `docs/02-avicore-mensajes-reutilizables.html` (índice) · contenido en `docs/plantillas/` |
+| Plantillas usuario | `docs/02-avicore-mensajes-reutilizables.html` (índice) · mensajes 1–5 en `docs/plantillas/desarrollo.html` (**sin** duplicar tablas de skills ni mapa de fuentes) |
 | Procedimiento auditoría / PR / docs | Skills `avicore-auditoria`, `avicore-git-pr`, `avicore-cierre-tarea` |
 | Gobernanza tooling | Este archivo |
 | Contrato producto mínimo | `docs/00-contexto.md` |
@@ -29,7 +29,8 @@ El arquitecto (`/avicore-architect-direct`) debe **mantener el repo al día**, n
 | Tono chat | `avicore-modo-respuesta-clara.mdc` → `avicore-contexto/references/modo-respuesta-clara.md` |
 | MCP / auth PR | `.cursor/README.md` § MCP → skill `avicore-git-pr` |
 | Contrato producto | `references/` del skill dueño → `CHANGELOG` |
-| Anti-drift tooling | `pnpm run check:agent-docs` → `check-agent-docs-sync.cjs` + `check-skill-references.cjs` (enlaces relativos en `.md`/`.mdc`/`.html`) |
+| Anti-drift tooling | `pnpm run check:agent-docs` → `check-agent-docs-sync.cjs` + `check-skill-references.cjs` (enlaces + plantillas delgadas) |
+| Impacto docs por diff | `pnpm run check:docs-impact` → `check-docs-impact.cjs` (sugerencias; mensaje 4 decide) |
 
 ---
 
@@ -59,6 +60,10 @@ Tras crear: registrar en `.cursor/skills/README.md` + `CHANGELOG.md`.
 Mapa canónico: tabla en `docs/00-contexto.md` § Regla de una sola fuente maestra.
 
 Proactivo al cerrar cualquier tarea con cambio de contrato (paso 5 del architect).
+
+**No** duplicar ese mapa ni el catálogo de skills en HTML de plantillas: el humano copia mensajes cortos; el detalle vive en `references/` y en `.cursor/skills/README.md`.
+
+Antes del mensaje 4 / PR: `pnpm run check:docs-impact` (sugerencias por rutas del diff).
 
 ---
 

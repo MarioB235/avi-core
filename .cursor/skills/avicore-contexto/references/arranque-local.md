@@ -9,7 +9,7 @@ Stack y principios: [`arquitectura.md`](arquitectura.md).
 
 - PHP 8.3+
 - Composer
-- Node.js y pnpm (Corepack: `corepack enable` si hace falta)
+- Node.js **22** y pnpm 10.x (misma major que CI y Laravel Cloud; Corepack: `corepack enable` si hace falta)
 - PostgreSQL (pgAdmin u otro cliente)
 - Extensiones PHP: `pdo_pgsql`, `pgsql`
 
@@ -17,13 +17,21 @@ Stack y principios: [`arquitectura.md`](arquitectura.md).
 
 ## Primera vez en el proyecto
 
-Desde la raíz del repo (donde está `artisan`):
+Atajo (migrate + seed + build): desde la raíz del repo (donde está `artisan`):
+
+```bash
+composer setup
+```
+
+Paso a paso equivalente:
 
 ```bash
 composer install
 cp .env.example .env   # si no existe .env
 php artisan key:generate
 pnpm install
+php artisan migrate
+php artisan db:seed
 pnpm run build
 ```
 
@@ -86,11 +94,13 @@ El rol `postgres` es del **servidor**, no de una base concreta; puede usarse en 
 php artisan migrate
 ```
 
-Tablas: skeleton Laravel + `empresas` + `users` (esquema AviCore). Ver [`esquema-bd.md`](../../avicore-modelo-datos/references/esquema-bd.md).
+Tablas: skeleton Laravel + esquema AviCore (`empresas`, `users`, `granjas`, `galpones`, `lotes`, `registros_operativos`, `vacunaciones`). Detalle: [`esquema-bd.md`](../../avicore-modelo-datos/references/esquema-bd.md).
+
+Rutas útiles tras seed: `/login`, `/password/change`, `/admin`, `/admin/usuarios`, `/operario`.
 
 ### Datos de prueba (login)
 
-Usuarios demo: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4. Tras migrar, cargarlos con:
+Usuarios demo: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4. `composer setup` ya ejecuta seed; si migraste a mano:
 
 ```bash
 php artisan db:seed
@@ -107,9 +117,6 @@ php artisan db:seed
 | Operario | documento `200000001` | `/operario` |
 
 Desactivar con `AVICORE_DEMO_LOGIN=false`: login normal con documento + contraseña (`Avicore2026!` en seeders).
-
-
-Rutas: `/login`, `/password/change`, `/admin`, `/operario`.
 
 ---
 

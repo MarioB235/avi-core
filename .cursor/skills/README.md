@@ -39,7 +39,7 @@
 | 1 — Tarea | Según tarea → tablas arriba | `docs/00-contexto.md`, `references/` del skill dueño, `docs/CHANGELOG.md` si cambia contrato |
 | 2 — Auditoría | `avicore-auditoria` | `avicore-auditoria/references/estandares-codigo.md`; salida: resumen + tabla + brechas + plan ≤5 acciones |
 | 3 — Corregir | `avicore-auditoria` | Tabla y plan del mensaje 2; tests en verde |
-| 4 — Docs y tooling | `avicore-cierre-tarea` | `docs/CHANGELOG.md`, este README, `GOBERNANZA.md` |
+| 4 — Docs y tooling | `avicore-cierre-tarea` | `docs/00-contexto.md`, `CHANGELOG.md`, `pnpm run check:docs-impact`, `GOBERNANZA.md` si desvío |
 | 5 — Git / PR | `avicore-git-pr` | Chat 2–4 + diff; auth en `.cursor/README.md` |
 
 Gobernanza: [`avicore-evolucion-tooling/references/GOBERNANZA.md`](avicore-evolucion-tooling/references/GOBERNANZA.md)
