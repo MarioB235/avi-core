@@ -25,7 +25,8 @@ Laravel Cloud es la opción acorde al stack AviCore (Laravel + PostgreSQL + Vite
 
 ```powershell
 composer validate --strict
-corepack enable
+composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+npm install -g pnpm@10.32.1
 pnpm install --frozen-lockfile
 pnpm run build
 php artisan key:generate --show
@@ -69,11 +70,13 @@ AviCore **no requiere archivos de config en la raíz** para Laravel Cloud (a dif
 5. **Build commands** (AviCore usa pnpm — `packageManager` en `package.json`):
 
 ```bash
-composer install --no-dev
-corepack enable
+composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+npm install -g pnpm@10.32.1
 pnpm install --frozen-lockfile
 pnpm run build
 ```
+
+> **Nota:** en el build de Laravel Cloud **no** está disponible `corepack` (`corepack: command not found`). Usar `npm install -g pnpm@<versión de package.json>`.
 
 6. **Deploy commands** (por defecto):
 
@@ -112,6 +115,31 @@ Opcionales recomendadas para staging:
 | `SESSION_DRIVER` | `database` (tabla `sessions` ya existe) |
 | `CACHE_STORE` | `database` |
 | `QUEUE_CONNECTION` | `sync` (MVP; colas managed en fase posterior) |
+| `AVICORE_PWA_ENABLED` | `true` (manifest + SW; ver `avicore-pwa/references/pwa.md`) |
+| `AVICORE_PWA_INSTALL_PROMPT` | `true` (banner instalar en móvil) |
+
+Pegar en el editor **Custom environment variables** (formato `.env`). Valores con espacios → **entre comillas**. Una sola línea `APP_KEY` (no duplicar). Las advertencias «overwriting injected variables» son normales.
+
+Ejemplo listo para copiar (ajustar `APP_URL`):
+
+```env
+APP_NAME=AviCore
+APP_ENV=staging
+APP_DEBUG=false
+APP_KEY=base64:...
+APP_URL=https://tu-entorno.laravel.cloud
+AVICORE_DEMO_LOGIN=true
+AVICORE_DEMO_DOCUMENTO=000000000
+AVICORE_SUPPORT_WHATSAPP="+5491123456789"
+AVICORE_SUPPORT_WHATSAPP_DISPLAY="+54 9 11 2345-6789"
+AVICORE_SUPPORT_EMAIL="soporte@avicore.com"
+TRUSTED_PROXIES=*
+SESSION_DRIVER=database
+CACHE_STORE=database
+QUEUE_CONNECTION=sync
+AVICORE_PWA_ENABLED=true
+AVICORE_PWA_INSTALL_PROMPT=true
+```
 
 Tras cambiar variables → **redeploy** el entorno.
 
@@ -146,6 +174,32 @@ Con selector (`AVICORE_DEMO_LOGIN=true`): solo elegí **Perfil**. Con login norm
 4. Flujo operario: `/operario`, selección galpón (chip), carga huevos; opcional vacunación e historial.
 5. Admin: `/admin`, `/admin/usuarios` (dueño/administrativo).
 6. Imágenes de marca en `/images/brand/...`.
+7. PWA: en móvil, banner «Instalar» (Chrome/Android) o guía iOS; requiere HTTPS (Cloud OK).
+
+---
+
+## Base de datos (primera vez)
+
+- Tipo: **Laravel Serverless Postgres** (no MySQL). Versión recomendada: **17**.
+- Misma región que el compute (ej. US East Ohio).
+- Plan **Dev** alcanza para staging con un solo usuario.
+
+`migrate` corre en cada deploy (Deploy command). **`db:seed` no** — ejecutarlo una vez en **Commands**:
+
+```bash
+php artisan db:seed --force
+```
+
+---
+
+## Problemas frecuentes (primera sesión)
+
+| Error | Causa | Solución |
+|-------|--------|----------|
+| `environment variables could not be parsed` | Espacios sin comillas o `APP_KEY` duplicado | Corregir bloque `.env`; ver ejemplo arriba |
+| `corepack: command not found` | Cloud sin corepack en build | `npm install -g pnpm@10.32.1` en build commands |
+| Login sin perfiles tras deploy | BD vacía (solo migrate) | `php artisan db:seed --force` en Commands |
+| Advertencia «overwriting injected variables» | Custom reemplaza valores de Cloud | Esperado; guardar y redeploy |
 
 ---
 

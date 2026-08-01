@@ -68,6 +68,17 @@ AVICORE_SUPPORT_EMAIL="soporte@avicore.com"
 
 WhatsApp requiere dígitos válidos; el correo debe pasar `FILTER_VALIDATE_EMAIL`. Si ambos fallan, el diálogo muestra mensaje genérico sin enlaces rotos.
 
+### PWA (instalación móvil — MVP)
+
+Opcional en `.env` (defaults en `.env.example`). Controlan manifest, service worker y banner «Instalar» vía `config/avicore.php`:
+
+```env
+AVICORE_PWA_ENABLED=true
+AVICORE_PWA_INSTALL_PROMPT=true
+```
+
+`AVICORE_PWA_INSTALL_PROMPT=false` oculta el banner pero mantiene manifest/SW. Requiere `pnpm run build` y HTTPS para probar instalación en celular. Detalle: `avicore-pwa/references/pwa.md`.
+
 ### Base de datos para tests (`php artisan test`)
 
 Los tests usan **PostgreSQL** (misma extensión `pdo_pgsql` que la app; no SQLite). Crear una base separada **`avicore_test`** (pgAdmin: **Create** → **Database**, owner `postgres`).

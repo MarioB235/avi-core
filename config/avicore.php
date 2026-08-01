@@ -38,4 +38,19 @@ return [
         'documento' => env('AVICORE_DEMO_DOCUMENTO', '000000000'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | PWA (instalable en móvil)
+    |--------------------------------------------------------------------------
+    |
+    | enabled: manifest + service worker (assets estáticos; sin offline completo).
+    | install_prompt: banner «Instalar» cuando el navegador lo permite (o guía iOS).
+    |
+    */
+
+    'pwa' => [
+        'enabled' => env('AVICORE_PWA_ENABLED', true),
+        'install_prompt' => env('AVICORE_PWA_INSTALL_PROMPT', true),
+    ],
+
 ];

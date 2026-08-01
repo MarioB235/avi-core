@@ -7,7 +7,7 @@ description: Configura PWA de AviCore (manifest, iconos, instalación móvil) si
 
 ## Leer primero
 
-`avicore-contexto/references/arquitectura.md` · `avicore-ui/references/pantallas-flujos.md` · `avicore-design-system/references/guia-visual.md`
+`avicore-contexto/references/arquitectura.md` · `avicore-ui/references/pantallas-flujos.md` · `avicore-design-system/references/guia-visual.md` · **`references/pwa.md`** (contrato MVP implementado)
 
 ## Objetivo MVP
 
