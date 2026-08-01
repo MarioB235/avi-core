@@ -68,9 +68,9 @@ Las reglas **no sustituyen** leer `references/` del skill; solo acortan convenci
 
 ## Modo chat
 
-Regla `avicore-modo-respuesta-clara.mdc` · ejemplos: `.cursor/skills/avicore-contexto/references/modo-respuesta-clara.md`.
+Regla `avicore-modo-respuesta-clara.mdc` · ejemplos: `avicore-contexto/references/modo-respuesta-clara.md`.
 
-**Formato didáctico:** cabecera `**AviCore Architect** · skill \`…\` · contexto` + **Qué hice** / **Por qué** / **Qué sigue**.
+**Formato:** cabecera + **En corto** / **Qué hice** (si hubo cambios) / **Qué sigue** — frases cortas; audiencia con poca experiencia. Sin bloque «Por qué» separado.
 
 Mantener completos: código, comandos, tabla auditoría (msg 2) y plantilla PR (msg 5).
 
@@ -150,7 +150,7 @@ Verificar: `pnpm run check:agent-docs`
 
 ### 7 — Cierre
 
-Bloque **Qué sigue** en modo didáctico. Indicar skill(s) usados y si quedó docs/tooling pendiente para mensaje 4.
+Bloque **Qué sigue** (una acción concreta). Prosa breve: **En corto** primero; skill(s) usados solo si aporta.
 
 ## Referencia
 

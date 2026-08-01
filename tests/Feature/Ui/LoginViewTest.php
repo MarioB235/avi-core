@@ -52,9 +52,8 @@ class LoginViewTest extends TestCase
         $this->assertStringContainsString('translate-y-full', $html);
     }
 
-    public function test_login_renders_demo_role_select_in_local_environment(): void
+    public function test_login_renders_demo_role_select_when_flag_enabled(): void
     {
-        $this->app['env'] = 'local';
         config(['avicore.demo_login.enabled_flag' => true]);
 
         $html = Livewire::test(Login::class)
@@ -73,9 +72,9 @@ class LoginViewTest extends TestCase
         $this->assertMatchesRegularExpression('/type="button"\s+disabled\b/s', $html);
     }
 
-    public function test_login_hides_demo_role_select_outside_local_environment(): void
+    public function test_login_hides_demo_role_select_when_flag_disabled(): void
     {
-        config(['avicore.demo_login.enabled_flag' => true]);
+        config(['avicore.demo_login.enabled_flag' => false]);
 
         $html = Livewire::test(Login::class)->html();
 

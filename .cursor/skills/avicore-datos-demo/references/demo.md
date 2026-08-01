@@ -24,33 +24,50 @@ Avícola Demo
 - 1 granja (Granja Norte).
 - 2 galpones (G-01, G-02).
 - 1 lote activo en Galpón 1.
-- Operario demo con `ultimo_galpon_id` = Galpón 1.
+- Usuario prueba con `ultimo_galpon_id` = Galpón 1 (si entrás como operario).
 
-**Demo completa (planificada):** múltiples granjas/galpones, 30 días de registros, escenarios para gráficos y reportes — ver [`plan-desarrollo.md`](../../avicore-contexto/references/plan-desarrollo.md) Bloque 7 y skill `avicore-datos-demo`. No documentar aquí el detalle hasta que exista el seeder o dataset.
+**Demo completa (planificada):** ver [`plan-desarrollo.md`](../../avicore-contexto/references/plan-desarrollo.md) Bloque 7.
 
 ---
 
-## 4. Usuarios demo (auth — Bloque 2)
+## 4. Usuario único de prueba
 
-Cargados con `AvicoreAuthSeeder` (`php artisan db:seed`). Empresa: **Avícola Demo** (`DEMO`).
+El seed crea **un solo usuario** (`AvicoreAuthSeeder`).
 
-### Login en local (selector)
+### Credenciales (copiar)
 
-Con `APP_ENV=local` y `AVICORE_DEMO_LOGIN=true` (ver `.env.example`), en `/login`:
+```text
+Documento:  000000000
+Contraseña: Avicore2026!
+Nombre:     Usuario Prueba
+```
 
-- Documento y contraseña: vacíos y deshabilitados (no se usan).
-- **Perfil:** `x-ui.select` de rol → autentica al usuario seedeado (`DemoLoginService` / `executeDemo`).
+| Campo | Valor |
+|-------|--------|
+| Nombre | Usuario Prueba |
+| Documento | `000000000` |
+| Contraseña | `Avicore2026!` |
+| Rol inicial en BD | Dueño (cambia al entrar con el selector) |
 
-Desactivar: `AVICORE_DEMO_LOGIN=false` o entorno distinto de `local` (vuelve el login por documento + contraseña).
+Empresa: **Avícola Demo** (`DEMO`), excepto si elegís **Admin AviCore** en el selector (sin empresa).
 
-### Usuarios en base (mapeo por rol)
+### Cómo entrar
 
-| Rol | Documento (seeder) | Después del login |
-|---|---|---|
-| Admin AviCore | `900000001` | `/admin` |
-| Dueño | `100000001` | `/admin` |
-| Administrativo | `300000001` | `/admin` |
-| Encargado | `400000001` | `/admin` |
-| Operario | `200000001` | `/operario` |
+| Modo | Variable | Qué haces |
+|------|----------|-----------|
+| **Selector (MVP)** | `AVICORE_DEMO_LOGIN=true` | Elegís rol en **Perfil** → Ingresar. Sin documento ni contraseña. |
+| **Login normal** | `AVICORE_DEMO_LOGIN=false` | Documento `000000000` + `Avicore2026!` (rol = el que quedó en BD tras el último login demo) |
 
-Contraseña seedeada `Avicore2026!` (solo aplica si el demo está desactivado y se usa login normal). Detalle de arranque: [`arranque-local.md`](../../avicore-contexto/references/arranque-local.md) § «Datos de prueba (login)».
+Al elegir un rol en el selector, el sistema **actualiza ese mismo usuario** con el rol elegido y te loguea. Cerrás sesión, elegís otro rol → mismo usuario, distinto permiso.
+
+**Primera vez / BD vacía:** `php artisan db:seed --force`. Re-ejecutar el seed es seguro (`firstOrCreate` en empresa y usuario demo).
+
+**Antes de go-live real:** `AVICORE_DEMO_LOGIN=false` y redeploy.
+
+### Rol → pantalla tras login
+
+| Perfil en selector | Destino |
+|--------------------|---------|
+| Admin AviCore | `/admin` |
+| Dueño, Administrativo, Encargado | `/admin` |
+| Operario | `/operario` |

@@ -24,24 +24,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Login demo (solo local)
+    | Login demo (selector de perfil, sin credenciales)
     |--------------------------------------------------------------------------
     |
-    | Selector de perfil en /login. Activo solo si APP_ENV=local y
-    | AVICORE_DEMO_LOGIN=true. Documento/contraseña quedan vacíos y no se usan;
-    | el perfil resuelve al usuario seedeado (DemoLoginService::resolveUser).
+    | AVICORE_DEMO_LOGIN=true: selector Perfil en /login (sin credenciales).
+    | Un solo usuario demo (AVICORE_DEMO_DOCUMENTO); el rol elegido se aplica al entrar.
+    | Desactivar (false) antes de go-live con clientes reales.
     |
     */
 
     'demo_login' => [
-        'enabled_flag' => env('AVICORE_DEMO_LOGIN', true),
-        'role_documents' => [
-            'admin_avicore' => '900000001',
-            'dueno' => '100000001',
-            'administrativo' => '300000001',
-            'encargado' => '400000001',
-            'operario' => '200000001',
-        ],
+        'enabled_flag' => env('AVICORE_DEMO_LOGIN', false),
+        'documento' => env('AVICORE_DEMO_DOCUMENTO', '000000000'),
     ],
 
 ];

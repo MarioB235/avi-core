@@ -100,23 +100,32 @@ Rutas útiles tras seed: `/login`, `/password/change`, `/admin`, `/admin/usuario
 
 ### Datos de prueba (login)
 
-Usuarios demo: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4. `composer setup` ya ejecuta seed; si migraste a mano:
+**Credenciales del usuario único** (tras `db:seed`):
+
+```text
+Documento:  000000000
+Contraseña: Avicore2026!
+```
+
+Detalle: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4. `composer setup` ya ejecuta seed; si migraste a mano:
 
 ```bash
 php artisan db:seed
 ```
 
-**Modo demo local** (`APP_ENV=local`, `AVICORE_DEMO_LOGIN=true`): en `/login` elegí el **Perfil** en el selector. Documento y contraseña quedan vacíos (no se usan).
+Re-ejecutar el seed es seguro (`AvicoreAuthSeeder` usa `firstOrCreate`).
 
-| Perfil en el select | Usuario seedeado | Después del login |
-|--------|-----------|-------------------|
-| Admin AviCore | documento `900000001` | `/admin` |
-| Dueño | documento `100000001` | `/admin` |
-| Administrativo | documento `300000001` | `/admin` |
-| Encargado | documento `400000001` | `/admin` |
-| Operario | documento `200000001` | `/operario` |
+**Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`): un solo usuario (`000000000`). Elegí **Perfil** en el selector; el rol se aplica al entrar. Sin documento ni contraseña en pantalla.
 
-Desactivar con `AVICORE_DEMO_LOGIN=false`: login normal con documento + contraseña (`Avicore2026!` en seeders).
+**Login normal** (`AVICORE_DEMO_LOGIN=false`): documento `000000000` + `Avicore2026!`.
+
+| Perfil en el select | Después del login |
+|--------|-------------------|
+| Admin AviCore | `/admin` |
+| Dueño, Administrativo, Encargado | `/admin` |
+| Operario | `/operario` |
+
+Desactivar con `AVICORE_DEMO_LOGIN=false`: login con `000000000` + `Avicore2026!`.
 
 ---
 
@@ -183,4 +192,4 @@ pnpm run build
 
 ## Despliegue en Laravel Cloud
 
-Staging y pruebas internas: [`deploy-laravel-cloud.md`](deploy-laravel-cloud.md).
+Antes del dashboard: `pnpm run check:cloud-readiness`. Guía por fases (primera vez): [`deploy-laravel-cloud.md`](deploy-laravel-cloud.md).

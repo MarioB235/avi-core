@@ -70,7 +70,7 @@ class AvicoreEstructuraAvicolaSeeder extends Seeder
 
         User::query()
             ->where('empresa_id', $empresa->id)
-            ->where('documento', '200000001')
+            ->where('documento', '000000000')
             ->update(['ultimo_galpon_id' => $galponUno->id]);
     }
 }

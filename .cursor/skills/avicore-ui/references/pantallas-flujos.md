@@ -24,9 +24,9 @@ Permitir el acceso seguro al sistema.
 
 ### Campos
 
-- Documento (en local demo: visible, vacío y deshabilitado).
-- Contraseña (en local demo: visible, vacía y deshabilitada).
-- Perfil (select; solo `APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`).
+- Documento (con `AVICORE_DEMO_LOGIN=true`: visible, vacío y deshabilitado).
+- Contraseña (con `AVICORE_DEMO_LOGIN=true`: visible, vacía y deshabilitada).
+- Perfil (select; `AVICORE_DEMO_LOGIN=true`).
 - Recordarme (opcional).
 
 ### Acciones
@@ -40,12 +40,12 @@ Permitir el acceso seguro al sistema.
 - En **móvil** (<1024px): fondo `login-background.jpg` (granja al atardecer), logo apilado centrado sobre la foto (`entrance` — órbita del isotipo alrededor del wordmark) y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
-- **Modo demo local** (`APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`): documento y contraseña quedan vacíos y deshabilitados (sin lógica de credenciales); el acceso es solo con el selector **Perfil** (`x-ui.select` + `wire:model.live`), que autentica al usuario seedeado del rol (`DemoLoginService` + `AttemptLoginAction::executeDemo`). Tras login, redirect **full page** (sin Livewire `navigate`) para cambiar de layout público al admin u operario móvil. Fuera de local o con flag en `false`: login normal por documento + contraseña.
+- **Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`): un usuario (`000000000`); el selector asigna el rol al entrar (sin credenciales en pantalla).
 - Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre contacto de soporte (`x-ui.sheet`: bottom sheet en móvil, diálogo centrado en escritorio ≥1024px; WhatsApp y correo vía `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
 
 ### Validaciones
 
-- **Demo local:** perfil obligatorio; documento/contraseña no se validan; errores de rate-limit y empresa inactiva en campo `demoRole`.
+- **Demo (`AVICORE_DEMO_LOGIN=true`):** perfil obligatorio; documento/contraseña no se validan; errores de rate-limit y empresa inactiva en campo `demoRole`.
 - **Login normal:** documento obligatorio (máx. 50 caracteres); contraseña obligatoria.
 - Usuario activo.
 - Empresa activa (estado `activa`; no aplica a Admin AviCore).
