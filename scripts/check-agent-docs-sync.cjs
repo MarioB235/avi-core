@@ -63,7 +63,8 @@ const POINTER_CHECKS = [
   ['comando', comando, 'solo al final del mensaje 2'],
   ['skills README', skillsReadme, 'Única tabla mensaje → skill'],
   ['skills README', skillsReadme, 'avicore-deuda-tecnica'],
-  ['cursor README', cursorReadme, 'check-agent-docs-sync'],
+  ['cursor README', cursorReadme, 'check:agent-docs'],
+  ['cursor README', cursorReadme, 'check:docs-impact'],
   ['cursor README', cursorReadme, 'GOBERNANZA.md'],
 ];
 
@@ -120,11 +121,44 @@ for (const rel of removedPaths) {
   }
 }
 
+const desarrolloHtml = read('docs/plantillas/desarrollo.html');
+const PLANTILLA_NEEDLES = [
+  'Aquí te detallo la tarea:',
+  'Archivos a analizar:',
+  'pnpm run check:docs-impact',
+  '.cursor/skills/README.md',
+  'docs/00-contexto.md',
+];
+for (const needle of PLANTILLA_NEEDLES) {
+  if (!desarrolloHtml.includes(needle)) {
+    fail(`docs/plantillas/desarrollo.html: falta invariante "${needle}"`);
+  }
+}
+if (desarrolloHtml.includes('Skills de dominio (auto-invoke)')) {
+  fail(
+    'docs/plantillas/desarrollo.html: no duplicar tabla de skills (vive en .cursor/skills/README.md)'
+  );
+}
+if (desarrolloHtml.includes('Regla de una sola fuente maestra')) {
+  fail(
+    'docs/plantillas/desarrollo.html: no duplicar mapa de fuentes (vive en docs/00-contexto.md)'
+  );
+}
+
+if (!fs.existsSync(path.join(root, 'scripts', 'check-docs-impact.cjs'))) {
+  fail('falta scripts/check-docs-impact.cjs');
+}
+
+const pkg = read('package.json');
+if (!pkg.includes('check:docs-impact')) {
+  fail('package.json: falta script check:docs-impact');
+}
+
 if (failed) {
   console.error('\nCorregí el drift según avicore-evolucion-tooling/references/GOBERNANZA.md');
   process.exit(1);
 }
 
 console.log(
-  `OK: ${actualSkillCount} skills, punteros y enrutamiento alineados (scripts/check-agent-docs-sync.cjs).`
+  `OK: ${actualSkillCount} skills, punteros, plantillas y enrutamiento alineados (scripts/check-agent-docs-sync.cjs).`
 );

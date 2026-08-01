@@ -16,8 +16,9 @@ Laravel + PostgreSQL + Livewire + Tailwind CSS + Alpine.js + PWA + Laravel Rever
 | Livewire | 4.x |
 | Tailwind CSS | 4.x (Vite plugin) |
 | PHP | 8.3+ |
-| PostgreSQL | Según instalación local (ej. 18) |
-| Node / pnpm | 10.x (`pnpm-lock.yaml`; ver [`arranque-local.md`](arranque-local.md)) |
+| PostgreSQL | Según instalación local (ej. 16–18) |
+| Node.js | **22** (CI y Laravel Cloud) |
+| pnpm | 10.x (`packageManager` en `package.json`; lockfile `pnpm-lock.yaml`) |
 
 Reverb, Echo y PWA: pendientes (Bloques 6–7 del plan).
 

@@ -38,7 +38,7 @@ flowchart TD
 
 | Capa | Ubicación |
 |------|-----------|
-| Docs humanos mínimos | `docs/00-contexto.md`, `CHANGELOG.md`, `cursor/02.html` |
+| Docs humanos mínimos | `docs/00-contexto.md`, `docs/CHANGELOG.md`, `docs/02-avicore-mensajes-reutilizables.html` + `docs/plantillas/` |
 | Skills (15) | `.cursor/skills/*/SKILL.md` |
 | Referencias de producto | `.cursor/skills/*/references/*.md` |
 | Reglas | `.cursor/rules/*.mdc` |
@@ -67,9 +67,10 @@ flowchart TD
 ## Anti-drift
 
 ```bash
-node scripts/check-agent-docs-sync.cjs
-node scripts/check-skill-references.cjs
 pnpm run check:agent-docs
+pnpm run check:docs-impact
 ```
+
+`check:agent-docs` = sync + enlaces. `check:docs-impact` = sugerencias de `references/` según el diff (mensaje 4).
 
 Gobernanza: [`skills/avicore-evolucion-tooling/references/GOBERNANZA.md`](skills/avicore-evolucion-tooling/references/GOBERNANZA.md)

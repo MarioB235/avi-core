@@ -11,9 +11,9 @@ Principios y stack: `arquitectura.md`.
 avi-core/
 ├── app/                      # Laravel — Actions, Services, Livewire, Policies
 ├── resources/views/          # layouts (público, admin, operario), components/ui
-├── scripts/                  # dev.php (composer dev), optimize-brand-assets.py, check-agent-docs-sync.cjs
-├── tests/Feature/            # Auth/, Operario/, Services/, Support/, Ui/
-├── docs/                     # Documentación de producto + referencias
+├── scripts/                  # dev.php, check-agent-docs-sync, check-docs-impact, check-skill-references, …
+├── tests/Feature/            # Auth/, Admin/, Operario/, Services/, Support/, Ui/
+├── docs/                     # Humano mínimo: 00-contexto, CHANGELOG, plantillas HTML (detalle en .cursor/skills/*/references/)
 ├── .cursor/                  # Reglas, skills, comando del arquitecto
 ├── AGENTS.md
 ├── pnpm-lock.yaml            # Lockfile front (pnpm)
@@ -111,7 +111,7 @@ resources/
 │   │   ├── _redirect-placeholder.blade.php
 │   │   ├── auth/             # login, change-password
 │   │   ├── admin/            # usuarios/index
-│   │   └── operario/         # home (+ partials/galpon-chip-selector, carga-huevos-form, carga-muertes-form, carga-vacunacion-form), cargar-hub, historial
+│   │   └── operario/         # home (+ partials/galpon-chip-selector, carga-huevos-form, carga-muertes-form, carga-vacunacion-form, carga-lote-form), cargar-hub, historial
 │   └── pages/
 │       ├── admin/home.blade.php
 │       └── dev/              # previews /dev/* (solo local)

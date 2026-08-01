@@ -8,7 +8,7 @@ Permite registrar y consultar producción diaria por galpón: huevos, mortalidad
 
 | Fase | Contenido |
 |------|-----------|
-| **Hecho** | Bloque 1–2 + operario: estructura avícola, carga huevos/muertes/vacunación, alta lote, historial |
+| **Hecho** | Bloque 1–2 + operario + admin usuarios: estructura avícola, carga huevos/muertes/vacunación, alta lote, historial, `/admin/usuarios` |
 | **Siguiente** | Ver [`avicore-contexto/references/plan-desarrollo.md`](.cursor/skills/avicore-contexto/references/plan-desarrollo.md) |
 
 ## Stack
@@ -20,10 +20,15 @@ Laravel 13 · PostgreSQL · Livewire 4 · Tailwind CSS 4 · Alpine.js (Livewire)
 Guía completa: [`.cursor/skills/avicore-contexto/references/arranque-local.md`](.cursor/skills/avicore-contexto/references/arranque-local.md)
 
 ```bash
+composer setup       # install, .env, key, migrate, seed, pnpm install + build
+# o paso a paso:
 composer install
 cp .env.example .env   # si no tenés .env
 php artisan key:generate
-pnpm install && pnpm run build
+pnpm install
+php artisan migrate
+php artisan db:seed
+pnpm run build
 composer dev           # atajo: serve + queue + vite
 ```
 

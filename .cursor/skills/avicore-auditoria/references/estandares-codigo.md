@@ -38,7 +38,7 @@
 
 - Usar APIs **oficiales** de Laravel, Livewire, Tailwind y paquetes ya en el stack; no alternativas ad hoc.
 - Consultar documentación vigente (Context7 MCP) ante dudas de versión o API.
-- No fijar versiones en docs funcionales; en código respetar `composer.lock` / `package-lock.json`.
+- No fijar versiones en docs funcionales; en código respetar `composer.lock` / `pnpm-lock.yaml`.
 - No agregar dependencias nuevas sin justificación en la tarea.
 
 ## Tests (PHPUnit / Feature)
