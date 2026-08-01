@@ -8,6 +8,7 @@ use App\Livewire\Auth\Login;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -128,8 +129,8 @@ class DemoLoginTest extends TestCase
         $this->seed(DatabaseSeeder::class);
         $this->enableDemoLogin();
 
-        $dueno = User::query()->where('documento', '100000001')->firstOrFail();
-        $dueno->empresa->update(['estado' => EmpresaEstado::Inactiva]);
+        $demoUser = User::query()->where('documento', '000000000')->firstOrFail();
+        $demoUser->empresa->update(['estado' => EmpresaEstado::Inactiva]);
 
         $component = Livewire::test(Login::class)
             ->set('demoRole', UserRole::Dueno->value)
@@ -155,17 +156,45 @@ class DemoLoginTest extends TestCase
             ->assertHasNoErrors(['documento', 'password']);
     }
 
-    public function test_demo_login_is_disabled_outside_local_environment(): void
+    public function test_demo_login_works_in_staging_when_flag_enabled(): void
     {
         $this->seed(DatabaseSeeder::class);
-        config(['avicore.demo_login.enabled_flag' => true]);
+        $this->enableDemoLogin('staging');
 
         Livewire::test(Login::class)
-            ->assertSet('demoLoginEnabled', false)
-            ->set('documento', '100000001')
-            ->set('password', 'Avicore2026!')
+            ->assertSet('demoLoginEnabled', true)
+            ->set('demoRole', UserRole::Dueno->value)
             ->call('login')
             ->assertRedirect(route('admin.home'));
+
+        $this->assertAuthenticated();
+    }
+
+    public function test_demo_login_is_rate_limited_after_five_failed_attempts(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        $this->enableDemoLogin();
+
+        $demoUser = User::query()->where('documento', '000000000')->firstOrFail();
+        $demoUser->empresa->update(['estado' => EmpresaEstado::Inactiva]);
+
+        RateLimiter::clear('000000000|127.0.0.1');
+
+        for ($i = 0; $i < 5; $i++) {
+            Livewire::test(Login::class)
+                ->set('demoRole', UserRole::Dueno->value)
+                ->call('login')
+                ->assertHasErrors('demoRole');
+        }
+
+        $component = Livewire::test(Login::class)
+            ->set('demoRole', UserRole::Dueno->value)
+            ->call('login')
+            ->assertHasErrors('demoRole');
+
+        $message = $component->errors()->first('demoRole') ?? '';
+        $this->assertStringContainsString('Demasiados intentos', $message);
+        $this->assertGuest();
     }
 
     public function test_demo_login_is_disabled_when_flag_is_false(): void
@@ -176,15 +205,15 @@ class DemoLoginTest extends TestCase
 
         Livewire::test(Login::class)
             ->assertSet('demoLoginEnabled', false)
-            ->set('documento', '100000001')
+            ->set('documento', '000000000')
             ->set('password', 'Avicore2026!')
             ->call('login')
             ->assertRedirect(route('admin.home'));
     }
 
-    private function enableDemoLogin(): void
+    private function enableDemoLogin(string $environment = 'local'): void
     {
-        $this->app['env'] = 'local';
+        $this->app['env'] = $environment;
         config(['avicore.demo_login.enabled_flag' => true]);
     }
 }

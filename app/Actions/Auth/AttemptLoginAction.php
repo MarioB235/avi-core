@@ -63,7 +63,7 @@ class AttemptLoginAction
     }
 
     /**
-     * Login local por selector de perfil (sin documento/contraseña).
+     * Login por selector de perfil (sin documento/contraseña) cuando demo está activo.
      *
      * @return array{user: User, must_change_password: bool}
      */

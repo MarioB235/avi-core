@@ -34,6 +34,8 @@ composer dev           # atajo: serve + queue + vite
 
 URL: `http://localhost:8000` · previews: `/dev/admin-layout`, `/dev/operario-layout`
 
+**Acceso de prueba** (tras seed): documento `000000000` · contraseña `Avicore2026!` · con `AVICORE_DEMO_LOGIN=true` solo elegís rol en `/login`. Detalle: [`demo.md`](.cursor/skills/avicore-datos-demo/references/demo.md).
+
 ## Empezar aquí
 
 | Qué necesitás | Archivo |

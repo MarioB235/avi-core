@@ -95,6 +95,9 @@ jobs:
       - name: Anti-drift agente
         run: pnpm run check:agent-docs
 
+      - name: Cloud readiness
+        run: pnpm run check:cloud-readiness
+
       # phpunit.xml fija DB_DATABASE=avicore_test (overridea env del job)
       - name: Crear base de tests
         env:

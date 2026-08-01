@@ -18,12 +18,12 @@
 5. Todo usuario nuevo puede tener contraseña temporal (`must_change_password`).
 6. El primer ingreso exige cambio obligatorio de contraseña antes de usar el sistema.
 7. La nueva contraseña debe cumplir política mínima: 8+ caracteres, letras, mayúsculas/minúsculas y números; no puede repetir la actual.
-8. Tras 5 intentos fallidos de login por documento e IP en 60 segundos, se bloquea temporalmente el acceso.
+8. Tras 5 intentos fallidos de login por documento e IP en 60 segundos, se bloquea temporalmente el acceso; en login demo (`AVICORE_DEMO_LOGIN=true`) el mensaje va en el campo `demoRole`.
 9. Si un documento resuelve más de una cuenta activa con credenciales válidas, se rechaza el login (ambigüedad).
 10. Usuario inactivo o empresa no activa impiden el acceso (Admin AviCore exceptuado de validación de empresa).
 11. Usuario no Admin AviCore sin `empresa_id` asignado no puede iniciar sesión.
 12. La recuperación de contraseña en MVP la realiza administrador o encargado autorizado. En login y cambio obligatorio de contraseña, el enlace «¿Olvidaste tu contraseña?» abre un diálogo con contacto de soporte (WhatsApp y/o correo desde `config/avicore.php` / `.env`, URLs validadas en `SupportContactService`); no hay reset automático por correo.
-13. Login demo local (desarrollo): documento y contraseña visibles pero vacíos/deshabilitados; el acceso es solo con el selector de perfil en `/login` (`APP_ENV=local` + `AVICORE_DEMO_LOGIN=true`). Autentica al usuario seedeado del rol (`DemoLoginService`) sin omitir validaciones de empresa. Detalle: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4.
+13. Login demo MVP (`AVICORE_DEMO_LOGIN=true`): un solo usuario (`000000000`); el selector asigna el rol al entrar (sin credenciales en pantalla). Desactivar antes de go-live. Detalle: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4.
 
 ---
 

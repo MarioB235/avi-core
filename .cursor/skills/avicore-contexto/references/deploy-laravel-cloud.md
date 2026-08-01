@@ -6,6 +6,37 @@ Stack local: [`arranque-local.md`](arranque-local.md). Arquitectura: [`arquitect
 
 ---
 
+## Primeros pasos (primera vez — ir despacio)
+
+Laravel Cloud es la opción acorde al stack AviCore (Laravel + PostgreSQL + Vite). El repo **ya está preparado** desde la migración Vercel → Cloud; en la primera sesión casi todo ocurre en el **dashboard**, no en código.
+
+**Recomendación:** un solo entorno **staging** conectado a la rama `main`, sin Reverb, colas managed ni dominio custom hasta validar login y flujo operario.
+
+| Fase | Dónde | Qué haces | Criterio de “listo” |
+|------|-------|-----------|---------------------|
+| **0 — Repo** | Tu PC + CI | `pnpm run check:cloud-readiness` (local y en `.github/workflows/ci.yml`) y, si querés, simular build (abajo) | Script en verde; `pnpm run build` sin error |
+| **1 — Cuenta** | [cloud.laravel.com](https://cloud.laravel.com) | Crear cuenta → autorizar GitHub → dar acceso al repo `MarioB235/avi-core` | Ves el repo en «New application» |
+| **2 — App** | Dashboard | **+ New application** → repo `avi-core`, rama `main`, región cercana (ej. `us-east-2`) | App creada; build commands de la sección siguiente |
+| **3 — BD + env** | Canvas del entorno | **Add database** → Laravel Serverless Postgres (**misma región**). Variables manuales (tabla abajo). **Redeploy** | Deploy verde; `DB_*` inyectadas por Cloud |
+| **4 — Datos** | Comandos del entorno en Cloud | `php artisan db:seed --force` (si migrate dejó BD vacía) | Selector **Perfil** en `/login` (con `AVICORE_DEMO_LOGIN=true`) |
+| **5 — Smoke** | Navegador | `/up`, `/login`, `/operario`, `/admin` | Checklist «Verificación post-deploy» más abajo |
+
+**Fase 0 en PowerShell** (simula lo que Cloud ejecuta en build):
+
+```powershell
+composer validate --strict
+corepack enable
+pnpm install --frozen-lockfile
+pnpm run build
+php artisan key:generate --show
+```
+
+Guardá la salida de `key:generate --show` en un gestor de contraseñas; la pegás en Cloud como `APP_KEY` (Fase 3). **No** la commitees.
+
+**Qué dejar para después:** workers/colas, scheduler, Reverb (Bloque 6), object storage, dominio propio, ramas de feature conectadas al entorno.
+
+---
+
 ## Qué incluye el repo
 
 AviCore **no requiere archivos de config en la raíz** para Laravel Cloud (a diferencia de Vercel). El deploy se configura en el dashboard.
@@ -67,7 +98,8 @@ Cargar manualmente (las de BD las inyecta Cloud al adjuntar Postgres):
 | `APP_DEBUG` | `false` |
 | `APP_KEY` | Salida de `php artisan key:generate --show` |
 | `APP_URL` | URL del entorno, ej. `https://avicore-staging.laravel.cloud` |
-| `AVICORE_DEMO_LOGIN` | `false` |
+| `AVICORE_DEMO_LOGIN` | `true` (MVP: selector sin credenciales; **`false` antes de go-live**) |
+| `AVICORE_DEMO_DOCUMENTO` | `000000000` (opcional; default en código) |
 | `AVICORE_SUPPORT_WHATSAPP` | Igual que `.env.example` |
 | `AVICORE_SUPPORT_WHATSAPP_DISPLAY` | Igual que `.env.example` |
 | `AVICORE_SUPPORT_EMAIL` | Igual que `.env.example` |
@@ -93,7 +125,16 @@ Si la BD está vacía tras `migrate`, ejecutar en Laravel Cloud (comandos del en
 php artisan db:seed --force
 ```
 
-Usuarios demo: ver [`demo.md`](../../avicore-datos-demo/references/demo.md) y sección login en [`arranque-local.md`](arranque-local.md). En Cloud **desactivar** el selector (`AVICORE_DEMO_LOGIN=false`) y usar documento + contraseña del seeder.
+Usuarios demo: ver [`demo.md`](../../avicore-datos-demo/references/demo.md). Tras seed, **un usuario**:
+
+```text
+Documento:  000000000
+Contraseña: Avicore2026!
+```
+
+Con selector (`AVICORE_DEMO_LOGIN=true`): solo elegí **Perfil**. Con login normal: documento + contraseña de arriba.
+
+**Seguridad:** el selector sin credenciales permite que cualquiera con la URL entre como cualquier rol. Solo para staging interno o demo; en producción con clientes reales → `AVICORE_DEMO_LOGIN=false` y redeploy.
 
 ---
 
@@ -101,7 +142,7 @@ Usuarios demo: ver [`demo.md`](../../avicore-datos-demo/references/demo.md) y se
 
 1. `GET /up` → 200.
 2. `/login` carga con estilos (`/build/assets/...`).
-3. Login con usuario seedeado (ej. documento `100000001`, contraseña del seeder).
+3. Login: selector **Perfil** (MVP con `AVICORE_DEMO_LOGIN=true`) o documento + contraseña si el flag está en `false`.
 4. Flujo operario: `/operario`, selección galpón (chip), carga huevos; opcional vacunación e historial.
 5. Admin: `/admin`, `/admin/usuarios` (dueño/administrativo).
 6. Imágenes de marca en `/images/brand/...`.

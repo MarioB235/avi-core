@@ -87,7 +87,7 @@ No implementar sin leer references del skill · lógica crítica en Blade · sal
 - **Config:** [`.cursor/README.md`](../.cursor/README.md)
 - **Gobernanza:** `avicore-evolucion-tooling/references/GOBERNANZA.md`
 - **MCP:** Context7 (`user-context7`) para API/stack; GitHub (`user-github`) solo mensaje 5
-- **Anti-drift:** `pnpm run check:agent-docs` (sync + enlaces) · `pnpm run check:docs-impact` (sugerencias por diff; mensaje 4)
+- **Anti-drift:** `pnpm run check:agent-docs` (sync + enlaces) · `pnpm run check:docs-impact` (sugerencias por diff; mensaje 4) · `pnpm run check:cloud-readiness` (pre-Cloud + CI en `ci.yml`)
 
 ---
 
