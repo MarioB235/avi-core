@@ -38,6 +38,7 @@ Permitir el acceso seguro al sistema.
 
 - Layout público en **split** (≥1024px): panel de marca a la izquierda (`auth-brand-panel`: logo `hero` con animación de entrada `entrance` y copy en columna alineada), tarjeta de login a la derecha.
 - En **móvil** (<1024px): fondo `login-background.jpg` (granja al atardecer), logo apilado centrado sobre la foto (`entrance` — órbita del isotipo alrededor del wordmark) y tarjeta blanca anclada abajo con esquinas superiores redondeadas (bottom sheet).
+- **PWA:** banner inferior «Instalá AviCore» si no está instalada (`AVICORE_PWA_INSTALL_PROMPT=true`); Chrome/Android → botón Instalar; iOS → guía Compartir. Detalle: `avicore-pwa/references/pwa.md`.
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
 - **Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`): un usuario (`000000000`); el selector asigna el rol al entrar (sin credenciales en pantalla).
@@ -120,7 +121,7 @@ Landing post-login para roles con panel administrativo (Dueño, Administrativo, 
 
 ### Elementos
 
-- Layout: `components/layouts/admin.blade.php` reutiliza clases `avicore-operario-*`; nav `AdminNav` (Inicio · Usuarios); menú cuenta `x-ui.user-menu`.
+- Layout: `components/layouts/admin.blade.php` reutiliza clases `avicore-operario-*`; nav `AdminNav` (Inicio · Usuarios); menú cuenta `x-ui.user-menu`; PWA (`x-ui.pwa-meta` + banner instalar si `AVICORE_PWA_INSTALL_PROMPT=true`).
 - Hero: saludo horario + subtítulo `Resumen de {empresa · rol}.` + chip de empresa (`avicore-admin-context`).
 - KPIs: `<x-ui.kpi-card>` — Usuarios activos (conteo real); Granjas y galpones (placeholder hasta estructura).
 - Accesos («¿Qué querés gestionar?»): tarjetas de gestión (`avicore-admin-home-action`) — Usuarios; Estructura y Reportes → «Próximamente».
@@ -193,7 +194,7 @@ Multiempresa: actores de empresa solo ven/modifican usuarios de su `empresa_id`.
 
 ## 5. Pantalla: Vista móvil del operario
 
-**Estado MVP (2026-06-28):** implementado en `/operario` — shell responsive: **móvil** con barra inferior integrada (3 pestañas: Inicio · Cargar · Historial); **escritorio (≥1024px)** con sidebar verde (`x-operario.sidebar-nav`), contenido ancho (`max-w-6xl`) y bottom nav oculta. Detalle visual: `patrones-desktop-operario.md`. Heroes compactos con degradado suave, **panel de estado del galpón** (KPIs por galpón seleccionado: aves, huevos/muertes hoy, acumulado desde ingreso de lotes activos, lista de lotes con edad; galpón solo en chip del hero; sin enlace duplicado a Historial). Header hero fijo en móvil: grilla logo/usuario + línea ogee (`avicore-home-nav`); en escritorio el nav superior se oculta y la cuenta vive en sidebar. Avatar abre **menú cuenta** (`x-operario.user-menu`: dropdown Perfil + Cerrar sesión). Nav: `OperarioNav`; layout hero: `operarioIsHeroPage` (Inicio + Cargar + Historial).
+**Estado MVP (2026-06-28):** implementado en `/operario` — shell responsive: **móvil** con barra inferior integrada (3 pestañas: Inicio · Cargar · Historial); **escritorio (≥1024px)** con sidebar verde (`x-operario.sidebar-nav`), contenido ancho (`max-w-6xl`) y bottom nav oculta. Detalle visual: `patrones-desktop-operario.md`. Heroes compactos con degradado suave, **panel de estado del galpón** (KPIs por galpón seleccionado: aves, huevos/muertes hoy, acumulado desde ingreso de lotes activos, lista de lotes con edad; galpón solo en chip del hero; sin enlace duplicado a Historial). Header hero fijo en móvil: grilla logo/usuario + línea ogee (`avicore-home-nav`); en escritorio el nav superior se oculta y la cuenta vive en sidebar. Avatar abre **menú cuenta** (`x-operario.user-menu`: dropdown Perfil + Cerrar sesión). Nav: `OperarioNav`; layout hero: `operarioIsHeroPage` (Inicio + Cargar + Historial). **PWA:** mismo banner/manifest que login (`avicore-pwa/references/pwa.md`).
 
 ### Navegación móvil (3 pestañas)
 

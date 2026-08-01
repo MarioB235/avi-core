@@ -8,6 +8,7 @@
 
     <title>{{ $title ?? 'Operario · '.config('app.name') }}</title>
 
+    <x-ui.pwa-meta />
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
@@ -46,6 +47,7 @@
     </div>
 
     <x-ui.snackbar-host context="operario" />
+    <x-ui.pwa-install-prompt />
 
     @livewireScripts
 </body>

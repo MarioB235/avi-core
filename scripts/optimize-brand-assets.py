@@ -18,6 +18,12 @@ BACKGROUNDS = (
 )
 JPEG_QUALITY = 78
 LOGO_FILE = "logo-avicore.png"
+PWA_BACKGROUND = "#f5f7f4"
+PWA_ICONS = (
+    ("pwa-192.png", 192, False),
+    ("pwa-512.png", 512, False),
+    ("pwa-512-maskable.png", 512, True),
+)
 
 
 def compress_background(stem: str, max_width: int) -> Path:
@@ -58,6 +64,42 @@ def sync_logo() -> None:
     print(f"OK logo: {LOGO_FILE} -> {dest.stat().st_size // 1024} KiB")
 
 
+def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
+    value = hex_color.lstrip("#")
+    return tuple(int(value[i : i + 2], 16) for i in (0, 2, 4))
+
+
+def _resize_logo(logo: Image.Image, size: int, maskable: bool) -> Image.Image:
+    if maskable:
+        canvas = Image.new("RGBA", (size, size), _hex_to_rgb(PWA_BACKGROUND) + (255,))
+        inner = int(size * 0.8)
+        fitted = logo.copy()
+        fitted.thumbnail((inner, inner), Image.Resampling.LANCZOS)
+        offset = ((size - fitted.width) // 2, (size - fitted.height) // 2)
+        canvas.paste(fitted, offset, fitted if fitted.mode == "RGBA" else None)
+        return canvas
+    fitted = logo.copy()
+    fitted.thumbnail((size, size), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    offset = ((size - fitted.width) // 2, (size - fitted.height) // 2)
+    canvas.paste(fitted, offset, fitted if fitted.mode == "RGBA" else None)
+    return canvas
+
+
+def generate_pwa_icons() -> None:
+    source = BRAND_RESOURCES / LOGO_FILE
+    if not source.exists():
+        print(f"Omitido PWA (no existe): {LOGO_FILE}", file=sys.stderr)
+        return
+    logo = Image.open(source).convert("RGBA")
+    BRAND_PUBLIC.mkdir(parents=True, exist_ok=True)
+    for filename, size, maskable in PWA_ICONS:
+        icon = _resize_logo(logo, size, maskable)
+        dest = BRAND_PUBLIC / filename
+        icon.save(dest, format="PNG", optimize=True)
+        print(f"OK PWA: {filename} ({size}x{size}) -> {dest.stat().st_size // 1024} KiB")
+
+
 def main() -> int:
     for stem, max_width in BACKGROUNDS:
         try:
@@ -73,6 +115,7 @@ def main() -> int:
         print(f"OK fondo: {out.name} -> {out.stat().st_size // 1024} KiB")
 
     sync_logo()
+    generate_pwa_icons()
 
     return 0
 

@@ -52,7 +52,7 @@ Interfaz del módulo → backend → validaciones → permisos → auditoría �
 | 18 | Tiempo real |
 | 19 | Reportes |
 | 20 | Datos demo |
-| 21 | PWA |
+| 21 | PWA | **Hecho MVP (2026-08-01)** — instalable, sin offline completo; ver `avicore-pwa/references/pwa.md` |
 
 ---
 
@@ -170,7 +170,7 @@ Dashboard refleja la carga
 - Reportes PDF.
 - Reportes Excel.
 - Datos demo.
-- PWA instalable.
+- ~~PWA instalable.~~ **Hecho MVP (2026-08-01)** — ver `avicore-pwa/references/pwa.md` (offline completo fuera de alcance).
 
 ---
 
@@ -204,3 +204,4 @@ Solo nombres de bloque; el DDL vive en `avicore-modelo-datos/references/esquema-
 | Usuarios admin (fase 5) | `Livewire/Admin/Usuarios/` | **Hecho MVP (2026-07-16)** — listado, alta/edición, reset clave, activar/desactivar; ver `pantallas-flujos.md` §3.2 |
 | CRUD avícola admin | `Livewire/Galpones/`, `Livewire/Lotes/` | Granjas, galpones, lotes |
 | Tiempo real (fase 18) | `Events/`, Reverb | Ver `avicore-tiempo-real/references/eventos.md` |
+| PWA instalable (fase 21) | `vite.config.js`, `pwa.js`, `x-ui.pwa-*` | **Hecho MVP (2026-08-01)** — manifest + SW assets + banner; ver `pwa.md` |

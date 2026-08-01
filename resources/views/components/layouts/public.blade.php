@@ -12,6 +12,7 @@
 
     <title>{{ $title ?? config('app.name') }}</title>
 
+    <x-ui.pwa-meta />
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
@@ -37,6 +38,8 @@
             </div>
         </main>
     </div>
+
+    <x-ui.pwa-install-prompt />
 
     @livewireScripts
 </body>

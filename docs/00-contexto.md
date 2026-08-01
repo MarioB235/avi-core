@@ -16,7 +16,7 @@ Plataforma de **gestión operativa** para avícolas de gallinas ponedoras (MVP).
 Seleccionar galpón → cargar dato operativo → guardar → dashboard/reportes (tiempo real si aplica)
 ```
 
-Stack: **Laravel 13, PostgreSQL, Livewire 4, Tailwind 4, Alpine.js (Livewire), PWA, Reverb, Echo** *(últimos tres en fases posteriores)*.
+Stack: **Laravel 13, PostgreSQL, Livewire 4, Tailwind 4, Alpine.js (Livewire), PWA instalable (MVP, sin offline completo), Reverb, Echo** *(Reverb/Echo en fases posteriores)*.
 
 ---
 
@@ -37,6 +37,7 @@ Stack: **Laravel 13, PostgreSQL, Livewire 4, Tailwind 4, Alpine.js (Livewire), P
 | Módulo completo | `avicore-nuevo-modulo` | `references/checklist.md` |
 | Arranque local | `avicore-contexto` | `references/arranque-local.md` |
 | Despliegue Laravel Cloud | `avicore-contexto` | `references/deploy-laravel-cloud.md` |
+| PWA (manifest, instalación móvil) | `avicore-pwa` | `references/pwa.md` |
 | Árbol Laravel | `avicore-contexto` | `references/arbol-proyecto.md` |
 
 Ruta base: `.cursor/skills/<skill>/references/`
@@ -103,6 +104,7 @@ No implementar sin leer references del skill · lógica crítica en Blade · sal
 | Patrón UI mobile / admin | `avicore-ui/references/patrones-mobile-operario.md` o `patrones-web-admin.md` |
 | Permiso por rol | `avicore-negocio/references/permisos.md` |
 | Token / componente / motion UI | `avicore-design-system/references/` (`tokens-componentes.md`, `refined-agro-principios.md`, …) |
+| PWA / instalación móvil | `avicore-pwa/references/pwa.md` |
 | Carpeta/clase estándar | `avicore-contexto/references/arbol-proyecto.md` |
 | Tooling agente | `.cursor/skills/README.md` + `GOBERNANZA.md` |
 

@@ -7,6 +7,11 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ## 2026-08-01
 
+- **[docs|pwa]** Pasada msg 4: mapa `00-contexto` (skill PWA), árbol (`pwa.js`, componentes, tests), `arranque-local` (`AVICORE_PWA_*`), `estandares-codigo` (`PwaInstallPromptTest`), `plan-desarrollo` (bloque 21 hecho MVP), `pantallas-flujos` (shell operario/admin). — mismos archivos
+- **[fix|pwa]** Post-auditoría msg 3: tests login/operario/admin + split flags; `check-cloud-readiness` valida `AVICORE_PWA_*` e iconos; banner con `pwa-192.png`; `viewport-fit=cover` en `layouts/app`. — `PwaInstallPromptTest.php`, `check-cloud-readiness.cjs`, `pwa-install-prompt.blade.php`, `layouts/app.blade.php`, `tokens-componentes.md`, `pwa.md`
+- **[pwa]** Iconos dedicados (`pwa-192`, `pwa-512`, maskable) generados desde logo; manifest y Apple touch actualizados. — `optimize-brand-assets.py`, `public/images/brand/pwa-*.png`, `vite.config.js`, `pwa-meta.blade.php`, `pwa.md`, `tokens-componentes.md`
+- **[pwa]** MVP instalable: `vite-plugin-pwa`, manifest, SW (solo assets build), banner instalar (`x-ui.pwa-install-prompt`), flags `AVICORE_PWA_*`. — `vite.config.js`, `pwa.js`, `pwa-meta.blade.php`, `pwa-install-prompt.blade.php`, `config/avicore.php`, layouts, `pwa.md`, `pantallas-flujos.md`, tests
+- **[chore|deploy]** Laravel Cloud validado en staging: build con `npm install -g pnpm` (sin corepack), Postgres 17, variables con comillas, seed en Commands; troubleshooting en `deploy-laravel-cloud.md`. — `deploy-laravel-cloud.md`, `check-cloud-readiness.cjs`, `.env.example`
 - **[docs]** Pasada msg 4: árbol auth/tests, rate-limit demo en reglas, estandares-codigo, tooling CI en `00-contexto` y `.cursor/README`. — `arbol-proyecto.md`, `arranque-local.md`, `reglas.md`, `estandares-codigo.md`, `deploy-laravel-cloud.md`, `00-contexto.md`, `.cursor/README.md`
 - **[fix|auth]** Post-auditoría msg 3: `AvicoreAuthSeeder` idempotente (`firstOrCreate`); tests rate-limit demo (`demoRole`) y empresa DEMO ausente; CI `check:cloud-readiness`; docs login alineadas al flag. — `AvicoreAuthSeeder.php`, `DemoLoginTest.php`, `DemoLoginServiceTest.php`, `ci.yml`, `pantallas-flujos.md`, `modo-respuesta-clara.md`, `demo.md`
 - **[docs|cursor]** Plantillas desarrollo: acordeón mensaje 1 colapsado por defecto (sin `open` en `<details>`). — `docs/plantillas/desarrollo.html`
