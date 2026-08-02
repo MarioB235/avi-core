@@ -95,15 +95,19 @@
         </section>
     </div>
 
-    @if ($galpon)
+    @if ($galpon && $dialogHuevosAbierto)
         <x-ui.dialog wire:model="dialogHuevosAbierto" title="Huevos de hoy">
             @include('livewire.operario.partials.carga-huevos-form')
         </x-ui.dialog>
+    @endif
 
+    @if ($galpon && $dialogMuertesAbierto)
         <x-ui.dialog wire:model="dialogMuertesAbierto" title="Muertes de hoy">
             @include('livewire.operario.partials.carga-muertes-form')
         </x-ui.dialog>
+    @endif
 
+    @if ($galpon && $dialogVacunacionAbierto)
         <x-ui.dialog wire:model="dialogVacunacionAbierto" title="Vacunación de hoy">
             @include('livewire.operario.partials.carga-vacunacion-form', [
                 'lotesActivos' => $lotesActivos,
@@ -112,7 +116,7 @@
         </x-ui.dialog>
     @endif
 
-    @if ($puedeRegistrarLote)
+    @if ($puedeRegistrarLote && $dialogLoteAbierto)
         <x-ui.dialog wire:model="dialogLoteAbierto" title="Nuevo lote">
             @include('livewire.operario.partials.carga-lote-form', [
                 'galponesDisponibles' => $galponesDisponibles,

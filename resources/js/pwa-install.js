@@ -6,6 +6,7 @@ let deferredPrompt = null;
 export const PWA_INSTALL_READY = 'avicore:pwa-install-ready';
 export const PWA_INSTALLED = 'avicore:pwa-installed';
 export const PWA_INSTALL_SESSION_DISMISS_KEY = 'avicore-pwa-install-session-dismissed';
+export const PWA_INSTALLED_AT_KEY = 'avicore-pwa-installed-at';
 
 const LEGACY_LOCAL_STORAGE_KEYS = [
     'avicore-pwa-install-dismissed',
@@ -72,9 +73,25 @@ window.addEventListener('beforeinstallprompt', (event) => {
     window.dispatchEvent(new CustomEvent(PWA_INSTALL_READY));
 });
 
+function recordInstallMetric() {
+    const installedAt = new Date().toISOString();
+
+    try {
+        sessionStorage.setItem(PWA_INSTALLED_AT_KEY, installedAt);
+    } catch {
+        // Ignorar.
+    }
+
+    return installedAt;
+}
+
 window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
-    window.dispatchEvent(new CustomEvent(PWA_INSTALLED));
+    const installedAt = recordInstallMetric();
+
+    window.dispatchEvent(new CustomEvent(PWA_INSTALLED, {
+        detail: { installedAt },
+    }));
 });
 
 window.__avicorePwaInstall = {
@@ -100,6 +117,14 @@ window.__avicorePwaInstall = {
 
     shouldShowMenuItem() {
         return isMobileDevice() && ! isPwaInstalled();
+    },
+
+    getInstalledAt() {
+        try {
+            return sessionStorage.getItem(PWA_INSTALLED_AT_KEY);
+        } catch {
+            return null;
+        }
     },
 
     async prompt() {

@@ -88,6 +88,51 @@ class PwaInstallPromptTest extends TestCase
         $this->assertPwaMetaAndInstallPrompt($response);
     }
 
+    public function test_operario_home_shows_meta_without_install_prompt_when_prompt_disabled(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+        ]);
+
+        $response = $this->withPwaEnabled(enabled: true, installPrompt: false)
+            ->actingAs($operario)
+            ->get(route('operario.home'))
+            ->assertOk();
+
+        $this->assertPwaMeta($response);
+        $response
+            ->assertDontSee('avicore-pwa-install', false)
+            ->assertDontSee('Instalá AviCore en tu celular', false);
+    }
+
+    public function test_admin_home_shows_meta_without_install_prompt_when_prompt_disabled(): void
+    {
+        $empresa = Empresa::factory()->create([
+            'estado' => EmpresaEstado::Activa,
+            'nombre' => 'Avícola Demo',
+        ]);
+
+        $dueno = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Dueno,
+            'must_change_password' => false,
+        ]);
+
+        $response = $this->withPwaEnabled(enabled: true, installPrompt: false)
+            ->actingAs($dueno)
+            ->get(route('admin.home'))
+            ->assertOk();
+
+        $this->assertPwaMeta($response);
+        $response
+            ->assertDontSee('avicore-pwa-install', false)
+            ->assertDontSee('Instalá AviCore en tu celular', false);
+    }
+
     private function withPwaEnabled(bool $enabled = true, bool $installPrompt = true): static
     {
         config([
@@ -104,7 +149,7 @@ class PwaInstallPromptTest extends TestCase
             ->assertSee('manifest.webmanifest', false)
             ->assertSee('apple-touch-icon', false)
             ->assertSee('apple-mobile-web-app-status-bar-style', false)
-            ->assertSee('images/brand/pwa-192.png', false);
+            ->assertSee('images/brand/pwa-180.png', false);
     }
 
     private function assertPwaMetaAndInstallPrompt(TestResponse $response): void
@@ -118,6 +163,6 @@ class PwaInstallPromptTest extends TestCase
             ->assertSee('__avicorePwaInstall', false)
             ->assertSee('shouldShowBanner', false)
             ->assertSee('clearLegacyDismissKeys', false)
-            ->assertSee('images/brand/pwa-192.png', false);
+            ->assertSee('images/brand/pwa-180.png', false);
     }
 }

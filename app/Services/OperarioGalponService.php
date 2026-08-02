@@ -10,21 +10,34 @@ use App\Support\OperarioHistorialItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
 class OperarioGalponService
 {
+    /** @var array<string, mixed> */
+    private array $memo = [];
+
     /**
      * @return Collection<int, Galpon>
      */
     public function galponesDisponibles(User $user): Collection
     {
-        if ($user->empresa_id === null) {
-            return new Collection;
+        $memoKey = 'galpones_'.$user->id;
+
+        if (isset($this->memo[$memoKey])) {
+            /** @var Collection<int, Galpon> $cached */
+            $cached = $this->memo[$memoKey];
+
+            return $cached;
         }
 
-        return Galpon::query()
+        if ($user->empresa_id === null) {
+            return $this->memo[$memoKey] = new Collection;
+        }
+
+        return $this->memo[$memoKey] = Galpon::query()
             ->forEmpresa($user->empresa_id)
             ->disponiblesParaCarga()
             ->with('granja')
@@ -34,11 +47,17 @@ class OperarioGalponService
 
     public function galponActual(User $user): ?Galpon
     {
-        if ($user->ultimo_galpon_id === null) {
-            return null;
+        $memoKey = 'galpon_actual_'.$user->id;
+
+        if (array_key_exists($memoKey, $this->memo)) {
+            return $this->memo[$memoKey];
         }
 
-        return $this->galponDisponibleParaUsuario($user, (int) $user->ultimo_galpon_id);
+        if ($user->ultimo_galpon_id === null) {
+            return $this->memo[$memoKey] = null;
+        }
+
+        return $this->memo[$memoKey] = $this->galponDisponibleParaUsuario($user, (int) $user->ultimo_galpon_id);
     }
 
     public function galponDisponibleParaUsuario(User $user, int $galponId): ?Galpon
@@ -73,6 +92,8 @@ class OperarioGalponService
         }
 
         $user->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
+
+        unset($this->memo['galpon_actual_'.$user->id]);
     }
 
     /**
@@ -102,6 +123,8 @@ class OperarioGalponService
     }
 
     /**
+     * avicore-defer: unificar count + página en una sola query SQL si el historial crece y el triple round-trip pesa.
+     *
      * @return LengthAwarePaginator<int, OperarioHistorialItem>
      */
     public function historialPaginado(
@@ -110,37 +133,73 @@ class OperarioGalponService
         int $perPage = 20,
         ?int $page = null,
     ): LengthAwarePaginator {
-        // avicore-defer: paginación en memoria (registros + vacunaciones), revisar si historial > ~500 ítems/usuario o latencia >300ms
+        $currentPage = max(1, $page ?? (int) request()->query('page', 1));
+
         if ($user->empresa_id === null) {
-            return new LengthAwarePaginator([], 0, $perPage);
+            return new LengthAwarePaginator([], 0, $perPage, $currentPage);
         }
 
-        $registros = $this->historialCargasQuery($user, $fecha)
-            ->with('galpon')
-            ->get()
-            ->map(fn (RegistroOperativo $registro): OperarioHistorialItem => OperarioHistorialItem::fromRegistro($registro));
+        $registrosSub = $this->historialCargasQuery($user, $fecha)
+            ->reorder()
+            ->selectRaw("id, 'registro' as source_type, created_at");
 
-        $vacunaciones = Vacunacion::query()
+        $vacunacionesSub = Vacunacion::query()
             ->forEmpresa($user->empresa_id)
             ->where('user_id', $user->id)
             ->activos()
             ->enFecha($fecha)
-            ->with(['lote', 'galpon'])
-            ->orderByDesc('created_at')
-            ->get()
-            ->map(fn (Vacunacion $vacunacion): OperarioHistorialItem => OperarioHistorialItem::fromVacunacion($vacunacion));
+            ->selectRaw("id, 'vacunacion' as source_type, created_at");
 
-        $items = $registros
-            ->concat($vacunaciones)
-            ->sortByDesc(fn (OperarioHistorialItem $item) => $item->createdAt->timestamp)
+        $union = $registrosSub->unionAll($vacunacionesSub);
+
+        $total = (int) DB::query()->fromSub($union, 'historial_union')->count();
+
+        $rows = DB::query()
+            ->fromSub($union, 'historial_union')
+            ->orderByDesc('created_at')
+            ->forPage($currentPage, $perPage)
+            ->get();
+
+        $registroIds = $rows->where('source_type', 'registro')->pluck('id');
+        $vacunacionIds = $rows->where('source_type', 'vacunacion')->pluck('id');
+
+        $registrosById = $registroIds->isEmpty()
+            ? collect()
+            : RegistroOperativo::query()
+                ->whereIn('id', $registroIds)
+                ->with('galpon')
+                ->get()
+                ->keyBy('id');
+
+        $vacunacionesById = $vacunacionIds->isEmpty()
+            ? collect()
+            : Vacunacion::query()
+                ->whereIn('id', $vacunacionIds)
+                ->with(['lote', 'galpon'])
+                ->get()
+                ->keyBy('id');
+
+        $items = $rows
+            ->map(function (object $row) use ($registrosById, $vacunacionesById): ?OperarioHistorialItem {
+                if ($row->source_type === 'registro') {
+                    $registro = $registrosById->get($row->id);
+
+                    return $registro !== null
+                        ? OperarioHistorialItem::fromRegistro($registro)
+                        : null;
+                }
+
+                $vacunacion = $vacunacionesById->get($row->id);
+
+                return $vacunacion !== null
+                    ? OperarioHistorialItem::fromVacunacion($vacunacion)
+                    : null;
+            })
+            ->filter()
             ->values();
 
-        $currentPage = max(1, $page ?? (int) request()->query('page', 1));
-        $total = $items->count();
-        $slice = $items->slice(($currentPage - 1) * $perPage, $perPage)->values();
-
         return new LengthAwarePaginator(
-            $slice,
+            $items,
             $total,
             $perPage,
             $currentPage,

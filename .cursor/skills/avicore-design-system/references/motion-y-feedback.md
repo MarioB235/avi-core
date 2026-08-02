@@ -24,7 +24,7 @@ active:scale-95; /* o scale-[0.98] */
 - **No** usar `hover:` como único feedback.
 - Preferir cambio de fondo en ítem activo de nav (ya en `.avicore-operario-tab-bar__item--active`).
 - `wire:navigate` en links de nav — sin spinner decorativo salvo carga lenta real.
-- Navegación operario: `wire:transition="operario-page"` + `operario-chrome` (View Transitions API, 220–280ms); fallback con clase `avicore-operario-shell--navigating`; respeta `prefers-reduced-motion` (Livewire + CSS).
+- Navegación operario: `wire:transition="operario-page"` (View Transitions API, ~150–160 ms) + morph del ítem activo del dock (~150 ms); fallback con clase `avicore-operario-shell--navigating`; respeta `prefers-reduced-motion` (Livewire + CSS).
 
 ### Desktop (admin)
 
