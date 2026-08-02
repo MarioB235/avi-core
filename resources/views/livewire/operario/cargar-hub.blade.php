@@ -16,7 +16,7 @@
     </x-operario.cargar-hero>
 
     <div class="avicore-operario-home-sheet">
-        <section class="avicore-operario-cargar-types" aria-label="Tipos de carga">
+        <x-ui.reveal as="section" class="avicore-operario-cargar-types" aria-label="Tipos de carga">
             <div class="avicore-operario-home-section__head">
                 <p class="avicore-operario-home-section__eyebrow">Carga del día</p>
                 <h2 class="avicore-operario-home-section__title">¿Qué querés registrar?</h2>
@@ -92,7 +92,7 @@
                     </button>
                 @endif
             </div>
-        </section>
+        </x-ui.reveal>
     </div>
 
     @if ($galpon && $dialogHuevosAbierto)

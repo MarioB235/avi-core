@@ -204,7 +204,7 @@ Multiempresa: actores de empresa solo ven/modifican usuarios de su `empresa_id`.
 | Cargar | `/operario/cargar` | Hero + hoja con tipos; chip galpón interactivo; sin galpón → selector en página; diálogos `x-ui.dialog` solo si están abiertos (perf); deep link `?form=` o `/operario/carga/*` (sin galpón → `?abrir_galpon=1`) |
 | Historial | `/operario/historial` | Hero degradado; listado completo; chip galpón interactivo; filtro `?fecha=` vía `x-ui.date-picker`; meta tipo·galpón desde `md:`; paginación 20 |
 
-En **Inicio**, el header fijo muestra logo + usuario (rol con `label()`); el avatar abre menú cuenta (perfil y logout). El galpón se elige con chip desplegable en el hero («Estado de hoy del galpón.»). La hoja blanca muestra KPIs y lotes activos del galpón seleccionado (`OperarioGalponResumenService`; edad de lote vía `edadSemanas()`), sin repetir el nombre del galpón ni enlace a Historial. Sin galpón: mensaje para elegir uno. Cargar e Historial por pestañas del dock.
+En **Inicio**, el header fijo muestra logo + usuario (rol con `label()`); el avatar abre menú cuenta (perfil y logout). El galpón se elige con chip desplegable en el hero («Estado de hoy del galpón.»). La hoja blanca muestra KPIs y lotes activos del galpón seleccionado (`OperarioGalponResumenService`; edad de lote vía `edadSemanas()`), sin repetir el nombre del galpón ni enlace a Historial. Sin galpón: mensaje para elegir uno. Bloques de sección con `x-ui.reveal` (fade+slide al entrar en viewport; sin cascada en listas). Cargar e Historial por pestañas del dock.
 
 ### Objetivo
 

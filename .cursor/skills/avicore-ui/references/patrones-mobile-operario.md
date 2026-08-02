@@ -23,18 +23,18 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 
 ## Header contextual
 
-- **Inicio / Cargar / Historial:** `avicore-home-nav` — barra **fija** en el layout (`operario-mobile`, fuera del scroll); `z-40` por encima de la hoja de contenido. `__shape` blanco + `__line-main` con gradiente fade en tokens de marca. El saludo y chip galpón scrollean debajo.
+- **Inicio / Cargar / Historial:** `avicore-home-nav` — barra **fija** en el layout (`operario-mobile`, fuera del scroll); `z-40` por encima de la hoja de contenido. `__shape` con tinte `--avicore-operario-hero-chrome` (misma familia que el degradado del body/hero, no blanco puro); `__line-main` con gradiente fade en tokens de marca. Shell y `main--home` **transparentes** para que el degradado del body unifique nav + hero. Chrome al scroll: `--operario-nav-chrome-bottom` + scrim/fade con `--operario-hero-chrome`. Offset del hero: `--operario-nav-offset`.
 - **Cuenta del usuario:** `<x-ui.user-menu>` (alias `<x-operario.user-menu>`) en el avatar del header (home nav `size="nav"` y barra contextual `size="sm"`). Avatar: en chrome verde (home/sidebar) disco blanco + iniciales `avicore-primary`; en header claro disco primario + iniciales blancas — sin `!important` ni borde grueso. **Dropdown** en portal (`x-teleport="body"`, `syncPanelPosition` con clamp vertical/horizontal y `max-height` viewport; `role="menu"`): Perfil + Cerrar sesión. Alpine: `open` + `view` (`menu` \| `profile`); Escape / click fuera. Touch ≥44px (`--nav-account-avatar`: 2.75rem; 2.5rem en ≤380px). En escritorio la cuenta vive en sidebar (`patrones-desktop-operario.md`). El mismo componente se usa en el panel admin (`patrones-web-admin.md`).
 - **Rutas legacy / futuras:** barra contextual con el mismo estilo elevado (`header` sin `isHomePage`).
 - Galpón seleccionado: chip verde sólido (`avicore-primary`); sin galpón: chip ámbar con icono warehouse.
 - Subtítulo hero Inicio: «Resumen de hoy del galpón que elegiste.» en `text-avicore-primary/90`.
 - Datos vía `OperarioLayoutComposer` — no duplicar lógica en cada Livewire.
-- Feedback de confirmación: `<x-ui.snackbar-host context="operario" />` en layout; auto-cierre ~4,5s (pausa al hover; × o Escape); móvil centrado sobre el dock; escritorio (`lg+`) abajo a la derecha. Livewire `dispatch('snackbar-show', message:, variant:)` o `session()->flash('status')` tras redirect.
+- Feedback de confirmación: `<x-ui.snackbar-host context="operario" />` en layout; auto-cierre ~3,5s con barra de progreso superior (vacía hacia la derecha) (pausa al hover/foco; sin barra si hay acción); móvil centrado sobre el dock; escritorio (`lg+`) abajo a la derecha. Livewire `dispatch('snackbar-show', message:, variant:)` o `session()->flash('status')` tras redirect.
 
 ## Inicio operario
 
 - `<x-operario.home-hero>` — bloque único con fondo degradado suave, header, saludo horario compacto («¡Buenos días!» — sin repetir nombre; ya está en nav) + subtítulo «Resumen de hoy del galpón que elegiste.» y chip galpón desplegable (icono `warehouse`; vacío = ámbar + «Sin seleccionar»).
-- Heroes Inicio/Cargar/Historial comparten **misma altura** (sin `min-height` fijo; contenido + chip galpón) y hoja `.avicore-operario-home-sheet` con `margin-top: -2rem` / `padding-top: 1.35rem`.
+- Heroes Inicio/Cargar/Historial comparten **misma altura** (sin `min-height` fijo; contenido + chip galpón) y hoja `.avicore-operario-home-sheet` con `margin-top: -2rem` / `padding-top: 1.35rem`. Viñeta edge fade solo bajo nav superior (`operario.css`, `shell--home` móvil); sin degradados ni pseudo-elementos sobre el dock — la hoja blanca llega hasta el navbar inferior.
 - **Inicio sin CTA a Cargar** — la navegación a `/operario/cargar` es solo por la pestaña inferior del dock (no se usa `x-operario.primary-action` en la hoja).
 - **Resumen galpón** — 2 paneles con banda superior verde (`primary` aves · `secondary` huevos), borde y degradado `avicore-soft`; métrica «En el galpón ahora» con fondo `soft`; «Murieron hoy» con fondo blanco, contador en `avicore-danger` y borde rojo suave (más marcado si `muertes_hoy > 0`); métricas de huevos con fondo blanco (`bg-white`) y borde `secondary/30`; nota en pill `soft`. Iconos KPI: ilustraciones en `avicore-operario-carga-tile__icon` (mismo contenedor que tiles Cargar: `size-11`, `rounded-xl`).
 - **Lotes activos** — una línea por lote; cada ítem es card con borde `primary/25`, franja lateral verde y degradado `soft`.
@@ -43,7 +43,8 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 - KPI Objetivo diario: `avicore-defer` hasta existir meta en `reglas.md`.
 - Dock: barra `primary` edge-to-edge (`__surface` + `safe-area-inset-bottom`); inactivos cápsula `rounded-2xl` `white/12` + label `white/85`; activo círculo blanco elevado con halo suave + icono verde.
 - Estilos del módulo: `resources/css/operario.css` (no mezclar en `app.css`).
-- Tests: `OperarioHomeResumenTest`, `OperarioBottomNavTest`.
+- Secciones Inicio/Cargar: entrada al scroll con `x-ui.reveal` (bloques, no filas); edge fade solo bajo nav superior; hoja hasta el dock.
+- Tests: `OperarioHomeResumenTest`, `OperarioBottomNavTest`, `ScrollRevealTest`, `RevealComponentTest`.
 
 ## Formularios de carga
 
@@ -56,12 +57,12 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 
 - `<x-operario.historial-hero>` — hero con degradado suave; chip galpón **interactivo** (mismo selector que Inicio); copy «Todo lo que cargaste, del más nuevo al más viejo.».
 - `.avicore-operario-home-sheet` — **todos** los registros activos del operario (`registros_operativos` + `vacunaciones`), orden **cronológico descendente**. Paginación SQL (`UNION ALL` + `forPage` en `OperarioGalponService::historialPaginado`); hidrata solo la página actual. Ítems con resumen + (desde `md:`) meta `tipo · galpón`; mortalidad/vacunación con clases de color. Filtro fecha `x-ui.date-picker`; paginación 20.
-- Tests: `OperarioHistorialTest`; `DatePickerComponentTest`; `OperarioCargaVacunacionTest`; `OperarioCargaLoteTest`; `OperarioGalponServiceTest` (`historialPaginado` union SQL); `OperarioBottomNavTest` (shell + sidebar + deep links); `SnackbarHostTest` (auto-cierre 4500 + contrato desktop `right-6`/`bottom-6`); `OperarioUserMenuTest` (portal + clamp); `IllustrationComponentTest`; `OperarioNavTest`; `SelectComponentTest`.
+- Tests: `OperarioHistorialTest`; `DatePickerComponentTest`; `OperarioCargaVacunacionTest`; `OperarioCargaLoteTest`; `OperarioGalponServiceTest` (`historialPaginado` union SQL); `OperarioBottomNavTest` (shell + sidebar + deep links); `SnackbarHostTest` (auto-cierre 3500, `syncProgressDuration`, pause/Escape, contrato desktop `right-6`/`bottom-6`); `OperarioUserMenuTest` (portal + clamp); `IllustrationComponentTest`; `OperarioNavTest`; `SelectComponentTest`; `ScrollRevealTest`; `RevealComponentTest`.
 
 ## Motion (operario)
 
 - `active:scale-95` en ítems del tab bar (con `prefers-reduced-motion`).
-- Sin animaciones de entrada en listas de historial.
+- Scroll reveal opt-in en bloques de sección (`x-ui.reveal` en Inicio/Cargar); historial y filas de lista **sin** reveal.
 
 ## Touch targets
 

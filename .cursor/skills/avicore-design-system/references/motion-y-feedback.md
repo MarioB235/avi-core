@@ -70,9 +70,37 @@ Con `reduce`: solo cambios de color, sin scale.
 - Solo en pantallas públicas (login / cambio de contraseña); no en header operario (`size="sm"` sin `entrance`).
 - Envolver animaciones en `@media (prefers-reduced-motion: no-preference)` — sin órbita si el usuario pide menos movimiento.
 
+## Scroll reveal (secciones)
+
+Reveal suave al entrar en viewport — **solo bloques de sección** (`x-ui.reveal`), no ítems de lista ni filas de tabla.
+
+```html
+<x-ui.reveal as="section" class="…" aria-label="…">
+    …contenido de la sección…
+</x-ui.reveal>
+```
+
+- **Efecto:** `opacity` 0→1 + `translateY(0.75rem→0)`, **400ms** `ease-out`, una sola vez por bloque (`IntersectionObserver`).
+- **Delay opcional:** prop `delay` (ms) → atributo `data-reveal-delay`; regla CSS con `attr()` en `app.css` — sin `style=` en Blade.
+- **JS:** `resources/js/scroll-reveal.js` (import en `app.js`); export `rescanAvicoreReveal`; re-escanea tras `livewire:navigated` y `morph.updated`.
+- **Opt-in:** no global; historial/tablas **sin** reveal en filas.
+- **Above the fold:** si el bloque ya es visible al cargar, se revela de inmediato (sin esperar scroll).
+- Con `prefers-reduced-motion: reduce`: contenido visible sin animación.
+
+## Edge fade (chrome operario)
+
+Viñeta **fija** arriba (bajo home-nav) en pantallas hero (`shell--home`, `< lg`). Sin viñeta ni degradado sobre el dock.
+
+- **Efecto:** el contenido parece desvanecerse al acercarse al nav superior al scrollear; **no** se anima la opacidad de cada fila o KPI.
+- **Dock:** la hoja blanca (`home-sheet`) se extiende con su fondo hasta el navbar inferior (solo `padding-bottom` de respiro, sin capas extra).
+- **CSS:** pseudo `::before` / `::after` en `.avicore-operario-shell__workspace` (`operario.css`); `pointer-events: none`; `z-index` por debajo del chrome (`z-40`).
+- **Combinar con:** scroll reveal de sección (`x-ui.reveal`) para el «aparecer» al entrar en zona visible.
+- **Evitar:** `opacity` por elemento ligada al offset de scroll (historial, tablas, lectura en campo).
+- **Chrome home-nav:** tinte `--avicore-operario-hero-chrome` en `__shape`, scrim y fade (alineado al degradado del body); borde `--operario-nav-chrome-bottom`; scroll vía `avicore-home-nav--content-under`.
+
 ## Prohibido
 
 - `animate-bounce`, `animate-pulse` decorativo en contenido
 - Staggered fade-in en listas de datos
-- Parallax, scroll-driven animation
+- Parallax; scroll-driven animation decorativa (parallax, efectos ligados al offset de scroll)
 - Loading skeletons sin datos async reales

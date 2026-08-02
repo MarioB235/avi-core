@@ -2,10 +2,10 @@
     /* ── Tokens locales operario ───────────────────────────────────── */
     .avicore-operario-body {
         @apply min-h-screen text-avicore-text;
-        background-color: var(--color-avicore-card);
+        background-color: var(--color-avicore-surface);
         background-image: var(--avicore-operario-brand-surface);
         background-repeat: no-repeat;
-        background-size: 100% min(52vh, 24rem);
+        background-size: 100% min(58vh, 28rem);
         background-position: top center;
     }
 
@@ -46,18 +46,50 @@
     }
 
     .avicore-operario-shell--home {
-        @apply bg-avicore-card;
+        background: transparent;
         padding-bottom: 0;
         --operario-dock-clearance: calc(6rem + env(safe-area-inset-bottom, 0px));
         --operario-nav-x: clamp(0.9rem, 4vw, 1.35rem);
         --operario-nav-safe-top: max(0.35rem, calc(env(safe-area-inset-top, 0px) + 0.2rem));
         --operario-nav-height: 5.1rem;
+        --operario-hero-chrome: var(--avicore-operario-hero-chrome);
+        /* Borde inferior del chrome = línea ogee del SVG (no el alto total del contenedor). */
+        --operario-nav-chrome-bottom: calc(
+            (66 / 92) * (var(--operario-nav-height) + var(--operario-nav-safe-top))
+        );
+        --operario-nav-offset: calc(var(--operario-nav-height) + var(--operario-nav-safe-top));
     }
 
     @media (max-width: 380px) {
         .avicore-operario-shell--home {
             --operario-nav-x: 0.75rem;
             --operario-nav-height: 4.85rem;
+        }
+    }
+
+    /*
+     * Edge fade — viñeta fija bajo nav superior (solo lectura al scroll).
+     * Sin máscaras ni degradados sobre el dock: la hoja llega hasta el navbar.
+     */
+    @media (max-width: 1023.98px) {
+        .avicore-operario-shell--home .avicore-operario-shell__workspace {
+            @apply relative flex min-h-0 flex-1 flex-col;
+        }
+
+        .avicore-operario-shell--home .avicore-operario-shell__workspace::before {
+            content: '';
+            position: fixed;
+            left: 0;
+            right: 0;
+            pointer-events: none;
+            z-index: 30;
+            top: var(--operario-nav-chrome-bottom);
+            height: 0.85rem;
+            background: linear-gradient(
+                180deg,
+                var(--operario-hero-chrome, var(--avicore-operario-hero-chrome)) 0%,
+                transparent 100%
+            );
         }
     }
 
@@ -147,7 +179,7 @@
     }
 
     .avicore-operario-main--home {
-        @apply flex min-h-0 flex-1 flex-col bg-avicore-card p-0;
+        @apply flex min-h-0 flex-1 flex-col bg-transparent p-0;
     }
 
     .avicore-operario-main--home .avicore-operario-page {
@@ -182,7 +214,7 @@
 
     .avicore-operario-home-hero__content {
         @apply relative z-10 flex flex-col bg-transparent;
-        padding-top: calc(var(--operario-nav-height) + var(--operario-nav-safe-top));
+        padding-top: var(--operario-nav-offset, calc(var(--operario-nav-height) + var(--operario-nav-safe-top)));
     }
 
     .avicore-operario-home-hero__greeting {
@@ -887,7 +919,7 @@
 
     /* ── Cargar: hub de tipos ──────────────────────────────────────── */
     .avicore-operario-cargar-types {
-        @apply shrink-0 space-y-3;
+        @apply flex min-h-0 flex-1 flex-col gap-3;
     }
 
     .avicore-operario-cargar-alert {
@@ -1072,12 +1104,39 @@
         padding-top: var(--nav-safe-top);
         overflow: visible;
         background: transparent;
+        isolation: isolate;
+    }
+
+    /*
+     * Chrome del nav (contenedor): scrim solo hasta la línea ogee, no todo el alto del SVG.
+     */
+    .avicore-home-nav::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: var(--operario-nav-chrome-bottom, var(--nav-curve-bottom));
+        z-index: 0;
+        background: var(--operario-hero-chrome, var(--avicore-operario-hero-chrome));
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-home-nav::before {
+            transition: opacity 180ms ease-out;
+        }
+    }
+
+    .avicore-home-nav--content-under::before {
+        opacity: 0.96;
     }
 
     .avicore-home-nav__curve {
         position: absolute;
         inset: 0;
-        z-index: 0;
+        z-index: 1;
         display: block;
         width: 100%;
         height: 100%;
@@ -1085,7 +1144,7 @@
     }
 
     .avicore-home-nav__shape {
-        fill: #fff;
+        fill: var(--operario-hero-chrome, var(--avicore-operario-hero-chrome));
     }
 
     .avicore-home-nav__line-main {
