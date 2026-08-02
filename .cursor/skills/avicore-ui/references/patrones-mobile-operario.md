@@ -15,9 +15,9 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 
 - **Fuente única de rutas y títulos:** `App\Support\OperarioNav` — pestañas (`tabs()`), título de header (`headerTitle()`), activo (`tabIsActive()`). Consumido por `<x-operario.bottom-nav>` y `OperarioLayoutComposer`; no duplicar arrays de rutas en Blade.
 - 3 pestañas en fila: Inicio (`home`) · Cargar (`plus`) · Historial (`calendar`) — **mismo diseño** en todos los ítems.
-- Ítem **activo**: círculo verde sólido (`avicore-primary`), icono blanco, borde blanco fino; sobresale por encima del borde superior de la barra (efecto «notch» visual).
-- Barra inferior **integrada**: esquinas superiores redondeadas, sombra suave hacia arriba, `safe-area-inset-bottom`.
-- Ítems inactivos: círculo soft verde (`size-9`), label semibold en `avicore-primary` (clase `--active` en Blade; sin atributo `data-current`).
+- Ítem **activo**: círculo **blanco** elevado, icono `avicore-primary`, borde verde fino; sobresale por encima del borde superior de la barra (efecto «notch» visual).
+- Barra inferior **verde marca** (`avicore-primary`): esquinas superiores redondeadas, sombra suave verde hacia arriba, línea superior clara (gradiente blanco/`secondary`), `safe-area-inset-bottom`.
+- Ítems inactivos: círculo `white/15`, icono blanco, label `white/80` semibold.
 - `wire:navigate.hover` en links del dock; transición de página con `wire:transition="operario-page"` (View Transitions API) + morph suave del ítem activo (300ms).
 - Cambio de galpón en **Inicio, Cargar e Historial** (chip desplegable; trait `ManagesGalponSelector`). Sin galpón al intentar cargar: se abre el selector en la misma pantalla (`selectorGalponAbierto`); deep links `/operario/carga/*` sin galpón redirigen a `/operario/cargar?abrir_galpon=1`. Flash `abrirSelectorGalpon` sigue soportado en `bootGalponSelector`.
 
@@ -41,7 +41,7 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 - Sin galpón: empty «Seleccioná un galpón…» + botón elegir; KPIs y lotes ocultos.
 - Historial solo por pestaña inferior del dock (sin enlace en hoja).
 - KPI Objetivo diario: `avicore-defer` hasta existir meta en `reglas.md`.
-- Dock: ítems inactivos con círculo soft verde (`size-9`) y label semibold primario; activo con círculo elevado.
+- Dock: barra `primary` edge-to-edge (`__surface` + `safe-area-inset-bottom`); inactivos cápsula `rounded-2xl` `white/12` + label `white/85`; activo círculo blanco elevado con halo suave + icono verde.
 - Estilos del módulo: `resources/css/operario.css` (no mezclar en `app.css`).
 - Tests: `OperarioHomeResumenTest`, `OperarioBottomNavTest`.
 

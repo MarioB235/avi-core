@@ -7,11 +7,30 @@ use App\Enums\UserRole;
 use App\Models\Empresa;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 class AdminUserMenuTest extends TestCase
 {
     use RefreshDatabase;
+
+    private string $buildMetaPath;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->buildMetaPath = public_path('build/avicore-build.json');
+    }
+
+    protected function tearDown(): void
+    {
+        if (File::exists($this->buildMetaPath)) {
+            File::delete($this->buildMetaPath);
+        }
+
+        parent::tearDown();
+    }
 
     public function test_admin_home_renders_shared_user_menu_in_sidebar_and_home_nav(): void
     {
@@ -28,6 +47,12 @@ class AdminUserMenuTest extends TestCase
             'documento' => '20111222',
         ]);
 
+        File::ensureDirectoryExists(public_path('build'));
+        File::put($this->buildMetaPath, json_encode([
+            'built_at' => '2026-08-01T14:30:00+00:00',
+            'commit' => 'abc1234',
+        ], JSON_THROW_ON_ERROR));
+
         $this->actingAs($dueno)
             ->get(route('admin.home'))
             ->assertOk()
@@ -42,6 +67,8 @@ class AdminUserMenuTest extends TestCase
             ->assertSee('Cerrar sesión', false)
             ->assertSee('Documento', false)
             ->assertSee('20111222', false)
+            ->assertSee('Versión', false)
+            ->assertSee('abc1234', false)
             ->assertDontSee('avicore-admin-header__user-avatar', false)
             ->assertSee(route('admin.usuarios.index'), false)
             ->assertSee('Disponible', false)

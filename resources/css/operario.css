@@ -968,58 +968,61 @@
         @apply mt-1.5 rounded-full bg-avicore-soft px-2 py-0.5 text-[0.625rem] font-semibold text-avicore-muted ring-1 ring-avicore-border;
     }
 
-    /* ── Barra inferior (integrada, ícono activo sobresale) ────────── */
+    /* ── Barra inferior (dock edge-to-edge + tab activo elevado) ─── */
     .avicore-operario-tab-bar {
-        @apply fixed inset-x-0 bottom-0 z-40 overflow-visible rounded-t-[1.75rem] bg-white shadow-[0_-10px_28px_rgba(15,23,42,0.1)];
+        @apply fixed inset-x-0 bottom-0 z-40 pointer-events-none;
         padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    .avicore-operario-tab-bar__edge {
-        @apply pointer-events-none absolute inset-x-0 top-0 z-[1] block w-full;
-        height: 0.28rem;
-    }
-
-    .avicore-operario-tab-bar__edge-line {
-        fill: none;
-        stroke: url(#avicoreTabBarLine);
-        stroke-width: 1.6;
-        stroke-linecap: round;
-        vector-effect: non-scaling-stroke;
+    .avicore-operario-tab-bar__surface {
+        @apply pointer-events-auto overflow-visible rounded-t-[1.25rem] border-t border-white/15 bg-avicore-primary;
+        background-image: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--color-avicore-primary) 88%, white) 0%,
+            var(--color-avicore-primary) 38%,
+            color-mix(in srgb, var(--color-avicore-primary) 85%, #0f172a) 100%
+        );
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.14),
+            0 -10px 28px rgba(31, 94, 59, 0.2);
     }
 
     .avicore-operario-tab-bar__inner {
-        @apply mx-auto grid max-w-lg grid-cols-3 items-end px-4 pt-3;
-        min-height: 4.5rem;
-        padding-bottom: 0.5rem;
+        @apply mx-auto grid max-w-lg grid-cols-3 items-end px-3 pt-2;
+        min-height: 4.75rem;
+        padding-bottom: 0.625rem;
     }
 
     .avicore-operario-tab-bar__item {
-        @apply relative flex min-h-11 flex-col items-center justify-end gap-1.5 px-1 pb-0.5 text-[0.6875rem] font-medium text-avicore-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+        @apply relative flex min-h-11 flex-col items-center justify-end gap-1 px-1 pb-0.5 text-[0.6875rem] font-medium text-white/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
     }
 
     .avicore-operario-tab-bar__icon-wrap {
-        @apply relative z-10 flex size-6 items-center justify-center;
+        @apply relative z-10 flex items-center justify-center;
     }
 
     .avicore-operario-tab-bar__item--active {
-        @apply text-avicore-primary;
+        @apply text-white;
     }
 
     .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__icon-wrap {
-        @apply -mt-5 size-12 rounded-full border-[3px] border-white bg-avicore-primary text-white shadow-[0_8px_22px_rgba(31,94,59,0.35)];
-        transform: translateY(-0.35rem);
+        @apply -mt-6 size-[3.25rem] rounded-full border-2 border-white bg-white text-avicore-primary;
+        box-shadow:
+            0 12px 28px rgba(15, 23, 42, 0.22),
+            0 0 0 4px rgba(255, 255, 255, 0.12);
+        transform: translateY(-0.2rem);
     }
 
     .avicore-operario-tab-bar__item--active .avicore-operario-tab-bar__label {
-        @apply font-bold text-avicore-primary;
+        @apply font-bold text-white;
     }
 
     .avicore-operario-tab-bar__item:not(.avicore-operario-tab-bar__item--active) .avicore-operario-tab-bar__icon-wrap {
-        @apply size-9 rounded-full bg-avicore-soft text-avicore-primary ring-1 ring-avicore-primary/20;
+        @apply size-10 rounded-2xl bg-white/12 text-white ring-1 ring-inset ring-white/22;
     }
 
     .avicore-operario-tab-bar__item:not(.avicore-operario-tab-bar__item--active) .avicore-operario-tab-bar__label {
-        @apply font-semibold text-avicore-primary;
+        @apply font-semibold text-white/85;
     }
 
     .avicore-operario-tab-bar__label {
@@ -1040,7 +1043,7 @@
         }
 
         .avicore-operario-tab-bar__item:not(.avicore-operario-tab-bar__item--active) .avicore-operario-tab-bar__label {
-            @apply opacity-80;
+            @apply opacity-90;
         }
     }
 
