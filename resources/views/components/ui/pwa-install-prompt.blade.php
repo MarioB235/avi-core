@@ -1,61 +1,72 @@
-@if (config('avicore.pwa.install_prompt'))
+@if (config('avicore.pwa.install_prompt') && auth()->check())
     <div
         class="avicore-pwa-install"
         x-data="{
             visible: false,
             isIos: false,
-            deferredPrompt: null,
-            storageKey: 'avicore-pwa-install-dismissed',
+            canInstall: false,
+            showTimer: null,
+            delayMs: 3000,
+            pwa() {
+                return window.__avicorePwaInstall;
+            },
             init() {
-                if (this.isInstalled() || this.wasDismissed()) {
+                const install = this.pwa();
+
+                if (! install) {
                     return;
                 }
 
-                this.isIos = this.detectIos();
+                install.clearLegacyDismissKeys();
 
-                window.addEventListener('beforeinstallprompt', (event) => {
-                    event.preventDefault();
-                    this.deferredPrompt = event;
-                    this.visible = true;
-                });
+                if (! install.shouldShowBanner()) {
+                    return;
+                }
 
-                if (this.isIos) {
-                    this.visible = true;
+                this.isIos = install.detectIos();
+
+                window.addEventListener('avicore:pwa-install-ready', () => this.onInstallReady());
+                window.addEventListener('avicore:pwa-installed', () => this.onInstalled());
+
+                if (install.hasPrompt()) {
+                    this.onInstallReady();
+                } else if (this.isIos) {
+                    this.scheduleShow();
                 }
             },
-            isInstalled() {
-                return window.matchMedia('(display-mode: standalone)').matches
-                    || window.navigator.standalone === true;
+            onInstallReady() {
+                this.canInstall = true;
+                this.scheduleShow();
             },
-            wasDismissed() {
-                try {
-                    return localStorage.getItem(this.storageKey) === '1';
-                } catch {
-                    return false;
-                }
+            onInstalled() {
+                this.pwa()?.clearSessionDismiss();
+                this.visible = false;
+                this.canInstall = false;
+            },
+            scheduleShow() {
+                clearTimeout(this.showTimer);
+                this.showTimer = setTimeout(() => {
+                    if (this.pwa()?.shouldShowBanner()) {
+                        this.visible = true;
+                    }
+                }, this.delayMs);
             },
             dismiss() {
-                try {
-                    localStorage.setItem(this.storageKey, '1');
-                } catch {
-                    // Sin localStorage (modo privado): solo ocultar en esta visita.
-                }
-
+                this.pwa()?.dismissThisSession();
                 this.visible = false;
             },
             async install() {
-                if (! this.deferredPrompt) {
+                const choice = await this.pwa()?.prompt();
+
+                if (! choice) {
                     return;
                 }
 
-                this.deferredPrompt.prompt();
-                await this.deferredPrompt.userChoice;
-                this.deferredPrompt = null;
                 this.visible = false;
-            },
-            detectIos() {
-                return /iphone|ipad|ipod/i.test(window.navigator.userAgent)
-                    || (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+
+                if (choice.outcome === 'dismissed') {
+                    this.pwa()?.dismissThisSession();
+                }
             },
         }"
         x-show="visible"
@@ -78,11 +89,11 @@
                 height="40"
             >
             <div class="avicore-pwa-install__body">
-                <p class="avicore-pwa-install__title">Instalá AviCore</p>
-                <p class="avicore-pwa-install__text" x-show="! isIos">
-                    Accedé más rápido desde tu celular, como una app.
+                <p class="avicore-pwa-install__title">Instalá AviCore en tu celular</p>
+                <p class="avicore-pwa-install__text" x-show="canInstall" x-cloak>
+                    Accedé más rápido al galpón, como una app — sin pasar por la tienda.
                 </p>
-                <p class="avicore-pwa-install__text" x-show="isIos" x-cloak>
+                <p class="avicore-pwa-install__text" x-show="isIos && ! canInstall" x-cloak>
                     En Safari: Compartir → Añadir a pantalla de inicio.
                 </p>
             </div>
@@ -90,10 +101,11 @@
                 <button
                     type="button"
                     class="avicore-pwa-install__btn avicore-pwa-install__btn--primary"
-                    x-show="! isIos && deferredPrompt"
+                    x-show="canInstall"
+                    x-cloak
                     x-on:click="install()"
                 >
-                    Instalar
+                    Instalar app
                 </button>
                 <button
                     type="button"

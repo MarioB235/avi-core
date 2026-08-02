@@ -93,7 +93,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.date-picker` | Calendario custom (Alpine): trigger `.avicore-date-picker-trigger`, panel teletransportado `.avicore-date-picker-panel` — **móvil** bottom sheet (slide-up + handle); **escritorio ≥1024px** diálogo centrado (`rounded-2xl`, sin handle, fade); grilla mes Lu–Do; props `min` / `max` / `today` / `error`; CTA «Hoy»; `dayAriaLabel`; error unificado (prop o bag `$errors`); `wire:model` vía `@entangle`; sin `input type="date"` nativo — Historial operario (`fechaError` → `:error`) |
 | `x-ui.card` | Borde simple, sin sombra; `padding`: `default`, `compact`, `none` |
 | `x-ui.alert` | `info`, `success`, `warning`, `danger` |
-| `x-ui.snackbar-host` | Toast fijo — tarjeta `avicore-card` con franja lateral por variante, icono en chip soft; auto-cierre ~4,5s (pausa al hover/foco; cierre manual × o Escape); `context` (`operario` \| `default`); móvil centrado sobre dock / `bottom-6`; escritorio (`lg+`) anclado **abajo a la derecha**; evento `snackbar-show`; flash `status` + `status_variant` |
+| `x-ui.snackbar-host` | Toast fijo — tarjeta `avicore-card` con franja lateral por variante, icono en chip soft; auto-cierre ~4,5s (pausa al hover/foco; sin auto-cierre si lleva acción); botón opcional (`actionLabel` + `actionKey`, p. ej. `pwa-update`); cierre manual × o Escape; `context` (`operario` \| `default`); móvil centrado sobre dock / `bottom-6`; escritorio (`lg+`) abajo-derecha; evento `snackbar-show`; flash `status` + `status_variant` |
 | `x-ui.badge` | Estados semánticos; variante `sidebar` para badges sobre fondo verde |
 | `x-ui.logo` | Marca — `public/images/brand/logo-avicore.png` + subtítulo opcional; `entrance` (órbita isotipo en `hero` / `auth-mobile` con `showName`) en auth; `theme="on-primary"` en sidebar admin (texto blanco, icono sobre fondo blanco); `stacked` + `size="auth-mobile"` en login móvil |
 | `x-ui.icon` | SVG inline por nombre (`menu`, `document`, `lock`, `eye`, `circle-x`, `mail`, `message-circle-check`, …) — nav, inputs, acciones; fuente Lucide en `resources/images/icons/` |
@@ -104,8 +104,8 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.setup-checklist` | Lista de pasos de configuración inicial con badge de estado |
 | `x-ui.user-avatar` | Iniciales circulares; sizes `sm` (2.25rem), `nav` (2.75rem, home-nav operario), `md` (2.5rem); prop `decorative` cuando el nombre visible está al lado (header/sidebar) — si no, `role="img"` + `aria-label` |
 | `x-ui.user-menu` | Menú cuenta compartido (admin + operario) — panel teleport + clamp viewport; variante `sidebar`; Perfil + Cerrar sesión; props `size`, `avatarClass`, `variant` |
-| `x-ui.pwa-meta` | Meta PWA — manifest (`build/manifest.webmanifest`), `apple-touch-icon` (`pwa-192.png`), flags iOS; solo si `config('avicore.pwa.enabled')` |
-| `x-ui.pwa-install-prompt` | Banner inferior «Instalá AviCore» — Alpine (`beforeinstallprompt` / guía iOS), icono `pwa-192.png`, dismiss en `localStorage`; solo si `config('avicore.pwa.install_prompt')`; estilos `.avicore-pwa-install*` en `app.css` |
+| `x-ui.pwa-meta` | Meta PWA — manifest (`build/manifest.webmanifest`), `apple-touch-icon` (`pwa-192.png`), `apple-mobile-web-app-status-bar-style`, flags iOS; solo si `config('avicore.pwa.enabled')` |
+| `x-ui.pwa-install-prompt` | Banner inferior «Instalá AviCore» — orquestación Alpine; lógica en `window.__avicorePwaInstall` (`shouldShowBanner`, dismiss sesión, delay 3 s, solo móvil, solo autenticado); solo si `config('avicore.pwa.install_prompt')`; estilos `.avicore-pwa-install*` en `app.css` |
 | `x-ui.dialog` | Diálogo modal Alpine — `title`, slot `trigger` **o** `wire:model` (Livewire); panel centrado; focus trap; `applyOpenSideEffects` sincroniza scroll/foco al cerrar vía entangle |
 | `x-ui.sheet` | Overlay Alpine — slot `trigger` **o** `wire:model`; **móvil** bottom sheet (slide-up, handle, safe-area); **escritorio ≥1024px** panel centrado tipo diálogo (`max-w-md`, sin handle); auth recuperación contraseña |
 | `x-auth.support-contact-dialog` | Recuperación MVP — trigger «¿Olvidaste tu contraseña?», overlay (`x-ui.sheet` responsive); enlaces WhatsApp/correo vía `SupportContactService`; props `trigger`, `dialogTitle`, `intro`, `footer` |
@@ -116,7 +116,7 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-operario.header` | Barra operario — variante hero o contextual; integra `<x-operario.user-menu>` (alias de `x-ui.user-menu`); en `lg+` el home-nav se oculta |
 | `x-operario.user-menu` | Alias de `x-ui.user-menu` para vistas operario |
 | `x-operario.sidebar-nav` | Nav escritorio (`lg+`) — logo «Carga en campo», `OperarioNav` + `x-ui.nav-link`, cuenta con `user-menu variant="sidebar"`; oculta en `< lg` |
-| `x-operario.bottom-nav` | Barra inferior integrada — 3 pestañas (Inicio `home`, Cargar `plus`, Historial `calendar`); `lg:hidden`; ítem activo con círculo verde sobresaliente; datos desde `OperarioNav` |
+| `x-operario.bottom-nav` | Barra inferior integrada — 3 pestañas (Inicio `home`, Cargar `plus`, Historial `calendar`); `lg:hidden`; ítem activo con círculo blanco elevado sobre barra verde; datos desde `OperarioNav` |
 | `x-admin.sidebar-nav` | Nav escritorio panel — mismas clases que operario; tabs `AdminNav`; subtítulo empresa |
 | `x-admin.bottom-nav` | Bottom nav panel (`lg:hidden`) — Inicio · Usuarios (solo gestión) |
 | `x-admin.header` | Home-nav en heroes o título+badge; menú `x-ui.user-menu` |

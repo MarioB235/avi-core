@@ -5,8 +5,18 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-08-02
+
+- **[fix|pwa]** Post-auditoría msg 3: API instalación centralizada en `pwa-install.js` (`shouldShowBanner`, dismiss sesión); banner Alpine solo orquesta visibilidad; tests `AppBuildServiceTest` (metadata inválida), `AdminUserMenuTest` (Versión), `SnackbarHostTest` (contrato `pwa-update`); doc dock activo círculo blanco en `tokens-componentes.md`. — `pwa-install.js`, `pwa-install-prompt.blade.php`, `AppBuildServiceTest.php`, `AdminUserMenuTest.php`, `SnackbarHostTest.php`, `PwaInstallPromptTest.php`, `tokens-componentes.md`, `pwa.md`, `arbol-proyecto.md`, `estandares-codigo.md`
+- **[ui|operario]** Dock inferior integrado: `__surface` edge-to-edge, gradiente verde, inactivos en cápsula `rounded-2xl`, activo elevado con halo; mismo patrón en admin bottom nav. — `operario.css`, `bottom-nav.blade.php`, `admin/bottom-nav.blade.php`, `patrones-mobile-operario.md`, `elevacion-y-superficies.md`, `OperarioBottomNavTest.php`
+
 ## 2026-08-01
 
+- **[ui|operario]** Dock inferior verde: barra `primary`, ítems claros, activo con círculo blanco elevado. — `operario.css`, `bottom-nav.blade.php`, `patrones-mobile-operario.md`
+- **[pwa]** Versión en Perfil: `avicore-build.json` en cada build (fecha + commit), `AppBuildService`, campo Versión en menú cuenta. — `write-build-meta.cjs`, `AppBuildService.php`, `user-menu.blade.php`, `package.json`, `pwa.md`, tests
+- **[pwa]** Optimizaciones instalación: snackbar «Actualizar» tras deploy, menú «Instalar app», manifest `id`/`start_url` `/`, shortcuts, screenshots, meta iOS status bar. — `pwa.js`, `pwa-install.js`, `vite.config.js`, `user-menu.blade.php`, `snackbar-host.blade.php`, `pwa-meta.blade.php`, `pwa.md`, `app.css`, tests
+- **[fix|pwa]** Banner por sesión de login: dismiss en `sessionStorage`, solo autenticado, `/login` limpia dismiss para el próximo ingreso. — `pwa-install.js`, `pwa-install-prompt.blade.php`, `public.blade.php`, `pwa.md`, `PwaInstallPromptTest.php`
+- **[fix|pwa]** Banner instalación fiable: captura temprana `beforeinstallprompt` en `pwa-install.js`, solo móvil, delay 3 s, sin banner vacío en Android. — `pwa-install.js`, `pwa-install-prompt.blade.php`, `config/avicore.php`, `pwa.md`, `PwaInstallPromptTest.php`, `check-cloud-readiness.cjs`
 - **[docs|pwa]** Pasada msg 4: mapa `00-contexto` (skill PWA), árbol (`pwa.js`, componentes, tests), `arranque-local` (`AVICORE_PWA_*`), `estandares-codigo` (`PwaInstallPromptTest`), `plan-desarrollo` (bloque 21 hecho MVP), `pantallas-flujos` (shell operario/admin). — mismos archivos
 - **[fix|pwa]** Post-auditoría msg 3: tests login/operario/admin + split flags; `check-cloud-readiness` valida `AVICORE_PWA_*` e iconos; banner con `pwa-192.png`; `viewport-fit=cover` en `layouts/app`. — `PwaInstallPromptTest.php`, `check-cloud-readiness.cjs`, `pwa-install-prompt.blade.php`, `layouts/app.blade.php`, `tokens-componentes.md`, `pwa.md`
 - **[pwa]** Iconos dedicados (`pwa-192`, `pwa-512`, maskable) generados desde logo; manifest y Apple touch actualizados. — `optimize-brand-assets.py`, `public/images/brand/pwa-*.png`, `vite.config.js`, `pwa-meta.blade.php`, `pwa.md`, `tokens-componentes.md`

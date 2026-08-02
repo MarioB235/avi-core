@@ -14,13 +14,17 @@ class PwaInstallPromptTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_login_includes_pwa_meta_and_install_prompt_when_enabled(): void
+    public function test_login_includes_pwa_meta_without_install_prompt_when_guest(): void
     {
         $response = $this->withPwaEnabled(installPrompt: true)
             ->get(route('login'))
             ->assertOk();
 
-        $this->assertPwaMetaAndInstallPrompt($response);
+        $this->assertPwaMeta($response);
+        $response
+            ->assertSee('avicore-pwa-clear-session-dismiss', false)
+            ->assertDontSee('avicore-pwa-install', false)
+            ->assertDontSee('Instalá AviCore en tu celular', false);
     }
 
     public function test_login_hides_pwa_ui_when_disabled(): void
@@ -42,7 +46,7 @@ class PwaInstallPromptTest extends TestCase
         $this->assertPwaMeta($response);
         $response
             ->assertDontSee('avicore-pwa-install', false)
-            ->assertDontSee('Instalá AviCore', false);
+            ->assertDontSee('Instalá AviCore en tu celular', false);
     }
 
     public function test_operario_home_includes_pwa_meta_and_install_prompt_when_enabled(): void
@@ -99,6 +103,7 @@ class PwaInstallPromptTest extends TestCase
         $response
             ->assertSee('manifest.webmanifest', false)
             ->assertSee('apple-touch-icon', false)
+            ->assertSee('apple-mobile-web-app-status-bar-style', false)
             ->assertSee('images/brand/pwa-192.png', false);
     }
 
@@ -108,8 +113,11 @@ class PwaInstallPromptTest extends TestCase
 
         $response
             ->assertSee('avicore-pwa-install', false)
-            ->assertSee('Instalá AviCore', false)
-            ->assertSee('beforeinstallprompt', false)
+            ->assertSee('Instalá AviCore en tu celular', false)
+            ->assertSee('avicore:pwa-install-ready', false)
+            ->assertSee('__avicorePwaInstall', false)
+            ->assertSee('shouldShowBanner', false)
+            ->assertSee('clearLegacyDismissKeys', false)
             ->assertSee('images/brand/pwa-192.png', false);
     }
 }
