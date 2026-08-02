@@ -11,7 +11,7 @@
 
     <div class="avicore-operario-home-sheet">
         @if ($galpon === null)
-            <section class="avicore-operario-home-summary avicore-operario-home-summary--empty" aria-label="Estado del galpón">
+            <x-ui.reveal as="section" class="avicore-operario-home-summary avicore-operario-home-summary--empty" aria-label="Estado del galpón">
                 <div class="avicore-operario-home-summary__empty">
                     <p class="avicore-operario-home-summary__empty-text">
                         Seleccioná un galpón para ver el estado.
@@ -24,9 +24,9 @@
                         Elegir galpón
                     </button>
                 </div>
-            </section>
+            </x-ui.reveal>
         @else
-            <section class="avicore-operario-home-summary" aria-label="Estado del galpón">
+            <x-ui.reveal as="section" class="avicore-operario-home-summary" aria-label="Estado del galpón">
                 <div class="avicore-operario-kpi-grid avicore-operario-kpi-grid--duo">
                     <article class="avicore-operario-kpi-panel avicore-operario-kpi-panel--aves">
                         <header class="avicore-operario-kpi-panel__head">
@@ -99,9 +99,9 @@
                         </div>
                     </article>
                 </div>
-            </section>
+            </x-ui.reveal>
 
-            <section class="avicore-operario-home-lotes" aria-label="Lotes en galpón">
+            <x-ui.reveal as="section" class="avicore-operario-home-lotes" aria-label="Lotes en galpón">
                 <div class="avicore-operario-home-section__head">
                     <p class="avicore-operario-home-section__eyebrow">Lotes</p>
                     <h2 class="avicore-operario-home-section__title">Activos en este galpón</h2>
@@ -136,7 +136,7 @@
                         @endforeach
                     </ul>
                 @endif
-            </section>
+            </x-ui.reveal>
         @endif
     </div>
 </div>
