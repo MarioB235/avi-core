@@ -201,6 +201,26 @@ class OperarioGalponServiceTest extends TestCase
         $this->assertStringContainsString('Bronquitis', $items[0]->label);
     }
 
+    public function test_historial_paginado_limits_rows_per_page(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+
+        for ($i = 0; $i < 25; $i++) {
+            RegistroOperativo::factory()
+                ->forGalponAndUser($galpon, $operario)
+                ->create([
+                    'tipo' => RegistroOperativoTipo::Huevos,
+                    'huevos' => 100 + $i,
+                    'created_at' => now()->subMinutes($i),
+                ]);
+        }
+
+        $paginator = app(OperarioGalponService::class)->historialPaginado($operario, perPage: 20);
+
+        $this->assertSame(25, $paginator->total());
+        $this->assertCount(20, $paginator->items());
+    }
+
     public function test_galpon_actual_returns_null_for_galpon_from_other_company(): void
     {
         [$operario] = $this->createOperarioConGalpon();

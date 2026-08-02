@@ -6,7 +6,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
 BRAND_RESOURCES = ROOT / "resources" / "images" / "brand"
@@ -20,9 +20,15 @@ JPEG_QUALITY = 78
 LOGO_FILE = "logo-avicore.png"
 PWA_BACKGROUND = "#f5f7f4"
 PWA_ICONS = (
+    ("pwa-180.png", 180, False),
     ("pwa-192.png", 192, False),
     ("pwa-512.png", 512, False),
     ("pwa-512-maskable.png", 512, True),
+)
+PWA_THEME = "#1f5e3b"
+PWA_SCREENSHOTS = (
+    ("pwa-screenshot-narrow.jpg", 1080, 1920),
+    ("pwa-screenshot-wide.jpg", 1920, 1080),
 )
 
 
@@ -86,6 +92,50 @@ def _resize_logo(logo: Image.Image, size: int, maskable: bool) -> Image.Image:
     return canvas
 
 
+def _gradient_canvas(width: int, height: int, top_hex: str, bottom_hex: str) -> Image.Image:
+    top = _hex_to_rgb(top_hex)
+    bottom = _hex_to_rgb(bottom_hex)
+    canvas = Image.new("RGB", (width, height))
+    draw = ImageDraw.Draw(canvas)
+
+    for y in range(height):
+        ratio = y / max(height - 1, 1)
+        color = tuple(
+            int(top[channel] + (bottom[channel] - top[channel]) * ratio)
+            for channel in range(3)
+        )
+        draw.line([(0, y), (width, y)], fill=color)
+
+    return canvas
+
+
+def _paste_logo(canvas: Image.Image, logo: Image.Image, max_logo_width: int, center_y_ratio: float) -> None:
+    fitted = logo.copy()
+    fitted.thumbnail((max_logo_width, max_logo_width), Image.Resampling.LANCZOS)
+    x = (canvas.width - fitted.width) // 2
+    y = int(canvas.height * center_y_ratio) - (fitted.height // 2)
+    canvas.paste(fitted, (x, y), fitted if fitted.mode == "RGBA" else None)
+
+
+def generate_pwa_screenshots() -> None:
+    source = BRAND_RESOURCES / LOGO_FILE
+    if not source.exists():
+        print(f"Omitido screenshots PWA (no existe): {LOGO_FILE}", file=sys.stderr)
+        return
+
+    logo = Image.open(source).convert("RGBA")
+    BRAND_PUBLIC.mkdir(parents=True, exist_ok=True)
+
+    for filename, width, height in PWA_SCREENSHOTS:
+        canvas = _gradient_canvas(width, height, PWA_THEME, PWA_BACKGROUND)
+        logo_ratio = 0.34 if height > width else 0.22
+        center_y = 0.42 if height > width else 0.5
+        _paste_logo(canvas, logo, int(width * logo_ratio), center_y)
+        dest = BRAND_PUBLIC / filename
+        canvas.save(dest, format="JPEG", quality=82, optimize=True)
+        print(f"OK PWA screenshot: {filename} ({width}x{height}) -> {dest.stat().st_size // 1024} KiB")
+
+
 def generate_pwa_icons() -> None:
     source = BRAND_RESOURCES / LOGO_FILE
     if not source.exists():
@@ -116,6 +166,7 @@ def main() -> int:
 
     sync_logo()
     generate_pwa_icons()
+    generate_pwa_screenshots()
 
     return 0
 

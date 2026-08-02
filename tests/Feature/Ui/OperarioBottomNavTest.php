@@ -314,14 +314,37 @@ class OperarioBottomNavTest extends TestCase
             ->assertDontSee('avicore-operario-carga-tile--featured', false)
             ->assertSee('Registrar', false)
             ->assertSee('¿Qué querés registrar?', false)
-            ->assertSee('Guardando…', false)
             ->assertSee('wire:click="abrirFormularioHuevos"', false)
             ->assertSee('wire:click="abrirFormularioMuertes"', false)
             ->assertDontSee('Próximamente', false)
             ->assertDontSee('Alimento', false)
             ->assertDontSee('Combinada', false)
             ->assertSee($galpon->displayName(), false)
-            ->assertDontSee(route('operario.carga.huevos'), false);
+            ->assertDontSee(route('operario.carga.huevos'), false)
+            ->assertDontSee('avicore-dialog', false)
+            ->assertDontSee('¿Cuántos huevos?', false)
+            ->assertDontSee('¿Cuántas aves murieron?', false);
+    }
+
+    public function test_cargar_hub_without_deep_link_does_not_render_load_dialogs(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create();
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => $galpon->id,
+        ]);
+
+        $this->actingAs($operario)
+            ->get(route('operario.cargar'))
+            ->assertOk()
+            ->assertDontSee('avicore-dialog', false)
+            ->assertDontSee('Vacunación de hoy', false)
+            ->assertDontSee('Nuevo lote', false);
     }
 
     public function test_home_shows_empty_galpon_chip_when_no_galpon_selected(): void

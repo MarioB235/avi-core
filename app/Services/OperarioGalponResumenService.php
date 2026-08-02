@@ -45,42 +45,6 @@ class OperarioGalponResumenService
         return (int) $lote->fecha_nacimiento->diffInWeeks(now());
     }
 
-    public function huevosHoy(Galpon $galpon): int
-    {
-        return (int) $this->registrosGalpon($galpon)
-            ->delDia()
-            ->sum('huevos');
-    }
-
-    public function muertesHoy(Galpon $galpon): int
-    {
-        return (int) $this->registrosGalpon($galpon)
-            ->delDia()
-            ->sum('muertes');
-    }
-
-    public function huevosAcumulados(Galpon $galpon, ?Carbon $desde): int
-    {
-        if ($desde === null) {
-            return 0;
-        }
-
-        return (int) $this->registrosGalpon($galpon)
-            ->where('created_at', '>=', $desde)
-            ->sum('huevos');
-    }
-
-    public function muertesAcumuladas(Galpon $galpon, ?Carbon $desde): int
-    {
-        if ($desde === null) {
-            return 0;
-        }
-
-        return (int) $this->registrosGalpon($galpon)
-            ->where('created_at', '>=', $desde)
-            ->sum('muertes');
-    }
-
     public function maplesDesdeHuevos(int $huevos): int
     {
         return intdiv($huevos, 30);
@@ -104,20 +68,43 @@ class OperarioGalponResumenService
     {
         $lotes = $this->lotesActivos($galpon);
         $fechaInicio = $this->fechaInicioVentana($lotes);
-        $huevosHoy = $this->huevosHoy($galpon);
-        $huevosAcumulados = $this->huevosAcumulados($galpon, $fechaInicio);
+
+        $totalesHoy = $this->sumarHuevosYMuertes(
+            $this->registrosGalpon($galpon)->delDia(),
+        );
+
+        $totalesAcumulados = $fechaInicio === null
+            ? ['huevos' => 0, 'muertes' => 0]
+            : $this->sumarHuevosYMuertes(
+                $this->registrosGalpon($galpon)->where('created_at', '>=', $fechaInicio),
+            );
 
         return [
             'aves_actuales' => (int) $galpon->aves_actuales,
-            'huevos_hoy' => $huevosHoy,
-            'maples_hoy' => $this->maplesDesdeHuevos($huevosHoy),
-            'muertes_hoy' => $this->muertesHoy($galpon),
-            'huevos_acumulados' => $huevosAcumulados,
-            'maples_acumulados' => $this->maplesDesdeHuevos($huevosAcumulados),
-            'muertes_acumuladas' => $this->muertesAcumuladas($galpon, $fechaInicio),
+            'huevos_hoy' => $totalesHoy['huevos'],
+            'maples_hoy' => $this->maplesDesdeHuevos($totalesHoy['huevos']),
+            'muertes_hoy' => $totalesHoy['muertes'],
+            'huevos_acumulados' => $totalesAcumulados['huevos'],
+            'maples_acumulados' => $this->maplesDesdeHuevos($totalesAcumulados['huevos']),
+            'muertes_acumuladas' => $totalesAcumulados['muertes'],
             'lotes' => $lotes,
             'fecha_inicio_ventana' => $fechaInicio,
             'multiples_lotes' => $lotes->count() > 1,
+        ];
+    }
+
+    /**
+     * @return array{huevos: int, muertes: int}
+     */
+    private function sumarHuevosYMuertes(Builder $query): array
+    {
+        $totales = (clone $query)
+            ->selectRaw('COALESCE(SUM(huevos), 0) as huevos, COALESCE(SUM(muertes), 0) as muertes')
+            ->first();
+
+        return [
+            'huevos' => (int) ($totales->huevos ?? 0),
+            'muertes' => (int) ($totales->muertes ?? 0),
         ];
     }
 

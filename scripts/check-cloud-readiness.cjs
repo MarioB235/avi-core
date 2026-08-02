@@ -93,13 +93,97 @@ if (!envExample.includes('AVICORE_PWA_INSTALL_PROMPT')) {
 }
 
 const pwaIcons = [
+  'public/images/brand/pwa-180.png',
   'public/images/brand/pwa-192.png',
   'public/images/brand/pwa-512.png',
   'public/images/brand/pwa-512-maskable.png',
+  'public/images/brand/pwa-screenshot-narrow.jpg',
+  'public/images/brand/pwa-screenshot-wide.jpg',
 ];
+
+function readPngDimensions(relPath) {
+  const filePath = path.join(root, relPath);
+  const buf = fs.readFileSync(filePath);
+
+  if (buf.length < 24 || buf[0] !== 0x89 || buf.toString('ascii', 1, 4) !== 'PNG') {
+    return null;
+  }
+
+  return {
+    width: buf.readUInt32BE(16),
+    height: buf.readUInt32BE(20),
+  };
+}
+
+function readJpegDimensions(relPath) {
+  const filePath = path.join(root, relPath);
+  const buf = fs.readFileSync(filePath);
+
+  if (buf.length < 10 || buf[0] !== 0xff || buf[1] !== 0xd8) {
+    return null;
+  }
+
+  let offset = 2;
+
+  while (offset + 9 < buf.length) {
+    if (buf[offset] !== 0xff) {
+      break;
+    }
+
+    const marker = buf[offset + 1];
+    const segmentLength = buf.readUInt16BE(offset + 2);
+
+    if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+      return {
+        height: buf.readUInt16BE(offset + 5),
+        width: buf.readUInt16BE(offset + 7),
+      };
+    }
+
+    offset += 2 + segmentLength;
+  }
+
+  return null;
+}
+
+function assertImageDimensions(relPath, expectedWidth, expectedHeight, label) {
+  if (!exists(relPath)) {
+    return;
+  }
+
+  const isJpeg = relPath.toLowerCase().endsWith('.jpg') || relPath.toLowerCase().endsWith('.jpeg');
+  const dimensions = isJpeg ? readJpegDimensions(relPath) : readPngDimensions(relPath);
+
+  if (!dimensions) {
+    fail(`${label}: no se pudieron leer dimensiones de ${relPath}`);
+    return;
+  }
+
+  if (dimensions.width !== expectedWidth || dimensions.height !== expectedHeight) {
+    fail(
+      `${label}: ${relPath} es ${dimensions.width}x${dimensions.height}, manifest espera ${expectedWidth}x${expectedHeight}`,
+    );
+    return;
+  }
+
+  ok(`${label}: ${relPath} ${expectedWidth}x${expectedHeight}`);
+}
 
 for (const iconPath of pwaIcons) {
   requireFile(iconPath, `Icono PWA (${path.basename(iconPath)})`);
+}
+
+const pwaImageSpecs = [
+  ['public/images/brand/pwa-180.png', 180, 180, 'Icono Apple touch'],
+  ['public/images/brand/pwa-192.png', 192, 192, 'Icono launcher'],
+  ['public/images/brand/pwa-512.png', 512, 512, 'Icono splash'],
+  ['public/images/brand/pwa-512-maskable.png', 512, 512, 'Icono maskable'],
+  ['public/images/brand/pwa-screenshot-narrow.jpg', 1080, 1920, 'Screenshot narrow'],
+  ['public/images/brand/pwa-screenshot-wide.jpg', 1920, 1080, 'Screenshot wide'],
+];
+
+for (const [relPath, width, height, label] of pwaImageSpecs) {
+  assertImageDimensions(relPath, width, height, label);
 }
 
 const deployDoc = read('.cursor/skills/avicore-contexto/references/deploy-laravel-cloud.md');
