@@ -1,6 +1,6 @@
 @props([
     'context' => 'default',
-    'duration' => 4500,
+    'duration' => 3500,
 ])
 
 @php
@@ -22,6 +22,10 @@
         actionKey: null,
         timer: null,
         duration: {{ (int) $duration }},
+        remainingMs: {{ (int) $duration }},
+        closeAt: null,
+        progressKey: 0,
+        progressPaused: false,
         init() {
             @if ($flashMessage)
                 this.open(@js($flashMessage), @js($flashVariant));
@@ -37,30 +41,55 @@
             this.actionLabel = actionLabel;
             this.actionKey = actionKey;
             this.visible = true;
-            this.scheduleClose();
+            this.remainingMs = this.duration;
+            this.scheduleClose(true);
         },
-        scheduleClose() {
+        scheduleClose(resetRemaining = false) {
             clearTimeout(this.timer);
 
             if (this.actionLabel) {
                 return;
             }
 
-            this.timer = setTimeout(() => this.close(), this.duration);
+            if (resetRemaining) {
+                this.remainingMs = this.duration;
+            }
+
+            this.closeAt = Date.now() + this.remainingMs;
+            this.progressPaused = false;
+            this.progressKey += 1;
+            this.timer = setTimeout(() => this.close(), this.remainingMs);
+            this.$nextTick(() => this.syncProgressDuration());
         },
         pauseAutoClose() {
             clearTimeout(this.timer);
+
+            if (! this.visible || this.actionLabel) {
+                return;
+            }
+
+            this.remainingMs = Math.max(0, (this.closeAt ?? Date.now()) - Date.now());
+            this.progressPaused = true;
         },
         resumeAutoClose() {
             if (this.visible && ! this.actionLabel) {
-                this.scheduleClose();
+                this.scheduleClose(false);
             }
         },
         close() {
             this.visible = false;
             this.actionLabel = null;
             this.actionKey = null;
+            this.remainingMs = this.duration;
+            this.progressPaused = false;
             clearTimeout(this.timer);
+        },
+        syncProgressDuration() {
+            const bar = this.$refs.progressBar;
+
+            if (bar) {
+                bar.style.setProperty('--snackbar-duration', `${this.remainingMs}ms`);
+            }
         },
         runAction() {
             if (this.actionKey === 'pwa-update') {
@@ -97,6 +126,20 @@
         @focusin="pauseAutoClose()"
         @focusout="resumeAutoClose()"
     >
+        <div
+            class="avicore-snackbar__progress"
+            x-show="! actionLabel"
+            x-cloak
+            aria-hidden="true"
+        >
+            <div
+                class="avicore-snackbar__progress-bar"
+                x-ref="progressBar"
+                :class="{ 'avicore-snackbar__progress-bar--paused': progressPaused }"
+                :key="progressKey"
+            ></div>
+        </div>
+
         <span class="avicore-snackbar__icon" aria-hidden="true">
             <span x-show="variant === 'success'">
                 <x-ui.icon name="check-circle" class="size-5" />

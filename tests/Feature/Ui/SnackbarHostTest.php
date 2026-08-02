@@ -35,10 +35,30 @@ class SnackbarHostTest extends TestCase
             ->assertSee('role="status"', false)
             ->assertSee('Cerrar notificación', false)
             ->assertSee('scheduleClose', false)
+            ->assertSee('progressKey', false)
+            ->assertSee('syncProgressDuration', false)
+            ->assertSee('x-ref="progressBar"', false)
+            ->assertSee('pauseAutoClose', false)
+            ->assertSee('resumeAutoClose', false)
+            ->assertSee('keydown.escape.window', false)
+            ->assertSee('runAction', false)
+            ->assertSee('avicore-snackbar__progress-bar', false)
             ->assertSee('actionKey', false)
             ->assertSee('avicore-snackbar__action', false)
             ->assertSee('pwa-update', false)
-            ->assertSee('4500', false);
+            ->assertSee('3500', false);
+    }
+
+    public function test_snackbar_progress_bar_css_contract(): void
+    {
+        $css = file_get_contents(resource_path('css/app.css'));
+
+        $this->assertNotFalse($css);
+        $this->assertStringContainsString('.avicore-snackbar__progress-bar', $css);
+        $this->assertStringContainsString('avicore-snackbar-progress', $css);
+        $this->assertStringContainsString('--snackbar-duration', $css);
+        $this->assertStringContainsString('prefers-reduced-motion: reduce', $css);
+        $this->assertStringContainsString('origin-right', $css);
     }
 
     public function test_snackbar_host_css_anchors_desktop_bottom_right(): void
@@ -104,6 +124,18 @@ class SnackbarHostTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('Carga de huevos guardada.', false)
-            ->assertSee('avicore-snackbar-host', false);
+            ->assertSee('avicore-snackbar-host', false)
+            ->assertSee('syncProgressDuration', false)
+            ->assertDontSee(':style="`--snackbar-duration', false);
+    }
+
+    public function test_snackbar_host_has_no_inline_duration_binding_in_blade(): void
+    {
+        $blade = file_get_contents(resource_path('views/components/ui/snackbar-host.blade.php'));
+
+        $this->assertNotFalse($blade);
+        $this->assertStringContainsString('syncProgressDuration', $blade);
+        $this->assertStringContainsString('x-ref="progressBar"', $blade);
+        $this->assertStringNotContainsString(':style="`--snackbar-duration', $blade);
     }
 }

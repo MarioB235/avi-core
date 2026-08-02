@@ -68,6 +68,12 @@
         var(--color-avicore-surface) 58%,
         color-mix(in srgb, var(--color-avicore-secondary) 16%, var(--color-avicore-soft)) 100%
     );
+    /* Tinte del chrome superior — alinea nav SVG, body y fade de scroll */
+    --avicore-operario-hero-chrome: color-mix(
+        in srgb,
+        var(--color-avicore-soft) 72%,
+        var(--color-avicore-surface)
+    );
 }
 
 @layer base {
@@ -1071,7 +1077,53 @@
     }
 
     .avicore-snackbar {
-        @apply pointer-events-auto flex w-full max-w-md min-h-12 items-center gap-3 rounded-2xl border border-avicore-border-strong/70 bg-avicore-card px-3.5 py-3 shadow-[0_12px_36px_rgba(15,23,42,0.14)] ring-1;
+        @apply pointer-events-auto relative flex w-full max-w-md min-h-12 items-center gap-3 overflow-hidden rounded-2xl border border-avicore-border-strong/70 bg-avicore-card px-3.5 py-3 pt-3.5 shadow-[0_12px_36px_rgba(15,23,42,0.14)] ring-1;
+    }
+
+    .avicore-snackbar__progress {
+        @apply absolute inset-x-0 top-0 h-0.5 overflow-hidden;
+        background: color-mix(in srgb, var(--color-avicore-border) 55%, transparent);
+    }
+
+    .avicore-snackbar__progress-bar {
+        @apply h-full w-full origin-right;
+        animation: avicore-snackbar-progress var(--snackbar-duration, 3500ms) linear forwards;
+    }
+
+    .avicore-snackbar__progress-bar--paused {
+        animation-play-state: paused;
+    }
+
+    @keyframes avicore-snackbar-progress {
+        from {
+            transform: scaleX(1);
+        }
+
+        to {
+            transform: scaleX(0);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .avicore-snackbar__progress {
+            display: none;
+        }
+    }
+
+    .avicore-snackbar--success .avicore-snackbar__progress-bar {
+        @apply bg-avicore-primary;
+    }
+
+    .avicore-snackbar--danger .avicore-snackbar__progress-bar {
+        @apply bg-avicore-danger;
+    }
+
+    .avicore-snackbar--warning .avicore-snackbar__progress-bar {
+        @apply bg-avicore-warning;
+    }
+
+    .avicore-snackbar--info .avicore-snackbar__progress-bar {
+        @apply bg-avicore-info;
     }
 
     .avicore-snackbar--success {
@@ -1174,5 +1226,31 @@
 
     .avicore-pwa-install__btn--ghost {
         @apply text-avicore-muted active:bg-avicore-soft;
+    }
+
+    /*
+     * Scroll reveal — bloques de sección (opt-in vía x-ui.reveal).
+     * Sin cascada en ítems de lista; sin parallax. Ver motion-y-feedback.md.
+     */
+    @media (prefers-reduced-motion: no-preference) {
+        [data-avicore-reveal]:not(.avicore-reveal--visible) {
+            opacity: 0;
+            transform: translateY(0.75rem);
+        }
+
+        [data-avicore-reveal] {
+            transition:
+                opacity 400ms ease-out,
+                transform 400ms ease-out;
+        }
+
+        [data-avicore-reveal][data-reveal-delay] {
+            transition-delay: calc(attr(data-reveal-delay type(<number>), 0) * 1ms);
+        }
+
+        [data-avicore-reveal].avicore-reveal--visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 }
