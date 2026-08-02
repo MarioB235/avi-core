@@ -74,23 +74,23 @@
 
     @media (prefers-reduced-motion: no-preference) {
         .avicore-operario-shell--navigating .avicore-operario-page {
-            @apply opacity-90 transition-opacity duration-200 ease-out;
+            @apply opacity-90 transition-opacity duration-150 ease-out;
         }
 
         ::view-transition-old(operario-page) {
-            animation: avicore-operario-page-out 220ms ease-out both;
+            animation: avicore-operario-page-out 150ms ease-out both;
         }
 
         ::view-transition-new(operario-page) {
-            animation: avicore-operario-page-in 280ms ease-out both;
+            animation: avicore-operario-page-in 160ms ease-out both;
         }
 
         ::view-transition-old(operario-chrome) {
-            animation: avicore-operario-chrome-out 200ms ease-out both;
+            animation: avicore-operario-chrome-out 140ms ease-out both;
         }
 
         ::view-transition-new(operario-chrome) {
-            animation: avicore-operario-chrome-in 240ms ease-out both;
+            animation: avicore-operario-chrome-in 160ms ease-out both;
         }
     }
 
@@ -1031,15 +1031,15 @@
 
     @media (prefers-reduced-motion: no-preference) {
         .avicore-operario-tab-bar__item {
-            @apply transition-[color,transform] duration-300 ease-out active:scale-95;
+            @apply transition-[color,transform] duration-150 ease-out active:scale-95;
         }
 
         .avicore-operario-tab-bar__icon-wrap {
-            @apply transition-[width,height,margin,transform,border-radius,box-shadow,background-color,color,border-color] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)];
+            @apply transition-[width,height,margin,transform,border-radius,box-shadow,background-color,color,border-color] duration-150 ease-[cubic-bezier(0.4,0,0.2,1)];
         }
 
         .avicore-operario-tab-bar__label {
-            @apply transition-[color,font-weight,opacity] duration-300 ease-out;
+            @apply transition-[color,font-weight,opacity] duration-150 ease-out;
         }
 
         .avicore-operario-tab-bar__item:not(.avicore-operario-tab-bar__item--active) .avicore-operario-tab-bar__label {

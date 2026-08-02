@@ -19,11 +19,12 @@ export default defineConfig({
         VitePWA({
             registerType: 'autoUpdate',
             includeAssets: [
+                'images/brand/pwa-180.png',
                 'images/brand/pwa-192.png',
                 'images/brand/pwa-512.png',
                 'images/brand/pwa-512-maskable.png',
-                'images/brand/admin-home-hero.jpg',
-                'images/brand/login-background.jpg',
+                'images/brand/pwa-screenshot-narrow.jpg',
+                'images/brand/pwa-screenshot-wide.jpg',
             ],
             manifest: {
                 id: '/',
@@ -33,11 +34,25 @@ export default defineConfig({
                 theme_color: '#1f5e3b',
                 background_color: '#f5f7f4',
                 display: 'standalone',
+                display_override: ['standalone', 'browser'],
+                orientation: 'portrait-primary',
+                prefer_related_applications: false,
+                handle_links: 'preferred',
+                launch_handler: {
+                    client_mode: 'navigate-existing',
+                },
                 scope: '/',
                 start_url: '/',
                 lang: 'es',
+                dir: 'ltr',
                 categories: ['business', 'productivity'],
                 icons: [
+                    {
+                        src: '/images/brand/pwa-180.png',
+                        sizes: '180x180',
+                        type: 'image/png',
+                        purpose: 'any',
+                    },
                     {
                         src: '/images/brand/pwa-192.png',
                         sizes: '192x192',
@@ -59,18 +74,18 @@ export default defineConfig({
                 ],
                 screenshots: [
                     {
-                        src: '/images/brand/login-background.jpg',
+                        src: '/images/brand/pwa-screenshot-narrow.jpg',
                         sizes: '1080x1920',
                         type: 'image/jpeg',
                         form_factor: 'narrow',
-                        label: 'Inicio de sesión AviCore',
+                        label: 'AviCore en el celular',
                     },
                     {
-                        src: '/images/brand/admin-home-hero.jpg',
+                        src: '/images/brand/pwa-screenshot-wide.jpg',
                         sizes: '1920x1080',
                         type: 'image/jpeg',
                         form_factor: 'wide',
-                        label: 'Panel administrativo AviCore',
+                        label: 'AviCore en escritorio',
                     },
                 ],
                 shortcuts: [
@@ -106,6 +121,19 @@ export default defineConfig({
                 globPatterns: ['**/*.{js,css,woff2}'],
                 navigateFallback: null,
                 cleanupOutdatedCaches: true,
+                runtimeCaching: [
+                    {
+                        urlPattern: /\/images\/brand\/.+\.(?:png|jpe?g|webp)$/i,
+                        handler: 'StaleWhileRevalidate',
+                        options: {
+                            cacheName: 'avicore-brand-images',
+                            expiration: {
+                                maxEntries: 32,
+                                maxAgeSeconds: 60 * 60 * 24 * 30,
+                            },
+                        },
+                    },
+                ],
             },
             devOptions: {
                 enabled: true,
