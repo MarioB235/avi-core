@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Models\Empresa;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 class OperarioUserMenuTest extends TestCase
@@ -28,6 +29,17 @@ class OperarioUserMenuTest extends TestCase
             'documento' => '12345678',
         ]);
 
+        config([
+            'avicore.pwa.enabled' => true,
+            'avicore.pwa.install_prompt' => true,
+        ]);
+
+        File::ensureDirectoryExists(public_path('build'));
+        File::put(public_path('build/avicore-build.json'), json_encode([
+            'built_at' => '2026-08-01T14:30:00+00:00',
+            'commit' => 'abc1234',
+        ], JSON_THROW_ON_ERROR));
+
         $this->actingAs($operario)
             ->get(route('operario.home'))
             ->assertOk()
@@ -44,9 +56,13 @@ class OperarioUserMenuTest extends TestCase
             ->assertSee('aria-haspopup="menu"', false)
             ->assertSee('x-bind:aria-expanded', false)
             ->assertSee('aria-controls="avicore-user-menu-', false)
+            ->assertSee('Instalar app', false)
+            ->assertSee('offerInstall', false)
             ->assertSee('Perfil', false)
             ->assertSee('Cerrar sesión', false)
             ->assertSee('Documento', false)
+            ->assertSee('Versión', false)
+            ->assertSee('abc1234', false)
             ->assertSee('12345678', false)
             ->assertSee('Empresa', false)
             ->assertSee('Avícola Demo', false)

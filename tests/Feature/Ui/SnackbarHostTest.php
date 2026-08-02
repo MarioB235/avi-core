@@ -35,6 +35,9 @@ class SnackbarHostTest extends TestCase
             ->assertSee('role="status"', false)
             ->assertSee('Cerrar notificación', false)
             ->assertSee('scheduleClose', false)
+            ->assertSee('actionKey', false)
+            ->assertSee('avicore-snackbar__action', false)
+            ->assertSee('pwa-update', false)
             ->assertSee('4500', false);
     }
 
@@ -67,6 +70,18 @@ class SnackbarHostTest extends TestCase
             ->test(Home::class)
             ->call('seleccionarGalpon', $galpon->id)
             ->assertDispatched('snackbar-show', message: 'Galpón actualizado.', variant: 'success');
+    }
+
+    public function test_pwa_js_dispatches_update_snackbar_contract(): void
+    {
+        $js = file_get_contents(resource_path('js/pwa.js'));
+
+        $this->assertNotFalse($js);
+        $this->assertStringContainsString('onNeedRefresh', $js);
+        $this->assertStringContainsString('snackbar-show', $js);
+        $this->assertStringContainsString('Hay una nueva versión de AviCore.', $js);
+        $this->assertStringContainsString('actionKey: \'pwa-update\'', $js);
+        $this->assertStringContainsString('__avicorePwaUpdate', $js);
     }
 
     public function test_session_status_renders_snackbar_payload_on_operario_home(): void

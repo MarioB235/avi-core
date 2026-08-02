@@ -5,9 +5,12 @@
 ])
 
 @php
+    use App\Services\AppBuildService;
+
     $user = auth()->user();
     $menuId = 'avicore-user-menu-'.uniqid();
     $isSidebar = $variant === 'sidebar';
+    $buildLabel = app(AppBuildService::class)->labelForProfile();
 @endphp
 
 <div
@@ -101,6 +104,7 @@
     x-on:click.window="onWindowClick($event)"
     x-on:resize.window="if (open) syncPanelPosition()"
     x-on:scroll.window.capture="if (open) syncPanelPosition()"
+    x-on:avicore-user-menu-action.window="closeMenu()"
     @class([
         'avicore-user-menu relative',
         'avicore-user-menu--sidebar' => $isSidebar,
@@ -156,6 +160,45 @@
                 </div>
 
                 <ul class="avicore-user-menu__list">
+                    @if (config('avicore.pwa.enabled') && config('avicore.pwa.install_prompt'))
+                        <li
+                            role="none"
+                            x-data="{
+                                visible: false,
+                                init() {
+                                    if (! window.__avicorePwaInstall?.shouldShowMenuItem?.()) {
+                                        return;
+                                    }
+
+                                    this.visible = true;
+
+                                    window.addEventListener('avicore:pwa-install-ready', () => {
+                                        this.visible = window.__avicorePwaInstall?.shouldShowMenuItem?.() ?? false;
+                                    });
+
+                                    window.addEventListener('avicore:pwa-installed', () => {
+                                        this.visible = false;
+                                    });
+                                },
+                                async installApp() {
+                                    await window.__avicorePwaInstall?.offerInstall?.();
+                                    this.$dispatch('avicore-user-menu-action');
+                                },
+                            }"
+                            x-show="visible"
+                            x-cloak
+                        >
+                            <button
+                                type="button"
+                                role="menuitem"
+                                class="avicore-user-menu__item"
+                                x-on:click="installApp()"
+                            >
+                                <x-ui.icon name="smartphone" class="avicore-user-menu__item-icon" />
+                                Instalar app
+                            </button>
+                        </li>
+                    @endif
                     <li role="none">
                         <button
                             type="button"
@@ -221,6 +264,12 @@
                         <dt>Rol</dt>
                         <dd>{{ $user->rol->label() }}</dd>
                     </div>
+                    @if ($buildLabel)
+                        <div>
+                            <dt>Versión</dt>
+                            <dd>{{ $buildLabel }}</dd>
+                        </div>
+                    @endif
                 </dl>
             </div>
         </div>

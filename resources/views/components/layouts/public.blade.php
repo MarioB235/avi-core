@@ -17,7 +17,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="avicore-brand-background font-sans">
+<body @class([
+    'avicore-brand-background font-sans',
+    'avicore-pwa-clear-session-dismiss' => request()->routeIs('login'),
+])>
     <div class="avicore-auth-shell">
         <aside class="avicore-auth-brand hidden lg:block">
             @include('components.layouts.partials.auth-brand-panel')

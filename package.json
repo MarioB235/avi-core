@@ -4,7 +4,7 @@
     "type": "module",
     "packageManager": "pnpm@10.32.1",
     "scripts": {
-        "build": "vite build",
+        "build": "node scripts/write-build-meta.cjs && vite build",
         "dev": "vite",
         "check:agent-docs": "node scripts/check-agent-docs-sync.cjs && node scripts/check-skill-references.cjs",
         "check:docs-impact": "node scripts/check-docs-impact.cjs",

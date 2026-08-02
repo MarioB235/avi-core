@@ -19,6 +19,18 @@ class OperarioBottomNavTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_operario_tab_bar_uses_primary_dock_styles(): void
+    {
+        $css = file_get_contents(resource_path('css/operario.css'));
+
+        $this->assertNotFalse($css);
+        $this->assertStringContainsString('.avicore-operario-tab-bar {', $css);
+        $this->assertStringContainsString('.avicore-operario-tab-bar__surface', $css);
+        $this->assertStringContainsString('bg-avicore-primary', $css);
+        $this->assertStringContainsString('bg-white text-avicore-primary', $css);
+        $this->assertStringContainsString('bg-white/12 text-white', $css);
+    }
+
     public function test_operario_shell_renders_bottom_navigation_with_active_home_tab(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
@@ -45,6 +57,7 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee('Seleccioná un galpón para ver el estado.', false)
             ->assertSee('aria-label="Navegación operario"', false)
             ->assertSee('avicore-operario-tab-bar lg:hidden', false)
+            ->assertSee('avicore-operario-tab-bar__surface', false)
             ->assertSee('avicore-operario-tab-bar__inner', false)
             ->assertSee('avicore-operario-tab-bar__item--active', false)
             ->assertSee('Operario', false)

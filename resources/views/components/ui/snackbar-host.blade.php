@@ -18,6 +18,8 @@
         visible: false,
         message: '',
         variant: 'success',
+        actionLabel: null,
+        actionKey: null,
         timer: null,
         duration: {{ (int) $duration }},
         init() {
@@ -25,34 +27,55 @@
                 this.open(@js($flashMessage), @js($flashVariant));
             @endif
         },
-        open(message, variant = 'success') {
+        open(message, variant = 'success', actionLabel = null, actionKey = null) {
             if (! message) {
                 return;
             }
 
             this.message = message;
             this.variant = variant;
+            this.actionLabel = actionLabel;
+            this.actionKey = actionKey;
             this.visible = true;
             this.scheduleClose();
         },
         scheduleClose() {
             clearTimeout(this.timer);
+
+            if (this.actionLabel) {
+                return;
+            }
+
             this.timer = setTimeout(() => this.close(), this.duration);
         },
         pauseAutoClose() {
             clearTimeout(this.timer);
         },
         resumeAutoClose() {
-            if (this.visible) {
+            if (this.visible && ! this.actionLabel) {
                 this.scheduleClose();
             }
         },
         close() {
             this.visible = false;
+            this.actionLabel = null;
+            this.actionKey = null;
             clearTimeout(this.timer);
         },
+        runAction() {
+            if (this.actionKey === 'pwa-update') {
+                window.__avicorePwaUpdate?.();
+            }
+
+            this.close();
+        },
     }"
-    @snackbar-show.window="open($event.detail.message, $event.detail.variant ?? 'success')"
+    @snackbar-show.window="open(
+        $event.detail.message,
+        $event.detail.variant ?? 'success',
+        $event.detail.actionLabel ?? null,
+        $event.detail.actionKey ?? null
+    )"
     @keydown.escape.window="if (visible) close()"
 >
     <div
@@ -87,6 +110,15 @@
         </span>
 
         <p class="avicore-snackbar__message" x-text="message"></p>
+
+        <button
+            type="button"
+            class="avicore-snackbar__action"
+            x-show="actionLabel"
+            x-cloak
+            x-on:click="runAction()"
+            x-text="actionLabel"
+        ></button>
 
         <button
             type="button"

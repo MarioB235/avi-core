@@ -1114,6 +1114,10 @@
         @apply min-w-0 flex-1 text-sm font-semibold leading-snug text-avicore-text;
     }
 
+    .avicore-snackbar__action {
+        @apply shrink-0 rounded-lg px-2.5 py-1 text-sm font-semibold text-avicore-primary active:bg-avicore-soft;
+    }
+
     .avicore-snackbar__close {
         @apply -mr-0.5 flex size-11 shrink-0 items-center justify-center rounded-xl text-avicore-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
