@@ -1,26 +1,32 @@
-<form wire:submit="guardarMuertes" class="space-y-4">
-    <div>
-        <x-ui.input
-            label="¿Cuántas aves murieron?"
-            type="number"
-            inputmode="numeric"
-            min="1"
-            wire:model="muertes"
-            placeholder="Ejemplo: 12"
-            required
-        />
-        @error('muertes')
-            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
-    </div>
+<x-operario.carga-otra-vez-shell
+    :recien-guardado="$muertesRecienGuardadas"
+    accion-otra-vez="cargarOtraVezMuertes"
+    accion-cerrar="cerrarDialogoMuertes"
+>
+    <form wire:submit="guardarMuertes" class="space-y-4">
+        <div>
+            <x-ui.input
+                label="¿Cuántas aves murieron?"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                wire:model="muertes"
+                placeholder="Ejemplo: 12"
+                required
+            />
+            @error('muertes')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
 
-    <x-ui.button
-        type="submit"
-        class="w-full py-4 text-base"
-        wire:loading.attr="disabled"
-        wire:target="guardarMuertes"
-    >
-        <span wire:loading.remove wire:target="guardarMuertes">Guardar</span>
-        <span wire:loading wire:target="guardarMuertes">Guardando…</span>
-    </x-ui.button>
-</form>
+        <x-ui.button
+            type="submit"
+            class="w-full py-4 text-base"
+            wire:loading.attr="disabled"
+            wire:target="guardarMuertes"
+        >
+            <span wire:loading.remove wire:target="guardarMuertes">Guardar</span>
+            <span wire:loading wire:target="guardarMuertes">Guardando…</span>
+        </x-ui.button>
+    </form>
+</x-operario.carga-otra-vez-shell>

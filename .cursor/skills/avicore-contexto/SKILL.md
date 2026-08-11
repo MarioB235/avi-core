@@ -13,6 +13,7 @@ Punto de entrada de documentación de producto tras `portal/contenido/desarrollo
 |-----------|------------|
 | Visión y alcance MVP | [`references/producto.md`](references/producto.md) |
 | Mercado Uruguay / SMA / coeficientes | [`references/mercado-uruguay.md`](references/mercado-uruguay.md) |
+| **Operario primero / olas / investigación humana** | [`references/estrategia-implementacion.md`](references/estrategia-implementacion.md) |
 | Stack y principios | [`references/arquitectura.md`](references/arquitectura.md) |
 | Roadmap y bloques | [`references/plan-desarrollo.md`](references/plan-desarrollo.md) |
 | Árbol Laravel | [`references/arbol-proyecto.md`](references/arbol-proyecto.md) |

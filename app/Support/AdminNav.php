@@ -36,6 +36,10 @@ class AdminNav
 
     public static function headerTitle(?User $user = null): string
     {
+        if (Request::routeIs('profile.edit')) {
+            return 'Mi perfil';
+        }
+
         foreach (self::tabs($user) as $tab) {
             if (self::tabIsActive($tab)) {
                 return $tab['headerTitle'];

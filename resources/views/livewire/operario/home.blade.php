@@ -47,7 +47,7 @@
                             <div @class([
                                 'avicore-operario-kpi-panel__metric',
                                 'avicore-operario-kpi-panel__metric--warm',
-                                'avicore-operario-kpi-panel__metric--warm-alert' => $resumen['muertes_hoy'] > 0,
+                                'avicore-operario-kpi-panel__metric--warm-alert' => $resumen['muertes_hoy'] > 0 || $resumen['descarte_aves_hoy'] > 0,
                             ])>
                                 <p class="avicore-operario-kpi-panel__value">
                                     {{ number_format($resumen['muertes_hoy'], 0, ',', '.') }}
@@ -56,10 +56,26 @@
                             </div>
                         </div>
 
-                        @if ($resumen['muertes_acumuladas'] > 0)
+                        @if ($resumen['descarte_aves_hoy'] > 0)
                             <p class="avicore-operario-kpi-panel__note">
                                 <span class="avicore-operario-kpi-panel__note-dot" aria-hidden="true"></span>
-                                {{ number_format($resumen['muertes_acumuladas'], 0, ',', '.') }} muertes en total desde el ingreso.
+                                {{ number_format($resumen['descarte_aves_hoy'], 0, ',', '.') }} aves descartadas hoy.
+                            </p>
+                        @endif
+
+                        @if ($resumen['muertes_acumuladas'] > 0 || $resumen['descarte_aves_acumuladas'] > 0)
+                            <p class="avicore-operario-kpi-panel__note">
+                                <span class="avicore-operario-kpi-panel__note-dot" aria-hidden="true"></span>
+                                @if ($resumen['muertes_acumuladas'] > 0)
+                                    {{ number_format($resumen['muertes_acumuladas'], 0, ',', '.') }} muertes
+                                @endif
+                                @if ($resumen['muertes_acumuladas'] > 0 && $resumen['descarte_aves_acumuladas'] > 0)
+                                    ·
+                                @endif
+                                @if ($resumen['descarte_aves_acumuladas'] > 0)
+                                    {{ number_format($resumen['descarte_aves_acumuladas'], 0, ',', '.') }} descartes de aves
+                                @endif
+                                en total desde el ingreso.
                             </p>
                         @endif
                     </article>
@@ -78,7 +94,7 @@
                                     {{ number_format($resumen['huevos_hoy'], 0, ',', '.') }}
                                 </p>
                                 <p class="avicore-operario-kpi-panel__label">
-                                    Juntados hoy
+                                    Aptos hoy
                                     <span class="avicore-operario-kpi-panel__hint">
                                         ({{ number_format($resumen['maples_hoy'], 0, ',', '.') }} maples)
                                     </span>
@@ -87,16 +103,28 @@
 
                             <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--outline">
                                 <p class="avicore-operario-kpi-panel__value">
-                                    {{ number_format($resumen['huevos_acumulados'], 0, ',', '.') }}
+                                    {{ number_format($resumen['huevos_descarte_hoy'], 0, ',', '.') }}
                                 </p>
-                                <p class="avicore-operario-kpi-panel__label">
-                                    Total del lote
-                                    <span class="avicore-operario-kpi-panel__hint">
-                                        ({{ number_format($resumen['maples_acumulados'], 0, ',', '.') }} maples)
-                                    </span>
-                                </p>
+                                <p class="avicore-operario-kpi-panel__label">Descarte hoy</p>
                             </div>
                         </div>
+
+                        @if ($resumen['huevos_acumulados'] > 0 || $resumen['huevos_descarte_acumulados'] > 0)
+                            <p class="avicore-operario-kpi-panel__note">
+                                <span class="avicore-operario-kpi-panel__note-dot" aria-hidden="true"></span>
+                                @if ($resumen['huevos_acumulados'] > 0)
+                                    {{ number_format($resumen['huevos_acumulados'], 0, ',', '.') }} aptos
+                                    ({{ number_format($resumen['maples_acumulados'], 0, ',', '.') }} maples)
+                                @endif
+                                @if ($resumen['huevos_acumulados'] > 0 && $resumen['huevos_descarte_acumulados'] > 0)
+                                    ·
+                                @endif
+                                @if ($resumen['huevos_descarte_acumulados'] > 0)
+                                    {{ number_format($resumen['huevos_descarte_acumulados'], 0, ',', '.') }} descarte
+                                @endif
+                                acumulados desde el ingreso.
+                            </p>
+                        @endif
                     </article>
                 </div>
             </x-ui.reveal>
@@ -124,6 +152,10 @@
                                 <div class="avicore-operario-home-lotes__copy min-w-0 flex-1">
                                     <p class="avicore-operario-home-lotes__code">{{ $lote->codigo }}</p>
                                     <p class="avicore-operario-home-lotes__meta">
+                                        @if ($lote->codigo_sma)
+                                            SMA {{ $lote->codigo_sma }}
+                                            ·
+                                        @endif
                                         {{ number_format($lote->cantidad_inicial, 0, ',', '.') }} aves
                                         · desde el {{ $lote->fecha_ingreso->format('d/m/Y') }}
                                         · {{ $edadSemanasPorLote[$lote->id] ?? 0 }} semanas

@@ -34,9 +34,7 @@
             @endunless
 
             <div @class([
-                'avicore-operario-carga-grid',
-                'avicore-operario-carga-grid--quad' => $puedeRegistrarLote,
-                'avicore-operario-carga-grid--triple' => ! $puedeRegistrarLote,
+                'avicore-operario-carga-grid avicore-operario-carga-grid--quad',
             ])>
                 <button
                     type="button"
@@ -64,11 +62,20 @@
 
                 <button
                     type="button"
+                    wire:click="abrirFormularioDescarte"
+                    class="avicore-operario-carga-tile avicore-operario-carga-tile--action"
+                >
+                    <span class="avicore-operario-carga-tile__icon">
+                        <x-ui.illustration name="operario-ave" />
+                    </span>
+                    <span class="avicore-operario-carga-tile__label">Descarte</span>
+                    <span class="avicore-operario-carga-tile__badge">Aves que sacaste vivas</span>
+                </button>
+
+                <button
+                    type="button"
                     wire:click="abrirFormularioVacunacion"
-                    @class([
-                        'avicore-operario-carga-tile avicore-operario-carga-tile--action',
-                        'avicore-operario-carga-tile--wide' => ! $puedeRegistrarLote,
-                    ])
+                    class="avicore-operario-carga-tile avicore-operario-carga-tile--action"
                 >
                     <span class="avicore-operario-carga-tile__icon">
                         <x-ui.illustration name="operario-vacuna" />
@@ -77,12 +84,24 @@
                     <span class="avicore-operario-carga-tile__badge">Registrá por lote</span>
                 </button>
 
+                <button
+                    type="button"
+                    wire:click="abrirFormularioAlimento"
+                    class="avicore-operario-carga-tile avicore-operario-carga-tile--action"
+                >
+                    <span class="avicore-operario-carga-tile__icon">
+                        <x-ui.icon name="truck" class="size-8 text-avicore-primary" />
+                    </span>
+                    <span class="avicore-operario-carga-tile__label">Alimento</span>
+                    <span class="avicore-operario-carga-tile__badge">Entrega del camión</span>
+                </button>
+
                 @if ($puedeRegistrarLote)
                     {{-- avicore-defer: ilustración propia operario-lote cuando exista asset; hoy reutiliza operario-ave --}}
                     <button
                         type="button"
                         wire:click="abrirFormularioLote"
-                        class="avicore-operario-carga-tile avicore-operario-carga-tile--action"
+                        class="avicore-operario-carga-tile avicore-operario-carga-tile--action avicore-operario-carga-tile--wide"
                     >
                         <span class="avicore-operario-carga-tile__icon">
                             <x-ui.illustration name="operario-ave" />
@@ -107,12 +126,24 @@
         </x-ui.dialog>
     @endif
 
+    @if ($galpon && $dialogDescarteAbierto)
+        <x-ui.dialog wire:model="dialogDescarteAbierto" title="Descarte de aves">
+            @include('livewire.operario.partials.carga-descarte-form')
+        </x-ui.dialog>
+    @endif
+
     @if ($galpon && $dialogVacunacionAbierto)
         <x-ui.dialog wire:model="dialogVacunacionAbierto" title="Vacunación de hoy">
             @include('livewire.operario.partials.carga-vacunacion-form', [
                 'lotesActivos' => $lotesActivos,
                 'vacunas' => $vacunas,
             ])
+        </x-ui.dialog>
+    @endif
+
+    @if ($galpon && $dialogAlimentoAbierto)
+        <x-ui.dialog wire:model="dialogAlimentoAbierto" title="Entrega de alimento">
+            @include('livewire.operario.partials.carga-alimento-form')
         </x-ui.dialog>
     @endif
 

@@ -4,6 +4,8 @@ namespace App\Livewire\Operario;
 
 use App\Enums\TipoHuevo;
 use App\Enums\VacunaTipo;
+use App\Livewire\Operario\Concerns\ManagesAlimentoForm;
+use App\Livewire\Operario\Concerns\ManagesDescarteForm;
 use App\Livewire\Operario\Concerns\ManagesGalponSelector;
 use App\Livewire\Operario\Concerns\ManagesHuevosForm;
 use App\Livewire\Operario\Concerns\ManagesLoteForm;
@@ -23,6 +25,8 @@ use Livewire\Component;
 #[Title('Cargar')]
 class CargarHub extends Component
 {
+    use ManagesAlimentoForm;
+    use ManagesDescarteForm;
     use ManagesGalponSelector;
     use ManagesHuevosForm;
     use ManagesLoteForm;
@@ -37,7 +41,7 @@ class CargarHub extends Component
 
         $form = request()->query('form');
 
-        if (! in_array($form, ['huevos', 'muertes', 'vacunacion', 'lote'], true)) {
+        if (! in_array($form, ['huevos', 'muertes', 'descarte', 'vacunacion', 'alimento', 'lote'], true)) {
             return;
         }
 
@@ -66,6 +70,20 @@ class CargarHub extends Component
         if ($form === 'muertes') {
             $this->resetFormularioMuertes();
             $this->dialogMuertesAbierto = true;
+
+            return;
+        }
+
+        if ($form === 'descarte') {
+            $this->resetFormularioDescarte();
+            $this->dialogDescarteAbierto = true;
+
+            return;
+        }
+
+        if ($form === 'alimento') {
+            $this->resetFormularioAlimento();
+            $this->dialogAlimentoAbierto = true;
 
             return;
         }

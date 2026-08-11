@@ -89,14 +89,14 @@ Reveal suave al entrar en viewport — **solo bloques de sección** (`x-ui.revea
 
 ## Edge fade (chrome operario)
 
-Viñeta **fija** arriba (bajo home-nav) en pantallas hero (`shell--home`, `< lg`). Sin viñeta ni degradado sobre el dock.
+En pantallas hero (`shell--home`, `< lg`): **scroll interno** en `avicore-operario-home-sheet`. El body no hace scroll; la hoja blanca no sube bajo el nav fijo.
 
-- **Efecto:** el contenido parece desvanecerse al acercarse al nav superior al scrollear; **no** se anima la opacidad de cada fila o KPI.
-- **Dock:** la hoja blanca (`home-sheet`) se extiende con su fondo hasta el navbar inferior (solo `padding-bottom` de respiro, sin capas extra).
-- **CSS:** pseudo `::before` / `::after` en `.avicore-operario-shell__workspace` (`operario.css`); `pointer-events: none`; `z-index` por debajo del chrome (`z-40`).
+- **Efecto:** sin viñetas, scrims ni `backdrop-filter` al scroll — se evita la línea de contraste verde/blanco bajo el nav.
+- **Dock:** la hoja se extiende con su fondo hasta el navbar inferior (solo `padding-bottom` de respiro).
+- **CSS:** `operario.css` — `overflow: hidden` en body/shell hero móvil; `overflow-y-auto` en `home-sheet`.
 - **Combinar con:** scroll reveal de sección (`x-ui.reveal`) para el «aparecer» al entrar en zona visible.
-- **Evitar:** `opacity` por elemento ligada al offset de scroll (historial, tablas, lectura en campo).
-- **Chrome home-nav:** tinte `--avicore-operario-hero-chrome` en `__shape`, scrim y fade (alineado al degradado del body); borde `--operario-nav-chrome-bottom`; scroll vía `avicore-home-nav--content-under`.
+- **Evitar:** overlays fijos, clases `content-under`, `opacity` por offset de scroll.
+- **Chrome home-nav:** tinte `--avicore-operario-hero-chrome` en `__shape`; línea decorativa ogee (`__line-main`) intacta.
 
 ## Prohibido
 

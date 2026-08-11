@@ -106,7 +106,7 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee('avicore-operario-galpon-selector', false)
             ->assertSee('Sin seleccionar', false)
             ->assertDontSee('Elegí en Inicio', false)
-            ->assertSee('Cuando cargues huevos, muertes o vacunaciones, van a aparecer acá.', false)
+            ->assertSee('Cuando cargues huevos, muertes, descarte, alimento o vacunaciones, van a aparecer acá.', false)
             ->assertSee('viewBox="0 0 500 500"', false)
             ->assertSee('fill="#095F2F"', false)
             ->assertDontSee('wire:transition="operario-chrome"', false);
@@ -162,7 +162,7 @@ class OperarioBottomNavTest extends TestCase
         $this->actingAs($operario)
             ->get(route('operario.historial'))
             ->assertOk()
-            ->assertSee('1.500 huevos', false)
+            ->assertSee('1.500 huevos aptos', false)
             ->assertSee('Huevos', false)
             ->assertSee('avicore-operario-historial-list__meta', false)
             ->assertDontSee('Huevos ·', false)
@@ -211,7 +211,7 @@ class OperarioBottomNavTest extends TestCase
             ->assertOk()
             ->assertSee('avicore-operario-tab-bar__item--active', false)
             ->assertSee('avicore-dialog', false)
-            ->assertSee('¿Cuántos huevos?', false)
+            ->assertSee('Huevos de hoy', false)
             ->assertSee('wire:click="abrirFormularioHuevos"', false)
             ->assertDontSee('wire:transition="operario-chrome"', false);
     }
@@ -318,12 +318,15 @@ class OperarioBottomNavTest extends TestCase
             ->assertSee('wire:click="abrirFormularioHuevos"', false)
             ->assertSee('wire:click="abrirFormularioMuertes"', false)
             ->assertDontSee('Próximamente', false)
-            ->assertDontSee('Alimento', false)
+            ->assertSee('wire:click="abrirFormularioAlimento"', false)
+            ->assertSee('Entrega del camión', false)
+            ->assertSee('Alimento', false)
             ->assertDontSee('Combinada', false)
             ->assertSee($galpon->displayName(), false)
+            ->assertSee('wire:click="seleccionarGalpon', false)
             ->assertDontSee(route('operario.carga.huevos'), false)
             ->assertDontSee('avicore-dialog', false)
-            ->assertDontSee('¿Cuántos huevos?', false)
+            ->assertDontSee('Huevos de hoy', false)
             ->assertDontSee('¿Cuántas aves murieron?', false);
     }
 
@@ -390,7 +393,7 @@ class OperarioBottomNavTest extends TestCase
             ->get(route('operario.home'))
             ->assertOk()
             ->assertSee('1.500', false)
-            ->assertSee('Juntados hoy', false)
+            ->assertSee('Aptos hoy', false)
             ->assertSee('50 maples', false)
             ->assertSee($galpon->displayName(), false)
             ->assertDontSee('avicore-operario-home-hero__galpon--empty', false);

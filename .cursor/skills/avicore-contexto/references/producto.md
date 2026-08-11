@@ -154,10 +154,14 @@ Un sistema base + configuración por empresa
 | Unidad principal | Huevo |
 | Maple | 30 huevos |
 | Cajón | Configurable por empresa |
-| Operario | Vista móvil simplificada |
-| Reportes | Manuales |
-| Dashboard | Tiempo real |
+| Operario | Vista móvil simplificada — **módulo prioritario** (origen de datos en galpón) |
+| Orden de desarrollo | Operario → admin estructura → dashboard/reportes; ver [`estrategia-implementacion.md`](estrategia-implementacion.md) |
+| Reportes | Manuales; Excel planilla productiva antes que PDF |
+| Dashboard | Tiempo real (Reverb post-MVP); coeficientes MGAP en dashboard fase 3 |
 | Stack | Laravel + PostgreSQL + Livewire + Tailwind CSS + Alpine.js + PWA + Laravel Reverb + Echo |
 | Diseño | Verde/agro moderno |
-| Mercado objetivo | Uruguay — sur (Canelones, Montevideo, San José); ver [`mercado-uruguay.md`](mercado-uruguay.md) |
-| Trazabilidad normativa | Datos operativos alineados a lotes/eventos SMA/SNIG; integración oficial post-MVP |
+| Mercado objetivo | Uruguay — sur; productores medianos sin ERP; ver [`mercado-uruguay.md`](mercado-uruguay.md) |
+| DICOSE | Campo en `granjas` (un E.A. por granja en MVP) |
+| Código de lote | Trazable; alineable al SMA desde el alta |
+| Trazabilidad normativa | Datos operativos alineados a lotes/eventos SMA/SNIG; export manual post-MVP; API SMA fuera MVP |
+| Investigación pendiente (humano) | Instructivo SMA, planilla real, anexos GBPEA — ver [`estrategia-implementacion.md`](estrategia-implementacion.md) §3 |

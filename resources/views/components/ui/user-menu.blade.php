@@ -11,6 +11,10 @@
     $menuId = 'avicore-user-menu-'.uniqid();
     $isSidebar = $variant === 'sidebar';
     $buildLabel = app(AppBuildService::class)->labelForProfile();
+    $onOperarioShell = request()->routeIs('operario.*');
+    $profileRouteBase = ($onOperarioShell || $user->rol->isOperario())
+        ? route('operario.perfil')
+        : route('profile.edit');
 @endphp
 
 <div
@@ -271,6 +275,29 @@
                         </div>
                     @endif
                 </dl>
+
+                <div class="avicore-user-menu__profile-actions">
+                    <a
+                        href="{{ $profileRouteBase }}"
+                        wire:navigate
+                        role="menuitem"
+                        class="avicore-user-menu__item"
+                        x-on:click="closeMenu()"
+                    >
+                        <x-ui.icon name="users" class="avicore-user-menu__item-icon" />
+                        Editar datos
+                    </a>
+                    <a
+                        href="{{ $profileRouteBase }}?seccion=password"
+                        wire:navigate
+                        role="menuitem"
+                        class="avicore-user-menu__item"
+                        x-on:click="closeMenu()"
+                    >
+                        <x-ui.icon name="lock-keyhole" class="avicore-user-menu__item-icon" />
+                        Cambiar contraseña
+                    </a>
+                </div>
             </div>
         </div>
     </template>

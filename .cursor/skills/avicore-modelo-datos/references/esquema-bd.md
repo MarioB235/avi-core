@@ -100,7 +100,8 @@ erDiagram
 | id | bigint PK | No | |
 | empresa_id | FK | No | |
 | galpon_id | FK galpones | No | |
-| codigo | string | No | |
+| codigo | string | No | Código interno AviCore (auto o manual) |
+| codigo_sma | string | Sí | Nº lote asignado por SMA (opcional al crear) |
 | fecha_nacimiento | date | No | |
 | fecha_ingreso | date | No | |
 | cantidad_inicial | integer | No | |
@@ -118,9 +119,11 @@ erDiagram
 | empresa_id | FK | No | |
 | galpon_id | FK | No | |
 | user_id | FK users | No | |
-| tipo | string | No | `huevos`, `muertes`, `alimento`, `combinado` |
-| huevos | integer | Sí | |
+| tipo | string | No | `huevos`, `muertes`, `descarte`, `alimento`, `combinado` |
+| huevos | integer | Sí | Aptos/comerciales (tipo `huevos` o parte de `combinado`) |
+| huevos_descarte | integer | Sí | Rotos/sucios (tipo `huevos`; default 0) |
 | muertes | integer | Sí | |
+| descarte_aves | integer | Sí | Gallinas vivas dadas de baja (tipo `descarte`) |
 | alimento_kg | decimal | Sí | |
 | observacion | text | Sí | |
 | estado | string | No | `activo`, `anulado` |

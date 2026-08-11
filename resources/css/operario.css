@@ -53,10 +53,6 @@
         --operario-nav-safe-top: max(0.35rem, calc(env(safe-area-inset-top, 0px) + 0.2rem));
         --operario-nav-height: 5.1rem;
         --operario-hero-chrome: var(--avicore-operario-hero-chrome);
-        /* Borde inferior del chrome = línea ogee del SVG (no el alto total del contenedor). */
-        --operario-nav-chrome-bottom: calc(
-            (66 / 92) * (var(--operario-nav-height) + var(--operario-nav-safe-top))
-        );
         --operario-nav-offset: calc(var(--operario-nav-height) + var(--operario-nav-safe-top));
     }
 
@@ -68,28 +64,55 @@
     }
 
     /*
-     * Edge fade — viñeta fija bajo nav superior (solo lectura al scroll).
-     * Sin máscaras ni degradados sobre el dock: la hoja llega hasta el navbar.
+     * Hero móvil: scroll solo en la hoja — el contenido no sube bajo el nav fijo.
      */
     @media (max-width: 1023.98px) {
-        .avicore-operario-shell--home .avicore-operario-shell__workspace {
-            @apply relative flex min-h-0 flex-1 flex-col;
+        .avicore-operario-body:has(.avicore-operario-shell--home) {
+            height: 100dvh;
+            overflow: hidden;
         }
 
-        .avicore-operario-shell--home .avicore-operario-shell__workspace::before {
-            content: '';
-            position: fixed;
-            left: 0;
-            right: 0;
-            pointer-events: none;
-            z-index: 30;
-            top: var(--operario-nav-chrome-bottom);
-            height: 0.85rem;
-            background: linear-gradient(
-                180deg,
-                var(--operario-hero-chrome, var(--avicore-operario-hero-chrome)) 0%,
-                transparent 100%
-            );
+        .avicore-operario-shell--home {
+            height: 100%;
+            max-height: 100dvh;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .avicore-operario-shell--home .avicore-operario-shell__workspace {
+            @apply relative flex min-h-0 flex-1 flex-col overflow-hidden;
+        }
+
+        .avicore-operario-main--home {
+            @apply flex min-h-0 flex-1 flex-col overflow-hidden;
+        }
+
+        .avicore-operario-main--home .avicore-operario-page {
+            @apply flex min-h-0 flex-1 flex-col overflow-hidden pb-0;
+        }
+
+        .avicore-operario-home,
+        .avicore-operario-cargar,
+        .avicore-operario-historial,
+        .avicore-operario-perfil {
+            @apply flex min-h-0 flex-1 flex-col overflow-hidden;
+        }
+
+        .avicore-operario-home-sheet {
+            @apply min-h-0 flex-1 overflow-y-auto overscroll-y-contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Selector de galpón: el panel es absolute; liberar overflow mientras está abierto. */
+        .avicore-operario-shell--home:has(.avicore-operario-galpon-selector--open) .avicore-operario-shell__workspace,
+        .avicore-operario-shell--home:has(.avicore-operario-galpon-selector--open) .avicore-operario-main--home,
+        .avicore-operario-shell--home:has(.avicore-operario-galpon-selector--open) .avicore-operario-main--home .avicore-operario-page,
+        .avicore-operario-shell--home:has(.avicore-operario-galpon-selector--open) .avicore-operario-home,
+        .avicore-operario-shell--home:has(.avicore-operario-galpon-selector--open) .avicore-operario-cargar,
+        .avicore-operario-shell--home:has(.avicore-operario-galpon-selector--open) .avicore-operario-historial,
+        .avicore-operario-shell--home:has(.avicore-operario-galpon-selector--open) .avicore-operario-perfil,
+        .avicore-operario-shell--home:has(.avicore-operario-galpon-selector--open) .avicore-operario-home-hero {
+            overflow: visible;
         }
     }
 
@@ -188,7 +211,8 @@
 
     .avicore-operario-home,
     .avicore-operario-cargar,
-    .avicore-operario-historial {
+    .avicore-operario-historial,
+    .avicore-operario-perfil {
         @apply flex min-h-0 flex-1 flex-col;
     }
 
@@ -248,12 +272,16 @@
         @apply z-50;
     }
 
+    .avicore-operario-galpon-selector--loading .avicore-operario-home-hero__galpon {
+        @apply opacity-80;
+    }
+
     .avicore-operario-galpon-selector__backdrop {
-        @apply fixed inset-0 z-40 bg-slate-900/25;
+        @apply fixed inset-0 z-[55] bg-slate-900/25;
     }
 
     .avicore-operario-galpon-selector__panel {
-        @apply absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-2xl border border-avicore-border-strong bg-avicore-card shadow-[0_22px_56px_rgba(15,23,42,0.22)] ring-1 ring-avicore-primary/10;
+        @apply absolute left-0 right-0 z-[60] mt-2 overflow-hidden rounded-2xl border border-avicore-border-strong bg-avicore-card shadow-[0_22px_56px_rgba(15,23,42,0.22)] ring-1 ring-avicore-primary/10;
     }
 
     .avicore-operario-galpon-selector__list {
@@ -950,6 +978,16 @@
         @apply min-h-[8.25rem];
     }
 
+    .avicore-operario-carga-grid--quad .avicore-operario-carga-tile--wide {
+        @apply col-span-2 max-w-[calc(50%-0.375rem)] justify-self-center min-h-[8.25rem];
+    }
+
+    /* 5 tiles en 2 columnas: centra el último suelto (ej. Alimento sin «Nuevo lote») */
+    .avicore-operario-carga-grid--quad
+        > .avicore-operario-carga-tile:last-child:nth-child(odd):not(.avicore-operario-carga-tile--wide) {
+        @apply col-span-2 max-w-[calc(50%-0.375rem)] justify-self-center;
+    }
+
     .avicore-operario-carga-tile {
         @apply flex min-h-[7.5rem] flex-col items-center justify-center rounded-2xl px-3 py-4 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
@@ -1105,32 +1143,6 @@
         overflow: visible;
         background: transparent;
         isolation: isolate;
-    }
-
-    /*
-     * Chrome del nav (contenedor): scrim solo hasta la línea ogee, no todo el alto del SVG.
-     */
-    .avicore-home-nav::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        left: 0;
-        height: var(--operario-nav-chrome-bottom, var(--nav-curve-bottom));
-        z-index: 0;
-        background: var(--operario-hero-chrome, var(--avicore-operario-hero-chrome));
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-        .avicore-home-nav::before {
-            transition: opacity 180ms ease-out;
-        }
-    }
-
-    .avicore-home-nav--content-under::before {
-        opacity: 0.96;
     }
 
     .avicore-home-nav__curve {
@@ -1475,6 +1487,15 @@
             @apply grid-cols-4;
         }
 
+        .avicore-operario-carga-grid--quad .avicore-operario-carga-tile--wide {
+            @apply col-span-2 max-w-none justify-self-stretch;
+        }
+
+        .avicore-operario-carga-grid--quad
+            > .avicore-operario-carga-tile:last-child:nth-child(4n + 1):not(.avicore-operario-carga-tile--wide) {
+            @apply col-span-1 col-start-2 justify-self-center max-w-none;
+        }
+
         .avicore-operario-carga-tile {
             @apply min-h-[9rem];
         }
@@ -1490,5 +1511,44 @@
         .avicore-operario-galpon-selector__panel {
             @apply max-w-md;
         }
+
+        .avicore-operario-perfil__section {
+            @apply max-w-xl;
+        }
+    }
+
+    /* ── Perfil operario ─────────────────────────────────────────── */
+    .avicore-operario-perfil__tabs {
+        @apply mb-5 flex gap-2;
+    }
+
+    .avicore-operario-perfil__tab {
+        @apply inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-xl border border-avicore-border/70 bg-white px-3 py-2 text-center text-sm font-semibold text-avicore-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .avicore-operario-perfil__tab {
+            @apply transition-colors duration-150 ease-out active:scale-[0.98];
+        }
+    }
+
+    .avicore-operario-perfil__tab--active {
+        @apply border-avicore-primary/30 bg-avicore-soft text-avicore-primary;
+    }
+
+    .avicore-operario-perfil__section {
+        @apply space-y-5;
+    }
+
+    .avicore-operario-perfil__readonly {
+        @apply space-y-3 rounded-2xl border border-avicore-border/70 bg-avicore-soft/40 p-4;
+    }
+
+    .avicore-operario-perfil__readonly dt {
+        @apply text-xs font-medium text-avicore-muted;
+    }
+
+    .avicore-operario-perfil__readonly dd {
+        @apply mt-0.5 text-sm font-semibold text-avicore-text;
     }
 }

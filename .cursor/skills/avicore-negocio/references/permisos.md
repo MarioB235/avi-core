@@ -27,6 +27,7 @@
 | Cargar huevos | No | Sí | Sí | Sí | Sí |
 | Cargar muertes | No | Sí | Sí | Sí | Sí |
 | Cargar alimento | No | Sí | Sí | Sí | Sí |
+| Editar perfil propio (nombre, correo, contraseña) | Sí | Sí | Sí | Sí | Sí |
 | Anular registro propio del día | No | Sí | Sí | Sí | Sí |
 | Anular registro de otro usuario | No | Sí | Sí | Sí | No |
 | Corregir registros | No | Sí | Sí | Sí | No |
@@ -131,6 +132,7 @@ Puede:
 - Cargar alimento.
 - Ver sus registros recientes.
 - Anular registros propios del día.
+- Editar su perfil (nombre, correo, contraseña) en `/operario/perfil`.
 
 No puede:
 
@@ -148,4 +150,4 @@ No puede:
 |--------|--------|--------|
 | `Galpon` | `GalponPolicy` | `viewAny` y `view` si el usuario tiene `empresa_id` y coincide con `galpon.empresa_id`. El acceso a rutas `/operario` lo restringe `EnsureOperarioAccess` (operario, dueño, administrativo, encargado). La selección y carga validan galpón disponible en `OperarioGalponService` y Actions de carga. |
 | `Lote` | `LotePolicy` | `create` si `empresa_id` y rol `canCreateLote()` (dueño, administrativo, encargado). Alta vía `RegistrarLoteAction` desde hub Cargar (tile oculto para operario). |
-| `User` | `UserPolicy` | `viewAny` / `view` / `create` / `update` / `resetPassword` / `toggleActive` según `UserRole::canViewUsers|canManageUsers|canResetUserPassword` y scope multiempresa (Admin AviCore ve todos). Encargado: ver listado + `resetPassword`; sin `create`/`update`/`toggleActive`. Roles asignables vía `UserRole::assignableRoles()`. CRUD en `/admin/usuarios`. |
+| `User` | `UserPolicy` | `viewAny` / `view` / `create` / `update` / `resetPassword` / `toggleActive` según `UserRole::canViewUsers|canManageUsers|canResetUserPassword` y scope multiempresa (Admin AviCore ve todos). `updateProfile`: solo el propio usuario activo (`$actor->is($target) && $actor->activo`); usado por `UpdateProfileAction` y `ChangePasswordAction`. Encargado: ver listado + `resetPassword`; sin `create`/`update`/`toggleActive`. Roles asignables vía `UserRole::assignableRoles()`. CRUD en `/admin/usuarios`. |

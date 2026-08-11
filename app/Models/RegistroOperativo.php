@@ -17,7 +17,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'user_id',
     'tipo',
     'huevos',
+    'huevos_descarte',
     'muertes',
+    'descarte_aves',
     'alimento_kg',
     'observacion',
     'estado',
@@ -37,7 +39,9 @@ class RegistroOperativo extends Model
             'tipo' => RegistroOperativoTipo::class,
             'estado' => RegistroOperativoEstado::class,
             'huevos' => 'integer',
+            'huevos_descarte' => 'integer',
             'muertes' => 'integer',
+            'descarte_aves' => 'integer',
             'alimento_kg' => 'decimal:2',
             'anulado_at' => 'datetime',
         ];
@@ -87,11 +91,12 @@ class RegistroOperativo extends Model
         $formatInt = fn (?int $value): string => number_format((int) $value, 0, ',', '.');
 
         return match ($this->tipo) {
-            RegistroOperativoTipo::Huevos => $formatInt($this->huevos).' huevos',
+            RegistroOperativoTipo::Huevos => $this->resumenHuevos($formatInt),
             RegistroOperativoTipo::Muertes => $formatInt($this->muertes).' muertes',
-            RegistroOperativoTipo::Alimento => number_format((float) $this->alimento_kg, 2, ',', '.').' kg',
+            RegistroOperativoTipo::Descarte => $formatInt($this->descarte_aves).' descarte de aves',
+            RegistroOperativoTipo::Alimento => number_format((float) $this->alimento_kg, 2, ',', '.').' kg entregados',
             RegistroOperativoTipo::Combinado => collect([
-                $this->huevos ? $formatInt($this->huevos).' huevos' : null,
+                $this->huevos ? $formatInt($this->huevos).' huevos aptos' : null,
                 $this->muertes ? $formatInt($this->muertes).' muertes' : null,
                 $this->alimento_kg ? number_format((float) $this->alimento_kg, 2, ',', '.').' kg' : null,
             ])->filter()->implode(' · '),
@@ -101,9 +106,21 @@ class RegistroOperativo extends Model
     public function esMortalidad(): bool
     {
         return match ($this->tipo) {
-            RegistroOperativoTipo::Muertes => true,
+            RegistroOperativoTipo::Muertes, RegistroOperativoTipo::Descarte => true,
             RegistroOperativoTipo::Combinado => (int) $this->muertes > 0,
             default => false,
         };
+    }
+
+    private function resumenHuevos(callable $formatInt): string
+    {
+        $aptos = (int) $this->huevos;
+        $descarte = (int) $this->huevos_descarte;
+
+        if ($descarte > 0) {
+            return $formatInt($aptos).' aptos · '.$formatInt($descarte).' descarte';
+        }
+
+        return $formatInt($aptos).' huevos aptos';
     }
 }

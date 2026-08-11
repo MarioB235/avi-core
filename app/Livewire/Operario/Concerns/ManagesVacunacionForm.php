@@ -11,7 +11,11 @@ use Illuminate\Validation\Rule;
 
 trait ManagesVacunacionForm
 {
+    use ManagesCargaOtraVez;
+
     public bool $dialogVacunacionAbierto = false;
+
+    public bool $vacunacionRecienGuardada = false;
 
     public string $loteId = '';
 
@@ -25,6 +29,7 @@ trait ManagesVacunacionForm
             return;
         }
 
+        $this->vacunacionRecienGuardada = false;
         $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService);
         $this->dialogVacunacionAbierto = true;
     }
@@ -35,8 +40,30 @@ trait ManagesVacunacionForm
         OperarioGalponResumenService $operarioGalponResumenService,
     ): void {
         if (! $abierto) {
+            $this->vacunacionRecienGuardada = false;
             $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService);
         }
+    }
+
+    public function cargarOtraVezVacunacion(
+        OperarioGalponService $operarioGalponService,
+        OperarioGalponResumenService $operarioGalponResumenService,
+    ): void {
+        $this->prepararOtraCarga(
+            'vacunacionRecienGuardada',
+            fn () => $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService),
+        );
+    }
+
+    public function cerrarDialogoVacunacion(
+        OperarioGalponService $operarioGalponService,
+        OperarioGalponResumenService $operarioGalponResumenService,
+    ): void {
+        $this->cerrarDialogoCarga(
+            'dialogVacunacionAbierto',
+            'vacunacionRecienGuardada',
+            fn () => $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService),
+        );
     }
 
     public function guardarVacunacion(
@@ -77,9 +104,11 @@ trait ManagesVacunacionForm
             null,
         );
 
-        $this->dialogVacunacionAbierto = false;
-        $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService);
-        $this->dispatch('snackbar-show', message: 'Vacunación guardada.', variant: 'success');
+        $this->trasGuardarConOtraVez(
+            'vacunacionRecienGuardada',
+            fn () => $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService),
+            'Vacunación guardada.',
+        );
     }
 
     private function resetFormularioVacunacion(

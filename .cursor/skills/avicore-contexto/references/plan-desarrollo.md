@@ -20,6 +20,8 @@ Desarrollar módulo por módulo.
 
 No construir todas las pantallas antes del backend.
 
+**Operario primero (2026-08-10):** la captura en galpón es el origen de los datos; completar operario (alimento pendiente) antes de admin/dashboard. Olas y decisiones: [`estrategia-implementacion.md`](estrategia-implementacion.md).
+
 ### Fórmula
 
 ```text

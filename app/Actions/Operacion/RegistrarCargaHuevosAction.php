@@ -12,8 +12,13 @@ use Illuminate\Validation\ValidationException;
 
 class RegistrarCargaHuevosAction
 {
-    public function execute(User $user, Galpon $galpon, int $huevos, ?string $observacion = null): RegistroOperativo
-    {
+    public function execute(
+        User $user,
+        Galpon $galpon,
+        int $huevosAptos,
+        int $huevosDescarte = 0,
+        ?string $observacion = null,
+    ): RegistroOperativo {
         Gate::forUser($user)->authorize('view', $galpon);
 
         if ($user->empresa_id !== $galpon->empresa_id) {
@@ -28,9 +33,15 @@ class RegistrarCargaHuevosAction
             ]);
         }
 
-        if ($huevos < 1) {
+        if ($huevosAptos < 0 || $huevosDescarte < 0) {
             throw ValidationException::withMessages([
-                'huevos' => 'La cantidad de huevos debe ser mayor a cero.',
+                'huevos' => 'Las cantidades no pueden ser negativas.',
+            ]);
+        }
+
+        if ($huevosAptos + $huevosDescarte < 1) {
+            throw ValidationException::withMessages([
+                'huevos' => 'Ingresá al menos un huevo apto o de descarte.',
             ]);
         }
 
@@ -39,7 +50,8 @@ class RegistrarCargaHuevosAction
             'galpon_id' => $galpon->id,
             'user_id' => $user->id,
             'tipo' => RegistroOperativoTipo::Huevos,
-            'huevos' => $huevos,
+            'huevos' => $huevosAptos,
+            'huevos_descarte' => $huevosDescarte > 0 ? $huevosDescarte : null,
             'observacion' => $observacion !== '' ? $observacion : null,
             'estado' => RegistroOperativoEstado::Activo,
         ]);

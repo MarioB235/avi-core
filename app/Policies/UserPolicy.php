@@ -63,6 +63,11 @@ class UserPolicy
         return true;
     }
 
+    public function updateProfile(User $actor, User $target): bool
+    {
+        return $actor->is($target) && $actor->activo;
+    }
+
     public function toggleActive(User $actor, User $target): bool
     {
         if ($actor->is($target)) {

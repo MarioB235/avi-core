@@ -7,6 +7,8 @@ use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Livewire\Admin\Usuarios\Index as AdminUsuariosIndex;
 use App\Livewire\Auth\ChangePassword;
 use App\Livewire\Auth\Login;
+use App\Livewire\Operario\CargaAlimento;
+use App\Livewire\Operario\CargaDescarte;
 use App\Livewire\Operario\CargaHuevos;
 use App\Livewire\Operario\CargaLote;
 use App\Livewire\Operario\CargaMuertes;
@@ -14,6 +16,7 @@ use App\Livewire\Operario\CargarHub;
 use App\Livewire\Operario\CargaVacunacion;
 use App\Livewire\Operario\Historial;
 use App\Livewire\Operario\Home as OperarioHome;
+use App\Livewire\Profile\Edit as ProfileEdit;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +34,7 @@ Route::post('/logout', function () {
 
 Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
     Route::livewire('/password/change', ChangePassword::class)->name('password.change');
+    Route::livewire('/perfil', ProfileEdit::class)->name('profile.edit');
 
     Route::view('/admin', 'pages.admin.home')
         ->middleware(EnsureAdminPanelAccess::class)
@@ -45,8 +49,11 @@ Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
         Route::livewire('/historial', Historial::class)->name('historial');
         Route::livewire('/carga/huevos', CargaHuevos::class)->name('carga.huevos');
         Route::livewire('/carga/muertes', CargaMuertes::class)->name('carga.muertes');
+        Route::livewire('/carga/descarte', CargaDescarte::class)->name('carga.descarte');
         Route::livewire('/carga/vacunacion', CargaVacunacion::class)->name('carga.vacunacion');
+        Route::livewire('/carga/alimento', CargaAlimento::class)->name('carga.alimento');
         Route::livewire('/carga/lote', CargaLote::class)->name('carga.lote');
+        Route::livewire('/perfil', ProfileEdit::class)->name('perfil');
     });
 });
 

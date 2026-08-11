@@ -217,13 +217,27 @@ Permitir carga rápida desde celular.
 
 ### Elementos (por pestaña)
 
-**Inicio:** saludo, chip galpón (selector), KPIs del galpón (aves, huevos/muertes hoy, acumulado), lista de lotes activos.
+**Inicio:** saludo, chip galpón (selector), KPIs del galpón (aves, muertes/descarte aves hoy, huevos **aptos + descarte** hoy y acumulados), lista de lotes activos (con **SMA** si existe).
 
-**Cargar:** Huevos, Muertes, Vacunación y (si el rol puede crear lote) **Nuevo lote** — grilla 2×2 con `--quad` para perfiles autorizados; operario ve grilla `--triple` (Huevos · Muertes arriba; Vacunación ancho abajo). Sin alimento ni combinada en móvil operario. Preguntas directas en diálogo; vacunación usa `x-ui.select` (lote + tipo de vacuna); nuevo lote: select galpón, checkboxes Blanca/Colorada, cantidad por tipo, fecha nacimiento.
+**Cargar:** Huevos, Muertes, **Descarte de aves**, Vacunación, **Alimento** (entrega del camión) y (si el rol puede crear lote) **Nuevo lote** — grilla 2 columnas; con permiso de lote, tile ancho «Nuevo lote». Diálogos: huevos aptos + descarte; descarte de aves vivas; alimento en kg del remito; vacunación con `x-ui.select`; nuevo lote: galpón, **Nº lote SMA** (opcional), tipos Blanca/Colorada, cantidad, fecha nacimiento. Sin carga combinada en móvil.
 
 **Historial:** listado completo del operario (cargas + vacunaciones), filtro por fecha con `x-ui.date-picker` (sin `input type="date"` nativo; error de validación visible bajo el trigger), paginación.
 
 **Compartido:** logo, menú cuenta (avatar), dock inferior (Inicio · Cargar · Historial).
+
+### Perfil de cuenta (MVP)
+
+**Estado MVP (2026-08-11):** `/operario/perfil` (shell operario) y `/perfil` (shell admin para roles de gestión). Hero y título contextual según sección (`datos` \| `password`); pestañas con `wire:click` + `seleccionarSeccion` y query `?seccion=` vía `#[Url]` (sin `wire:navigate` entre secciones — evita morph que rompe el shell). Desde menú cuenta: resumen lectura + enlaces **Editar datos** y **Cambiar contraseña** (`wire:navigate` a la ruta de perfil). `UpdateProfileAction` y `ChangePasswordAction` exigen `UserPolicy::updateProfile` (usuario activo, solo propio perfil).
+
+| Campo | Editable por el usuario |
+|-------|-------------------------|
+| Nombre | Sí |
+| Correo | Sí (opcional) |
+| Contraseña | Sí (actual + nueva + confirmar; misma política que cambio obligatorio) |
+| Documento | No (solo lectura; lo gestiona admin) |
+| Rol / Empresa | No (solo lectura) |
+
+Tras guardar: snackbar de confirmación. Sin reset por correo en MVP (contacto soporte vía `x-auth.support-contact-dialog`).
 
 ### Flujo
 
@@ -231,7 +245,7 @@ Permitir carga rápida desde celular.
 Seleccionar tipo de carga en hub → diálogo centrado con formulario → guardar → snackbar → permanece en hub Cargar
 ```
 
-Huevos/muertes: solo cantidad. Vacunación: lote activo del galpón + tipo de vacuna (`VacunaTipo`); auto-selección de lote si hay uno solo.
+Huevos: aptos + descarte (al menos uno > 0). Muertes, descarte de aves y alimento: formularios separados. Tras **Guardar**, el diálogo ofrece **Cargar otra vez** (mismo tipo, campos en cero) o **Listo** (cerrar). Vacunación: lote activo + tipo (`VacunaTipo`).
 
 ---
 
@@ -263,19 +277,20 @@ Permitir elegir galpón de trabajo.
 
 ## 7. Pantalla: Carga de huevos
 
-**Estado MVP (2026-06-22):** formulario huevos en diálogo centrado desde hub `/operario/cargar` (`CargarHub` + `x-ui.dialog`); solo cantidad obligatoria; `created_at` automático; deep link `/operario/carga/huevos` → redirect con `?form=huevos` (`CargaHuevos` usa vista `livewire._redirect-placeholder`). Evento tiempo real: pendiente (Bloque 6).
+**Estado MVP (2026-08-11):** formulario huevos en diálogo «Huevos de hoy» desde hub `/operario/cargar` (`CargarHub` + `x-ui.dialog`); campos **aptos** y **descarte** (rotos/sucios); al menos un total > 0; `created_at` automático; deep link `/operario/carga/huevos` → redirect con `?form=huevos` (`CargaHuevos` usa vista `livewire._redirect-placeholder`). Evento tiempo real: pendiente (Bloque 6).
 
 ### Campos
 
 - Galpón actual (contexto en hero; no se repite en el diálogo).
-- Cantidad de huevos.
+- Huevos aptos (comerciales).
+- Huevos de descarte (rotos o sucios; puede ser 0).
 
 ### Reglas
 
 - Fecha y hora automática.
 - No hay selector de fecha/hora para operario.
-- Cantidad obligatoria (> 0).
-- Debe guardar en unidad huevos.
+- Al menos un huevo entre aptos y descarte (> 0 en conjunto).
+- Debe guardar en unidad huevos (`huevos` + `huevos_descarte`).
 - Requiere galpón disponible; sin galpón o galpón no disponible → redirección a `/operario` con selector abierto (no hay ruta `/operario/galpon`).
 - `RegistrarCargaHuevosAction` valida empresa, permiso (`GalponPolicy`) y estado del galpón.
 - Debe emitir evento en tiempo real.
@@ -328,6 +343,7 @@ Permitir elegir galpón de trabajo.
 ### Campos
 
 - Galpón (`disponiblesParaCarga()` de la empresa).
+- **Nº lote SMA** (opcional, texto libre — código del sistema del gobierno).
 - Tipo de ave / huevo: multi-selección UI «Blanca» / «Colorada» → `TipoHuevo` (`blanco` / `color`); un lote por tipo marcado.
 - Fecha aproximada de nacimiento (`fecha_nacimiento`).
 - Cantidad por tipo marcado → `cantidad_inicial` de cada lote.
@@ -342,16 +358,52 @@ Permitir elegir galpón de trabajo.
 
 ---
 
+## 8.7 Pantalla: Entrega de alimento
+
+**Estado MVP (2026-08-11):** formulario en diálogo «Entrega de alimento» desde hub `/operario/cargar` (`CargarHub` + `ManagesAlimentoForm` + `partials/carga-alimento-form`); tile con icono camión; deep link `/operario/carga/alimento` → `?form=alimento` (`CargaAlimento` redirect-only).
+
+### Campos
+
+- Galpón actual (contexto en hero).
+- Kilogramos entregados (remito del camión).
+
+### Reglas
+
+- Fecha y hora automática (`created_at`).
+- Cantidad obligatoria (> 0 kg); decimales permitidos.
+- **No** es consumo diario: el operario registra cada llegada del camión (puede haber varios días sin registro).
+- `RegistrarCargaAlimentoAction` — tipo `alimento`, mismo criterio de permisos/galpón que huevos.
+- Historial: resumen «X kg entregados».
+
+---
+
+## 8.75 Pantalla: Descarte de aves
+
+**Estado MVP (2026-08-11):** diálogo «Descarte de aves» desde hub; tile aparte de Muertes; deep link `/operario/carga/descarte` → `?form=descarte`.
+
+### Campos
+
+- Cantidad de aves descartadas (vivas que se sacan del galpón).
+
+### Reglas
+
+- Distinto de **muertes** (aves que murieron en el piso).
+- Descuenta `aves_actuales` igual que muertes.
+- `RegistrarCargaDescarteAction` — tipo `descarte`, campo `descarte_aves`.
+
+---
+
 ## 9–10. Cargas operario (parcial)
 
-**Estado:** huevos, muertes y vacunación implementados en hub `/operario/cargar`; alimento y combinada pendientes (fases 14–15). Reglas en [`avicore-negocio/references/reglas.md`](../../avicore-negocio/references/reglas.md).
+**Estado:** huevos (aptos/descarte), muertes, **descarte de aves**, vacunación y **alimento** implementados en hub `/operario/cargar`; combinada pendiente (fase 15). Reglas en [`avicore-negocio/references/reglas.md`](../../avicore-negocio/references/reglas.md).
 
 | Pantalla | Fase | Estado |
 |----------|------|--------|
-| Carga de huevos | 12 | Hecho — diálogo en hub; `RegistrarCargaHuevosAction` |
+| Carga de huevos | 12 | Hecho — aptos + descarte; `RegistrarCargaHuevosAction` |
 | Carga de muertes | 13 | Hecho — diálogo en hub; `RegistrarCargaMuertesAction`; deep link `?form=muertes` |
+| Descarte de aves | — | Hecho — `RegistrarCargaDescarteAction`; deep link `?form=descarte` |
 | Carga de vacunación | — | Hecho — diálogo en hub; `RegistrarVacunacionAction`; deep link `?form=vacunacion` |
-| Carga de alimento | 14 | Pendiente — kilos; **fuera del hub operario móvil** (encargado/admin o fase posterior) |
+| Carga de alimento | 14 | Hecho — entrega camión (kg); `RegistrarCargaAlimentoAction`; deep link `?form=alimento` |
 | Carga combinada | 15 | **Defer** — dos cargas rápidas en lugar de formulario mixto |
 
 ---

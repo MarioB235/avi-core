@@ -25,6 +25,7 @@ class RegistrarLoteAction
         array $cantidadesPorTipo,
         Carbon $fechaNacimiento,
         ?Carbon $fechaIngreso = null,
+        ?string $codigoSma = null,
     ): Collection {
         Gate::forUser($user)->authorize('create', Lote::class);
         Gate::forUser($user)->authorize('view', $galpon);
@@ -62,8 +63,9 @@ class RegistrarLoteAction
         }
 
         $fechaIngreso ??= Carbon::today();
+        $codigoSma = $codigoSma !== null && trim($codigoSma) !== '' ? trim($codigoSma) : null;
 
-        return DB::transaction(function () use ($user, $galpon, $cantidadesPorTipo, $fechaNacimiento, $fechaIngreso): Collection {
+        return DB::transaction(function () use ($user, $galpon, $cantidadesPorTipo, $fechaNacimiento, $fechaIngreso, $codigoSma): Collection {
             /** @var Galpon $galponBloqueado */
             $galponBloqueado = Galpon::query()
                 ->whereKey($galpon->id)
@@ -80,6 +82,7 @@ class RegistrarLoteAction
                     'empresa_id' => $user->empresa_id,
                     'galpon_id' => $galponBloqueado->id,
                     'codigo' => $codigo,
+                    'codigo_sma' => $codigoSma,
                     'fecha_nacimiento' => $fechaNacimiento,
                     'fecha_ingreso' => $fechaIngreso,
                     'cantidad_inicial' => $cantidad,

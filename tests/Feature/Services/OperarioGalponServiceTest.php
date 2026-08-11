@@ -134,7 +134,7 @@ class OperarioGalponServiceTest extends TestCase
         $this->assertTrue($items[0]->esVacunacion);
         $this->assertStringContainsString('Gumboro', $items[0]->label);
         $this->assertFalse($items[1]->esVacunacion);
-        $this->assertStringContainsString('900 huevos', $items[1]->label);
+        $this->assertStringContainsString('900 huevos aptos', $items[1]->label);
     }
 
     public function test_historial_paginado_filters_vacunaciones_by_fecha(): void

@@ -7,7 +7,11 @@ use App\Services\OperarioGalponService;
 
 trait ManagesMuertesForm
 {
+    use ManagesCargaOtraVez;
+
     public bool $dialogMuertesAbierto = false;
+
+    public bool $muertesRecienGuardadas = false;
 
     public string $muertes = '';
 
@@ -17,6 +21,7 @@ trait ManagesMuertesForm
             return;
         }
 
+        $this->muertesRecienGuardadas = false;
         $this->resetFormularioMuertes();
         $this->dialogMuertesAbierto = true;
     }
@@ -24,8 +29,19 @@ trait ManagesMuertesForm
     public function updatedDialogMuertesAbierto(bool $abierto): void
     {
         if (! $abierto) {
+            $this->muertesRecienGuardadas = false;
             $this->resetFormularioMuertes();
         }
+    }
+
+    public function cargarOtraVezMuertes(): void
+    {
+        $this->prepararOtraCarga('muertesRecienGuardadas', fn () => $this->resetFormularioMuertes());
+    }
+
+    public function cerrarDialogoMuertes(): void
+    {
+        $this->cerrarDialogoCarga('dialogMuertesAbierto', 'muertesRecienGuardadas', fn () => $this->resetFormularioMuertes());
     }
 
     public function guardarMuertes(
@@ -52,9 +68,11 @@ trait ManagesMuertesForm
             null,
         );
 
-        $this->dialogMuertesAbierto = false;
-        $this->resetFormularioMuertes();
-        $this->dispatch('snackbar-show', message: 'Muertes guardadas.', variant: 'success');
+        $this->trasGuardarConOtraVez(
+            'muertesRecienGuardadas',
+            fn () => $this->resetFormularioMuertes(),
+            'Muertes guardadas.',
+        );
     }
 
     private function resetFormularioMuertes(): void

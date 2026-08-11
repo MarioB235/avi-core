@@ -102,22 +102,37 @@ class ScrollRevealTest extends TestCase
             ->assertDontSee('style="transition-delay', false);
     }
 
-    public function test_home_nav_scroll_scrim_contract(): void
+    public function test_operario_navigate_handles_livewire_navigation(): void
     {
         $js = file_get_contents(resource_path('js/operario-navigate.js'));
 
         $this->assertNotFalse($js);
-        $this->assertStringContainsString('avicore-home-nav--content-under', $js);
-        $this->assertStringContainsString('syncHomeNavScrollState', $js);
+        $this->assertStringContainsString('avicore-operario-shell--navigating', $js);
+        $this->assertStringNotContainsString('content-under', $js);
+        $this->assertStringNotContainsString('syncHomeNavScrollState', $js);
     }
 
-    public function test_operario_shell_edge_fade_contract(): void
+    public function test_galpon_selector_contract_avoids_live_entangle_and_teleport(): void
+    {
+        $blade = file_get_contents(resource_path('views/livewire/operario/partials/galpon-chip-selector.blade.php'));
+
+        $this->assertNotFalse($blade);
+        $this->assertStringContainsString("@entangle('selectorGalponAbierto')", $blade);
+        $this->assertStringNotContainsString("@entangle('selectorGalponAbierto').live", $blade);
+        $this->assertStringNotContainsString('x-teleport="body"', $blade);
+        $this->assertStringContainsString('wire:click="seleccionarGalpon', $blade);
+    }
+
+    public function test_operario_hero_shell_uses_inner_sheet_scroll_on_mobile(): void
     {
         $css = file_get_contents(resource_path('css/operario.css'));
 
         $this->assertNotFalse($css);
-        $this->assertStringContainsString('.avicore-operario-shell--home .avicore-operario-shell__workspace::before', $css);
-        $this->assertStringNotContainsString('.avicore-operario-shell--home .avicore-operario-shell__workspace::after', $css);
+        $this->assertStringContainsString('.avicore-operario-body:has(.avicore-operario-shell--home)', $css);
+        $this->assertStringContainsString('.avicore-operario-home-sheet', $css);
+        $this->assertStringContainsString('overflow-y-auto', $css);
+        $this->assertStringContainsString(':has(.avicore-operario-galpon-selector--open)', $css);
+        $this->assertStringNotContainsString('avicore-operario-shell__workspace::before', $css);
         $this->assertStringContainsString('.avicore-operario-cargar-types', $css);
         $this->assertStringContainsString('flex-1 flex-col gap-3', $css);
     }

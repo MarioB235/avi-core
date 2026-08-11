@@ -24,6 +24,8 @@ trait ManagesLoteForm
 
     public string $fechaNacimiento = '';
 
+    public string $codigoSma = '';
+
     public function abrirFormularioLote(OperarioGalponService $operarioGalponService): void
     {
         if (! auth()->user()->rol->canCreateLote()) {
@@ -52,6 +54,7 @@ trait ManagesLoteForm
         $rules = [
             'loteGalponId' => ['required', 'integer', 'min:1'],
             'fechaNacimiento' => ['required', 'date', 'before_or_equal:today'],
+            'codigoSma' => ['nullable', 'string', 'max:64'],
         ];
 
         if ($this->tipoBlanco) {
@@ -105,6 +108,7 @@ trait ManagesLoteForm
                 $galpon,
                 $cantidadesPorTipo,
                 Carbon::parse($validated['fechaNacimiento']),
+                codigoSma: $validated['codigoSma'] ?? null,
             );
         } catch (ValidationException $exception) {
             foreach ($exception->errors() as $field => $messages) {
@@ -146,6 +150,7 @@ trait ManagesLoteForm
             'cantidadBlanco',
             'cantidadColor',
             'fechaNacimiento',
+            'codigoSma',
         ]);
         $this->loteGalponId = $loteGalponId;
         $this->resetValidation();

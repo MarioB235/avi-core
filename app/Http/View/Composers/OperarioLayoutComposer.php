@@ -21,10 +21,12 @@ class OperarioLayoutComposer
         $galpon = $user ? $this->operarioGalponService->galponActual($user) : null;
 
         $view->with([
-            'operarioHeaderTitle' => OperarioNav::headerTitle(),
+            'operarioHeaderTitle' => Request::routeIs('operario.perfil')
+                ? $this->perfilHeaderTitle()
+                : OperarioNav::headerTitle(),
             'operarioHeaderSubtitle' => $this->headerSubtitle($galpon),
             'operarioHasGalpon' => $galpon !== null,
-            'operarioIsHeroPage' => Request::routeIs('operario.home', 'operario.cargar', 'operario.historial'),
+            'operarioIsHeroPage' => Request::routeIs('operario.home', 'operario.cargar', 'operario.historial', 'operario.perfil'),
         ]);
     }
 
@@ -35,5 +37,12 @@ class OperarioLayoutComposer
         }
 
         return $this->operarioGalponService->etiquetaGalpon($galpon);
+    }
+
+    private function perfilHeaderTitle(): string
+    {
+        return Request::query('seccion') === 'password'
+            ? 'Contraseña'
+            : 'Mis datos';
     }
 }

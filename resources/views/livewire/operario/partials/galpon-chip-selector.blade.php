@@ -2,12 +2,13 @@
     class="avicore-operario-galpon-selector"
     x-data="{ open: @entangle('selectorGalponAbierto') }"
     :class="{ 'avicore-operario-galpon-selector--open': open }"
-    @click.outside="open = false"
+    wire:loading.class="avicore-operario-galpon-selector--loading"
+    wire:target="seleccionarGalpon"
     @keydown.escape.window="open = false"
 >
     <button
         type="button"
-        wire:click="toggleSelectorGalpon"
+        x-on:click.stop="open = ! open"
         @class([
             'avicore-operario-home-hero__galpon',
             'avicore-operario-home-hero__galpon--empty' => $galpon === null,
@@ -30,15 +31,15 @@
     <div
         x-show="open"
         x-cloak
-        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter="transition ease-out duration-200 motion-reduce:transition-none"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
-        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave="transition ease-in duration-150 motion-reduce:transition-none"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
         class="avicore-operario-galpon-selector__backdrop"
         aria-hidden="true"
-        @click="open = false"
+        x-on:click="open = false"
     ></div>
 
     <div
@@ -46,13 +47,14 @@
         role="listbox"
         x-show="open"
         x-cloak
-        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter="transition ease-out duration-200 motion-reduce:transition-none"
         x-transition:enter-start="opacity-0 -translate-y-1"
         x-transition:enter-end="opacity-100 translate-y-0"
-        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave="transition ease-in duration-150 motion-reduce:transition-none"
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 -translate-y-1"
         class="avicore-operario-galpon-selector__panel"
+        x-on:click.outside="open = false"
     >
         @if ($galpones->isEmpty())
             <p class="avicore-operario-galpon-selector__empty">
@@ -67,6 +69,7 @@
                             role="option"
                             wire:click="seleccionarGalpon({{ $item->id }})"
                             wire:loading.attr="disabled"
+                            x-on:click="open = false"
                             @class([
                                 'avicore-operario-galpon-selector__option',
                                 'avicore-operario-galpon-selector__option--active' => $galpon?->id === $item->id,

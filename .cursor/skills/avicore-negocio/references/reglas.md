@@ -24,6 +24,7 @@
 11. Usuario no Admin AviCore sin `empresa_id` asignado no puede iniciar sesión.
 12. La recuperación de contraseña en MVP la realiza administrador o encargado autorizado. En login y cambio obligatorio de contraseña, el enlace «¿Olvidaste tu contraseña?» abre un diálogo con contacto de soporte (WhatsApp y/o correo desde `config/avicore.php` / `.env`, URLs validadas en `SupportContactService`); no hay reset automático por correo.
 13. Login demo MVP (`AVICORE_DEMO_LOGIN=true`): un solo usuario (`000000000`); el selector asigna el rol al entrar (sin credenciales en pantalla). Desactivar antes de go-live. Detalle: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4.
+14. **Autogestión de perfil:** todo usuario autenticado puede editar su nombre y correo, y cambiar su contraseña voluntariamente (`/perfil` o `/operario/perfil`). No puede cambiar documento, rol ni empresa; eso lo hace un administrador.
 
 ---
 
@@ -74,6 +75,14 @@
 
 ---
 
+## 6.25 Descarte de aves (operario MVP)
+
+1. **Descarte** = gallinas **vivas** que se sacan del galpón (no murieron en el piso). Distinto de mortalidad.
+2. Tipo de registro `descarte`, campo `descarte_aves`.
+3. Descuenta `aves_actuales` con las mismas validaciones que muertes (`RegistrarCargaDescarteAction`).
+
+---
+
 ## 6.5 Vacunación (operario MVP)
 
 1. La vacunación se registra **por lote** en el galpón de trabajo del operario.
@@ -90,10 +99,11 @@
 ## 7. Alimento
 
 1. El MVP no maneja stock de alimento.
-2. Solo se registra alimento entregado.
+2. Solo se registra **alimento entregado** (kg del remito cuando llega el camión), no consumo diario estimado.
 3. La unidad es kilos.
 4. Se permiten decimales.
 5. El alimento puede cargarse sin huevos ni muertes.
+6. Puede haber varios días sin registro entre entregas.
 
 ---
 
@@ -180,3 +190,17 @@ Valores de **referencia nacional** (MGAP / DIEA) para gráficos, desvíos y aler
 | Ciclo de lote | Postura semana 19–20; descarte semana 86–87 | `fecha_ingreso` del lote + estado |
 
 **Implementación:** recolección operativa en MVP; cálculo automático, curvas y alertas → post-MVP (dashboard fase 17). Detalle mercado y SMA/SNIG: [`mercado-uruguay.md`](../../avicore-contexto/references/mercado-uruguay.md).
+
+---
+
+## 16. Planilla MGAP Anexo Nº 2 (ponedoras — ciclo largo)
+
+Referencia: [`mercado-uruguay.md`](../../avicore-contexto/references/mercado-uruguay.md) §4 · export: [`reportes.md`](../../avicore-reportes/references/reportes.md).
+
+1. **Rubro MVP:** gallinas **ponedoras** (aves de ciclo largo); no usar planilla de pollos parrilleros (engorde).
+2. **Registro diario obligatorio:** mortalidad, **descarte de aves** (tipo `descarte`), **huevos aptos** y **huevos de descarte** (rotos/sucios), alimento (kg por entrega) y agua (cuando esté operativo).
+3. **Huevos:** `huevos` = aptos/comerciales; `huevos_descarte` = rotos/sucios (puede ser 0). Al menos un total > 0 por registro.
+4. **Pre-faena:** al exportar o cerrar lote hacia faena, incluir historial de las **últimas 9 semanas** de producción (norma DGSG).
+5. **Cabecera export:** DICOSE, **lote SMA** (`lotes.codigo_sma`, opcional al crear), lote interno, fecha ingreso/nacimiento, línea genética, población inicial, establecimiento.
+6. **Agua:** `avicore-defer` — en granjas con bebederos automáticos el operario **no** registra consumo diario; lectura de medidor o módulo técnico queda para encargado/admin o integración futura.
+7. **Certificación VLE:** texto y espacio de firma en PDF; no sustituye al manual BPA firmado.
