@@ -51,11 +51,11 @@ class OperarioHistorialTest extends TestCase
             ->assertSee('entangle', false)
             ->assertDontSee('type="date"', false)
             ->assertSee('3 muertes', false)
-            ->assertSee('900 huevos', false)
+            ->assertSee('900 huevos aptos', false)
             ->assertSee('avicore-operario-historial-list__item--muertes', false)
             ->assertDontSee('Huevos ·', false)
             ->assertDontSee('Muertes ·', false)
-            ->assertSeeInOrder(['3 muertes', '900 huevos'], false);
+            ->assertSeeInOrder(['3 muertes', '900 huevos aptos'], false);
     }
 
     public function test_historial_lists_vacunaciones_mixed_with_registros_newest_first(): void
@@ -85,9 +85,9 @@ class OperarioHistorialTest extends TestCase
             ->test(Historial::class)
             ->assertSee('Gumboro', false)
             ->assertSee('L-VAC', false)
-            ->assertSee('600 huevos', false)
+            ->assertSee('600 huevos aptos', false)
             ->assertSee('avicore-operario-historial-list__item--vacunacion', false)
-            ->assertSeeInOrder(['Gumboro', '600 huevos'], false);
+            ->assertSeeInOrder(['Gumboro', '600 huevos aptos'], false);
     }
 
     public function test_historial_filters_by_selected_date(): void
@@ -117,13 +117,13 @@ class OperarioHistorialTest extends TestCase
             ->test(Historial::class)
             ->set('fecha', $ayer->toDateString())
             ->assertSee('Registros del día', false)
-            ->assertSee('500 huevos', false)
+            ->assertSee('500 huevos aptos', false)
             ->assertDontSee('2 muertes', false)
             ->call('verTodasLasFechas')
             ->assertSet('fecha', null)
             ->assertSee('Todos los registros', false)
             ->assertSee('2 muertes', false)
-            ->assertSee('500 huevos', false);
+            ->assertSee('500 huevos aptos', false);
     }
 
     public function test_historial_rejects_invalid_and_future_dates(): void
@@ -174,8 +174,8 @@ class OperarioHistorialTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(Historial::class)
-            ->assertSee('400 huevos', false)
-            ->assertDontSee('9.999 huevos', false);
+            ->assertSee('400 huevos aptos', false)
+            ->assertDontSee('9.999 huevos aptos', false);
     }
 
     public function test_historial_paginates_results(): void
@@ -196,8 +196,8 @@ class OperarioHistorialTest extends TestCase
             ->test(Historial::class)
             ->assertSee('avicore-operario-historial-pagination', false)
             ->call('gotoPage', 2, 'page')
-            ->assertSee('120 huevos', false)
-            ->assertDontSee('119 huevos', false);
+            ->assertSee('120 huevos aptos', false)
+            ->assertDontSee('119 huevos aptos', false);
     }
 
     public function test_historial_shows_alimento_and_combinado_summaries(): void
@@ -225,8 +225,8 @@ class OperarioHistorialTest extends TestCase
 
         Livewire::actingAs($operario)
             ->test(Historial::class)
-            ->assertSee('12,50 kg', false)
-            ->assertSee('300 huevos · 1 muertes · 5,25 kg', false)
+            ->assertSee('12,50 kg entregados', false)
+            ->assertSee('300 huevos aptos · 1 muertes · 5,25 kg', false)
             ->assertSee('avicore-operario-historial-list__item--muertes', false);
     }
 

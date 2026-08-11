@@ -25,6 +25,26 @@ class OperarioCargaHuevosTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_cargar_otra_vez_reopens_huevos_form_after_save(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpones();
+        $operario->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
+
+        Livewire::actingAs($operario)
+            ->test(CargarHub::class)
+            ->call('abrirFormularioHuevos')
+            ->set('huevos', '100')
+            ->set('huevosDescarte', '0')
+            ->call('guardarHuevos')
+            ->assertSet('huevosRecienGuardados', true)
+            ->assertSee('Cargar otra vez', false)
+            ->call('cargarOtraVezHuevos')
+            ->assertSet('huevosRecienGuardados', false)
+            ->assertSee('Huevos aptos', false)
+            ->call('cerrarDialogoHuevos')
+            ->assertSet('dialogHuevosAbierto', false);
+    }
+
     public function test_operario_can_select_galpon_register_eggs_and_see_today_loads(): void
     {
         [$operario, $galponA, $galponB] = $this->createOperarioConGalpones();
@@ -47,8 +67,10 @@ class OperarioCargaHuevosTest extends TestCase
             ->call('abrirFormularioHuevos')
             ->assertSet('dialogHuevosAbierto', true)
             ->set('huevos', '1500')
+            ->set('huevosDescarte', '0')
             ->call('guardarHuevos')
-            ->assertSet('dialogHuevosAbierto', false)
+            ->assertSet('dialogHuevosAbierto', true)
+            ->assertSet('huevosRecienGuardados', true)
             ->assertDispatched('snackbar-show');
 
         $this->assertDatabaseHas('registros_operativos', [
@@ -63,12 +85,12 @@ class OperarioCargaHuevosTest extends TestCase
         Livewire::actingAs($operario)
             ->test(Home::class)
             ->assertSee('1.500', false)
-            ->assertSee('Juntados hoy', false)
+            ->assertSee('Aptos hoy', false)
             ->assertSee($galponA->displayName());
 
         Livewire::actingAs($operario)
             ->test(Historial::class)
-            ->assertSee('1.500 huevos');
+            ->assertSee('1.500 huevos aptos');
 
         Livewire::actingAs($operario)
             ->test(CargarHub::class)
@@ -248,6 +270,7 @@ class OperarioCargaHuevosTest extends TestCase
             ->test(CargarHub::class)
             ->call('abrirFormularioHuevos')
             ->set('huevos', '0')
+            ->set('huevosDescarte', '0')
             ->call('guardarHuevos')
             ->assertHasErrors(['huevos']);
 

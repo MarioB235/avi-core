@@ -23,8 +23,9 @@ Avícola Demo
 - 1 empresa demo (`Avícola Demo`).
 - 1 granja (Granja Norte).
 - 2 galpones (G-01, G-02).
-- 1 lote activo en Galpón 1.
+- 1 lote activo en Galpón 1 (con `codigo_sma` demo `L-2024-089`).
 - Usuario prueba con `ultimo_galpon_id` = Galpón 1 (si entrás como operario).
+- **Cargas demo** (`AvicoreOperarioDemoSeeder`): huevos 1200 + 30 descarte, 2 muertes hoy, alimento 8500 kg (hace 2 días) — solo si el galpón no tenía registros.
 
 **Demo completa (planificada):** ver [`plan-desarrollo.md`](../../avicore-contexto/references/plan-desarrollo.md) Bloque 7.
 

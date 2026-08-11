@@ -5,8 +5,22 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-08-11
+
+- **[docs|operario]** Cierre msg 4: perfil operario (pestañas `wire:click`, policy `updateProfile`, árbol y estándares de tests). — `patrones-mobile-operario.md`, `pantallas-flujos.md`, `arbol-proyecto.md`, `estandares-codigo.md`, `contexto.html`
+- **[fix|operario]** Post-auditoría msg 3: pestañas perfil con `wire:click` + `#[Url]` (sin `wire:navigate` entre secciones); hero con `wire:key`; título contextual en composer; `ChangePasswordAction` usa `updateProfile`. — `edit.blade.php`, `Profile/Edit.php`, `OperarioLayoutComposer.php`, `ChangePasswordAction.php`, `OperarioPerfilTest.php`, `pantallas-flujos.md`, `permisos.md`
+- **[feature|operario]** Perfil de cuenta: `/operario/perfil` y `/perfil` compartido; edición de nombre/correo, cambio de contraseña voluntario, enlaces desde menú cuenta. — `UpdateProfileAction`, `Profile/Edit`, `perfil-hero`, `user-menu`, tests `OperarioPerfilTest`, `pantallas-flujos.md`, `reglas.md`, `permisos.md`, `arbol-proyecto.md`
+- **[ui|operario]** Selector de galpón: vuelta a panel `absolute` + `overflow: visible` con `:has(--open)`; sin `x-teleport` ni `@entangle.live` (conflicto con morph Livewire). — `galpon-chip-selector.blade.php`, `operario.css`, `patrones-mobile-operario.md`
+- **[ui|operario]** Hero móvil: scroll interno en `home-sheet` (contenido no pasa bajo nav fijo); eliminados overlays de scroll en nav. — `operario.css`, `operario-navigate.js`, `patrones-mobile-operario.md`, `motion-y-feedback.md`
+
 ## 2026-08-10
 
+- **[feature|operario]** Ola 1 planilla MGAP: huevos aptos + descarte, tile y carga de alimento (kg por entrega de camión), hub grilla 2×2, historial actualizado. — migración `huevos_descarte`, `RegistrarCargaAlimentoAction`, `CargaAlimento`, `ManagesAlimentoForm`, tests Operario/UI, `esquema-bd.md`, `pantallas-flujos.md`, `reglas.md` §7/§16, `estrategia-implementacion.md`, `arbol-proyecto.md`
+- **[ui|operario]** Tras guardar carga: atajo «Cargar otra vez» + «Listo» en diálogos (huevos, muertes, descarte, alimento, vacunación); historial vacío menciona todos los tipos. — `ManagesCargaOtraVez`, `carga-otra-vez-shell`, `historial.blade.php`, `reglas.md` §16
+- **[docs|negocio]** Anexo Nº 2 ponedoras (ciclo largo): reglas export — huevos aptos/descarte, 9 semanas pre-faena, cabecera DICOSE/SMA. — `reglas.md` §16, `mercado-uruguay.md` §4
+- **[docs|producto]** Anexo Nº 2 ponedoras: mismo PDF que reproductoras; campos diarios huevos + gaps AviCore documentados. — `mercado-uruguay.md`, `estrategia-implementacion.md`, `reportes.md`
+- **[docs|producto]** Bitácora SNIG/SMA: flujos remito→lote→movimiento→faena; estructura planilla galpón sur; P0 parcialmente cubierto — falta instructivo y PDF ponedoras. — `mercado-uruguay.md`, `estrategia-implementacion.md`
+- **[docs|producto]** Estrategia operario primero: decisiones Fase 0 (DICOSE en granjas, código lote SMA, alertas, export Excel, olas 1–5) y checklist investigación humana P0–P2. — `estrategia-implementacion.md`, `producto.md`, `mercado-uruguay.md`, `plan-desarrollo.md`, `resumen.html`, `contexto.html`, `SKILL.md`
 - **[fix|operario]** Post-auditoría msg 3: `resumen()` sin memo de totales (evita KPI stale en mismo request); memo solo en `lotesActivos()`; `galponActual` revalida disponibilidad; hub `resolveGalponParaGuardar` usa `galponDisponibleParaUsuario`; tests scoped/memo/PWA ampliados. — `OperarioGalponResumenService.php`, `OperarioGalponService.php`, `CargarHub.php`, `OperarioHomeResumenTest.php`, `OperarioGalponServiceTest.php`, `SnackbarHostTest.php`, `patrones-mobile-operario.md`, `estandares-codigo.md`, `arbol-proyecto.md`
 - **[portal|ui]** Runtime portal modular: `site.theme.js` (tema), `site.toc.js` (índice lateral); excepción `!important` documentada en legacy imprimible. — `portal/js/`, `portal/index.html`, `_sistema-documental/README.md`, `portal/README.md`
 - **[perf|pwa]** Arranque y navegación operario: services scoped por request (`OperarioGalponService`, `OperarioGalponResumenService`), memo intra-request solo en `lotesActivos()`, SW diferido (`immediate: false`), Workbox `skipWaiting`/`clientsClaim`, `devOptions` solo en dev, `wire:navigate` sin `.hover`, índices historial `(empresa_id, user_id, created_at)`. — `AppServiceProvider.php`, `OperarioGalponResumenService.php`, `vite.config.js`, `pwa.js`, `bottom-nav.blade.php`, `sidebar-nav.blade.php`, migración índices, `pwa.md`, `patrones-mobile-operario.md`, `esquema-bd.md`, tests

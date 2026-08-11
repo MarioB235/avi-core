@@ -60,6 +60,7 @@ class AvicoreEstructuraAvicolaSeeder extends Seeder
             'empresa_id' => $empresa->id,
             'galpon_id' => $galponUno->id,
             'codigo' => 'L-2026-01',
+            'codigo_sma' => 'L-2024-089',
             'fecha_nacimiento' => now()->subMonths(5)->toDateString(),
             'fecha_ingreso' => now()->subMonths(4)->toDateString(),
             'cantidad_inicial' => 10500,

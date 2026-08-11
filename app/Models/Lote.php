@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'empresa_id',
     'galpon_id',
     'codigo',
+    'codigo_sma',
     'fecha_nacimiento',
     'fecha_ingreso',
     'cantidad_inicial',

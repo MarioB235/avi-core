@@ -67,6 +67,15 @@
     @endif
 
     <x-ui.input
+        label="Nº de lote SMA (opcional)"
+        name="codigoSma"
+        type="text"
+        wire:model.defer="codigoSma"
+        placeholder="Ej. L-2024-089"
+        autocomplete="off"
+    />
+
+    <x-ui.input
         label="Fecha aproximada de nacimiento"
         name="fechaNacimiento"
         type="date"

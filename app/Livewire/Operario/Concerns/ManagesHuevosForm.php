@@ -7,9 +7,15 @@ use App\Services\OperarioGalponService;
 
 trait ManagesHuevosForm
 {
+    use ManagesCargaOtraVez;
+
     public bool $dialogHuevosAbierto = false;
 
+    public bool $huevosRecienGuardados = false;
+
     public string $huevos = '';
+
+    public string $huevosDescarte = '0';
 
     public function abrirFormularioHuevos(OperarioGalponService $operarioGalponService): void
     {
@@ -17,6 +23,7 @@ trait ManagesHuevosForm
             return;
         }
 
+        $this->huevosRecienGuardados = false;
         $this->resetFormularioHuevos();
         $this->dialogHuevosAbierto = true;
     }
@@ -24,8 +31,19 @@ trait ManagesHuevosForm
     public function updatedDialogHuevosAbierto(bool $abierto): void
     {
         if (! $abierto) {
+            $this->huevosRecienGuardados = false;
             $this->resetFormularioHuevos();
         }
+    }
+
+    public function cargarOtraVezHuevos(): void
+    {
+        $this->prepararOtraCarga('huevosRecienGuardados', fn () => $this->resetFormularioHuevos());
+    }
+
+    public function cerrarDialogoHuevos(): void
+    {
+        $this->cerrarDialogoCarga('dialogHuevosAbierto', 'huevosRecienGuardados', fn () => $this->resetFormularioHuevos());
     }
 
     public function guardarHuevos(
@@ -33,11 +51,23 @@ trait ManagesHuevosForm
         OperarioGalponService $operarioGalponService,
     ): void {
         $validated = $this->validate([
-            'huevos' => ['required', 'integer', 'min:1'],
+            'huevos' => ['required', 'integer', 'min:0'],
+            'huevosDescarte' => ['required', 'integer', 'min:0'],
         ], [
-            'huevos.required' => 'Ingresá la cantidad de huevos.',
-            'huevos.min' => 'La cantidad debe ser mayor a cero.',
+            'huevos.required' => 'Ingresá los huevos aptos.',
+            'huevos.min' => 'Los huevos aptos no pueden ser negativos.',
+            'huevosDescarte.required' => 'Ingresá los huevos de descarte (0 si no hubo).',
+            'huevosDescarte.min' => 'El descarte no puede ser negativo.',
         ]);
+
+        $huevosAptos = (int) $validated['huevos'];
+        $huevosDescarte = (int) $validated['huevosDescarte'];
+
+        if ($huevosAptos + $huevosDescarte < 1) {
+            $this->addError('huevos', 'Ingresá al menos un huevo apto o de descarte.');
+
+            return;
+        }
 
         $galpon = $this->resolveGalponParaGuardar($operarioGalponService, 'dialogHuevosAbierto');
 
@@ -48,18 +78,22 @@ trait ManagesHuevosForm
         $registrarCargaHuevos->execute(
             auth()->user(),
             $galpon,
-            (int) $validated['huevos'],
+            $huevosAptos,
+            $huevosDescarte,
             null,
         );
 
-        $this->dialogHuevosAbierto = false;
-        $this->resetFormularioHuevos();
-        $this->dispatch('snackbar-show', message: 'Huevos guardados.', variant: 'success');
+        $this->trasGuardarConOtraVez(
+            'huevosRecienGuardados',
+            fn () => $this->resetFormularioHuevos(),
+            'Huevos guardados.',
+        );
     }
 
     private function resetFormularioHuevos(): void
     {
-        $this->reset(['huevos']);
+        $this->reset(['huevos', 'huevosDescarte']);
+        $this->huevosDescarte = '0';
         $this->resetValidation();
     }
 }
