@@ -13,11 +13,27 @@ use Illuminate\Support\Carbon;
 class OperarioGalponResumenService
 {
     /**
+     * Memo intra-request (service scoped): evita re-query de lotes si Home y CargarHub piden lotesActivos en el mismo request.
+     *
+     * @var array<string, mixed>
+     */
+    private array $memo = [];
+
+    /**
      * @return Collection<int, Lote>
      */
     public function lotesActivos(Galpon $galpon): Collection
     {
-        return $galpon->lotes()
+        $memoKey = 'lotes_'.$galpon->id;
+
+        if (isset($this->memo[$memoKey])) {
+            /** @var Collection<int, Lote> $cached */
+            $cached = $this->memo[$memoKey];
+
+            return $cached;
+        }
+
+        return $this->memo[$memoKey] = $galpon->lotes()
             ->whereIn('estado', [
                 LoteEstado::Activo->value,
                 LoteEstado::EnProduccion->value,

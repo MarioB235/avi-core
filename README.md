@@ -40,12 +40,13 @@ URL: `http://localhost:8000` · previews: `/dev/admin-layout`, `/dev/operario-la
 
 | Qué necesitás | Archivo |
 |---------------|---------|
-| Contexto del proyecto | [`docs/00-contexto.md`](docs/00-contexto.md) |
+| Contexto del proyecto | [`portal/contenido/desarrollo/contexto.html`](portal/contenido/desarrollo/contexto.html) |
+| Portal documental | [`portal/README.md`](portal/README.md) — `pnpm run portal:dev` |
 | Detalle de producto | [`.cursor/skills/README.md`](.cursor/skills/README.md) |
 | Entorno local | [`avicore-contexto/references/arranque-local.md`](.cursor/skills/avicore-contexto/references/arranque-local.md) |
 | Config Cursor | [`.cursor/README.md`](.cursor/README.md) |
 | Comando del arquitecto | `/avicore-architect-direct` → [`.cursor/commands/avicore-architect-direct.md`](.cursor/commands/avicore-architect-direct.md) |
-| Plantillas mensajes 1–5 | [`docs/02-avicore-mensajes-reutilizables.html`](docs/02-avicore-mensajes-reutilizables.html) |
+| Plantillas mensajes 1–5 | [`portal/contenido/desarrollo/mensajes-reutilizables.html`](portal/contenido/desarrollo/mensajes-reutilizables.html) |
 | Instrucciones para el agente | [`AGENTS.md`](AGENTS.md) |
 
 ## Estructura principal
@@ -53,14 +54,14 @@ URL: `http://localhost:8000` · previews: `/dev/admin-layout`, `/dev/operario-la
 ```text
 app/            Actions, Services, Livewire, Policies, Events
 resources/      Layouts, componentes UI, assets (Vite + Tailwind)
-docs/           Contexto mínimo (00-contexto, CHANGELOG, plantillas HTML)
+portal/         Documentación humana (producto, contexto, plantillas, imprimibles)
 .cursor/        Skills, reglas, comando del arquitecto AviCore
 ```
 
 ## Desarrollo con Cursor
 
 1. Abrí este workspace en Cursor.
-2. Usá `/avicore-architect-direct` (primera línea del chat), pegá la plantilla del mensaje que corresponda y completá el bloque final — ver [`docs/02-avicore-mensajes-reutilizables.html`](docs/02-avicore-mensajes-reutilizables.html).
+2. Usá `/avicore-architect-direct` (primera línea del chat), pegá la plantilla del mensaje que corresponda y completá el bloque final — ver [`portal/contenido/desarrollo/mensajes-reutilizables.html`](portal/contenido/desarrollo/mensajes-reutilizables.html).
 
 ## Licencia
 

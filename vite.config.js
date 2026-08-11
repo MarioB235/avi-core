@@ -121,6 +121,8 @@ export default defineConfig({
                 globPatterns: ['**/*.{js,css,woff2}'],
                 navigateFallback: null,
                 cleanupOutdatedCaches: true,
+                clientsClaim: true,
+                skipWaiting: true,
                 runtimeCaching: [
                     {
                         urlPattern: /\/images\/brand\/.+\.(?:png|jpe?g|webp)$/i,
@@ -136,7 +138,7 @@ export default defineConfig({
                 ],
             },
             devOptions: {
-                enabled: true,
+                enabled: process.env.NODE_ENV !== 'production',
             },
         }),
     ],

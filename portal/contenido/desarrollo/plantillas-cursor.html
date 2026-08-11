@@ -1,0 +1,177 @@
+<p class="page-meta">Desarrollo · Plantillas</p>
+<h1>Desarrollo — mensajes 1–5</h1>
+<p data-plantilla-nav="dev-plantillas-cursor"></p>
+<p class="lead">Plantillas cortas para <strong>/avicore-architect-direct</strong>. El protocolo largo vive en el slash y en <code>AGENTS.md</code> — acá solo lo que pegás al chat.</p>
+
+<div class="note">
+  <strong>Cierre 2→5:</strong> mensaje <strong>2</strong> (<code>@rutas</code> al final) → <strong>3</strong> → <strong>4</strong> → <strong>5</strong>.
+  Catálogo: <code>.cursor/skills/README.md</code> · mapa:
+  <button type="button" class="portal-inline-link" data-portal-page="dev-contexto" data-portal-href="contenido/desarrollo/contexto.html" data-portal-label="Contexto del proyecto">Contexto del proyecto</button>.
+</div>
+
+<h2 id="mensajes">1 — Mensajes para copiar</h2>
+<p class="copy-hint">Expandí cada bloque. El botón <strong>Copiar</strong> del encabezado pega el mensaje completo en el chat.</p>
+<p class="doc-toolbar">
+  <button type="button" class="template-copy-btn" data-accordion-expand>Expandir todos</button>
+  <button type="button" class="template-copy-btn" data-accordion-collapse>Colapsar todos</button>
+</p>
+<div class="plantilla-accordion" data-accordion>
+<details>
+  <summary>1 — Pedir tarea · el más usado</summary>
+  <div class="subsection">
+    <p class="copy-hint">Skill según tarea · <code>.cursor/skills/README.md</code> · protocolo Git/lectura en el slash</p>
+    <pre><code>Ahora vamos a implementar en AviCore.
+
+▶ Ejecutá el flujo del slash (/avicore-architect-direct) sin preguntar salvo: dato bloqueante, operación destructiva no autorizada o conflicto con portal/contenido/desarrollo/contexto.html.
+Al terminar: rama en uso y siguiente paso (auditoría / doc / PR).
+
+Reglas fijas:
+- Orquestación: /avicore-architect-direct en la primera línea de cada mensaje.
+- Skills: el agente elige según .cursor/skills/README.md — no invocar @skills.
+- Sin commit, push ni PR hasta el mensaje 5.
+- Si cambió contrato: references/ del skill dueño + línea en portal/CHANGELOG.md.
+
+Tipo de rama (si hace falta crear): feature/ | fix/ | refactor/ | hotfix/ | docs/ | chore/
+
+Cierre opcional en esta sesión: 2 (auditoría) → 3 → 4 → 5.
+
+Aquí te detallo la tarea:</code></pre>
+  </div>
+</details>
+
+<details>
+  <summary>2 — Auditoría técnica · solo lectura · inicio del cierre</summary>
+  <div class="subsection">
+    <p class="copy-hint">Skill: <code>avicore-auditoria</code> (revisar)</p>
+    <pre><code>Ahora vamos a realizar una auditoría técnica en AviCore.
+
+▶ Solo informe (tabla + plan). Sin modificar archivos. Mejoras menores → listarlas para el mensaje 3.
+
+Criterios: .cursor/skills/avicore-auditoria/references/estandares-codigo.md
+Dimensiones: Negocio, Permisos, Código, UI, Tests, Arquitectura.
+
+Alcance:
+- Archivos con @ al final de este mensaje (prioridad).
+- Si no hay @: archivos del mensaje 1 / sesión, o git diff --stat de la rama.
+- Lista vacía y sin diff → pedir archivos (única pregunta válida).
+
+Devolvé solo:
+1. Resumen ejecutivo breve
+2. Tabla: | Archivo | Cumplimiento % | Negocio | Permisos | Código | UI | Tests | Arquitectura | Brecha principal |
+3. Brechas relevantes
+4. Tests faltantes solo si impactan cumplimiento
+5. Plan priorizado ≤5 acciones (mensaje 3)
+
+Reglas: priorizar listados; no 100% si faltan tests testeables sin justificación; respuesta breve.
+
+Archivos a analizar:</code></pre>
+  </div>
+</details>
+
+<details>
+  <summary>3 — Cierre de auditoría · tests en verde</summary>
+  <div class="subsection">
+    <p class="copy-hint">Skill: <code>avicore-auditoria</code> (aplicar) · mismo chat que el 2</p>
+    <pre><code>En base a la auditoría del mensaje 2, aplicá el plan.
+
+▶ Sin pedir confirmación. Orden: bugs → tests faltantes testeables → deuda localizada → resto (máx. 5 del plan).
+Sin refactors grandes oportunistas. Subí el cumplimiento % de cada fila lo máximo posible.
+
+Verificación: php artisan test (verde); pnpm run build si hubo front; vendor/bin/pint si PHP.
+Sin commit/push/PR. Contrato alterado → anotar para mensaje 4.
+
+Al cerrar: qué corregiste + verificación + resumen copiable (archivo, % estimado) para el mensaje 5 («Resumen adicional»).</code></pre>
+  </div>
+</details>
+
+<details>
+  <summary>4 — Documentación · cierre · gaps</summary>
+  <div class="subsection">
+    <p class="copy-hint">Skill: <code>avicore-cierre-tarea</code> · mapa: <code>portal/contenido/desarrollo/contexto.html</code></p>
+    <pre><code>En base a esta sesión (mensajes 2–3 o diff de la rama), alineá la documentación AviCore.
+
+▶ Checklist y ediciones donde diga «actualizar». Un cambio conceptual → UNA sola fuente maestra (portal/contenido/desarrollo/contexto.html). No preguntar si la tabla ya resuelve la acción.
+
+Alcance: archivos de la auditoría/correcciones; si no hubo 2–3 → git diff de la rama.
+Antes de editar: corré `pnpm run check:docs-impact` (sugerencias por rutas tocadas; no edita solo).
+Si tocaste .cursor/ o plantillas: `pnpm run check:agent-docs`.
+Tooling desvío: GOBERNANZA.md. Contrato: portal/CHANGELOG.md.
+
+Devolvé:
+1. Tabla: documento | ¿alineado? | acción (actualizar / OK / no aplica)
+2. Docs editados o a commitear
+3. Frase PR: "Verifiqué documentación y actualicé […] según el cambio."
+4. Bloque copiable para mensaje 5 (objetivos, técnico, verificación, docs).</code></pre>
+  </div>
+</details>
+
+<details>
+  <summary>5 — Commit, push y PR · vos autorizás</summary>
+  <div class="subsection">
+    <p class="copy-hint">Skill: <code>avicore-git-pr</code> · plantilla PR completa en el skill</p>
+    <pre><code>Ahora vamos a seguir el flujo Git para AviCore.
+
+▶ Este mensaje autoriza commit, push y PR. Sin cambios → informar, no commit vacío.
+Antes (si hay código Laravel): php artisan test; pnpm run build si hubo front.
+
+Pasos: rama correcta (crear/renombrar si hace falta) → git status → git add [rutas explícitas] → Conventional Commits → push -u → PR (gh o MCP user-github; chequear gh auth vs remoto).
+
+Redacción: chat 2–4 + diff. Plantilla condensada:
+
+## Resumen
+[2–3 oraciones]
+
+## Tipo de cambio
+- [ ] feat · [ ] fix · [ ] refactor · [ ] docs · [ ] chore
+
+## Objetivos cumplidos
+- [ ] ...
+
+## Cambios técnicos
+### Archivos principales
+- ruta — motivo
+
+## Criterios AviCore
+- [ ] Multiempresa · [ ] Permisos · [ ] Validaciones · [ ] Docs (msg 4 o N/A)
+
+## Verificación
+- [ ] php artisan test · [ ] pnpm run build
+
+## Documentación
+Verifiqué documentación y actualicé [lista o «no aplica»] según el cambio.
+
+Resumen adicional (msg 3/4):
+
+Rama (vacío = actual):
+Base (main):
+Título (opcional):
+
+Devolvé: Rama final · Commit (hash corto) · URL PR · Estado pendiente de merge.</code></pre>
+  </div>
+</details>
+
+<details class="template-guide">
+  <summary>Atajos locales (copiar) · detalle en arranque-local.md</summary>
+  <div class="subsection comandos-group">
+    <p class="copy-hint">Fuente maestra: <code>.cursor/skills/avicore-contexto/references/arranque-local.md</code>. App en <strong>http://localhost:8000</strong>.</p>
+    <h3>Primera vez</h3>
+<pre><code>composer setup   # migrate + seed + build
+# o paso a paso:
+composer install
+cp .env.example .env
+php artisan key:generate
+pnpm install
+php artisan migrate
+php artisan db:seed
+pnpm run build</code></pre>
+<h3>Día a día / verificar</h3>
+<pre><code>composer dev
+# o: php artisan serve + pnpm run dev
+
+php artisan test
+pnpm run build
+pnpm run check:agent-docs
+pnpm run check:docs-impact</code></pre>
+  </div>
+</details>
+</div>

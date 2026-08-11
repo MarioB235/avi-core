@@ -1,0 +1,414 @@
+/*
+  Páginas interiores DNGR — flujo normal en pantalla y márgenes paginados en impresión.
+  Requiere: .informe.informe--con-portada + .document-pages
+*/
+
+:root {
+  --inner-content-width: var(--document-content-width, 14cm);
+  --inner-content-padding-left: var(--document-content-padding-left, 1.15rem);
+  --inner-content-padding-right: var(--document-content-padding-right, var(--informe-print-margin-x));
+  --inner-margin-font-size: 10.5pt;
+}
+
+.informe--con-portada.document {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.informe--con-portada .document-pages {
+  margin: 0;
+  width: 100%;
+  background: #fff;
+}
+
+.informe--con-portada .document-pages__content {
+  min-width: 0;
+  background: #fff;
+}
+
+@media screen {
+  .informe--con-portada .document-pages__content {
+    padding: 1.15rem var(--inner-content-padding-right) 0 var(--inner-content-padding-left);
+  }
+
+  .informe--con-portada .document-pages__content > main,
+  .informe--con-portada .document-pages__content > .document-signatures {
+    width: min(100%, var(--inner-content-width));
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .informe--con-portada .document-pages__content main {
+    font-size: 10.5pt;
+    line-height: 1.52;
+  }
+}
+
+.informe--con-portada .document-inner-footer {
+  display: block;
+  margin-top: 2.35rem;
+  padding: 0.45rem 0 0.1rem;
+  border-top: 1px solid #aab3be;
+  font-size: var(--inner-margin-font-size);
+  line-height: 1.35;
+  color: #5f6873;
+}
+
+.informe--con-portada .document-inner-footer__body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 auto;
+}
+
+@media screen {
+  .informe--con-portada .document-inner-footer__body {
+    width: min(100%, var(--inner-content-width));
+  }
+
+  body > .document-inner-footer--pantalla {
+    max-width: 21cm;
+    margin: 0 auto;
+    padding: 0 var(--informe-padding-x) 1.25rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-top: none;
+    box-sizing: border-box;
+  }
+
+  body > .document-inner-footer--pantalla .document-inner-footer__body {
+    width: min(100%, var(--inner-content-width));
+    margin: 0 auto;
+  }
+}
+
+.informe--con-portada .document-inner-footer__page::after {
+  content: "Documento institucional";
+}
+
+.informe--con-portada .section-block + .section-block {
+  margin-top: 1.4rem;
+  padding-top: 0;
+  border-top: none;
+}
+
+.informe--con-portada .section-block:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.informe--con-portada .document-pages__content .section-block h2 {
+  margin: 0 0 0.65rem;
+  padding: 0;
+  border-bottom: none;
+  font-size: 14pt;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--blue-inst);
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.informe--con-portada .section-block h3 {
+  margin: 0.85rem 0 0.4rem;
+  font-weight: 600;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+@media screen {
+  .informe--con-portada .section-block h3 {
+    font-size: 11.5pt;
+  }
+}
+
+.informe--con-portada .section-block p {
+  margin: 0 0 0.65rem;
+  text-align: justify;
+  hyphens: none;
+}
+
+.informe--con-portada .section-block p:last-child {
+  margin-bottom: 0;
+}
+
+.informe--con-portada .section-block li {
+  text-align: justify;
+  hyphens: none;
+}
+
+.informe--con-portada .formal-table {
+  width: 100%;
+  margin: 0.65rem 0 0.9rem;
+  border-collapse: collapse;
+  line-height: 1.35;
+}
+
+@media screen {
+  .informe--con-portada .formal-table {
+    font-size: 9.5pt;
+  }
+}
+
+.informe--con-portada .formal-table th,
+.informe--con-portada .formal-table td {
+  border: 1px solid #b8c0ca;
+  padding: 0.35rem 0.45rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.informe--con-portada .formal-table th {
+  background: var(--blue-inst);
+  color: #fff;
+  font-weight: 600;
+}
+
+.informe--con-portada .formal-table thead {
+  display: table-header-group;
+}
+
+@media screen {
+  .informe--con-portada .formal-table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+.informe--con-portada .definitions-table td:first-child {
+  width: 25%;
+  font-weight: 600;
+  color: var(--blue-inst);
+  background: var(--bg-soft);
+}
+
+.informe--con-portada .section-block p,
+.informe--con-portada .section-block li {
+  orphans: 3;
+  widows: 3;
+}
+
+@media print {
+  /*
+    @page: lo define portada.css (:first) y styles.css del documento (p. ej. directiva-atlas).
+    Anular el @page genérico de informes-base (@bottom-center) que puede dejar hoja final vacía.
+  */
+  @page {
+    size: A4 portrait;
+    margin: 0;
+
+    @top-left {
+      content: none;
+    }
+
+    @top-right {
+      content: none;
+    }
+
+    @bottom-left {
+      content: none;
+    }
+
+    @bottom-right {
+      content: none;
+    }
+
+    @bottom-center {
+      content: none;
+    }
+  }
+
+  .informe--con-portada .document-portada {
+    position: relative;
+    z-index: 20;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .informe--con-portada.document,
+  .informe--con-portada .document-pages,
+  .informe--con-portada .document-pages__content {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .informe--con-portada .document-pages {
+    display: block;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    break-before: auto;
+    page-break-before: auto;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /*
+    Pie de pantalla y scripts quedan fuera del <article> (contexto @page distinto).
+    display:none no basta en Chromium: sacarlos del flujo de paginación.
+  */
+  body:has(.informe.informe--con-portada) > :not(.informe.informe--con-portada) {
+    display: none !important;
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    break-before: avoid !important;
+    break-after: avoid !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .document-inner-footer--pantalla,
+  body > .document-inner-footer--pantalla {
+    display: none !important;
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    break-before: avoid !important;
+    break-after: avoid !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .informe--con-portada .document-pages__content > main {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .informe--con-portada .document-signatures {
+    break-before: auto;
+    page-break-before: auto;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .informe--con-portada .document-pages__content {
+    padding: 0 !important;
+    background: transparent !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .informe--con-portada .document-pages__content > main,
+  .informe--con-portada .document-pages__content > .document-signatures {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    overflow: visible !important;
+  }
+
+  .informe--con-portada .document-pages__content main,
+  .informe--con-portada .document-pages__content main pre.reporte-plantilla,
+  .informe--con-portada .document-pages__content main .formal-table {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .informe--con-portada pre.reporte-plantilla {
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  .informe--con-portada .formal-table {
+    table-layout: fixed !important;
+    width: 100% !important;
+  }
+
+  .informe--con-portada .formal-table th,
+  .informe--con-portada .formal-table td {
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  /* Impresión: 12pt canónico (informes-base); tipografía de pantalla no aplica (@media screen) */
+  .informe--con-portada .document-pages__content main {
+    font-size: 12pt !important;
+    line-height: 1.45;
+  }
+
+  .informe--con-portada .document-pages__content main :is(
+    p,
+    li,
+    td,
+    th,
+    h3,
+    h4,
+    code,
+    pre,
+    a,
+    .reporte-plantilla
+  ) {
+    font-size: 12pt !important;
+  }
+
+  .informe--con-portada .document-pages__content .section-block h2 {
+    font-size: 14pt !important;
+  }
+
+  .informe--con-portada .formal-table,
+  .informe--con-portada .formal-table th,
+  .informe--con-portada .formal-table td {
+    font-size: 12pt !important;
+  }
+
+  .informe--con-portada .formal-table th {
+    background: var(--blue-inst) !important;
+    color: #fff !important;
+  }
+
+  .informe--con-portada .definitions-table td:first-child {
+    background: var(--bg-soft) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /*
+    informes-base evita partir cada <p>; en documentos con portada el motor escala el contenido.
+  */
+  .informe.informe--con-portada p,
+  .informe.informe--con-portada li,
+  .informe.informe--con-portada pre,
+  .informe.informe--con-portada .directive-note,
+  .informe.informe--con-portada .section-block,
+  .informe.informe--con-portada .formal-table,
+  .informe.informe--con-portada .formal-table tr {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  .informe.informe--con-portada .section-block h2,
+  .informe.informe--con-portada .section-block h3,
+  .informe.informe--con-portada .section-block h4 {
+    break-after: auto !important;
+    page-break-after: auto !important;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .informe--con-portada .document-pages__content {
+    padding: 1rem;
+  }
+
+  .informe--con-portada .document-inner-footer__body {
+    flex-direction: column;
+    gap: 0.2rem;
+    text-align: center;
+  }
+
+  .informe--con-portada .formal-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

@@ -194,6 +194,21 @@ pnpm run build
 
 ---
 
+## Portal documental (HTML)
+
+Lectura humana de producto y mercado (sin Laravel):
+
+1. Extensión **Live Server** en VS Code/Cursor (root `/portal` en `.vscode/settings.json`, igual que ATLAS).
+2. Clic derecho en `portal/index.html` → **Open with Live Server**.
+3. URL correcta: `http://127.0.0.1:5500/` o `http://127.0.0.1:5500/index.html` (**sin** `/portal/` en la ruta).
+4. Alternativa: `pnpm run portal:dev` desde la raíz del repo.
+
+Si ves `Cannot GET /portal/index.html`, la URL es incorrecta o el puerto 5500 tiene otro servidor. Cerrar Live Server y reabrir desde `portal/index.html`.
+
+Detalle: [`portal/README.md`](../../../../portal/README.md). Los `.md` en `.cursor/skills/` siguen siendo fuente del agente Cursor.
+
+---
+
 ## Secretos
 
 - `.env` no se sube a Git (ver `.gitignore`).

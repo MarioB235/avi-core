@@ -1,0 +1,310 @@
+/*
+  Componentes compartidos — firmas, notas, listas, plantillas de texto, diagramas.
+  Requiere: base.css + portada.css + paginas-a4.css
+*/
+
+.regimen-list {
+  margin: 0.55rem 0 0.75rem 1.35rem;
+  list-style-type: disc;
+}
+
+.regimen-list li + li {
+  margin-top: 0.25rem;
+}
+
+.flota-sections-list {
+  list-style-type: decimal;
+}
+
+.section-block h4 {
+  margin: 0.85rem 0 0.35rem;
+  font-weight: 600;
+  color: var(--blue-inst);
+}
+
+.reporte-plantilla {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: inherit;
+  line-height: 1.45;
+  text-align: left;
+  color: var(--text);
+}
+
+.directive-note {
+  margin-top: 0.55rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--goal-bg);
+  border: none;
+  border-left: 4px solid var(--gold);
+}
+
+.directive-note p,
+.contact-channel p {
+  text-align: left;
+}
+
+.contact-channel {
+  margin-bottom: 0.55rem;
+}
+
+.contact-channel a {
+  color: var(--blue-inst);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.contact-channel a:hover {
+  text-decoration: underline;
+}
+
+.document-signatures {
+  --signature-slot-width: 17.5rem;
+  --signature-diagonal-offset: calc(1.2em + 0.35rem + 2.75rem + 0.45rem + 1.35em);
+  margin-top: 2.5rem;
+  padding-top: 0.5rem;
+}
+
+.document-signatures__table {
+  width: 100%;
+  border: none;
+  border-collapse: collapse;
+  margin: 0;
+  table-layout: fixed;
+}
+
+.document-signatures__cell {
+  width: 50%;
+  vertical-align: top;
+  border: none;
+  padding: 0;
+}
+
+.document-signatures__cell--presented {
+  text-align: left;
+}
+
+.document-signatures__cell--approved {
+  text-align: right;
+  vertical-align: top;
+}
+
+.document-signatures__slot {
+  display: inline-block;
+  width: var(--signature-slot-width);
+  max-width: 100%;
+  text-align: center;
+  vertical-align: top;
+}
+
+.document-signatures__cell--approved .document-signatures__slot {
+  padding-top: var(--signature-diagonal-offset);
+}
+
+.document-signatures__label {
+  margin: 0 0 0.35rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.document-signatures__line {
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid var(--text);
+  margin: 0 0 0.45rem;
+  min-height: 2.75rem;
+}
+
+.document-signatures__name {
+  margin: 0;
+  font-size: 12pt;
+  font-weight: 600;
+  color: var(--blue-inst);
+}
+
+.definitions-table ul {
+  margin: 0.35rem 0 0 1.1rem;
+}
+
+.definitions-table li + li {
+  margin-top: 0.2rem;
+}
+
+.definitions-table td ul.regimen-list {
+  margin: 0.35rem 0 0 1.1rem;
+}
+
+@media screen {
+  .section-block h4 {
+    font-size: 11pt;
+  }
+
+  .reporte-plantilla {
+    font-size: 10.5pt;
+  }
+
+  .document-signatures__label {
+    font-size: 10.5pt;
+  }
+
+  .directive-note,
+  .contact-channel,
+  .document-signatures {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .informe--con-portada pre.diagrama-fallback {
+    display: none !important;
+  }
+
+  body.diagramas-sin-render pre.diagrama-fallback {
+    display: block !important;
+  }
+
+  body.diagramas-sin-render pre.mermaid,
+  body.diagramas-sin-render .mermaid {
+    display: none !important;
+  }
+
+  .informe--con-portada .mermaid {
+    margin: 0.65rem 0 0.9rem;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .diagrama-rotado {
+    margin: 0.75rem 0 1rem;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+
+  body.diagramas-ok .diagrama-rotado .mermaid {
+    display: block !important;
+    margin: 0.65rem 0 0.9rem;
+    max-width: none !important;
+    overflow-x: visible !important;
+  }
+
+  body.diagramas-ok .diagrama-rotado .mermaid svg {
+    display: block !important;
+    max-width: none !important;
+    width: auto !important;
+    height: auto !important;
+  }
+
+  body.diagramas-ok .diagrama-rotado.diagrama-fail pre.diagrama-fallback {
+    display: block !important;
+  }
+
+  body.diagramas-ok .diagrama-rotado.diagrama-fail .mermaid {
+    display: none !important;
+  }
+}
+
+@media print {
+  .informe .directive-note {
+    background: var(--goal-bg) !important;
+  }
+
+  .informe .document-signatures {
+    margin-top: 2.25rem;
+  }
+
+  .informe .document-signatures__table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  .informe .document-signatures__cell {
+    width: 50% !important;
+  }
+
+  .informe .document-signatures__cell--approved .document-signatures__slot {
+    padding-top: var(--signature-diagonal-offset) !important;
+  }
+
+  .diagrama-rotado {
+    break-before: page;
+    page-break-before: always;
+    break-after: avoid;
+    page-break-after: avoid;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 25.2cm;
+    margin: 0 !important;
+    padding: 0;
+    overflow: visible;
+  }
+
+  body.diagramas-ok .diagrama-rotado .mermaid {
+    display: block !important;
+    margin: 0 !important;
+    max-width: none !important;
+    overflow: visible !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    transform: rotate(90deg);
+    transform-origin: center center;
+    flex-shrink: 0;
+  }
+
+  body.diagramas-ok .diagrama-rotado .mermaid svg {
+    display: block !important;
+    width: 24.8cm !important;
+    height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+
+  body:not(.diagramas-ok) .diagrama-rotado .mermaid,
+  body.diagramas-ok .diagrama-rotado.diagrama-fail .mermaid {
+    display: none !important;
+    transform: none !important;
+  }
+
+  body:not(.diagramas-ok) .diagrama-rotado pre.diagrama-fallback,
+  body.diagramas-ok .diagrama-rotado.diagrama-fail pre.diagrama-fallback {
+    display: block !important;
+    width: 22cm !important;
+    max-width: 22cm !important;
+    margin: 0 !important;
+    font-size: 8.5pt !important;
+    line-height: 1.3 !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    transform: rotate(90deg);
+    transform-origin: center center;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .document-signatures__table,
+  .document-signatures__table tbody,
+  .document-signatures__table tr,
+  .document-signatures__table td {
+    display: block;
+    width: 100% !important;
+  }
+
+  .document-signatures__cell--presented,
+  .document-signatures__cell--approved {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .document-signatures__cell--approved {
+    margin-bottom: 0;
+  }
+
+  .document-signatures__cell--approved .document-signatures__slot {
+    padding-top: 0;
+  }
+}

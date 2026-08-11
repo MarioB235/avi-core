@@ -1,36 +1,22 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AviCore — ChatGPT pantallas móvil</title>
-  <link rel="stylesheet" href="plantillas.css" />
-</head>
-<body>
-  <nav class="site-nav" aria-label="Secciones plantillas">
-    <a href="../02-avicore-mensajes-reutilizables.html">Inicio</a>
-    <a href="desarrollo.html">Desarrollo</a>
-    <a href="chatgpt-pantallas.html" class="active" aria-current="page">ChatGPT pantallas</a>
-  </nav>
-  <header>
-    <h1>AviCore — ChatGPT pantallas móvil</h1>
-    <p class="lead">Mockups UI dentro de mockup de smartphone — un acordeón = un mensaje para ChatGPT (modo imagen).</p>
-    <p class="hint">Un acordeón = un mensaje completo para ChatGPT (modo imagen). UI + fondo avícola integrados en el mismo prompt.</p>
-    <div class="toolbar">
-      <button type="button" class="btn" id="expand-all">Expandir todos</button>
-      <button type="button" class="btn" id="collapse-all">Colapsar todos</button>
-    </div>
-  </header>
+<p class="page-meta">Desarrollo · Plantillas</p>
+<h1>ChatGPT — pantallas móvil</h1>
+<p data-plantilla-nav="dev-plantillas-chatgpt"></p>
+<p class="lead">Mockups UI dentro de un smartphone — un acordeón = un prompt completo para ChatGPT (modo imagen).</p>
 
-  <div class="accordion" id="accordion">
-    <details>
-      <summary>
-        <span class="summary-label">ChatGPT — Login móvil <span class="badge">prompt imagen</span></span>
-        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar prompt ChatGPT login">Copiar</button>
-      </summary>
-      <div class="panel">
-        <p class="when">Un solo mensaje para ChatGPT (modo imagen).</p>
-        <pre data-copy>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
+<div class="note">Un acordeón = un mensaje. UI + fondo avícola integrados en el mismo prompt.</div>
+
+<h2 id="prompts">1 — Prompts para copiar</h2>
+<p class="copy-hint">Usá <strong>Copiar</strong> en cada encabezado y pegá en ChatGPT con modo imagen activado.</p>
+<p class="doc-toolbar">
+  <button type="button" class="template-copy-btn" data-accordion-expand>Expandir todos</button>
+  <button type="button" class="template-copy-btn" data-accordion-collapse>Colapsar todos</button>
+</p>
+<div class="plantilla-accordion" data-accordion>
+<details>
+  <summary>ChatGPT — Login móvil · prompt imagen</summary>
+  <div class="subsection">
+    <p class="copy-hint">Un solo mensaje para ChatGPT (modo imagen).</p>
+    <pre><code>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
 
 Paleta fija:
 • Verde principal #1F5E3B · secundario #3A7D44 · suave #EAF5EC
@@ -55,18 +41,15 @@ Estilo visual: Device mockup de producto — smartphone centrado, marco delgado,
 
 Texto exacto a renderizar (legible): "AviCore", "Gestión operativa avícola", "Bienvenido", "Iniciá sesión para continuar", "Documento", "Contraseña", "Recordarme", "Iniciar sesión", "¿Olvidaste tu contraseña?".
 
-Excluir además: barra de navegación inferior de app, dock de app, personas en primer plano, watermark.</pre>
-      </div>
-    </details>
+Excluir además: barra de navegación inferior de app, dock de app, personas en primer plano, watermark.</code></pre>
+  </div>
+</details>
 
-    <details>
-      <summary>
-        <span class="summary-label">ChatGPT — Operario Inicio <span class="badge">prompt imagen</span></span>
-        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar prompt ChatGPT operario Inicio">Copiar</button>
-      </summary>
-      <div class="panel">
-        <p class="when">Un solo mensaje. Pestaña «Inicio» activa; incluye header + dock inferior.</p>
-        <pre data-copy>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
+<details>
+  <summary>ChatGPT — Operario Inicio · prompt imagen</summary>
+  <div class="subsection">
+    <p class="copy-hint">Un solo mensaje. Pestaña «Inicio» activa; incluye header + dock inferior.</p>
+    <pre><code>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
 
 Paleta fija:
 • Verde principal #1F5E3B · secundario #3A7D44 · suave #EAF5EC
@@ -84,7 +67,7 @@ Reglas:
 
 Genera un mockup de la pantalla "Inicio" del operario en AviCore, mostrada dentro de la pantalla de un smartphone en vista frontal. El resultado debe transmitir resumen operativo claro, listo para uso en campo con una mano.
 
-Sujeto y acción: Dentro del display del teléfono, operario ve saludo y últimas cargas del día. Header sticky: logo hoja verde izquierda, badge pill "OPERARIO" verde claro, título "Inicio", chip sólido verde "Galpón 1 (G-01)", avatar circular operario a la derecha. Banner horizontal gradiente verde con icono mano saludando y "Hola, Operario Demo." en blanco. Grid 2 columnas: card "Hoy" con icono calendario y fecha "24 may 2024"; card "Cargas completadas" con check y número "2". Card grande "Últimas cargas de hoy" con icono clipboard, enlace "Ver todo >", ítem anidado con icono huevo "Huevos · 120 maples", subtítulo "Galpón 1 (G-01) · 08:45" y chevron derecha. Dock inferior pastilla verde claro: "Inicio" activo en verde sólido, "Galpón", "Cargar" con "+" en círculo, "Historial".
+Sujeto y acción: Dentro del display del teléfono, operario ve saludo y últimas cargas del día. Header sticky: logo hoja verde izquierda, badge pill "OPERARIO" verde claro, título "Inicio", chip sólido verde "Galpón 1 (G-01)", avatar circular operario a la derecha. Banner horizontal gradiente verde con icono mano saludando y "Hola, Operario Demo." en blanco. Grid 2 columnas: card "Hoy" con icono calendario y fecha "24 may 2024"; card "Cargas completadas" con check y número "2". Card grande "Últimas cargas de hoy" con icono clipboard, enlace "Ver todo &gt;", ítem anidado con icono huevo "Huevos · 120 maples", subtítulo "Galpón 1 (G-01) · 08:45" y chevron derecha. Dock inferior pastilla verde claro: "Inicio" activo en verde sólido, "Galpón", "Cargar" con "+" en círculo, "Historial".
 
 Entorno y atmósfera: Dentro de la pantalla, fondo superficie lisa #F5F7FA sin fotografía. Mood eficiente, limpio y profesional — operación en campo avícola.
 
@@ -92,18 +75,15 @@ Estilo visual: Device mockup centrado; cards blancas redondeadas con elevación 
 
 Texto exacto: "OPERARIO", "Inicio", "Galpón 1 (G-01)", "Hola, Operario Demo.", "Hoy", "24 may 2024", "Cargas completadas", "2", "Últimas cargas de hoy", "Ver todo", "Huevos · 120 maples", "Galpón 1 (G-01) · 08:45", "Inicio", "Galpón", "Cargar", "Historial".
 
-Excluir además: cambio de galpón en header, watermark.</pre>
-      </div>
-    </details>
+Excluir además: cambio de galpón en header, watermark.</code></pre>
+  </div>
+</details>
 
-    <details>
-      <summary>
-        <span class="summary-label">ChatGPT — Operario Galpón <span class="badge">prompt imagen</span></span>
-        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar prompt ChatGPT operario Galpón">Copiar</button>
-      </summary>
-      <div class="panel">
-        <p class="when">Un solo mensaje. Pestaña «Galpón» activa.</p>
-        <pre data-copy>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
+<details>
+  <summary>ChatGPT — Operario Galpón · prompt imagen</summary>
+  <div class="subsection">
+    <p class="copy-hint">Un solo mensaje. Pestaña «Galpón» activa.</p>
+    <pre><code>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
 
 Paleta fija:
 • Verde principal #1F5E3B · secundario #3A7D44 · suave #EAF5EC
@@ -129,18 +109,15 @@ Estilo visual: Device mockup centrado; cards seleccionables con borde verde en �
 
 Texto exacto: "OPERARIO", "Galpón", "Seleccioná dónde vas a cargar hoy", "Galpón 1 (G-01)", "Granja Norte", "Galpón 2 (G-02)", "Granja Sur", "Confirmar galpón", "Inicio", "Galpón", "Cargar", "Historial".
 
-Excluir además: mapas, GPS, formularios complejos, watermark.</pre>
-      </div>
-    </details>
+Excluir además: mapas, GPS, formularios complejos, watermark.</code></pre>
+  </div>
+</details>
 
-    <details>
-      <summary>
-        <span class="summary-label">ChatGPT — Operario Cargar hub <span class="badge">prompt imagen</span></span>
-        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar prompt ChatGPT operario Cargar">Copiar</button>
-      </summary>
-      <div class="panel">
-        <p class="when">Un solo mensaje. Hub de tipos de carga; pestaña «Cargar» activa.</p>
-        <pre data-copy>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
+<details>
+  <summary>ChatGPT — Operario Cargar hub · prompt imagen</summary>
+  <div class="subsection">
+    <p class="copy-hint">Un solo mensaje. Hub de tipos de carga; pestaña «Cargar» activa.</p>
+    <pre><code>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
 
 Paleta fija:
 • Verde principal #1F5E3B · secundario #3A7D44 · suave #EAF5EC
@@ -166,18 +143,15 @@ Estilo visual: Device mockup centrado; botones grandes táctiles; todo dentro de
 
 Texto exacto: "OPERARIO", "Cargar", "Galpón 1 (G-01)", "Nueva carga", "Galpón: Galpón 1 (G-01)", "Huevos", "Muertes", "Vacunación", "Nuevo lote", "Inicio", "Galpón", "Cargar", "Historial".
 
-Excluir además: iconos recargados, "Próximamente", tiles Alimento/Combinada en esta pantalla, más de 4 acciones en grid, watermark.</pre>
-      </div>
-    </details>
+Excluir además: iconos recargados, "Próximamente", tiles Alimento/Combinada en esta pantalla, más de 4 acciones en grid, watermark.</code></pre>
+  </div>
+</details>
 
-    <details>
-      <summary>
-        <span class="summary-label">ChatGPT — Operario Carga huevos <span class="badge">prompt imagen</span></span>
-        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar prompt ChatGPT carga huevos">Copiar</button>
-      </summary>
-      <div class="panel">
-        <p class="when">Un solo mensaje. Formulario de carga; pestaña «Cargar» activa en el dock.</p>
-        <pre data-copy>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
+<details>
+  <summary>ChatGPT — Operario Carga huevos · prompt imagen</summary>
+  <div class="subsection">
+    <p class="copy-hint">Un solo mensaje. Formulario de carga; pestaña «Cargar» activa en el dock.</p>
+    <pre><code>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
 
 Paleta fija:
 • Verde principal #1F5E3B · secundario #3A7D44 · suave #EAF5EC
@@ -203,18 +177,15 @@ Estilo visual: Device mockup centrado; inputs altos; teclado numérico sugerido 
 
 Texto exacto: "OPERARIO", "Cargar", "Galpón", "Galpón 1 (G-01)", "Cantidad de huevos", "Ej: 1250", "Observación (opcional)", "La fecha y hora se registran automáticamente al guardar.", "Guardar carga", "Volver", "Inicio", "Galpón", "Cargar", "Historial".
 
-Excluir además: selector de fecha manual, campos innecesarios, watermark.</pre>
-      </div>
-    </details>
+Excluir además: selector de fecha manual, campos innecesarios, watermark.</code></pre>
+  </div>
+</details>
 
-    <details>
-      <summary>
-        <span class="summary-label">ChatGPT — Operario Historial <span class="badge">prompt imagen</span></span>
-        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar prompt ChatGPT operario Historial">Copiar</button>
-      </summary>
-      <div class="panel">
-        <p class="when">Un solo mensaje. Listado del día + cuenta; pestaña «Historial» activa.</p>
-        <pre data-copy>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
+<details>
+  <summary>ChatGPT — Operario Historial · prompt imagen</summary>
+  <div class="subsection">
+    <p class="copy-hint">Un solo mensaje. Listado del día + cuenta; pestaña «Historial» activa.</p>
+    <pre><code>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
 
 Paleta fija:
 • Verde principal #1F5E3B · secundario #3A7D44 · suave #EAF5EC
@@ -240,18 +211,15 @@ Estilo visual: Device mockup centrado; lista legible, cards separadas; todo cont
 
 Texto exacto: "OPERARIO", "Historial", "Historial de hoy", "Galpón actual: Galpón 1 (G-01)", "Huevos · 120 maples", "Galpón 1 (G-01) · 08:45", "Tu cuenta", "Operario Demo", "200000001", "Cerrar sesión", "Inicio", "Galpón", "Cargar", "Historial".
 
-Excluir además: tablas densas, watermark.</pre>
-      </div>
-    </details>
+Excluir además: tablas densas, watermark.</code></pre>
+  </div>
+</details>
 
-    <details>
-      <summary>
-        <span class="summary-label">ChatGPT — Operario Inicio (sin galpón) <span class="badge">prompt imagen · variante</span></span>
-        <button type="button" class="btn btn-primary btn-copy-header" aria-label="Copiar prompt ChatGPT Inicio sin galpón">Copiar</button>
-      </summary>
-      <div class="panel">
-        <p class="when">Un solo mensaje. Variante: operario sin galpón seleccionado.</p>
-        <pre data-copy>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
+<details>
+  <summary>ChatGPT — Operario Inicio (sin galpón) · prompt imagen · variante</summary>
+  <div class="subsection">
+    <p class="copy-hint">Un solo mensaje. Variante: operario sin galpón seleccionado.</p>
+    <pre><code>Contexto — AviCore: mockups de UI móvil para app de gestión operativa avícola (gallinas ponedoras). Estilo «Refined Agro»: verde/agro moderno, profesional, limpio, confiable.
 
 Paleta fija:
 • Verde principal #1F5E3B · secundario #3A7D44 · suave #EAF5EC
@@ -277,12 +245,7 @@ Estilo visual: Device mockup centrado; igual que Inicio con galpón; acento adve
 
 Texto exacto: "OPERARIO", "Inicio", "Elegí un galpón en la pestaña Galpón", "Hola, Operario Demo.", "Elegí un galpón en la pestaña Galpón para empezar a cargar.", "Últimas cargas de hoy", "Todavía no hay cargas registradas hoy.", "Inicio", "Galpón", "Cargar", "Historial".
 
-Excluir además: mensajes de error rojos agresivos, watermark.</pre>
-      </div>
-    </details>
+Excluir además: mensajes de error rojos agresivos, watermark.</code></pre>
   </div>
-
-  <div class="toast" id="toast">Copiado al portapapeles</div>
-  <script src="plantillas.js"></script>
-</body>
-</html>
+</details>
+</div>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal AviCore</title>
+    <script>
+      (function () {
+        var key = "portal-theme";
+        var stored = localStorage.getItem(key);
+        var theme =
+          stored === "light" || stored === "dark"
+            ? stored
+            : window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="css/content.css" />
+  </head>
+  <body>
+    <div class="sidebar-overlay" id="sidebar-overlay" hidden></div>
+
+    <aside class="sidebar" id="sidebar" aria-label="Navegación">
+      <header class="sidebar-header">
+        <a class="sidebar-header__brand" href="index.html" id="home-link">
+          <img
+            class="sidebar-header__logo"
+            src="assets/logo-avicore.png"
+            alt="AviCore"
+            width="140"
+            height="36"
+          />
+          <h1>Portal AviCore</h1>
+          <p class="sidebar-subtitle">Documentación de producto</p>
+        </a>
+      </header>
+      <nav class="nav-list" id="lista-modulos" aria-label="Secciones"></nav>
+      <footer class="sidebar-footer">
+        <p class="sidebar-footer__org">AviCore · Gestión avícola Uruguay</p>
+      </footer>
+    </aside>
+
+    <main class="main">
+      <header class="top-bar">
+        <button
+          id="btn-menu"
+          class="btn-menu"
+          type="button"
+          aria-expanded="false"
+          aria-controls="sidebar"
+        >
+          Menú
+        </button>
+        <h1 class="top-bar-title" id="page-title">Portal AviCore</h1>
+        <div class="top-bar-actions">
+          <button type="button" class="btn-theme" id="btn-theme" aria-label="Activar modo claro" title="Modo claro">
+            Claro
+          </button>
+          <button type="button" class="btn-print" id="btn-print" title="Imprimir página">Imprimir</button>
+        </div>
+      </header>
+      <div class="main-layout">
+        <div class="content-area" id="contenido">
+          <div id="visor" class="fade-in" tabindex="-1"></div>
+        </div>
+        <aside class="toc-sidebar" id="toc-sidebar" hidden>
+          <nav class="toc-nav" aria-label="En esta página">
+            <p class="toc-title">En esta página</p>
+            <div id="toc-list" class="toc-list"></div>
+          </nav>
+        </aside>
+      </div>
+    </main>
+
+    <script src="js/site.nav.js" defer></script>
+    <script src="js/site.theme.js" defer></script>
+    <script src="js/site.toc.js" defer></script>
+    <script src="js/site.js" defer></script>
+  </body>
+</html>

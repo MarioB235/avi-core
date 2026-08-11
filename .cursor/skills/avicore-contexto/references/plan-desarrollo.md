@@ -205,3 +205,16 @@ Solo nombres de bloque; el DDL vive en `avicore-modelo-datos/references/esquema-
 | CRUD avícola admin | `Livewire/Galpones/`, `Livewire/Lotes/` | Granjas, galpones, lotes |
 | Tiempo real (fase 18) | `Events/`, Reverb | Ver `avicore-tiempo-real/references/eventos.md` |
 | PWA instalable (fase 21) | `vite.config.js`, `pwa.js`, `x-ui.pwa-*` | **Hecho MVP (2026-08-01)** — manifest + SW assets + banner; ver `pwa.md` |
+| Coeficientes técnicos Uruguay | `DashboardService`, alertas, curvas postura | Postura 269–278 huevos/año, conversión alimenticia, mortalidad &lt;1,1%; ver `mercado-uruguay.md` §3 |
+| Integración MGAP / SMA / SNIG | export SNIG, pre-llenado formularios | Trazabilidad oficial; ver `mercado-uruguay.md` §4 |
+| Sistemas Free Range / pastoreo | campos o módulo diferenciado | Nicho INIA; variables distintas a jaula tradicional |
+| DICOSE / habilitación SMA | `configuraciones_empresa` o `granjas` | N° DICOSE, refrendación anual — ver `mercado-uruguay.md` §4 §7.1 |
+| Bioseguridad — ingreso personas/vehículos | módulo registros §7.3 | Planilla control ingresos; filtros sanitarios |
+| Vacío sanitario | estado galpón / bloqueo carga | Intervalo entre lotes; POES |
+| Stock alimento / insumos §7.4 | `ingresos_alimento`, silos | Proveedor, lote, vencimiento; formulación raciones |
+| Planilla control sanitario §7.10 | extensión `vacunaciones` + ATB | Plan sanitario VLE; antibióticos con prescripción |
+| Residuos / PGRS §7.11 | módulo residuos | Movimiento cama/abono; alertas mortalidad masiva |
+| Control plagas §7.9 | módulo cebos | Inspección semanal; plano instalaciones |
+| Capacitación §7.6 | registros capacitación | Temario, participantes; retención 2 años |
+| Remitos SMA / faena §8.4 | integración SMA | Protocolo envío a faena; Res. 325/024 |
+| Export planillas Anexo A | `ReporteService` | PDF/Excel con DICOSE; catálogo §8.4 + §9 |

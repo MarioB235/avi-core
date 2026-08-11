@@ -8,7 +8,7 @@
 flowchart TD
     A[Workspace avi-core] --> B[AGENTS.md + reglas always-apply]
     B --> C["/avicore-architect-direct + mensaje HTML 1-5"]
-    C --> D[docs/00-contexto.md]
+    C --> D[portal/contenido/desarrollo/contexto.html]
     D --> E[avicore-contexto skill]
     E --> F[Skill de dominio + references/]
     F --> G{¿Duda API/stack?}
@@ -29,7 +29,7 @@ flowchart TD
 
 | Prioridad | Archivo |
 |-----------|---------|
-| 1 | [`docs/00-contexto.md`](../docs/00-contexto.md) |
+| 1 | [`portal/contenido/desarrollo/contexto.html`](../portal/contenido/desarrollo/contexto.html) |
 | 2 | [`.cursor/commands/avicore-architect-direct.md`](commands/avicore-architect-direct.md) |
 | 3 | [`.cursor/skills/README.md`](skills/README.md) |
 | 4 | [`AGENTS.md`](../AGENTS.md) |
@@ -38,7 +38,7 @@ flowchart TD
 
 | Capa | Ubicación |
 |------|-----------|
-| Docs humanos mínimos | `docs/00-contexto.md`, `docs/CHANGELOG.md`, `docs/02-avicore-mensajes-reutilizables.html` + `docs/plantillas/` |
+| Docs humanos (portal) | `portal/` — `contenido/`, `imprimibles/`, `CHANGELOG.md`, plantillas Cursor |
 | Skills (15) | `.cursor/skills/*/SKILL.md` |
 | Referencias de producto | `.cursor/skills/*/references/*.md` |
 | Reglas | `.cursor/rules/*.mdc` |

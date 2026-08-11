@@ -6,14 +6,14 @@ disable-model-invocation: true
 
 # AviCore — Documentación (mensaje 4)
 
-Plantilla usuario: mensaje 4 en `docs/plantillas/desarrollo.html` (índice `docs/02-avicore-mensajes-reutilizables.html`).
+Plantilla usuario: mensaje 4 en `portal/contenido/desarrollo/plantillas-cursor.html` (índice `portal/contenido/desarrollo/mensajes-reutilizables.html`).
 
 Alcance: tabla del mensaje 2 + archivos tocados en el mensaje 3 (**mismo chat**). Si no hubo 2–3 → diff de la rama.
 
 ## Base
 
-- `docs/00-contexto.md` — mapa de fuentes maestras (única tabla humana)
-- `docs/CHANGELOG.md` — si cambió contrato
+- `portal/contenido/desarrollo/contexto.html` — mapa de fuentes maestras (única tabla humana)
+- `portal/CHANGELOG.md` — si cambió contrato
 - Sugerencias por rutas: `pnpm run check:docs-impact` (no edita solo)
 - Desvío de flujo: `avicore-evolucion-tooling/references/GOBERNANZA.md`, `.cursor/skills/README.md`
 - Si tocaste `.cursor/` o plantillas: `pnpm run check:agent-docs`

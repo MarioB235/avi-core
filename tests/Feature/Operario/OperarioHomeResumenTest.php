@@ -170,6 +170,46 @@ class OperarioHomeResumenTest extends TestCase
             ->assertSee('7 muertes en total desde el ingreso', false);
     }
 
+    public function test_resumen_reflects_new_registros_within_same_request(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalponYLote();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 900,
+            ]);
+
+        $service = app(OperarioGalponResumenService::class);
+        $first = $service->resumen($galpon);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 100,
+            ]);
+
+        $second = $service->resumen($galpon);
+
+        $this->assertSame(900, $first['huevos_hoy']);
+        $this->assertSame(1000, $second['huevos_hoy']);
+        $this->assertSame(33, $second['maples_hoy']);
+    }
+
+    public function test_lotes_activos_memo_returns_same_collection_within_same_request(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalponYLote();
+
+        $service = app(OperarioGalponResumenService::class);
+
+        $this->assertSame(
+            $service->lotesActivos($galpon),
+            $service->lotesActivos($galpon),
+        );
+    }
+
     public function test_resumen_service_maples_from_huevos(): void
     {
         [$operario, $galpon] = $this->createOperarioConGalponYLote();

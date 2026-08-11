@@ -1,0 +1,9 @@
+/* Overrides — síntesis mercado Uruguay (tablas interiores) */
+
+.informe--ejecutivo-avicore .formal-table th:nth-child(1) {
+  width: 38%;
+}
+
+.informe--ejecutivo-avicore .formal-table th:nth-child(2) {
+  width: 62%;
+}

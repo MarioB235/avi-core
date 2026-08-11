@@ -59,7 +59,7 @@ const POINTER_CHECKS = [
   ['comando', comando, 'avicore-contexto'],
   ['comando', comando, 'avicore-negocio'],
   ['comando', comando, 'Arquitectura documental'],
-  ['comando', comando, 'docs/02-avicore-mensajes-reutilizables.html'],
+  ['comando', comando, 'portal/contenido/desarrollo/mensajes-reutilizables.html'],
   ['comando', comando, 'solo al final del mensaje 2'],
   ['skills README', skillsReadme, 'Única tabla mensaje → skill'],
   ['skills README', skillsReadme, 'avicore-deuda-tecnica'],
@@ -113,6 +113,11 @@ const removedPaths = [
   'docs/cursor/03-skills-avicore.md',
   'docs/README.md',
   'docs/reference/estructura-base-datos.md',
+  'docs/00-contexto.md',
+  'docs/CHANGELOG.md',
+  'docs/02-avicore-mensajes-reutilizables.html',
+  'docs/plantillas/desarrollo.html',
+  'portal/contenido/desarrollo/plantillas/desarrollo.html',
 ];
 
 for (const rel of removedPaths) {
@@ -121,27 +126,27 @@ for (const rel of removedPaths) {
   }
 }
 
-const desarrolloHtml = read('docs/plantillas/desarrollo.html');
+const desarrolloHtml = read('portal/contenido/desarrollo/plantillas-cursor.html');
 const PLANTILLA_NEEDLES = [
   'Aquí te detallo la tarea:',
   'Archivos a analizar:',
   'pnpm run check:docs-impact',
   '.cursor/skills/README.md',
-  'docs/00-contexto.md',
+  'portal/contenido/desarrollo/contexto.html',
 ];
 for (const needle of PLANTILLA_NEEDLES) {
   if (!desarrolloHtml.includes(needle)) {
-    fail(`docs/plantillas/desarrollo.html: falta invariante "${needle}"`);
+    fail(`portal/contenido/desarrollo/plantillas-cursor.html: falta invariante "${needle}"`);
   }
 }
 if (desarrolloHtml.includes('Skills de dominio (auto-invoke)')) {
   fail(
-    'docs/plantillas/desarrollo.html: no duplicar tabla de skills (vive en .cursor/skills/README.md)'
+    'portal/contenido/desarrollo/plantillas-cursor.html: no duplicar tabla de skills (vive en .cursor/skills/README.md)'
   );
 }
 if (desarrolloHtml.includes('Regla de una sola fuente maestra')) {
   fail(
-    'docs/plantillas/desarrollo.html: no duplicar mapa de fuentes (vive en docs/00-contexto.md)'
+    'portal/contenido/desarrollo/plantillas-cursor.html: no duplicar mapa de fuentes (vive en portal/contenido/desarrollo/contexto.html)'
   );
 }
 

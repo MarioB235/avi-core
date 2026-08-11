@@ -1,6 +1,6 @@
 # AviCore — Skills (15 internos · 5 mensajes usuario)
 
-**Usuario:** solo los **5 mensajes** en [`docs/02-avicore-mensajes-reutilizables.html`](../../docs/02-avicore-mensajes-reutilizables.html) + `/avicore-architect-direct`.
+**Usuario:** solo los **5 mensajes** en [`portal/contenido/desarrollo/mensajes-reutilizables.html`](../../portal/contenido/desarrollo/mensajes-reutilizables.html) + `/avicore-architect-direct`.
 
 **Agente:** aplica los `SKILL.md` según el mensaje y el detalle del usuario. Skills de dominio se auto-invocaban cuando la descripción coincide; skills internos requieren flujo mensajes 2–5 o arquitecto.
 
@@ -36,10 +36,10 @@
 
 | Mensaje | Skill interno | Fuentes a mantener alineadas |
 |---------|---------------|------------------------------|
-| 1 — Tarea | Según tarea → tablas arriba | `docs/00-contexto.md`, `references/` del skill dueño, `docs/CHANGELOG.md` si cambia contrato |
+| 1 — Tarea | Según tarea → tablas arriba | `portal/contenido/desarrollo/contexto.html`, `references/` del skill dueño, `portal/CHANGELOG.md` si cambia contrato |
 | 2 — Auditoría | `avicore-auditoria` | `avicore-auditoria/references/estandares-codigo.md`; salida: resumen + tabla + brechas + plan ≤5 acciones |
 | 3 — Corregir | `avicore-auditoria` | Tabla y plan del mensaje 2; tests en verde |
-| 4 — Docs y tooling | `avicore-cierre-tarea` | `docs/00-contexto.md`, `CHANGELOG.md`, `pnpm run check:docs-impact`, `GOBERNANZA.md` si desvío |
+| 4 — Docs y tooling | `avicore-cierre-tarea` | `portal/contenido/desarrollo/contexto.html`, `portal/CHANGELOG.md`, `pnpm run check:docs-impact`, `GOBERNANZA.md` si desvío |
 | 5 — Git / PR | `avicore-git-pr` | Chat 2–4 + diff; auth en `.cursor/README.md` |
 
 Gobernanza: [`avicore-evolucion-tooling/references/GOBERNANZA.md`](avicore-evolucion-tooling/references/GOBERNANZA.md)

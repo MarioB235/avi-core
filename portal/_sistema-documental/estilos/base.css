@@ -1,0 +1,456 @@
+/*
+  Encabezado (.informe-header) — org + meta (solo 1.ª hoja)
+    __org, __meta
+*/
+
+:root {
+  --blue-inst: #1f5e3b;
+  --green-inst: #1f5e3b;
+  --green-dark: #092b1f;
+  --gold: #c9a227;
+  --text: #1a1a1a;
+  --muted: #444;
+  --border: #c5c5c5;
+  --bg-soft: #eef6f0;
+  --goal-bg: #e8f4ec;
+  --goal-border: #1f5e3b;
+  --informe-header-rule: #b8dcc8;
+  --informe-header-rule-gap: 0.12rem;
+  --informe-header-org-gap: 0.7rem;
+  /* Márgenes canónicos — todos los informes (pantalla + @page impresión) */
+  --informe-print-margin-top: 1.15cm;
+  --informe-print-margin-x: 1.5cm;
+  --informe-print-margin-bottom: 1.65cm;
+  --informe-padding-x: 2.5rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  color: var(--text);
+  background: #e8eaed;
+  padding: 1.5rem 1rem;
+}
+
+.informe.document {
+  position: relative;
+  max-width: 21cm;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 1.5rem var(--informe-padding-x) 1.25rem;
+}
+
+/* Encabezado — org centrado + meta */
+
+.informe-header {
+  margin-bottom: 1rem;
+}
+
+.informe-header__org {
+  text-align: center;
+  padding-bottom: var(--informe-header-rule-gap);
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--informe-header-rule);
+}
+
+.informe-header__org-primary {
+  font-size: 12pt;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--blue-inst);
+}
+
+.informe-header__org-secondary {
+  font-size: 12pt;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.informe-header__meta {
+  margin-top: 0.65rem;
+}
+
+.informe-header__meta p {
+  font-size: 12pt;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.informe-header__meta strong {
+  color: var(--blue-inst);
+  font-weight: 600;
+}
+
+.informe-header__meta p + p {
+  margin-top: 0.22rem;
+}
+
+.informe-fecha,
+.informe-destinatario {
+  margin: 0;
+  font-size: 12pt;
+  color: var(--muted);
+}
+
+.informe-org {
+  margin: 0;
+  font-size: 12pt;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* Meta libre (cuerpo o uso legacy) */
+
+.informe .meta {
+  text-align: center;
+  font-size: 12pt;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.informe .meta strong {
+  color: var(--blue-inst);
+}
+
+/* Bloques recurrentes */
+
+.informe .intro {
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--bg-soft);
+  border-left: 4px solid var(--blue-inst);
+  font-size: 12pt;
+  line-height: 1.5;
+  color: var(--muted);
+  text-align: justify;
+}
+
+.informe .intro p {
+  margin-bottom: 0.5rem;
+}
+
+.informe .intro p:last-child {
+  margin-bottom: 0;
+}
+
+.informe .objetivo-box {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--goal-bg);
+  border: 1px solid var(--goal-border);
+  border-left: 5px solid var(--goal-border);
+  text-align: center;
+}
+
+.informe .objetivo-box .label {
+  font-size: 12pt;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.informe .objetivo-box p {
+  font-size: 13pt;
+  font-weight: 700;
+  color: var(--blue-inst);
+  line-height: 1.4;
+}
+
+/* Tipografía del cuerpo */
+
+.informe h2 {
+  font-size: 14pt;
+  font-weight: 700;
+  color: var(--blue-inst);
+  margin: 1.25rem 0 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--informe-header-rule);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.informe h3 {
+  font-size: 12pt;
+  font-weight: 700;
+  color: var(--blue-inst);
+  margin: 0.85rem 0 0.35rem;
+}
+
+.informe h4 {
+  font-size: 12pt;
+  font-weight: 700;
+  color: var(--blue-inst);
+  margin: 0.65rem 0 0.3rem;
+}
+
+.informe p,
+.informe .prosa {
+  font-size: 12pt;
+  color: var(--text);
+  margin: 0.55rem 0;
+  line-height: 1.55;
+  text-align: justify;
+}
+
+.informe ul,
+.informe ol {
+  margin: 0.45rem 0 0.65rem 1.25rem;
+  font-size: 12pt;
+}
+
+.informe li {
+  margin: 0.22rem 0;
+  text-align: justify;
+}
+
+/* Encabezado — párrafos (reset global; separación org vía selector adyacente abajo) */
+
+.informe-header p {
+  margin: 0;
+  text-align: left;
+  line-height: 1.45;
+}
+
+.informe-header__org p {
+  text-align: center;
+}
+
+.informe-header__org-primary + .informe-header__org-secondary {
+  margin-top: var(--informe-header-org-gap);
+}
+
+.informe.document-ejecutivo h2 {
+  margin-top: 1rem;
+}
+
+.informe.document-ejecutivo .prosa {
+  margin-bottom: 0.45rem;
+}
+
+.informe.document-ejecutivo h3 {
+  font-size: 12pt;
+  margin: 0.75rem 0 0.25rem;
+}
+
+/* Pie institucional */
+
+.informe-footer {
+  margin-top: 1.25rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.informe-footer p,
+.informe .footer-note {
+  font-size: 12pt;
+  color: var(--muted);
+  text-align: center;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.informe-footer-org {
+  font-weight: 600;
+  color: var(--blue-inst);
+}
+
+.informe-footer-note {
+  margin-top: 0.2rem;
+}
+
+.page-break-before {
+  break-before: page;
+  page-break-before: always;
+}
+
+@media print {
+  /* Márgenes iguales en cada hoja (sup. = lat.; inf. reservado para nº de página) */
+  @page {
+    size: A4 portrait;
+    margin: var(--informe-print-margin-top) var(--informe-print-margin-x)
+      var(--informe-print-margin-bottom) var(--informe-print-margin-x);
+
+    @bottom-center {
+      content: "Página " counter(page);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12pt;
+      color: #444;
+    }
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    font-size: 12pt;
+    line-height: 1.45;
+    color: #000 !important;
+  }
+
+  .informe.document {
+    border: none !important;
+    max-width: none;
+    width: auto;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 12pt;
+    box-shadow: none;
+    overflow: visible !important;
+  }
+
+  .informe-header__org {
+    padding-bottom: 0.08rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .informe p,
+  .informe li,
+  .informe td,
+  .informe th,
+  .informe .meta,
+  .informe .intro,
+  .informe .prosa,
+  .informe .footer-note,
+  .informe-footer p,
+  .informe-org,
+  .informe-header__org-primary,
+  .informe-header__org-secondary,
+  .informe-header__meta p,
+  .informe-fecha,
+  .informe-destinatario {
+    font-size: 12pt !important;
+  }
+
+  .informe-header {
+    margin-bottom: 0.75rem;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .informe-header__org-primary {
+    color: var(--blue-inst) !important;
+  }
+
+  .informe-header__meta {
+    margin-top: 0.55rem;
+  }
+
+  .informe-header__meta p {
+    text-align: left !important;
+  }
+
+  .informe-header__org p {
+    text-align: center !important;
+  }
+
+  .informe-header__org-primary + .informe-header__org-secondary {
+    margin-top: var(--informe-header-org-gap) !important;
+  }
+
+  .informe p,
+  .informe .intro,
+  .informe-footer,
+  .informe .executive-result {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .informe h2 {
+    font-size: 14pt;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .informe h3,
+  .informe h4 {
+    font-size: 12pt;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .informe .objetivo-box p {
+    font-size: 13pt !important;
+  }
+
+  /* Tablas — repetir encabezado y evitar filas partidas */
+
+  .informe .formal-table,
+  .informe .agenda-table {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .informe .formal-table thead,
+  .informe .agenda-table thead {
+    display: table-header-group;
+  }
+
+  .informe .formal-table tr,
+  .informe .agenda-table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .informe .formal-table th {
+    background: var(--blue-inst) !important;
+    color: #fff !important;
+  }
+
+  .informe .formal-table td,
+  .informe .agenda-table td,
+  .informe .agenda-table th {
+    padding: 0.35rem 0.45rem;
+  }
+
+  .informe .figura-captura,
+  .informe .flujo,
+  .informe .callout {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .page-break-before {
+    break-before: page;
+    page-break-before: always;
+    padding-top: 0;
+  }
+
+  a[href]::after {
+    content: none !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+@media (max-width: 720px) {
+  body {
+    padding: 0;
+  }
+
+  .informe.document {
+    padding: 1.2rem;
+    border: 0;
+  }
+}

@@ -19,7 +19,7 @@
                 :href="route($tab['route'])"
                 :icon="$tab['icon']"
                 :active="$active"
-                wire:navigate.hover
+                wire:navigate
             >
                 {{ $tab['label'] }}
             </x-ui.nav-link>
