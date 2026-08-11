@@ -5,6 +5,49 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-08-10
+
+- **[fix|operario]** Post-auditoría msg 3: `resumen()` sin memo de totales (evita KPI stale en mismo request); memo solo en `lotesActivos()`; `galponActual` revalida disponibilidad; hub `resolveGalponParaGuardar` usa `galponDisponibleParaUsuario`; tests scoped/memo/PWA ampliados. — `OperarioGalponResumenService.php`, `OperarioGalponService.php`, `CargarHub.php`, `OperarioHomeResumenTest.php`, `OperarioGalponServiceTest.php`, `SnackbarHostTest.php`, `patrones-mobile-operario.md`, `estandares-codigo.md`, `arbol-proyecto.md`
+- **[portal|ui]** Runtime portal modular: `site.theme.js` (tema), `site.toc.js` (índice lateral); excepción `!important` documentada en legacy imprimible. — `portal/js/`, `portal/index.html`, `_sistema-documental/README.md`, `portal/README.md`
+- **[perf|pwa]** Arranque y navegación operario: services scoped por request (`OperarioGalponService`, `OperarioGalponResumenService`), memo intra-request solo en `lotesActivos()`, SW diferido (`immediate: false`), Workbox `skipWaiting`/`clientsClaim`, `devOptions` solo en dev, `wire:navigate` sin `.hover`, índices historial `(empresa_id, user_id, created_at)`. — `AppServiceProvider.php`, `OperarioGalponResumenService.php`, `vite.config.js`, `pwa.js`, `bottom-nav.blade.php`, `sidebar-nav.blade.php`, migración índices, `pwa.md`, `patrones-mobile-operario.md`, `esquema-bd.md`, tests
+- **[portal|cursor]** Centralización documental: eliminado `docs/`; fuente humana única en `portal/` (contexto, changelog, plantillas Cursor); punteros actualizados en `.cursor/`, `AGENTS.md`, scripts anti-drift. — `portal/`, `.cursor/`, `AGENTS.md`, `README.md`, `check-agent-docs-sync.cjs`, `check-docs-impact.cjs`
+- **[portal|ui]** Plantillas e imprimibles integrados en el shell del portal (sin pestañas externas): `plantillas-cursor.html`, `plantillas-chatgpt.html`, subnav interno, iframe documento síntesis. — `portal/js/site.js`, `portal/css/content.css`, `site.nav.js`
+- **[portal|ui]** Plantillas alineadas al diseño del portal: acordeones `details`/`pre>code`, `.note`, `.copy-hint`; eliminado CSS legacy de plantillas standalone. — `plantillas-cursor.html`, `plantillas-chatgpt.html`, `mensajes-reutilizables.html`, `content.css`
+- **[portal|ui]** Optimización portal plantillas: subnav DRY (`PLANTILLA_NAV`), menú lateral sin hijos duplicados, copiar sin duplicar en acordeones, `.doc-subnav` / `.doc-toolbar`. — `site.js`, `site.nav.js`, `content.css`, plantillas HTML
+
+## 2026-08-05
+
+- **[docs|producto]** Mercado avícola Uruguay: investigación MGAP/DIEA, coeficientes técnicos (postura, conversión, mortalidad, ciclo lote), trazabilidad SMA/SNIG y bitácora de validación. — `mercado-uruguay.md`, `producto.md`, `plan-desarrollo.md`, `reglas.md` §15, `SKILL.md`, `00-contexto.md`
+- **[docs|producto]** GBPEA §7.12 (jul 2025): marco normativo trazabilidad E.A. (Res. DGSG 22/022, Res. 1684/025), lote trazable, registros SMA + planilla productiva huevos. — `mercado-uruguay.md` §4
+- **[docs|producto]** GBPEA §1–3: Plan Avícola, BPAs obligatorias habilitación, alcance rubros (postura MVP), rol VLE. — `mercado-uruguay.md` §4
+- **[docs|producto]** GBPEA §5: marco normativo íntegro (12 normas), prioridad AviCore y lista de documentos a profundizar. — `mercado-uruguay.md` §4
+
+## 2026-08-08
+
+- **[docs|producto]** GBPEA §6–7.3: definiciones SMA/lote/OCA, mapa manual BPA→AviCore, DICOSE, registros ingreso §7.3. — `mercado-uruguay.md` §4, `plan-desarrollo.md` §13
+- **[docs|producto]** GBPEA §7.4–7.12: registros alimento, POES, plagas, medicamentos, residuos; Res. 341/2024 influenza; tabla manual→AviCore ampliada. — `mercado-uruguay.md` §4, `plan-desarrollo.md` §13
+- **[docs|producto]** GBPEA §8–10: granjas ponedoras, catálogo planillas Anexo A, remitos SMA faena, síntesis estratégica §10. — `mercado-uruguay.md`, `plan-desarrollo.md` §13
+- **[docs|portal]** Imprimible: portada ejecutiva aislada de `portada.css` legacy; plantilla sin `!important` (especificidad + `@page`). — `portada.css`, `documento-ejecutivo-avicore.css`, `base.css`, `paginas-a4.css`
+- **[docs|portal]** Portada print: `width: 100%` del `@page` (no 210mm fijo) para que la banda lateral no deje hueco con márgenes del diálogo Chrome. — `documento-ejecutivo-avicore.css`
+- **[docs|portal]** Limpieza imprimible: `portada.css` y `paginas-a4.css` = copia del portal de ejemplo; plantilla AviCore = copia estructural de ATLAS. — `portal/_sistema-documental/`, `documento-ejecutivo-avicore.css`
+- **[docs|portal]** Portada ejecutiva: conflicto `portada.css` (flex + width) vs plantilla (grid + 210mm) — ejecutivo excluido del legacy; print usa width 100% del `@page`. — `portada.css`, `documento-ejecutivo-avicore.css`
+- **[docs|portal]** Imprimible: `base.css`/`portada.css` restaurados a paridad con portal de ejemplo (el `@page margin:0` y los `:not(.ejecutivo-*)` desviaban print). — `base.css`, `portada.css`, `documento-ejecutivo-avicore.css`
+- **[docs|portal]** Imprimible ejecutivo AviCore: CSS alineado a ATLAS (sin hacks `position:fixed` ni estilos inline duplicados). — `documento-ejecutivo-avicore.css`, `portada.css`, `paginas-a4.css`, `sintesis-mercado-uruguay/index.html`
+- **[docs|portal]** Imprimible AviCore: ancho interior 100% en impresión (sin columna 14cm ni padding lateral duplicado). — `paginas-a4.css`, `documento-ejecutivo-avicore.css`, `sintesis-mercado-uruguay/index.html`
+- **[docs|portal]** Portal AviCore unificado en `portal/`: runtime ATLAS (TOC, tema, nav), contenido mercado/producto; eliminado `docs/portal/`. — `portal/`, `00-contexto.md`, `arranque-local.md`, `arbol-proyecto.md`, `.vscode/settings.json`
+
+## 2026-08-09
+
+- **[docs|portal]** Portada Premium Editorial v3 AviCore: diseño minimalista de alta gama para documentos oficiales y contratos. Marco perimetral elegante, logo acompañado del nombre "AviCore", metadatos en una sola columna alineados horizontalmente, tono dorado reducido y remoción de firmas en portada. Unificación de estilo con páginas interiores (mismo color de papel #fdfdfb, tipografías y tablas premium, callouts cohesivos, y encabezados/pies de página editoriales en impresión). — `documento-ejecutivo-avicore.css`, `plantilla/index.html`, `sintesis-mercado-uruguay/index.html`
+- **[docs|portal]** Encabezado y pie de página editoriales: corrección de la implementación de encabezados y pies de página en impresión. Se definieron los márgenes top y bottom a 26mm, se configuraron `@top-center` y `@bottom-center` para lograr líneas horizontales continuas y sin cortes en el centro, y se añadió un espaciado de 8mm (`padding-top` y `padding-bottom`) en las páginas interiores para evitar que el contenido toque las líneas del encabezado y pie de página. — `documento-ejecutivo-avicore.css`
+- **[docs|portal]** Páginas interiores ejecutivas sin cuadro contenedor: se eliminó el marco heredado de `base.css`/`paginas-a4.css` (borde del `<article>`, padding lateral y columna de 14cm) para que el contenido se renderice directo en la hoja; en impresión solo rigen los márgenes de `@page`. — `documento-ejecutivo-avicore.css`
+- **[docs|portal]** Tipografía ejecutiva unificada: escala editorial con variables CSS (cuerpo 10.5pt, tablas 9.5/10pt, h2 14pt) alineada a la portada; anula el 12pt canónico de `base.css`/`paginas-a4.css` en impresión. — `documento-ejecutivo-avicore.css`
+- **[docs|portal]** Márgenes de impresión ejecutivos estabilizados: `@page` asimétrico (24/18/12 mm), encabezado alineado al borde inferior del margen superior, pie al borde inferior de la hoja; sin padding duplicado en contenedores interiores. — `documento-ejecutivo-avicore.css`
+- **[docs|portal]** Limpieza plantilla ejecutiva: `documento-ejecutivo-avicore.css` autocontenido (único CSS); documentos ejecutivos dejan de cargar `base.css`/`paginas-a4.css`/`componentes.css` para eliminar conflictos de márgenes, tipografía y `@page`. — `documento-ejecutivo-avicore.css`, `plantilla/index.html`, `sintesis-mercado-uruguay/index.html`, READMEs
+- **[docs|portal]** Impresión interiores Chrome: reemplazo de `@page` margin boxes por encabezado/pie `position: fixed` + `@page { margin: 0 }` + padding interno (evita recortes y márgenes dobles). — `documento-ejecutivo-avicore.css`, `plantilla/index.html`, `sintesis-mercado-uruguay/index.html`
+- **[docs|portal]** Encabezado interiores con logo AviCore + marca de agua central sutil; pie con leyenda institucional y numeración vía `@page ejecutivo-interior`. — `documento-ejecutivo-avicore.css`, `plantilla/index.html`, `sintesis-mercado-uruguay/index.html`
+- **[docs|portal]** Interiores sin encabezado textual: solo marca de agua (logo centrado) + pie de página; margen superior de impresión reducido a 18 mm. — `documento-ejecutivo-avicore.css`, `plantilla/index.html`, `sintesis-mercado-uruguay/index.html`
+- **[docs|portal]** `portal:dev` sirve con `Cache-Control: no-store`: los imprimibles se abren en pestaña nueva y Chrome reusaba CSS viejo (causa de ver la portada desactualizada). — `scripts/serve-portal.cjs`
 ## 2026-08-02
 
 - **[docs|ui|audit]** Msg 4: alineación docs post-auditoría — `data-reveal-delay`, `syncProgressDuration`, tests `RevealComponentTest`/`ScrollRevealTest`; árbol proyecto y patrones operario. — `tokens-componentes.md`, `motion-y-feedback.md`, `estandares-codigo.md`, `arbol-proyecto.md`, `patrones-mobile-operario.md`, `pantallas-flujos.md`

@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 **Requiere autorización explícita** (mensaje 5 del usuario).
 
-Mensaje usuario: `docs/02-avicore-mensajes-reutilizables.html` (mensaje 5) · catálogo: `.cursor/skills/README.md` · auth: `.cursor/README.md` § MCP.
+Mensaje usuario: `portal/contenido/desarrollo/plantillas-cursor.html` (mensaje 5) · catálogo: `.cursor/skills/README.md` · auth: `.cursor/README.md` § MCP.
 
 ## Flujo completo
 

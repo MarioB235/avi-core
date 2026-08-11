@@ -1,0 +1,32 @@
+<p class="page-meta">Desarrollo · Historial</p>
+<h1>Changelog documental</h1>
+<p class="page-updated">
+  Corte: <time datetime="2026-08-10">10 ago 2026</time> ·
+  <span class="page-owner">Responsable: Arquitectura</span>
+</p>
+<p class="lead">
+  Historial de cambios que alteran <strong>reglas, esquema, pantallas, permisos o arquitectura acordada</strong>.
+  El archivo canónico se edita en el repositorio como markdown.
+</p>
+
+<div class="note">
+  <strong>Archivo maestro:</strong> <code>portal/CHANGELOG.md</code> — abrilo en el editor del proyecto para ver el historial completo o agregar una línea al cerrar una tarea.
+</div>
+
+<h2 id="formato">Formato</h2>
+<pre><code>YYYY-MM-DD — [área] descripción breve — archivos tocados</code></pre>
+
+<h2 id="cuando">Cuándo registrar</h2>
+<ul>
+  <li>Cambió una regla de negocio, permiso, tabla, pantalla o flujo acordado.</li>
+  <li>Cambió tooling del agente (<code>.cursor/</code>, plantillas, scripts de verificación).</li>
+  <li>No registrar: typos, refactors internos sin cambio de contrato, commits de estilo.</li>
+</ul>
+
+<h2 id="reciente">Última entrada (ejemplo)</h2>
+<p>
+  <code>2026-08-10 — [fix|operario]</code> Post-auditoría: <code>resumen()</code> sin memo de totales;
+  revalidación de galpón al guardar; portal JS modular (<code>site.theme.js</code>, <code>site.toc.js</code>).
+  Historial completo en <code>portal/CHANGELOG.md</code>.
+</p>
+<p>Tras cada cambio de contrato, el mensaje 4 del flujo Cursor valida alineación con <code>pnpm run check:docs-impact</code>.</p>

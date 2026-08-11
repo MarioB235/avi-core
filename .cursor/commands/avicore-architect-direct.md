@@ -7,16 +7,16 @@ description: Orquestador AviCore — el usuario escribe en lenguaje natural; vos
 
 Sos el arquitecto/desarrollador de AviCore. El usuario **no invoca `@skills`**; interpretás su mensaje, activás el skill y las reglas que correspondan, y ejecutás el flujo.
 
-## Arquitectura documental (3 capas)
+## Arquitectura documental (2 capas)
 
 | Capa | Ubicación | Rol | Cuándo editar |
 |------|-----------|-----|---------------|
-| **Humano mínimo** | `docs/00-contexto.md`, `docs/CHANGELOG.md`, `docs/02-avicore-mensajes-reutilizables.html` | Contrato breve, historial, plantillas usuario | Cambió mapa global, contrato resumido o plantilla mensaje |
+| **Humano (portal)** | `portal/` — `contenido/`, `imprimibles/`, `CHANGELOG.md`, plantillas Cursor | Documentación legible, contexto, historial, mensajes 1–5 | Cambió mapa global, producto humano, plantilla mensaje |
 | **Ejecutable agente** | `.cursor/skills/*/SKILL.md` + `references/` | Workflow y detalle de producto por dominio | Cambió flujo de tarea o contrato del módulo |
 | **Convenciones** | `.cursor/rules/*.mdc` | Punteros cortos always-apply o por glob | Nueva convención transversal de código/UI |
 | **Orquestación** | Este comando + `AGENTS.md` + `.cursor/README.md` | Flujo slash y config Cursor | Cambió pasos 1–7, MCP o catálogo |
 
-**Regla de oro:** un cambio conceptual → **una** `references/` del skill dueño + línea en `docs/CHANGELOG.md`. No duplicar tablas enteras en `00-contexto` ni en reglas `.mdc`.
+**Regla de oro:** un cambio conceptual → **una** `references/` del skill dueño + línea en `portal/CHANGELOG.md`. No duplicar tablas enteras en el portal ni en reglas `.mdc`.
 
 ## Cómo se activan skills y reglas (automático)
 
@@ -87,7 +87,7 @@ Mantener completos: código, comandos, tabla auditoría (msg 2) y plantilla PR (
 
 | Paso | Acción |
 |------|--------|
-| 2.1 | `docs/00-contexto.md` (mapa y principios) |
+| 2.1 | `portal/contenido/desarrollo/contexto.html` (mapa y principios) |
 | 2.2 | `.cursor/skills/avicore-contexto/SKILL.md` si falta contexto |
 | 2.3 | Skill de dominio (paso 3) → leer `SKILL.md` + `references/` listados ahí |
 | 2.4 | Si hay datos: `.cursor/skills/avicore-modelo-datos/references/esquema-bd.md` |
@@ -99,7 +99,7 @@ Mantener completos: código, comandos, tabla auditoría (msg 2) y plantilla PR (
 
 Inferir alcance: `feature` | `fix` | `refactor` | `docs` | `style` | `chore` | `hotfix`
 
-Plantillas usuario: `docs/02-avicore-mensajes-reutilizables.html`  
+Plantillas usuario: `portal/contenido/desarrollo/mensajes-reutilizables.html`  
 **Catálogo y enrutamiento mensaje 1 (única tabla):** [`.cursor/skills/README.md`](../skills/README.md) — no duplicar la matriz aquí.
 
 **Cierre 2→5:** `@rutas` **solo al final del mensaje 2**.
@@ -112,7 +112,7 @@ Sin confirmaciones intermedias salvo bloqueo crítico. Respetar `avicore-negocio
 
 ### 5 — Documentación de producto
 
-Si cambió contrato → **`references/` del skill dueño** (tabla abajo) + `docs/CHANGELOG.md`.
+Si cambió contrato → **`references/` del skill dueño** (tabla abajo) + `portal/CHANGELOG.md`.
 
 | Si cambió… | Editar |
 |------------|--------|
@@ -138,7 +138,7 @@ Solo si hubo **desvío real** del flujo documentado. Ver `avicore-evolucion-tool
 
 | Si cambió… | Editar (orden) |
 |------------|----------------|
-| Flujo mensajes 1–5 | Este comando → `docs/02-avicore-mensajes-reutilizables.html` → skill afectado → `.cursor/skills/README.md` → `CHANGELOG [cursor]` |
+| Flujo mensajes 1–5 | Este comando → `portal/contenido/desarrollo/plantillas-cursor.html` → skill afectado → `.cursor/skills/README.md` → `CHANGELOG [cursor]` |
 | Nuevo skill enrutable | `SKILL.md` + `references/` → README → comando paso 3 → `CHANGELOG` |
 | Nueva convención transversal | `.cursor/rules/*.mdc` (puntero corto) → `CHANGELOG` |
 | MCP / auth PR | `.cursor/README.md` → `avicore-git-pr` |
@@ -154,4 +154,4 @@ Bloque **Qué sigue** (una acción concreta). Prosa breve: **En corto** primero;
 
 ## Referencia
 
-`.cursor/README.md` · `.cursor/skills/README.md` · `docs/00-contexto.md` · `docs/02-avicore-mensajes-reutilizables.html`
+`.cursor/README.md` · `.cursor/skills/README.md` · `portal/contenido/desarrollo/contexto.html` · `portal/contenido/desarrollo/mensajes-reutilizables.html`

@@ -5,13 +5,14 @@ description: Contexto transversal AviCore — producto, arquitectura, plan de de
 
 # AviCore — Contexto
 
-Punto de entrada de documentación de producto tras `docs/00-contexto.md`.
+Punto de entrada de documentación de producto tras `portal/contenido/desarrollo/contexto.html`.
 
 ## Leer primero
 
 | Necesidad | Referencia |
 |-----------|------------|
 | Visión y alcance MVP | [`references/producto.md`](references/producto.md) |
+| Mercado Uruguay / SMA / coeficientes | [`references/mercado-uruguay.md`](references/mercado-uruguay.md) |
 | Stack y principios | [`references/arquitectura.md`](references/arquitectura.md) |
 | Roadmap y bloques | [`references/plan-desarrollo.md`](references/plan-desarrollo.md) |
 | Árbol Laravel | [`references/arbol-proyecto.md`](references/arbol-proyecto.md) |
@@ -37,4 +38,4 @@ Catálogo completo: [`.cursor/skills/README.md`](../README.md)
 
 ## Contrato de ejecución
 
-Ejecutar de punta a punta sin «¿procedo?». Un cambio conceptual → `references/` del skill dueño + línea en `docs/CHANGELOG.md`.
+Ejecutar de punta a punta sin «¿procedo?». Un cambio conceptual → `references/` del skill dueño + línea en `portal/CHANGELOG.md`.

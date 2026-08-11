@@ -23,12 +23,12 @@ const RULES = [
     test: (p) => p.startsWith('database/migrations/') || p.startsWith('app/Models/'),
     docs: [
       '.cursor/skills/avicore-modelo-datos/references/esquema-bd.md',
-      'docs/CHANGELOG.md',
+      'portal/CHANGELOG.md',
     ],
   },
   {
     test: (p) => p.startsWith('app/Policies/') || p.includes('/permisos'),
-    docs: ['.cursor/skills/avicore-negocio/references/permisos.md', 'docs/CHANGELOG.md'],
+    docs: ['.cursor/skills/avicore-negocio/references/permisos.md', 'portal/CHANGELOG.md'],
   },
   {
     test: (p) => p.startsWith('app/Actions/') || p.startsWith('app/Services/') || p.startsWith('app/Enums/'),
@@ -64,17 +64,17 @@ const RULES = [
   },
   {
     test: (p) => p.startsWith('.github/workflows/'),
-    docs: ['docs/CHANGELOG.md'],
+    docs: ['portal/CHANGELOG.md'],
   },
   {
     test: (p) =>
       p.startsWith('.cursor/') ||
-      p.startsWith('docs/plantillas/') ||
-      p === 'docs/02-avicore-mensajes-reutilizables.html' ||
+      p.startsWith('portal/contenido/desarrollo/plantillas-') ||
+      p === 'portal/contenido/desarrollo/mensajes-reutilizables.html' ||
       p === 'AGENTS.md',
     docs: [
       '.cursor/skills/avicore-evolucion-tooling/references/GOBERNANZA.md',
-      'docs/CHANGELOG.md',
+      'portal/CHANGELOG.md',
       'pnpm run check:agent-docs',
     ],
   },
@@ -155,7 +155,7 @@ async function main() {
   const map = suggest(files);
   console.log(`Archivos en alcance: ${files.length}`);
   if (map.size === 0) {
-    console.log('Sin sugerencias automáticas (revisá docs/00-contexto.md si el cambio es de contrato).');
+    console.log('Sin sugerencias automáticas (revisá portal/contenido/desarrollo/contexto.html si el cambio es de contrato).');
     return;
   }
 
@@ -168,7 +168,7 @@ async function main() {
     console.log(`- ${doc}${exists}`);
     console.log(`    ← ${sample}${more}`);
   }
-  console.log('\nMapa canónico: docs/00-contexto.md · mensaje 4 decide actualizar / OK / no aplica.');
+  console.log('\nMapa canónico: portal/contenido/desarrollo/contexto.html · mensaje 4 decide actualizar / OK / no aplica.');
 }
 
 main();

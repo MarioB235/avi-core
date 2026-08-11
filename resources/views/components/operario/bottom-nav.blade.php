@@ -12,7 +12,7 @@
 
                 <a
                     href="{{ route($tab['route']) }}"
-                    wire:navigate.hover
+                    wire:navigate
                     @class([
                         'avicore-operario-tab-bar__item',
                         'avicore-operario-tab-bar__item--active' => $active,

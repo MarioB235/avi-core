@@ -18,8 +18,11 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 - Ítem **activo**: círculo **blanco** elevado, icono `avicore-primary`, borde verde fino; sobresale por encima del borde superior de la barra (efecto «notch» visual).
 - Barra inferior **verde marca** (`avicore-primary`): esquinas superiores redondeadas, sombra suave verde hacia arriba, línea superior clara (gradiente blanco/`secondary`), `safe-area-inset-bottom`.
 - Ítems inactivos: círculo `white/15`, icono blanco, label `white/80` semibold.
-- `wire:navigate.hover` en links del dock; transición de página con `wire:transition="operario-page"` (View Transitions API, ~150–160 ms) + morph del ítem activo del dock (~150 ms, alineado a la página).
+- `wire:navigate` en links del dock (prefetch en mousedown por defecto en Livewire 4; sin `.hover` para no disparar requests extra al pasar el dedo/ratón). Transición de página con `wire:transition="operario-page"` (View Transitions API, ~150–160 ms) + morph del ítem activo del dock (~150 ms, alineado a la página).
 - Cambio de galpón en **Inicio, Cargar e Historial** (chip desplegable; trait `ManagesGalponSelector`). Sin galpón al intentar cargar: se abre el selector en la misma pantalla (`selectorGalponAbierto`); deep links `/operario/carga/*` sin galpón redirigen a `/operario/cargar?abrir_galpon=1`. Flash `abrirSelectorGalpon` sigue soportado en `bootGalponSelector`.
+- **Servicios scoped (request):** `AppServiceProvider` registra `OperarioGalponService` y `OperarioGalponResumenService` con `scoped()` — una instancia por request HTTP/Livewire.
+- **`OperarioGalponService`:** `galponActual` memoiza pero **revalida** disponibilidad en cada llamada; `seleccionarGalpon` limpia el memo. Al **guardar** carga, `CargarHub::resolveGalponParaGuardar` usa `galponDisponibleParaUsuario` (no memo stale si el galpón pasó a mantenimiento).
+- **`OperarioGalponResumenService`:** `resumen()` recalcula totales en cada llamada (KPIs frescos tras guardar); memo intra-request solo en `lotesActivos()` (Home + Cargar en el mismo request).
 
 ## Header contextual
 
@@ -44,7 +47,7 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 - Dock: barra `primary` edge-to-edge (`__surface` + `safe-area-inset-bottom`); inactivos cápsula `rounded-2xl` `white/12` + label `white/85`; activo círculo blanco elevado con halo suave + icono verde.
 - Estilos del módulo: `resources/css/operario.css` (no mezclar en `app.css`).
 - Secciones Inicio/Cargar: entrada al scroll con `x-ui.reveal` (bloques, no filas); edge fade solo bajo nav superior; hoja hasta el dock.
-- Tests: `OperarioHomeResumenTest`, `OperarioBottomNavTest`, `ScrollRevealTest`, `RevealComponentTest`.
+- Tests: `OperarioHomeResumenTest`, `OperarioBottomNavTest`, `ScrollRevealTest`, `RevealComponentTest`, `OperarioGalponServiceTest` (scoped ambos services).
 
 ## Formularios de carga
 

@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Policies\GalponPolicy;
 use App\Policies\LotePolicy;
 use App\Policies\UserPolicy;
+use App\Services\OperarioGalponResumenService;
+use App\Services\OperarioGalponService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -23,7 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->scoped(OperarioGalponService::class);
+        $this->app->scoped(OperarioGalponResumenService::class);
     }
 
     /**

@@ -13,7 +13,7 @@ description: Diseña migraciones, modelos y relaciones PostgreSQL para AviCore r
 | [`references/criterios-modelo.md`](references/criterios-modelo.md) | Criterios narrativos del modelo |
 | `avicore-negocio/references/` | Reglas y permisos |
 
-Registrar cambios de contrato en `docs/CHANGELOG.md`.
+Registrar cambios de contrato en `portal/CHANGELOG.md`.
 
 ## Validar antes de migrar
 

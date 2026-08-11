@@ -15,6 +15,7 @@ use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\User;
 use App\Models\Vacunacion;
+use App\Services\OperarioGalponResumenService;
 use App\Services\OperarioGalponService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -318,6 +319,19 @@ class OperarioGalponServiceTest extends TestCase
         $this->assertCount(1, $galpones);
         $this->assertTrue($galpones->contains('id', $galpon->id));
         $this->assertFalse($galpones->contains('nombre', 'Galpón ajeno'));
+    }
+
+    public function test_operario_galpon_services_are_scoped_per_request(): void
+    {
+        $this->assertSame(
+            app(OperarioGalponService::class),
+            app(OperarioGalponService::class),
+        );
+
+        $this->assertSame(
+            app(OperarioGalponResumenService::class),
+            app(OperarioGalponResumenService::class),
+        );
     }
 
     /**

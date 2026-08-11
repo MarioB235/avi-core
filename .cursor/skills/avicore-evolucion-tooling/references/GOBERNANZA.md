@@ -10,10 +10,10 @@ El arquitecto (`/avicore-architect-direct`) debe **mantener el repo al día**, n
 |------|-----------------|
 | Flujo slash (7 pasos) | `.cursor/commands/avicore-architect-direct.md` |
 | Mensaje → skill | `.cursor/skills/README.md` (única tabla) |
-| Plantillas usuario | `docs/02-avicore-mensajes-reutilizables.html` (índice) · mensajes 1–5 en `docs/plantillas/desarrollo.html` (**sin** duplicar tablas de skills ni mapa de fuentes) |
+| Plantillas usuario | `portal/contenido/desarrollo/mensajes-reutilizables.html` (índice) · mensajes 1–5 en `portal/contenido/desarrollo/plantillas-cursor.html` (**sin** duplicar tablas de skills ni mapa de fuentes) |
 | Procedimiento auditoría / PR / docs | Skills `avicore-auditoria`, `avicore-git-pr`, `avicore-cierre-tarea` |
 | Gobernanza tooling | Este archivo |
-| Contrato producto mínimo | `docs/00-contexto.md` |
+| Contrato producto humano | `portal/contenido/desarrollo/contexto.html` |
 | Detalle de producto | `.cursor/skills/*/references/` |
 | Contrato UI Refined Agro | `avicore-design-system/references/refined-agro-principios.md` |
 
@@ -23,7 +23,7 @@ El arquitecto (`/avicore-architect-direct`) debe **mantener el repo al día**, n
 
 | Si cambia… | Editar (en orden) |
 |------------|-------------------|
-| Flujo 2→5 / adjuntos / pasos del slash | Comando → `docs/plantillas/` (o índice `02-…html`) → skill afectado → `skills/README.md` → `CHANGELOG [cursor]` |
+| Flujo 2→5 / adjuntos / pasos del slash | Comando → `portal/contenido/desarrollo/plantillas-cursor.html` → skill afectado → `skills/README.md` → `CHANGELOG [cursor]` |
 | Nuevo skill enrutable (msg 1–5) | `SKILL.md` → README → enrutamiento msg 1 en comando → `CHANGELOG` |
 | Criterios auditoría | `avicore-auditoria/references/estandares-codigo.md` → skill auditoría → HTML msg 2 |
 | Tono chat | `avicore-modo-respuesta-clara.mdc` → `avicore-contexto/references/modo-respuesta-clara.md` |
@@ -57,7 +57,7 @@ Tras crear: registrar en `.cursor/skills/README.md` + `CHANGELOG.md`.
 
 ## Cuándo actualizar documentación de producto
 
-Mapa canónico: tabla en `docs/00-contexto.md` § Regla de una sola fuente maestra.
+Mapa canónico: tabla en `portal/contenido/desarrollo/contexto.html` § Regla de una sola fuente maestra.
 
 Proactivo al cerrar cualquier tarea con cambio de contrato (paso 5 del architect).
 

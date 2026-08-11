@@ -1,0 +1,113 @@
+<p class="page-meta">Desarrollo · Contrato</p>
+<h1>Contexto del proyecto AviCore</h1>
+<p class="page-updated">
+  Corte: <time datetime="2026-08-10">10 ago 2026</time> ·
+  <span class="page-owner">Responsable: Arquitectura</span>
+</p>
+<p class="lead">
+  Punto de entrada humano. Contrato mínimo; el detalle técnico del agente vive en
+  <code>.cursor/skills/*/references/</code>.
+</p>
+
+<p>
+  Plantillas usuario:
+  <button type="button" class="portal-inline-link" data-portal-page="dev-plantillas" data-portal-href="contenido/desarrollo/mensajes-reutilizables.html" data-portal-label="Mensajes y plantillas">mensajes-reutilizables</button> ·
+  <button type="button" class="portal-inline-link" data-portal-page="dev-plantillas-cursor" data-portal-href="contenido/desarrollo/plantillas-cursor.html" data-portal-label="Plantillas Cursor">plantillas-cursor</button> ·
+  <button type="button" class="portal-inline-link" data-portal-page="dev-plantillas-chatgpt" data-portal-href="contenido/desarrollo/plantillas-chatgpt.html" data-portal-label="ChatGPT pantallas">plantillas-chatgpt</button><br />
+  Catálogo skills: <code>.cursor/skills/README.md</code> ·
+  Flujo slash: <code>.cursor/commands/avicore-architect-direct.md</code>
+</p>
+
+<h2 id="que-es">Qué es AviCore</h2>
+<p>Plataforma de <strong>gestión operativa</strong> para avícolas de gallinas ponedoras (MVP).</p>
+<pre><code>Seleccionar galpón → cargar dato operativo → guardar → dashboard/reportes (tiempo real si aplica)</code></pre>
+<p>
+  Stack: <strong>Laravel 13, PostgreSQL, Livewire 4, Tailwind 4, Alpine.js (Livewire), PWA instalable (MVP, sin offline completo), Reverb, Echo</strong>
+  <em>(Reverb/Echo en fases posteriores)</em>.
+</p>
+
+<h2 id="mapa-skills">Mapa de lectura (skills)</h2>
+<table>
+  <thead><tr><th>Tarea</th><th>Skill</th><th>Referencia principal</th></tr></thead>
+  <tbody>
+    <tr><td>Orientación / alcance</td><td><code>avicore-contexto</code></td><td><code>producto.md</code>, <code>plan-desarrollo.md</code></td></tr>
+    <tr><td>Mercado Uruguay / trazabilidad MGAP</td><td><code>avicore-contexto</code></td><td><code>mercado-uruguay.md</code></td></tr>
+    <tr><td>Cualquier implementación</td><td><code>avicore-negocio</code></td><td><code>reglas.md</code>, <code>permisos.md</code></td></tr>
+    <tr><td>Pantallas / UI</td><td><code>avicore-ui</code></td><td><code>pantallas-flujos.md</code></td></tr>
+    <tr><td>UI operario móvil</td><td><code>avicore-ui</code></td><td><code>patrones-mobile-operario.md</code></td></tr>
+    <tr><td>UI operario escritorio</td><td><code>avicore-ui</code></td><td><code>patrones-desktop-operario.md</code></td></tr>
+    <tr><td>UI admin web</td><td><code>avicore-ui</code></td><td><code>patrones-web-admin.md</code></td></tr>
+    <tr><td>Tokens / componentes</td><td><code>avicore-design-system</code></td><td><code>tokens-componentes.md</code></td></tr>
+    <tr><td>Refined Agro</td><td><code>avicore-design-system</code></td><td><code>refined-agro-principios.md</code>, motion, elevación</td></tr>
+    <tr><td>BD / migraciones</td><td><code>avicore-modelo-datos</code></td><td><code>esquema-bd.md</code></td></tr>
+    <tr><td>Módulo completo</td><td><code>avicore-nuevo-modulo</code></td><td><code>checklist.md</code></td></tr>
+    <tr><td>Arranque local</td><td><code>avicore-contexto</code></td><td><code>arranque-local.md</code></td></tr>
+    <tr><td>Despliegue Laravel Cloud</td><td><code>avicore-contexto</code></td><td><code>deploy-laravel-cloud.md</code></td></tr>
+    <tr><td>PWA</td><td><code>avicore-pwa</code></td><td><code>pwa.md</code></td></tr>
+    <tr><td>Árbol Laravel</td><td><code>avicore-contexto</code></td><td><code>arbol-proyecto.md</code></td></tr>
+  </tbody>
+</table>
+<p>Ruta base: <code>.cursor/skills/&lt;skill&gt;/references/</code></p>
+
+<h2 id="contrato">Contrato de ejecución</h2>
+<p>
+  Ejecutar de punta a punta sin «¿procedo?». Preguntar solo si: dato crítico faltante, operación destructiva no autorizada,
+  conflicto entre documentación, tarea contra reglas del proyecto.
+</p>
+<p>Clasificación: <code>feature</code> | <code>fix</code> | <code>refactor</code> | <code>docs</code> | <code>style</code> | <code>chore</code> | <code>hotfix</code></p>
+
+<h2 id="principios">Principios no negociables</h2>
+<p>
+  Multiempresa (<code>empresa_id</code>) · Policies/Gates · negocio en Services/Actions · anulación con motivo ·
+  auditoría crítica · UI verde/agro sin inline · un cambio conceptual → <code>references/</code> del skill dueño +
+  línea en <a href="../../CHANGELOG.md">portal/CHANGELOG.md</a>.
+</p>
+<p>Detalle: <code>avicore-negocio/references/reglas.md</code></p>
+
+<h2 id="flujo-modulo">Flujo por módulo</h2>
+<pre><code>1. Skill + references del módulo  2. Pantalla mínima  3. Migración/modelo  4. Livewire
+5. Action/Service  6. Permisos  7. Validaciones  8. Auditoría/eventos si aplica
+9. Probar PC y móvil  10. Actualizar reference del skill dueño si cambió contrato</code></pre>
+
+<h2 id="comandos">Comandos locales</h2>
+<p>Ver <code>avicore-contexto/references/arranque-local.md</code>. Atajo: <code>composer dev</code> → <strong>http://localhost:8000</strong></p>
+<p>Portal documental: <code>pnpm run portal:dev</code> → <strong>http://127.0.0.1:5500/</strong></p>
+
+<h2 id="prohibiciones">Prohibiciones</h2>
+<p>No implementar sin leer references del skill · lógica crítica en Blade · saltar multiempresa · delete físico en operativos · UI fuera de guía · ignorar vista operario.</p>
+
+<h2 id="tooling">Tooling Cursor</h2>
+<ul>
+  <li><strong>Slash:</strong> <code>/avicore-architect-direct</code></li>
+  <li><strong>Config:</strong> <code>.cursor/README.md</code></li>
+  <li><strong>Gobernanza:</strong> <code>avicore-evolucion-tooling/references/GOBERNANZA.md</code></li>
+  <li><strong>MCP:</strong> Context7 (<code>user-context7</code>) para API/stack; GitHub (<code>user-github</code>) solo mensaje 5</li>
+  <li><strong>Anti-drift:</strong> <code>pnpm run check:agent-docs</code> · <code>pnpm run check:docs-impact</code> · <code>pnpm run check:cloud-readiness</code></li>
+</ul>
+
+<h2 id="fuentes">Regla de una sola fuente maestra</h2>
+<table>
+  <thead><tr><th>Capa</th><th>Ubicación</th><th>Rol</th></tr></thead>
+  <tbody>
+    <tr><td>Humano (portal)</td><td><code>portal/</code></td><td>Documentación legible, plantillas, changelog, imprimibles</td></tr>
+    <tr><td>Agente</td><td><code>.cursor/skills/*/references/*.md</code></td><td>Contrato ejecutable Cursor y CI</td></tr>
+    <tr><td>Orquestación</td><td><code>AGENTS.md</code>, <code>.cursor/commands/</code></td><td>Punteros cortos al portal y skills</td></tr>
+  </tbody>
+</table>
+
+<table>
+  <thead><tr><th>Si cambia…</th><th>Editar</th></tr></thead>
+  <tbody>
+    <tr><td>Tabla, campo, FK</td><td><code>avicore-modelo-datos/references/esquema-bd.md</code></td></tr>
+    <tr><td>Regla de negocio</td><td><code>avicore-negocio/references/reglas.md</code></td></tr>
+    <tr><td>Pantalla o flujo</td><td><code>avicore-ui/references/pantallas-flujos.md</code></td></tr>
+    <tr><td>Permiso por rol</td><td><code>avicore-negocio/references/permisos.md</code></td></tr>
+    <tr><td>Token / componente UI</td><td><code>avicore-design-system/references/</code></td></tr>
+    <tr><td>PWA</td><td><code>avicore-pwa/references/pwa.md</code></td></tr>
+    <tr><td>Árbol Laravel</td><td><code>avicore-contexto/references/arbol-proyecto.md</code></td></tr>
+    <tr><td>Mercado Uruguay</td><td><code>avicore-contexto/references/mercado-uruguay.md</code></td></tr>
+    <tr><td>Portal (esta página)</td><td><code>portal/contenido/</code>, <code>portal/js/site.nav.js</code>, <code>site.theme.js</code>, <code>site.toc.js</code>, <code>site.js</code></td></tr>
+    <tr><td>Tooling agente</td><td><code>.cursor/skills/README.md</code> + <code>GOBERNANZA.md</code></td></tr>
+  </tbody>
+</table>
+<p>Siempre: línea en <code>portal/CHANGELOG.md</code>. Anti-drift: <code>pnpm run check:agent-docs</code>.</p>

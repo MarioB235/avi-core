@@ -1,0 +1,41 @@
+<p class="page-meta">Desarrollo · Vigente</p>
+<h1>Portal vs skills (.md)</h1>
+<p class="page-updated">
+  Corte: <time datetime="2026-08-10">10 ago 2026</time> ·
+  <span class="page-owner">Responsable: Arquitectura / Cursor</span>
+</p>
+<p class="lead">
+  El <strong>portal</strong> es la única fuente de verdad para documentación humana (producto, mercado, contexto, plantillas, changelog).
+  Los <code>.md</code> en <code>.cursor/skills/*/references/</code> siguen siendo el <strong>contrato del agente</strong> Cursor.
+</p>
+
+<h2 id="dos-capas">1 — Dos capas de documentación</h2>
+<table>
+  <thead><tr><th>Capa</th><th>Ubicación</th><th>Audiencia</th></tr></thead>
+  <tbody>
+    <tr><td>Humano (canónica)</td><td><code>portal/</code> — <code>contenido/</code>, <code>imprimibles/</code>, <code>CHANGELOG.md</code></td><td>Equipo, avícola, veterinarios</td></tr>
+    <tr><td>Agente (canónica)</td><td><code>.cursor/skills/*/references/*.md</code></td><td>Cursor, CI <code>check:agent-docs</code></td></tr>
+    <tr><td>Orquestación</td><td><code>AGENTS.md</code>, <code>.cursor/commands/</code></td><td>Punteros cortos</td></tr>
+  </tbody>
+</table>
+
+<h2 id="flujo">2 — Flujo al cambiar documentación</h2>
+<ol>
+  <li>Editar <code>references/</code> del skill dueño + línea en <code>portal/CHANGELOG.md</code>.</li>
+  <li>Reflejar el cambio en el fragmento HTML del portal si aplica (<code>portal/contenido/</code>).</li>
+  <li>Ejecutar <code>pnpm run check:agent-docs</code>.</li>
+</ol>
+
+<h2 id="nav">3 — Menú del portal</h2>
+<p>Definido en <code>portal/js/site.nav.js</code> (<code>NAV_SECTIONS</code>). Cada nueva página HTML debe registrarse ahí.</p>
+
+<h2 id="plantillas">4 — Plantillas Cursor</h2>
+<p>
+  Mensajes 1–5: <button type="button" class="portal-inline-link" data-portal-page="dev-plantillas" data-portal-href="contenido/desarrollo/mensajes-reutilizables.html" data-portal-label="Mensajes y plantillas">mensajes-reutilizables</button> (índice del portal, sin salir del sitio).
+  Mapa de contrato: <a href="contexto.html">contexto.html</a>.
+</p>
+
+<div class="note">
+  <strong>Regla de oro:</strong> un cambio conceptual → una <code>references/</code> del skill dueño + <code>portal/CHANGELOG.md</code>.
+  El portal resume; no duplicar tablas técnicas enteras del agente.
+</div>

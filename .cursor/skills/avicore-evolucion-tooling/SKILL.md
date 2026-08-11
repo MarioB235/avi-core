@@ -12,7 +12,7 @@ disable-model-invocation: true
 
 - [ ] Skill(s) o regla(s) actualizados según GOBERNANZA
 - [ ] `.cursor/skills/README.md` si cambió mapeo
-- [ ] `docs/CHANGELOG.md` — línea `[cursor]`
+- [ ] `portal/CHANGELOG.md` — línea `[cursor]`
 - [ ] `node scripts/check-agent-docs-sync.cjs` en verde
 
 Formato de skill nuevo: registrar en README · no crear mensaje HTML salvo plantilla dedicada necesaria.

@@ -1,7 +1,7 @@
 # Referencia — Estructura de base de datos
 
 **Fuente maestra del esquema implementado.** Solo tablas con migración en el repo; no documentar DDL especulativo aquí.  
-Al añadir una tabla: migración primero, luego esta sección y entrada en `docs/CHANGELOG.md`.  
+Al añadir una tabla: migración primero, luego esta sección y entrada en `portal/CHANGELOG.md`.  
 Bloques y tablas futuras (sin migración): `plan-desarrollo.md`.  
 Criterios del modelo: [`criterios-modelo.md`](criterios-modelo.md). Reglas de negocio: `avicore-negocio/references/reglas.md`.
 
@@ -157,8 +157,8 @@ Registro operativo de vacunación por lote (tabla propia; no es fila en `registr
 | Tabla | Índice |
 |-------|--------|
 | Varias | `empresa_id` |
-| registros_operativos | `galpon_id`, `created_at`, `tipo` |
-| vacunaciones | `empresa_id`, `(lote_id, created_at)`, `(galpon_id, created_at)` |
+| registros_operativos | `galpon_id`, `created_at`, `tipo`, `(empresa_id, user_id, created_at)` historial operario |
+| vacunaciones | `empresa_id`, `(lote_id, created_at)`, `(galpon_id, created_at)`, `(empresa_id, user_id, created_at)` historial operario |
 | lotes | `estado`, `(empresa_id, codigo)` único |
 | users | `(empresa_id, documento)` único |
 | users | `documento` único parcial (`empresa_id IS NULL`, Admin AviCore) |
@@ -171,4 +171,4 @@ Registro operativo de vacunación por lote (tabla propia; no es fila en `registr
 - [ ] Migración / modelo alineados
 - [ ] `avicore-negocio/references/reglas.md` si cambia regla
 - [ ] `avicore-ui/references/pantallas-flujos.md` si cambia formulario
-- [ ] `docs/CHANGELOG.md` con entrada breve
+- [ ] `portal/CHANGELOG.md` con entrada breve

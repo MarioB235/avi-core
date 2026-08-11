@@ -1,0 +1,565 @@
+﻿/*
+  Plantilla ejecutiva AviCore — única hoja de estilos.
+  Portada editorial v3 + páginas interiores + impresión/PDF.
+  No requiere base.css, paginas-a4.css ni componentes.css.
+*/
+
+/* —— 1. Tokens —— */
+
+:root {
+  --ap-verde: #1f5e3b;
+  --ap-verde-oscuro: #092b1f;
+  --ap-oro: #b5a48c;
+  --ap-texto: #40536a;
+  --ap-texto-cuerpo: #2d3d4d;
+  --ap-fondo-papel: #fdfdfb;
+  --ap-font-family: Arial, Helvetica, sans-serif;
+  --ap-text-body: 10.5pt;
+  --ap-text-small: 10pt;
+  --ap-text-micro: 7.5pt;
+  --ap-text-h2: 14pt;
+  --ap-text-h3: 11.5pt;
+  --ap-text-h4: 10.5pt;
+  --ap-text-th: 9.5pt;
+  --ap-text-td: 10pt;
+  --ap-line-body: 1.55;
+  --ap-line-compact: 1.35;
+  --ap-print-pad-x: 18mm;
+  --ap-print-pad-top: 18mm;
+  --ap-print-pad-bottom: 20mm;
+}
+
+/* —— 2. Reset mínimo —— */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  margin: 0;
+  font-family: var(--ap-font-family);
+  font-size: var(--ap-text-body);
+  line-height: var(--ap-line-body);
+  color: var(--ap-texto-cuerpo);
+  background: #d8dde3;
+}
+
+.informe--ejecutivo-avicore {
+  width: 100%;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: var(--ap-fondo-papel);
+}
+
+/* —— 3. Portada —— */
+
+.informe--ejecutivo-avicore .document-portada {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 297mm;
+  padding: 2.2cm;
+  padding-bottom: 1.8cm;
+  background: var(--ap-fondo-papel);
+  break-after: page;
+  page-break-after: always;
+}
+
+.informe--ejecutivo-avicore .avicore-portada__frame {
+  position: absolute;
+  inset: 1.2cm;
+  border: 1px solid rgba(31, 94, 59, 0.08);
+  pointer-events: none;
+}
+
+.informe--ejecutivo-avicore .avicore-portada__frame::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: 4px;
+  width: 1px;
+  background: var(--ap-oro);
+  opacity: 0.25;
+}
+
+.informe--ejecutivo-avicore .avicore-portada__header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.informe--ejecutivo-avicore .avicore-portada__logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.3cm;
+}
+
+.informe--ejecutivo-avicore .avicore-portada__logo-img {
+  display: block;
+  height: 1.1cm;
+  width: auto;
+}
+
+.informe--ejecutivo-avicore .avicore-portada__logo-text {
+  font-size: 15pt;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ap-verde-oscuro);
+}
+
+.informe--ejecutivo-avicore .avicore-portada__doc-id {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  line-height: 1.3;
+}
+
+.informe--ejecutivo-avicore .avicore-portada__doc-id span {
+  font-size: var(--ap-text-micro);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ap-oro);
+}
+
+.informe--ejecutivo-avicore .avicore-portada__doc-id strong {
+  font-size: 9.5pt;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--ap-verde-oscuro);
+}
+
+.informe--ejecutivo-avicore .avicore-portada__content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1cm 0.5cm;
+  text-align: center;
+}
+
+.informe--ejecutivo-avicore .avicore-portada__eyebrow {
+  margin: 0 0 0.5cm;
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ap-verde);
+}
+
+.informe--ejecutivo-avicore .avicore-portada__main-title {
+  margin: 0;
+  max-width: 15.5cm;
+  font-size: 28pt;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: var(--ap-verde-oscuro);
+}
+
+.informe--ejecutivo-avicore .avicore-portada__divider-gold {
+  width: 2.2cm;
+  height: 1px;
+  margin: 0.65cm auto;
+  background: var(--ap-oro);
+}
+
+.informe--ejecutivo-avicore .avicore-portada__subtitle {
+  margin: 0;
+  max-width: 14cm;
+  font-size: var(--ap-text-h3);
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--ap-texto);
+}
+
+.informe--ejecutivo-avicore .avicore-portada__footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8cm;
+}
+
+.informe--ejecutivo-avicore .avicore-portada__meta-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35cm;
+  width: 100%;
+  max-width: 14cm;
+  margin: 0 auto;
+  padding: 0.55cm 0;
+  border-top: 1px dashed rgba(9, 43, 31, 0.12);
+  border-bottom: 1px dashed rgba(9, 43, 31, 0.12);
+}
+
+.informe--ejecutivo-avicore .avicore-portada__meta-item {
+  display: grid;
+  grid-template-columns: 4.2cm 1fr;
+  gap: 0.4cm;
+  align-items: baseline;
+  text-align: left;
+}
+
+.informe--ejecutivo-avicore .avicore-portada__meta-key {
+  font-size: var(--ap-text-micro);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ap-oro);
+}
+
+.informe--ejecutivo-avicore .avicore-portada__meta-val {
+  font-size: var(--ap-text-small);
+  line-height: 1.35;
+  color: var(--ap-verde-oscuro);
+}
+
+.informe--ejecutivo-avicore .avicore-portada__confidentiality {
+  text-align: center;
+  font-size: var(--ap-text-micro);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8fa095;
+}
+
+/* —— 4. Páginas interiores —— */
+
+.informe--ejecutivo-avicore .document-pages__content {
+  padding: 1.5rem 1.8cm 1.25rem;
+}
+
+/* Pie y marca de agua (pantalla + impresión) */
+.informe--ejecutivo-avicore .avicore-interior__footer,
+.informe--ejecutivo-avicore .avicore-interior__watermark {
+  display: none;
+}
+
+@media screen {
+  .informe--ejecutivo-avicore .document-pages {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .informe--ejecutivo-avicore .avicore-interior__footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid rgba(181, 164, 140, 0.35);
+    font-size: 8.5pt;
+    line-height: 1.3;
+    color: #7a8796;
+  }
+
+  .informe--ejecutivo-avicore .avicore-interior__footer-page::after {
+    content: "Página —";
+  }
+
+  .informe--ejecutivo-avicore .avicore-interior__watermark {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+    opacity: 0.04;
+    pointer-events: none;
+  }
+
+  .informe--ejecutivo-avicore .avicore-interior__watermark img {
+    width: 42mm;
+    height: auto;
+  }
+
+  .informe--ejecutivo-avicore .document-pages__content {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.informe--ejecutivo-avicore .avicore-interior__footer-brand {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.informe--ejecutivo-avicore .avicore-interior__footer-page {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.informe--ejecutivo-avicore .section-block + .section-block {
+  margin-top: 1.4rem;
+}
+
+.informe--ejecutivo-avicore .section-block h2 {
+  margin: 0 0 0.8rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid rgba(181, 164, 140, 0.4);
+  font-size: var(--ap-text-h2);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ap-verde-oscuro);
+}
+
+.informe--ejecutivo-avicore .section-block h3 {
+  margin: 0.85rem 0 0.4rem;
+  font-size: var(--ap-text-h3);
+  font-weight: 700;
+  line-height: var(--ap-line-compact);
+  color: var(--ap-verde);
+}
+
+.informe--ejecutivo-avicore .section-block h4 {
+  margin: 0.85rem 0 0.35rem;
+  font-size: var(--ap-text-h4);
+  font-weight: 700;
+  line-height: var(--ap-line-compact);
+  color: var(--ap-verde);
+}
+
+.informe--ejecutivo-avicore .section-block p {
+  margin: 0 0 0.65rem;
+  text-align: left;
+}
+
+.informe--ejecutivo-avicore .section-block p:last-child {
+  margin-bottom: 0;
+}
+
+.informe--ejecutivo-avicore .section-block strong {
+  font-weight: 700;
+  color: var(--ap-verde-oscuro);
+}
+
+.informe--ejecutivo-avicore .regimen-list {
+  margin: 0.55rem 0 0.75rem 1.35rem;
+  list-style: disc;
+}
+
+.informe--ejecutivo-avicore .regimen-list li + li {
+  margin-top: 0.25rem;
+}
+
+.informe--ejecutivo-avicore .directive-note {
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  background: rgba(31, 94, 59, 0.04);
+  border-left: 3px solid var(--ap-verde);
+  border-radius: 0 4px 4px 0;
+}
+
+.informe--ejecutivo-avicore .directive-note p {
+  margin: 0;
+  font-style: italic;
+  color: var(--ap-verde-oscuro);
+}
+
+.informe--ejecutivo-avicore .formal-table {
+  width: 100%;
+  margin: 1rem 0 1.2rem;
+  border-collapse: collapse;
+  line-height: var(--ap-line-compact);
+}
+
+.informe--ejecutivo-avicore .formal-table th {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--ap-verde-oscuro);
+  border-bottom: 2px solid var(--ap-oro);
+  font-size: var(--ap-text-th);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--ap-verde-oscuro);
+}
+
+.informe--ejecutivo-avicore .formal-table td {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgba(9, 43, 31, 0.08);
+  font-size: var(--ap-text-td);
+  vertical-align: top;
+}
+
+.informe--ejecutivo-avicore .formal-table tbody tr:nth-child(even) td {
+  background: rgba(31, 94, 59, 0.02);
+}
+
+.informe--ejecutivo-avicore .reporte-plantilla {
+  margin: 0;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+/* —— 5. Impresión / PDF —— */
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  @page ejecutivo-portada {
+    margin: 0;
+  }
+
+  @page ejecutivo-interior {
+    margin: 0;
+
+    @bottom-right {
+      content: "Página " counter(page);
+      font-family: var(--ap-font-family);
+      font-size: 8.5pt;
+      color: #7a8796;
+      margin-right: 18mm;
+      margin-bottom: 7.5mm;
+    }
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  .informe--ejecutivo-avicore {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    background: transparent;
+  }
+
+  .informe--ejecutivo-avicore .document-portada {
+    page: ejecutivo-portada;
+    width: 210mm;
+    height: 297mm;
+    min-height: 297mm;
+    margin: 0;
+    padding: 2.2cm;
+    padding-bottom: 1.8cm;
+    background: var(--ap-fondo-papel);
+  }
+
+  .informe--ejecutivo-avicore .document-pages {
+    page: ejecutivo-interior;
+  }
+
+  /* Pie fijo y marca de agua — compatibles con Chrome al imprimir */
+  .informe--ejecutivo-avicore .avicore-interior__footer {
+    display: flex;
+    position: fixed;
+    right: var(--ap-print-pad-x);
+    bottom: 8mm;
+    left: var(--ap-print-pad-x);
+    z-index: 1000;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    height: 10mm;
+    padding-top: 2mm;
+    border-top: 0.5pt solid rgba(181, 164, 140, 0.35);
+    font-size: 8.5pt;
+    line-height: 1.3;
+    color: #7a8796;
+  }
+
+  .informe--ejecutivo-avicore .avicore-interior__watermark {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+    opacity: 0.035;
+    pointer-events: none;
+  }
+
+  .informe--ejecutivo-avicore .avicore-interior__watermark img {
+    width: 50mm;
+    height: auto;
+  }
+
+  .informe--ejecutivo-avicore .avicore-interior__footer-page {
+    display: none;
+  }
+
+  .informe--ejecutivo-avicore .document-pages__content {
+    position: relative;
+    z-index: 1;
+    padding: var(--ap-print-pad-top) var(--ap-print-pad-x) var(--ap-print-pad-bottom);
+  }
+
+  .informe--ejecutivo-avicore .formal-table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .informe--ejecutivo-avicore .formal-table th,
+  .informe--ejecutivo-avicore .formal-table td {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+/* —— 6. Móvil —— */
+
+@media (max-width: 720px) {
+  .informe--ejecutivo-avicore .document-portada {
+    min-height: auto;
+    padding: 1.5rem 1rem;
+  }
+
+  .informe--ejecutivo-avicore .avicore-portada__frame {
+    display: none;
+  }
+
+  .informe--ejecutivo-avicore .avicore-portada__header {
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .informe--ejecutivo-avicore .avicore-portada__doc-id {
+    align-items: center;
+    text-align: center;
+  }
+
+  .informe--ejecutivo-avicore .avicore-portada__main-title {
+    font-size: 20pt;
+  }
+
+  .informe--ejecutivo-avicore .avicore-portada__meta-item {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+  }
+
+  .informe--ejecutivo-avicore .document-pages__content {
+    padding: 1rem;
+  }
+}

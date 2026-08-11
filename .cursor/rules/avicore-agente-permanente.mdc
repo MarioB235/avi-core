@@ -9,18 +9,18 @@ Regla ligera: **no duplica** el contrato. Fuentes canónicas abajo.
 
 ## Ejecutar
 
-- De punta a punta sin «¿procedo?» salvo bloqueo crítico (detalle en `docs/00-contexto.md`).
+- De punta a punta sin «¿procedo?» salvo bloqueo crítico (detalle en `portal/contenido/desarrollo/contexto.html`).
 - Usuario: **`/avicore-architect-direct`** + plantillas HTML — **no** invocar `@skills` manualmente.
 
 ## Dónde leer (orden)
 
 | Necesidad | Archivo |
 |-----------|---------|
-| Contrato mínimo | `docs/00-contexto.md` |
+| Contrato humano | `portal/contenido/desarrollo/contexto.html` |
 | Flujo del slash (7 pasos) | `.cursor/commands/avicore-architect-direct.md` |
 | Mensaje → skill (única tabla) | `.cursor/skills/README.md` |
 | Detalle de producto | `.cursor/skills/*/references/` |
-| Mensajes copiables (5) | `docs/02-avicore-mensajes-reutilizables.html` |
+| Mensajes copiables (5) | `portal/contenido/desarrollo/mensajes-reutilizables.html` |
 | Config Cursor | `.cursor/README.md` |
 | Chat en prosa natural | `.cursor/rules/avicore-modo-respuesta-clara.mdc` |
 

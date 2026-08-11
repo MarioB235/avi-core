@@ -114,15 +114,27 @@ class CargarHub extends Component
         OperarioGalponService $operarioGalponService,
         string $dialogProperty,
     ): ?Galpon {
-        $galpon = $operarioGalponService->galponActual(auth()->user());
+        $user = auth()->user();
 
-        if ($galpon !== null) {
-            return $galpon;
+        if ($user === null || $user->ultimo_galpon_id === null) {
+            $this->{$dialogProperty} = false;
+            $this->selectorGalponAbierto = true;
+
+            return null;
         }
 
-        $this->{$dialogProperty} = false;
-        $this->selectorGalponAbierto = true;
+        $galpon = $operarioGalponService->galponDisponibleParaUsuario(
+            $user,
+            (int) $user->ultimo_galpon_id,
+        );
 
-        return null;
+        if ($galpon === null) {
+            $this->{$dialogProperty} = false;
+            $this->selectorGalponAbierto = true;
+
+            return null;
+        }
+
+        return $galpon;
     }
 }

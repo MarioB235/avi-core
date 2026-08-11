@@ -10,5 +10,5 @@ alwaysApply: false
 - No añadir secciones DDL «por si acaso»; bloque futuro → `avicore-contexto/references/plan-desarrollo.md` primero.
 - `avicore-contexto/references/arbol-proyecto.md` es la fuente maestra del árbol **existente**.
 - `avicore-contexto/references/arranque-local.md` es la fuente maestra del entorno local.
-- Tras cambiar contrato: entrada breve en `docs/CHANGELOG.md`.
-- Mapa de ownership: `docs/00-contexto.md`.
+- Tras cambiar contrato: entrada breve en `portal/CHANGELOG.md`.
+- Mapa de ownership: `portal/contenido/desarrollo/contexto.html`.

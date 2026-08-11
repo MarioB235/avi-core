@@ -70,8 +70,8 @@ Eventos globales: `avicore:pwa-install-ready`, `avicore:pwa-installed`.
 
 ## Actualización tras deploy
 
-- `registerType: autoUpdate` + `onNeedRefresh` en `pwa.js`.
-- Snackbar persistente: «Hay una nueva versión» + botón **Actualizar** (recarga con nuevo SW).
+- `registerType: autoUpdate` + `onNeedRefresh` en `pwa.js` con registro **diferido** (`immediate: false` — no bloquea el primer paint).
+- Snackbar persistente: «Hay una nueva versión» + botón **Actualizar** (`actionKey: pwa-update` → `window.__avicorePwaUpdate` / `updateSW(true)`).
 - **Perfil (menú cuenta):** campo **Versión** con fecha/hora del último `pnpm run build` + commit corto (`public/build/avicore-build.json`, generado por `scripts/write-build-meta.cjs`).
 
 ---
@@ -102,6 +102,9 @@ Tras `pnpm run build`, el manifest queda en `public/build/manifest.webmanifest`.
 
 - `registerType: autoUpdate` — actualiza SW al haber nueva versión del build.
 - Precache: solo `js`, `css`, `woff2` del build.
+- Workbox: `skipWaiting` + `clientsClaim` para que el SW nuevo tome control sin esperar cierre de pestañas.
+- Registro SW en `pwa.js` con `immediate: false` — no compite con el primer paint (arranque PWA).
+- `devOptions.enabled` solo fuera de producción (`vite build`); en prod no genera SW de desarrollo.
 - Runtime cache: `/images/brand/*` con `StaleWhileRevalidate` (30 días, máx. 32 entradas).
 - **Sin** `navigateFallback` — las rutas Livewire siguen requiriendo red.
 
