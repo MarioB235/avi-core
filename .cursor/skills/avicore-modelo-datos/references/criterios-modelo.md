@@ -1,6 +1,6 @@
 # 04 — Modelo de datos inicial
 
-> **Esquema canónico (tablas y campos):** [`esquema-bd.md`](esquema-bd.md) — actualizar primero al cambiar BD y registrar en [`docs/CHANGELOG.md`](../../../../docs/CHANGELOG.md).
+> **Esquema canónico (tablas y campos):** [`esquema-bd.md`](esquema-bd.md) — actualizar primero al cambiar BD y registrar en [`portal/CHANGELOG.md`](../../../../portal/CHANGELOG.md).
 
 ## 1. Criterio general
 

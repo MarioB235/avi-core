@@ -8,7 +8,8 @@
         "dev": "vite",
         "check:agent-docs": "node scripts/check-agent-docs-sync.cjs && node scripts/check-skill-references.cjs",
         "check:docs-impact": "node scripts/check-docs-impact.cjs",
-        "check:cloud-readiness": "node scripts/check-cloud-readiness.cjs"
+        "check:cloud-readiness": "node scripts/check-cloud-readiness.cjs",
+        "portal:dev": "node scripts/serve-portal.cjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

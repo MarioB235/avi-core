@@ -78,7 +78,8 @@ El operario carga datos desde celular. El encargado, administrativo o dueño con
 
 - Facturación electrónica.
 - Integración DGI.
-- Integración MGAP / SMA.
+- Integración MGAP / SMA / export SNIG (trazabilidad oficial; ver [`mercado-uruguay.md`](mercado-uruguay.md) §4).
+- Cálculo automático de coeficientes técnicos con curvas y alertas (postura, conversión, mortalidad vs. referencia Uruguay; ver [`mercado-uruguay.md`](mercado-uruguay.md) §3 y [`reglas.md`](../../avicore-negocio/references/reglas.md) §15).
 - Stock avanzado de alimento.
 - Ventas.
 - Logística.
@@ -158,3 +159,5 @@ Un sistema base + configuración por empresa
 | Dashboard | Tiempo real |
 | Stack | Laravel + PostgreSQL + Livewire + Tailwind CSS + Alpine.js + PWA + Laravel Reverb + Echo |
 | Diseño | Verde/agro moderno |
+| Mercado objetivo | Uruguay — sur (Canelones, Montevideo, San José); ver [`mercado-uruguay.md`](mercado-uruguay.md) |
+| Trazabilidad normativa | Datos operativos alineados a lotes/eventos SMA/SNIG; integración oficial post-MVP |

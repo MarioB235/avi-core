@@ -97,9 +97,14 @@ class SnackbarHostTest extends TestCase
         $js = file_get_contents(resource_path('js/pwa.js'));
 
         $this->assertNotFalse($js);
+        $this->assertStringContainsString('immediate: false', $js);
         $this->assertStringContainsString('onNeedRefresh', $js);
-        $this->assertStringContainsString('snackbar-show', $js);
+        $this->assertStringContainsString('registerSW', $js);
+        $this->assertStringContainsString('updateSW(true)', $js);
+        $this->assertStringContainsString('CustomEvent(\'snackbar-show\'', $js);
         $this->assertStringContainsString('Hay una nueva versión de AviCore.', $js);
+        $this->assertStringContainsString('variant: \'info\'', $js);
+        $this->assertStringContainsString('actionLabel: \'Actualizar\'', $js);
         $this->assertStringContainsString('actionKey: \'pwa-update\'', $js);
         $this->assertStringContainsString('__avicorePwaUpdate', $js);
     }

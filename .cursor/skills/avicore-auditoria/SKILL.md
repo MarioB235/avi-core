@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # AviCore — Auditoría
 
-Flujo y plantilla usuario: mensajes 2 y 3 en `docs/02-avicore-mensajes-reutilizables.html` · catálogo: `.cursor/skills/README.md`.
+Flujo y plantilla usuario: mensajes 2 y 3 en `portal/contenido/desarrollo/plantillas-cursor.html` · catálogo: `.cursor/skills/README.md`.
 
 ## Modo revisar (mensaje 2) — SOLO LECTURA
 

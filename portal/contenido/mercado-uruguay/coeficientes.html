@@ -1,0 +1,27 @@
+<p class="page-meta">Mercado · Referencia MGAP/DIEA</p>
+<h1>Coeficientes técnicos de referencia</h1>
+<p class="page-updated">
+  Corte: <time datetime="2026-08-08">8 ago 2026</time> ·
+  <span class="page-owner">Responsable: Producto / Negocio</span>
+</p>
+<p class="lead">
+  Valores de referencia nacional para gráficos y alertas. No son metas fijas por empresa hasta configuración explícita.
+  AviCore debe <strong>calcular</strong> estos índices, no solo almacenar datos crudos.
+</p>
+
+<h2 id="tabla">1 — Tabla de coeficientes</h2>
+<table>
+  <thead>
+    <tr><th>Coeficiente</th><th>Referencia Uruguay</th><th>Dato AviCore</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Postura</td><td>269–278 huevos/gallina/año</td><td>Huevos diarios + aves vivas</td></tr>
+    <tr><td>Conversión alimenticia</td><td>~121–125 g alimento/ave/día</td><td>Alimento (kg) + aves</td></tr>
+    <tr><td>Mortalidad</td><td>~1,0%–1,1%</td><td>Muertes acumuladas</td></tr>
+    <tr><td>Ciclo de lote</td><td>Postura sem. 19–20; descarte 86–87</td><td>Lote + fecha ingreso</td></tr>
+  </tbody>
+</table>
+
+<h2 id="estado">2 — Estado en AviCore</h2>
+<p><strong>MVP:</strong> recolección (huevos, muertes, lotes). <strong>Post-MVP:</strong> curvas, desvíos y alertas en dashboard.</p>
+<p>Reglas: <code>avicore-negocio/references/reglas.md</code> §15.</p>

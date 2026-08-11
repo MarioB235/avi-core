@@ -2,7 +2,7 @@ import { registerSW } from 'virtual:pwa-register';
 
 if ('serviceWorker' in navigator) {
     const updateSW = registerSW({
-        immediate: true,
+        immediate: false,
         onNeedRefresh() {
             window.__avicorePwaUpdate = () => updateSW(true);
 

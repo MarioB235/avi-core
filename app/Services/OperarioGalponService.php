@@ -50,7 +50,15 @@ class OperarioGalponService
         $memoKey = 'galpon_actual_'.$user->id;
 
         if (array_key_exists($memoKey, $this->memo)) {
-            return $this->memo[$memoKey];
+            $cached = $this->memo[$memoKey];
+
+            if ($cached === null) {
+                return null;
+            }
+
+            $stillAvailable = $this->galponDisponibleParaUsuario($user, $cached->id);
+
+            return $this->memo[$memoKey] = $stillAvailable;
         }
 
         if ($user->ultimo_galpon_id === null) {

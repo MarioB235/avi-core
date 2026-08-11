@@ -165,3 +165,18 @@
 3. Debe tener 8 galpones.
 4. Debe tener 30 días de datos.
 5. Debe incluir escenarios variados.
+
+---
+
+## 15. Coeficientes técnicos de referencia (Uruguay)
+
+Valores de **referencia nacional** (MGAP / DIEA) para gráficos, desvíos y alertas. No son metas fijas por empresa hasta que exista configuración explícita (`avicore-defer`: umbrales por galpón/empresa).
+
+| Coeficiente | Referencia sector Uruguay | Fuente de datos AviCore |
+|-------------|---------------------------|-------------------------|
+| Postura | ~269–278 huevos por gallina al año | Huevos diarios + aves vivas + edad del lote |
+| Conversión alimenticia | ~121–125 g alimento por ave y día | Alimento (kg) + aves vivas |
+| Mortalidad | ~1,0%–1,1% (tasa aceptada en encuestas) | Muertes acumuladas vs. aves |
+| Ciclo de lote | Postura semana 19–20; descarte semana 86–87 | `fecha_ingreso` del lote + estado |
+
+**Implementación:** recolección operativa en MVP; cálculo automático, curvas y alertas → post-MVP (dashboard fase 17). Detalle mercado y SMA/SNIG: [`mercado-uruguay.md`](../../avicore-contexto/references/mercado-uruguay.md).
