@@ -251,6 +251,154 @@ Responsable oficial: encargado/a. AviCore puede digitalizar estas planillas como
 | Producción diaria de huevos | Carga huevos por galpón (MVP) |
 | Trazabilidad histórica | Lotes con historial; anulación lógica, no delete físico |
 
+### Portal SNIG / SMA — flujos operativos (bitácora 2026-08-11)
+
+> Fuente: [SNIG — página principal](https://www.snig.gub.uy/) · instructivo engorde I1071501 (referencia estructural) · planilla campo sur (usuario). **Verificar** en portal SMA avícola antes de implementar export.
+
+**Acceso:** [snig.gub.uy](https://www.snig.gub.uy/) → login con **Usuario gub.uy** o **DICOSE + contraseña** → perfil Productor / VLE → establecimiento en REUNE. SMA avícola: menú **Otros sistemas** → *Sistema de Monitoreo Avícola* (documentación, materiales de apoyo). Mesa SMA: **2410 2790** (lun–vie 9–17, sáb 9–14).
+
+| Flujo SMA | Pasos resumidos (secuencial) | Equivalente AviCore (futuro) |
+|-----------|------------------------------|------------------------------|
+| **Alta de lote** | Remitos Recibidos → Aceptar remito (incubadora/origen) → lote **Disponible** | Alta lote + `codigo` SMA + remito origen |
+| **Movimiento** | Guías / Nuevo movimiento → DICOSE destino + transportista → lote + cantidad → Verificar → Confirmar → preembarque | `movimientos_aves` + export pre-llenado |
+| **Faena** | Planta: Certificación a faena / Remitos recibidos → contrastar cantidades → Aceptar e imprimir PDF | Cierre lote + remito SMA |
+
+**Caveat rubro:** el instructivo citado (I1071501, set 2021) es **granja de engorde**; AviCore MVP = **ponedoras** (§8.3). La secuencia remito→lote→movimiento→faena aplica igual; los campos de **producción diaria de huevos** no figuran en ese instructivo — validar en materiales SMA avícola / GBPEA Anexo A postura.
+
+**Portal SNIG (contexto DICOSE, no bloquea MVP operario):** Nuevo Portal Productores (desde 08/12/2025), Declaración Jurada DICOSE, alta DICOSE (requisitos oct 2024). Despacho de tropa digital obligatorio (may 2026) aplica más a **semovientes** que a aves SMA; no confundir con remito avícola.
+
+### Planilla MGAP oficial — Anexo Nº 2 «Registros productivos» (aves de ciclo largo)
+
+> **Corte 2026-08-11 (usuario):** el PDF titula «Reproductoras», pero la DGSG usa el **mismo Anexo Nº 2** para **aves de ciclo largo**, incluidas **ponedoras** (MVP AviCore §8.3). No es la planilla de pollos parrilleros (engorde). Fuente normativa: Procedimiento de Certificación Sanitaria de Aves (DGSG) en [gub.uy](https://www.gub.uy/) · GBPEA §7.12 · manual BPM-POES 2025.
+
+**Regla MGAP clave (ponedoras):** registro **diario de huevos** + conservar historial de las **últimas 9 semanas** antes de enviar el lote a faena.
+
+#### Cabecera obligatoria (ponedoras)
+
+| Campo planilla | AviCore hoy | Notas |
+|----------------|-------------|-------|
+| N° DICOSE | `granjas.dicose` | Ola 2 |
+| Nº lote SMA | `lotes.codigo` | Alinear con SMA al aceptar remito |
+| Fecha de nacimiento / ingreso | `lotes.fecha_ingreso` | Planilla pide «nacimiento»; en postura suele ser fecha de alojamiento de pollitas — `avicore-defer`: `fecha_nacimiento` opcional si difiere |
+| Línea genética (Hy-Line, Lohmann, etc.) | — | `avicore-defer`: `lotes.linea_genetica` |
+| Cantidad inicial de aves | `lotes.cantidad_inicial` | ✓ |
+| Nom. comercial / Propietario | `empresas` | Export |
+| N° Remitos / Galpón / Enfermedad | parcial | Ver bloque A abajo |
+
+#### Producción diaria (ponedoras — núcleo operario)
+
+| Campo planilla | AviCore hoy | Gap / decisión |
+|----------------|-------------|----------------|
+| **Mortalidad** (día + acumulado) | `registros_operativos.muertes` | ✓ |
+| **Descarte** de aves (separado) | — | `avicore-defer`: campo `descarte_aves` o tipo registro |
+| **Huevos aptos** (comerciales) | `registros_operativos.huevos` (total) | Hoy un solo número — **split** aptos vs descarte huevos |
+| **Huevos descarte** (rotos, sucios, fecales) | — | `avicore-defer`: `huevos_descarte` en registro o segundo campo |
+| **Alimento** (kg/día) | — | **Ola 1** hub Cargar |
+| **Agua** (medidor) | — | Post-MVP |
+| Historial **9 semanas** pre-faena | Historial en BD | Export debe filtrar últimas 9 sem. al cierre/faena |
+
+#### Historial sanitario
+
+| Campo | AviCore |
+|-------|---------|
+| Vacunas (fecha, cepa, serie, vencimiento) | `vacunaciones` parcial — ver bloque D |
+| Productos veterinarios / ATB / tiempo espera | Post-MVP §7.10 |
+| Certificación VLE (Salmonella, influenza, etc.) | Leyenda + firma en PDF impreso; checklist post-MVP |
+
+#### Bloques del PDF recibido (misma plantilla física)
+
+El PDF compartido incluye además: **origen de lotes** (remito, galpón), **semana de producción**, **grilla mortalidad** 7 días × semanas con % acumulado, firmas VLE y responsable.
+
+**Planilla operativa de galpón (campo sur)** — complemento UX papel/Excel antes de digitar SMA; columnas alineadas a la tabla «Producción diaria» arriba.
+
+**Cabecera papel/Excel (referencia sur)**
+
+| Campo | Ejemplo | AviCore |
+|-------|---------|---------|
+| N° galpón | Galpón 2 | `galpones` |
+| N° lote SMA | Código al aceptar remito | `lotes.codigo` |
+| Fecha alojamiento | DD/MM/AAAA | `lotes.fecha_ingreso` |
+| Población inicial | 15.000 | `lotes.cantidad_inicial` |
+| Línea genética | Cobb / Ross | Campo opcional lote (`avicore-defer`) |
+| DICOSE | 020XXXXXXXX | `granjas.dicose` |
+
+**Registro diario (engorde / recría — referencia UX)**
+
+| Columna | Notas | AviCore MVP postura |
+|---------|-------|---------------------|
+| Día / edad (días) | Edad del lote | Edad en semanas (operario) |
+| Mortalidad | Aves | **Carga muertes** ✓ |
+| Descarte | Separado de mortalidad | `avicore-defer` — hoy solo muertes |
+| Alimento (kg) | Diario | Ola 1 — hub Cargar |
+| Agua (L) | Termómetro sanitario | Post-MVP |
+| Peso promedio (g) | Muestra semanal | Post-MVP |
+| Observaciones / vacunas / T° | Libre | Vacunación ✓; notas `avicore-defer` |
+
+**Totales semanales:** mortalidad acumulada %, consumo acumulado — base para dashboard coeficientes.
+
+#### Detalle bloques PDF (origen, sanitario, grilla mortalidad)
+
+| Campo planilla | AviCore hoy | Notas export |
+|----------------|-------------|--------------|
+| Nom. comercial | `empresas.nombre` | |
+| N° de Remitos | — | `avicore-defer`: `lotes.remito_origen` o tabla remitos |
+| Nº Lote de SMA | `lotes.codigo` | Obligatorio alinear con SMA |
+| FECHA de INGRESO | `lotes.fecha_ingreso` | |
+| GALPÓN | `galpones.nombre` / número | |
+| Enfermedad | — | `avicore-defer`: campo sanitario lote o observación |
+| DICOSE | `granjas.dicose` | Ola 2 |
+| Propietario | `empresas` / titular | |
+| Firma / Marca / Remito | — | Solo PDF impreso (no dato en BD) |
+
+Texto VLE: certificación de veracidad — export PDF incluye leyenda; firma manual post-impresión.
+
+#### Bloque B — Registro de producción
+
+| Campo planilla | AviCore hoy | Notas |
+|----------------|-------------|-------|
+| SEM. DE PRODUCCIÓN | Edad lote en semanas | Calcular desde `fecha_ingreso` |
+| ESTABLECIMIENTO | `granjas.nombre` + DICOSE | |
+
+Incluye en export ponedoras: columnas **huevos aptos** y **huevos descarte** por día (ver tabla producción diaria arriba).
+
+#### Bloque C — Productos veterinarios (ATB y similares)
+
+| Campo planilla | AviCore hoy |
+|----------------|-------------|
+| Fecha | — |
+| Forma de administración | — |
+| Duración / dosis | — |
+| Tiempo de espera | — |
+| Firma | — |
+
+**Post-MVP** §7.10 — hoy solo `vacunaciones` (vacunas, no ATB con tiempo de espera).
+
+#### Bloque D — Control sanitario / Vacunas
+
+| Campo planilla | AviCore hoy | Gap |
+|----------------|-------------|-----|
+| Fecha | `vacunaciones.created_at` | ✓ |
+| Dosis / Cepa | `vacunaciones.vacuna` (tipo) | Falta cepa/dosis detalle |
+| Vencimiento | — | `avicore-defer` |
+| Serie | — | `avicore-defer` |
+
+#### Bloque E — Mortalidad diaria (grilla)
+
+Estructura: filas = **semanas**; columnas = días **1–7** + total **SEM** + acumulado **ACU** + **MORTALIDAD %**.
+
+| Dato | AviCore hoy |
+|------|-------------|
+| Muertes por día | `registros_operativos` tipo muerte, agrupar por fecha |
+| Total semanal SEM | Suma 7 días |
+| Acumulado ACU | Suma desde ingreso lote |
+| Mortalidad % | Muertes ACU / `cantidad_inicial` × 100 |
+
+Firma VLE + responsable establecimiento: solo en PDF impreso.
+
+**Conclusión Anexo 2 ponedoras:** el PDF recibido + normativa usuario **cubren el contrato de export MVP** (cabecera, mortalidad grilla, vacunas, huevos diarios, 9 semanas pre-faena). Pendiente solo **PDF oficial GUB.UY** para validar layout pixel-perfect y capturas SMA.
+
+**Otras planillas (no Anexo 2):** pollos **parrilleros** (engorde), control de accesos, RENAPAG — otros rubros.
+
 ### Argumento de venta
 
 Si AviCore permite **exportar** datos en formato compatible o **facilitar el llenado** de formularios de tenedores/lotes del SNIG (sin duplicar carga manual en Excel), el cumplimiento normativo se convierte en diferencial frente a planillas.
@@ -311,24 +459,32 @@ Guías de línea genética (Arbor Acres, Cobb, Ross), Codex huevos, Manual BUMV 
 
 ---
 
-## 6. Segmento objetivo (hipótesis producto)
+## 6. Segmento objetivo
 
-| Pregunta comercial | Estado en docs |
-|--------------------|----------------|
-| ¿Grandes avícolas automatizadas o familiares/medianos? | **Pendiente validación** — MVP operativo sirve a ambos; foco inicial productores medianos sin ERP |
-| ¿Offline en galpón vs. conexión constante? | **Decisión MVP:** PWA instalable, **sin offline completo** ([`pwa.md`](../../avicore-pwa/references/pwa.md)) |
-| ¿Encuesta a productores Canelones / Montevideo? | **Idea abierta** — ver bitácora §11 |
+| Pregunta comercial | Decisión (2026-08-10) |
+|--------------------|------------------------|
+| ¿Grandes o medianos? | **Medianos sin ERP** primero; sur (Canelones, Montevideo, San José) |
+| ¿Offline en galpón? | **Online** en MVP; PWA sin sync offline ([`pwa.md`](../../avicore-pwa/references/pwa.md)) |
+| ¿Encuesta productores? | **Pendiente humano** — 3–5 entrevistas; ver [`estrategia-implementacion.md`](estrategia-implementacion.md) §3 |
 
 ---
 
-## 7. Preguntas abiertas y validación
+## 7. Validación pendiente (solo equipo humano)
 
-- Confirmar con productores locales: pain points exactos al reportar al MGAP hoy.
-- Definir formato de export SNIG deseado (CSV, PDF, API futura).
-- Validar umbrales de alerta (mortalidad mensual &lt;1,1% vs. picos diarios).
-- Encuesta rápida a avícolas del sur: Excel vs. software; disposición a pagar si cumple SMA.
+Lo que **no** puede cerrar el agente sin insumos externos:
 
-Registrar respuestas en la **bitácora** (§11 abajo) en futuras sesiones.
+| Prioridad | Tarea | Bloquea |
+|-----------|-------|---------|
+| **P0** | Instructivo SNIG/SMA (movimientos postura) | Export SMA y remitos faena |
+| **P0** | 1 planilla productiva real (Excel/papel) | Layout export Excel fiel |
+| **P0** | Anexos GBPEA (planillas ejemplo) | PDF/Excel Anexo A exactos |
+| **P1** | 3–5 entrevistas productores sur | Pricing y prioridades UX |
+| **P1** | 1 contacto VLE acreditado | Canal adopción |
+| **P2** | Res. 325/024, 341/2024, plazos Dec. 396/2019 | Faena export, contingencia, retención |
+
+**Decisiones ya cerradas** (DICOSE, alertas, export Excel primero, operario primero, código lote): [`estrategia-implementacion.md`](estrategia-implementacion.md) §2.
+
+Registrar hallazgos en la **bitácora** (§11).
 
 ---
 
@@ -370,10 +526,7 @@ La información **valida fuerte** la propuesta AviCore y define con claridad **q
 
 ### Qué sigue investigando (bloqueantes)
 
-1. **Instructivo SNIG/SMA** — campos exactos de movimientos y remitos faena.
-2. **Res. 78/024, 325/024, 341/2024** — texto completo si hay campos nuevos.
-3. **Entrevistas productores** — ¿duplican carga SMA hoy? ¿pagarían por export?
-4. **Tipo de galpón** (jaula / piso / Free Range) — variables distintas en §8.3.
+Ver lista priorizada en [`estrategia-implementacion.md`](estrategia-implementacion.md) §3 (P0–P2). Resumen: instructivo SMA, planilla real, anexos GBPEA.
 
 ---
 
@@ -388,6 +541,11 @@ La información **valida fuerte** la propuesta AviCore y define con claridad **q
 | 2026-08-08 | GBPEA §6–7.3 | Definiciones (lote SMA, OCA, vacío sanitario); mapa manual BPA→AviCore; DICOSE; ingreso personas/vehículos |
 | 2026-08-08 | GBPEA §7.4–7.12 | Registros alimento/agua/capacitación/POES/plagas/medicamentos/residuos; Res. 341/2024 influenza; planilla control sanitario |
 | 2026-08-08 | GBPEA §8–10 + Anexo A | Granjas ponedoras MVP; catálogo planillas; remitos SMA faena; síntesis estratégica §10 |
+| 2026-08-10 | Estrategia operario primero + Fase 0 | Decisiones producto cerradas; olas 1–5; checklist investigación humana P0–P2 — `estrategia-implementacion.md` |
+| 2026-08-11 | SNIG portal + flujos SMA (usuario) | Alta lote (remito→disponible), movimiento (guía/preembarque), faena (certificación); instructivo engorde I1071501 como referencia estructural — **falta instructivo postura** |
+| 2026-08-11 | Planilla galpón sur + Anexo reproductoras (usuario) | Cabecera DICOSE/lote/galpón; columnas diarias mortalidad/alimento/agua/peso; grilla mortalidad semanal VLE — **falta PDF oficial ponedoras** |
+| 2026-08-11 | Anexo Nº 2 PDF reproductoras — detalle campos (usuario) | Bloques A–E mapeados a AviCore; gaps: remito origen, serie/vencimiento vacuna, ATB, huevos (ponedoras) — ver §4 planilla |
+| 2026-08-11 | Anexo Nº 2 **ponedoras** / ciclo largo (usuario) | Mismo Anexo 2 DGSG; huevos aptos+descarte diarios; 9 semanas pre-faena; gaps AviCore: split huevos, descarte aves, agua, línea genética |
 | — | TUTORIAL SAVCO / COASGROP | Bitácora operario — referencia UX competencia regional |
 | — | Avinews / Colibrí | Crecimiento sector; distribución tipos de galpón |
 
@@ -399,7 +557,7 @@ La información **valida fuerte** la propuesta AviCore y define con claridad **q
 
 - MGAP — Ministerio de Ganadería, Agricultura y Pesca (Uruguay)
 - DIEA — Dirección de Estadísticas Agropecuarias (censos y encuestas postura comercial)
-- SNIG / SMA — trazabilidad avícola y registro de tenedores/lotes (portal MGAP)
+- SNIG / SMA — trazabilidad avícola y registro de tenedores/lotes ([snig.gub.uy](https://www.snig.gub.uy/); SMA en «Otros sistemas»)
 - INIA — investigación sistemas Free Range / libre de jaula
 - [GBPEA — Guía completa (índice)](https://www.gub.uy/ministerio-ganaderia-agricultura-pesca/comunicacion/publicaciones/guia-buenas-practicas-establecimientos-avicolas-version-1-julio-2025) — §1–3 contexto; §7.12 trazabilidad
 - [GBPEA §7.12 — Procedimiento de trazabilidad](https://www.gub.uy/ministerio-ganaderia-agricultura-pesca/comunicacion/publicaciones/guia-buenas-practicas-establecimientos-avicolas-version-1-julio-2025-10)

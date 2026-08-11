@@ -59,8 +59,8 @@ class OperarioHomeResumenTest extends TestCase
             ->assertSee('10.500', false)
             ->assertSee('En el galpón ahora', false)
             ->assertSee('900', false)
-            ->assertSee('Juntados hoy', false)
-            ->assertSee('Total del lote', false)
+            ->assertSee('Aptos hoy', false)
+            ->assertSee('Descarte hoy', false)
             ->assertSee($lote->codigo, false)
             ->assertSee('desde el', false)
             ->assertSee('semanas', false)
@@ -89,7 +89,7 @@ class OperarioHomeResumenTest extends TestCase
         Livewire::actingAs($operario)
             ->test(Home::class)
             ->assertSee('600', false)
-            ->assertSee('Juntados hoy', false);
+            ->assertSee('Aptos hoy', false);
     }
 
     public function test_resumen_service_accumulated_huevos_respect_lote_ingreso_window(): void
@@ -166,8 +166,8 @@ class OperarioHomeResumenTest extends TestCase
         Livewire::actingAs($operario)
             ->test(Home::class)
             ->assertSee('Murieron hoy', false)
-            ->assertSee('muertes en total desde el ingreso', false)
-            ->assertSee('7 muertes en total desde el ingreso', false);
+            ->assertSee('en total desde el ingreso', false)
+            ->assertSee('7 muertes', false);
     }
 
     public function test_resumen_reflects_new_registros_within_same_request(): void
@@ -208,6 +208,34 @@ class OperarioHomeResumenTest extends TestCase
             $service->lotesActivos($galpon),
             $service->lotesActivos($galpon),
         );
+    }
+
+    public function test_resumen_service_tracks_huevos_descarte_and_descarte_aves(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalponYLote();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 800,
+                'huevos_descarte' => 20,
+            ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Descarte,
+                'huevos' => null,
+                'descarte_aves' => 3,
+            ]);
+
+        $resumen = app(OperarioGalponResumenService::class)->resumen($galpon);
+
+        $this->assertSame(800, $resumen['huevos_hoy']);
+        $this->assertSame(20, $resumen['huevos_descarte_hoy']);
+        $this->assertSame(3, $resumen['descarte_aves_hoy']);
+        $this->assertSame(3, $resumen['descarte_aves_acumuladas']);
     }
 
     public function test_resumen_service_maples_from_huevos(): void

@@ -2,9 +2,7 @@
 
 namespace App\Livewire\Operario\Concerns;
 
-use App\Enums\GalponEstado;
 use App\Services\OperarioGalponService;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 trait ManagesGalponSelector
@@ -25,26 +23,8 @@ trait ManagesGalponSelector
 
     public function seleccionarGalpon(int $galponId, OperarioGalponService $operarioGalponService): void
     {
-        $this->galponId = $galponId;
-
         $user = auth()->user();
-
-        $this->validate([
-            'galponId' => [
-                'required',
-                'integer',
-                Rule::exists('galpones', 'id')->where(function ($query) use ($user) {
-                    $query->where('empresa_id', $user->empresa_id)
-                        ->where('activo', true)
-                        ->where('estado', GalponEstado::Activo->value);
-                }),
-            ],
-        ], [
-            'galponId.required' => 'Elegí un galpón para continuar.',
-            'galponId.exists' => 'El galpón seleccionado no está disponible para carga.',
-        ]);
-
-        $galpon = $operarioGalponService->galponDisponibleParaUsuario($user, $this->galponId);
+        $galpon = $operarioGalponService->galponDisponibleParaUsuario($user, $galponId);
 
         if ($galpon === null) {
             throw ValidationException::withMessages([
@@ -54,6 +34,7 @@ trait ManagesGalponSelector
 
         $operarioGalponService->seleccionarGalpon($user, $galpon);
 
+        $this->galponId = $galpon->id;
         $this->selectorGalponAbierto = false;
 
         $this->dispatch('snackbar-show', message: 'Galpón actualizado.', variant: 'success');

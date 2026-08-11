@@ -6,6 +6,7 @@ enum RegistroOperativoTipo: string
 {
     case Huevos = 'huevos';
     case Muertes = 'muertes';
+    case Descarte = 'descarte';
     case Alimento = 'alimento';
     case Combinado = 'combinado';
 
@@ -14,6 +15,7 @@ enum RegistroOperativoTipo: string
         return match ($this) {
             self::Huevos => 'Huevos',
             self::Muertes => 'Muertes',
+            self::Descarte => 'Descarte',
             self::Alimento => 'Alimento',
             self::Combinado => 'Combinado',
         };

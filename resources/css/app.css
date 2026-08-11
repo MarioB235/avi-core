@@ -490,6 +490,10 @@
         @apply mt-0.5 text-sm font-semibold text-avicore-text;
     }
 
+    .avicore-user-menu__profile-actions {
+        @apply border-t border-avicore-border/70 py-1;
+    }
+
     .avicore-admin-home-kpis {
         @apply relative z-10 grid gap-4 sm:grid-cols-2;
     }

@@ -48,6 +48,7 @@ class OperarioCargaLoteTest extends TestCase
             ->set('loteGalponId', (string) $galpon->id)
             ->set('tipoBlanco', true)
             ->set('cantidadBlanco', '4200')
+            ->set('codigoSma', 'L-2024-089')
             ->set('fechaNacimiento', '2026-03-01')
             ->call('guardarLote')
             ->assertSet('dialogLoteAbierto', false)
@@ -60,6 +61,7 @@ class OperarioCargaLoteTest extends TestCase
             'empresa_id' => $encargado->empresa_id,
             'galpon_id' => $galpon->id,
             'codigo' => $codigoEsperado,
+            'codigo_sma' => 'L-2024-089',
             'cantidad_inicial' => 4200,
             'tipo_huevo' => TipoHuevo::Blanco->value,
             'estado' => LoteEstado::Activo->value,

@@ -73,7 +73,7 @@
                             @if ($fecha)
                                 No hay registros para esta fecha.
                             @else
-                                Cuando cargues huevos, muertes o vacunaciones, van a aparecer acá.
+                                Cuando cargues huevos, muertes, descarte, alimento o vacunaciones, van a aparecer acá.
                             @endif
                         </p>
                     </div>

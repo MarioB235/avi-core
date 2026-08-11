@@ -39,7 +39,8 @@ class OperarioCargaVacunacionTest extends TestCase
             ->assertSet('loteId', (string) $lote->id)
             ->set('vacuna', VacunaTipo::Newcastle->value)
             ->call('guardarVacunacion')
-            ->assertSet('dialogVacunacionAbierto', false)
+            ->assertSet('dialogVacunacionAbierto', true)
+            ->assertSet('vacunacionRecienGuardada', true)
             ->assertDispatched('snackbar-show');
 
         $this->assertDatabaseHas('vacunaciones', [

@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AvicoreAuthSeeder::class,
             AvicoreEstructuraAvicolaSeeder::class,
+            AvicoreOperarioDemoSeeder::class,
         ]);
     }
 }
