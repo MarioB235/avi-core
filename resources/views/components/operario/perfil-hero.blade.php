@@ -25,9 +25,11 @@
             <h1 class="avicore-operario-home-hero__title">
                 {{ $copy['title'] }}
             </h1>
-            <p class="avicore-operario-home-hero__subtitle">
+            <p class="avicore-operario-home-hero__subtitle avicore-operario-perfil-hero__subtitle">
                 {{ $copy['subtitle'] }}
             </p>
+
+            <div class="avicore-operario-perfil-hero__chip-spacer" aria-hidden="true"></div>
         </div>
     </div>
 </section>

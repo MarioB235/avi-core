@@ -125,7 +125,7 @@ Bioseguridad §7.3, stock alimento §7.4, plagas, residuos, tiempo real Reverb, 
 
 | Capa | Hecho | Siguiente (Ola 1–2) |
 |------|-------|---------------------|
-| Operario | Huevos (aptos/descarte), muertes, vacunación, alimento, lotes, historial, PWA | Pulir lotes (código SMA) |
+| Operario | Huevos, muertes, descarte, vacunación, alimento, lotes (SMA), historial (detalle + anulación), perfil, PWA | **Ola 2** — admin granjas/galpones/DICOSE |
 | Admin | Usuarios | Granjas, galpones, DICOSE |
 | Análisis | — | Dashboard coeficientes |
 | Norma | Doc GBPEA completa | Export planilla + SMA manual |

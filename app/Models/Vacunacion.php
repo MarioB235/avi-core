@@ -91,4 +91,37 @@ class Vacunacion extends Model
     {
         return false;
     }
+
+    /**
+     * @return list<array{label: string, value: string}>
+     */
+    public function lineasDetalle(): array
+    {
+        $loteEtiqueta = $this->lote?->codigo ?? '—';
+        if ($this->lote?->codigo_sma) {
+            $loteEtiqueta .= ' (SMA '.$this->lote->codigo_sma.')';
+        }
+
+        $lineas = [
+            ['label' => 'Tipo', 'value' => 'Vacunación'],
+            ['label' => 'Galpón', 'value' => $this->galpon?->displayName() ?? '—'],
+            ['label' => 'Lote', 'value' => $loteEtiqueta],
+            ['label' => 'Vacuna', 'value' => $this->vacuna->label()],
+            ['label' => 'Fecha y hora', 'value' => $this->created_at?->format('d/m/Y H:i') ?? '—'],
+        ];
+
+        if ($this->estado === RegistroOperativoEstado::Anulado) {
+            $lineas[] = ['label' => 'Estado', 'value' => 'Anulado'];
+            $lineas[] = ['label' => 'Motivo', 'value' => $this->motivo_anulacion ?? '—'];
+            if ($this->anulado_at !== null) {
+                $lineas[] = ['label' => 'Anulado el', 'value' => $this->anulado_at->format('d/m/Y H:i')];
+            }
+        }
+
+        if ($this->observacion) {
+            $lineas[] = ['label' => 'Observación', 'value' => $this->observacion];
+        }
+
+        return $lineas;
+    }
 }

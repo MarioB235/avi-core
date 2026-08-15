@@ -833,7 +833,43 @@
     }
 
     .avicore-operario-historial-list__item {
-        @apply flex min-h-11 items-start justify-between gap-3 px-3.5 py-2.5;
+        @apply flex min-h-11 w-full items-start justify-between gap-3 px-3.5 py-2.5 text-left;
+    }
+
+    .avicore-operario-historial-list__item--action {
+        @apply cursor-pointer transition-colors duration-150 hover:bg-avicore-soft/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-avicore-primary/30;
+    }
+
+    .avicore-operario-historial-list__item--anulado {
+        @apply opacity-70;
+    }
+
+    .avicore-operario-historial-list__item--anulado .avicore-operario-historial-list__label {
+        @apply line-through decoration-avicore-muted/60;
+    }
+
+    .avicore-operario-historial-list__badge {
+        @apply ml-1.5 inline-flex rounded-full bg-avicore-muted/15 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-avicore-muted no-underline;
+    }
+
+    .avicore-operario-historial-detalle__dl {
+        @apply space-y-2.5 rounded-xl border border-avicore-border-strong/70 bg-avicore-soft/35 p-3.5;
+    }
+
+    .avicore-operario-historial-detalle__row {
+        @apply grid grid-cols-[minmax(5.5rem,38%)_1fr] gap-x-3 gap-y-0.5 text-sm;
+    }
+
+    .avicore-operario-historial-detalle__row dt {
+        @apply font-medium text-avicore-muted;
+    }
+
+    .avicore-operario-historial-detalle__row dd {
+        @apply font-semibold text-avicore-text;
+    }
+
+    .avicore-operario-historial-detalle__badge {
+        @apply rounded-full bg-avicore-muted/15 px-3 py-1 text-center text-xs font-semibold uppercase tracking-wide text-avicore-muted;
     }
 
     .avicore-operario-historial-list__label {
@@ -870,6 +906,10 @@
 
     .avicore-operario-historial-filter {
         @apply mt-3.5 mb-1 rounded-2xl border border-avicore-border-strong/70 bg-avicore-soft/55 p-3;
+    }
+
+    .avicore-operario-historial-notice {
+        @apply mb-3 rounded-xl border border-avicore-border-strong/70 bg-avicore-soft/70 px-3.5 py-2.5 text-sm font-medium leading-snug text-avicore-muted;
     }
 
     .avicore-operario-historial-filter__row {
@@ -1518,12 +1558,20 @@
     }
 
     /* ── Perfil operario ─────────────────────────────────────────── */
+    .avicore-operario-perfil-hero__subtitle {
+        min-height: 2.5rem;
+    }
+
+    .avicore-operario-perfil-hero__chip-spacer {
+        @apply min-h-11 shrink-0;
+    }
+
     .avicore-operario-perfil__tabs {
         @apply mb-5 flex gap-2;
     }
 
     .avicore-operario-perfil__tab {
-        @apply inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-xl border border-avicore-border/70 bg-white px-3 py-2 text-center text-sm font-semibold text-avicore-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
+        @apply inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-xl border border-avicore-border/70 bg-white px-3 py-2 text-center text-sm font-semibold text-avicore-muted no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
 
     @media (prefers-reduced-motion: no-preference) {
