@@ -54,7 +54,7 @@ trait ManagesLoteForm
         $rules = [
             'loteGalponId' => ['required', 'integer', 'min:1'],
             'fechaNacimiento' => ['required', 'date', 'before_or_equal:today'],
-            'codigoSma' => ['nullable', 'string', 'max:64'],
+            'codigoSma' => ['nullable', 'string', 'max:64', 'regex:/^[\pL\pN\-_.\/]+$/u'],
         ];
 
         if ($this->tipoBlanco) {
@@ -73,6 +73,8 @@ trait ManagesLoteForm
             'cantidadBlanco.min' => 'La cantidad debe ser mayor a cero.',
             'cantidadColor.required' => 'Ingresá la cantidad para huevo colorado.',
             'cantidadColor.min' => 'La cantidad debe ser mayor a cero.',
+            'codigoSma.max' => 'El código SMA no puede superar los 64 caracteres.',
+            'codigoSma.regex' => 'El código SMA solo puede tener letras, números y los símbolos - _ . /',
         ]);
 
         if (! $this->tipoBlanco && ! $this->tipoColor) {

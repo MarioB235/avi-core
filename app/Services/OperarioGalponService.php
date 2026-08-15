@@ -116,7 +116,6 @@ class OperarioGalponService
         return RegistroOperativo::query()
             ->forEmpresa($user->empresa_id)
             ->where('user_id', $user->id)
-            ->activos()
             ->enFecha($fecha)
             ->orderByDesc('created_at');
     }
@@ -154,7 +153,6 @@ class OperarioGalponService
         $vacunacionesSub = Vacunacion::query()
             ->forEmpresa($user->empresa_id)
             ->where('user_id', $user->id)
-            ->activos()
             ->enFecha($fecha)
             ->selectRaw("id, 'vacunacion' as source_type, created_at");
 
@@ -188,19 +186,19 @@ class OperarioGalponService
                 ->keyBy('id');
 
         $items = $rows
-            ->map(function (object $row) use ($registrosById, $vacunacionesById): ?OperarioHistorialItem {
+            ->map(function (object $row) use ($registrosById, $vacunacionesById, $user): ?OperarioHistorialItem {
                 if ($row->source_type === 'registro') {
                     $registro = $registrosById->get($row->id);
 
                     return $registro !== null
-                        ? OperarioHistorialItem::fromRegistro($registro)
+                        ? OperarioHistorialItem::fromRegistro($registro, $user)
                         : null;
                 }
 
                 $vacunacion = $vacunacionesById->get($row->id);
 
                 return $vacunacion !== null
-                    ? OperarioHistorialItem::fromVacunacion($vacunacion)
+                    ? OperarioHistorialItem::fromVacunacion($vacunacion, $user)
                     : null;
             })
             ->filter()

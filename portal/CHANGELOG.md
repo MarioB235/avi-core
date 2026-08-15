@@ -5,10 +5,22 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-08-15
+
+- **[docs|operario]** Msg 4: alineación post-auditoría — `x-ui.textarea`, trait `AuthorizesOperarioAnulacion`, policies anulación, tests ampliados, perfil `wire:navigate`. — `tokens-componentes.md`, `permisos.md`, `pantallas-flujos.md`, `patrones-mobile-operario.md`, `estandares-codigo.md`, `arbol-proyecto.md`
+- **[test|operario]** Post-auditoría msg 3: tests anulación (vacunación, descarte, ya anulado, encargado ajeno), multiempresa alimento/descarte; policies unificadas; `x-ui.textarea` en historial. — `AuthorizesOperarioAnulacion`, `OperarioHistorialTest.php`, `OperarioCargaAlimentoTest.php`, `OperarioCargaDescarteTest.php`, `historial-detalle-dialog.blade.php`, `textarea.blade.php`
+- **[docs|operario]** CHANGELOG: aclarado que perfil operario usa `wire:navigate` (entradas `wire:click` quedaron obsoletas). — `CHANGELOG.md`
+
 ## 2026-08-11
 
-- **[docs|operario]** Cierre msg 4: perfil operario (pestañas `wire:click`, policy `updateProfile`, árbol y estándares de tests). — `patrones-mobile-operario.md`, `pantallas-flujos.md`, `arbol-proyecto.md`, `estandares-codigo.md`, `contexto.html`
-- **[fix|operario]** Post-auditoría msg 3: pestañas perfil con `wire:click` + `#[Url]` (sin `wire:navigate` entre secciones); hero con `wire:key`; título contextual en composer; `ChangePasswordAction` usa `updateProfile`. — `edit.blade.php`, `Profile/Edit.php`, `OperarioLayoutComposer.php`, `ChangePasswordAction.php`, `OperarioPerfilTest.php`, `pantallas-flujos.md`, `permisos.md`
+- **[docs|operario]** Cierre msg 4: Bloque 5 operario **Hecho MVP**; brecha Ola 1→2; historial (detalle/anulación/aviso); reglas §9 UI. — `plan-desarrollo.md`, `estrategia-implementacion.md`, `patrones-mobile-operario.md`, `reglas.md`
+- **[ui|operario]** Historial: aviso cuando todos los ítems visibles están anulados. — `historial.blade.php`, `operario.css`, `OperarioHistorialTest.php`
+- **[feature|operario]** Historial: detalle por ítem, anulación propia del día con motivo (restaura aves en muertes/descarte); lotes SMA en vacunación y validación código SMA; seed demo ampliado. — `Historial.php`, `AnularRegistroOperativoAction`, `AnularVacunacionAction`, policies, `OperarioHistorialItem`, `AvicoreOperarioDemoSeeder`, `OperarioHistorialTest.php`, `pantallas-flujos.md`, `demo.md`, `arbol-proyecto.md`
+- **[fix|operario]** Tras guardar carga: snackbar de confirmación y cierre automático del diálogo (sin paso «Cargar otra vez»). — `ManagesCargaGuardada`, formularios de carga, `pantallas-flujos.md`, `arbol-proyecto.md`
+- **[ui|snackbar]** Operario: toast compacto de éxito (pill `avicore-soft`, ~2,5s, sin barra ni ×); tarjeta completa para errores y acciones (PWA). — `snackbar-host.blade.php`, `app.css`, `tokens-componentes.md`, `patrones-mobile-operario.md`, `SnackbarHostTest.php`
+- **[fix|operario]** Perfil operario: pestañas con `wire:navigate` (misma navegación que menú cuenta); sin `wire:click`/morph parcial; vista en partials; hero simplificado. — `edit.blade.php`, `partials/`, `perfil-hero.blade.php`, `Profile/Edit.php`, `operario.css`, `OperarioPerfilTest.php`, `patrones-mobile-operario.md`, `pantallas-flujos.md`
+- ~~**[docs|operario]** Cierre msg 4: perfil operario (pestañas `wire:click`, …)~~ — obsoleto; ver entrada `wire:navigate` arriba
+- ~~**[fix|operario]** Post-auditoría msg 3: pestañas perfil con `wire:click` + `#[Url]`~~ — revertido; vigente `wire:navigate` + `?seccion=`
 - **[feature|operario]** Perfil de cuenta: `/operario/perfil` y `/perfil` compartido; edición de nombre/correo, cambio de contraseña voluntario, enlaces desde menú cuenta. — `UpdateProfileAction`, `Profile/Edit`, `perfil-hero`, `user-menu`, tests `OperarioPerfilTest`, `pantallas-flujos.md`, `reglas.md`, `permisos.md`, `arbol-proyecto.md`
 - **[ui|operario]** Selector de galpón: vuelta a panel `absolute` + `overflow: visible` con `:has(--open)`; sin `x-teleport` ni `@entangle.live` (conflicto con morph Livewire). — `galpon-chip-selector.blade.php`, `operario.css`, `patrones-mobile-operario.md`
 - **[ui|operario]** Hero móvil: scroll interno en `home-sheet` (contenido no pasa bajo nav fijo); eliminados overlays de scroll en nav. — `operario.css`, `operario-navigate.js`, `patrones-mobile-operario.md`, `motion-y-feedback.md`
@@ -16,7 +28,6 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 ## 2026-08-10
 
 - **[feature|operario]** Ola 1 planilla MGAP: huevos aptos + descarte, tile y carga de alimento (kg por entrega de camión), hub grilla 2×2, historial actualizado. — migración `huevos_descarte`, `RegistrarCargaAlimentoAction`, `CargaAlimento`, `ManagesAlimentoForm`, tests Operario/UI, `esquema-bd.md`, `pantallas-flujos.md`, `reglas.md` §7/§16, `estrategia-implementacion.md`, `arbol-proyecto.md`
-- **[ui|operario]** Tras guardar carga: atajo «Cargar otra vez» + «Listo» en diálogos (huevos, muertes, descarte, alimento, vacunación); historial vacío menciona todos los tipos. — `ManagesCargaOtraVez`, `carga-otra-vez-shell`, `historial.blade.php`, `reglas.md` §16
 - **[docs|negocio]** Anexo Nº 2 ponedoras (ciclo largo): reglas export — huevos aptos/descarte, 9 semanas pre-faena, cabecera DICOSE/SMA. — `reglas.md` §16, `mercado-uruguay.md` §4
 - **[docs|producto]** Anexo Nº 2 ponedoras: mismo PDF que reproductoras; campos diarios huevos + gaps AviCore documentados. — `mercado-uruguay.md`, `estrategia-implementacion.md`, `reportes.md`
 - **[docs|producto]** Bitácora SNIG/SMA: flujos remito→lote→movimiento→faena; estructura planilla galpón sur; P0 parcialmente cubierto — falta instructivo y PDF ponedoras. — `mercado-uruguay.md`, `estrategia-implementacion.md`

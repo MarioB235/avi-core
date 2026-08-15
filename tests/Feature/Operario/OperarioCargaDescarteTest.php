@@ -13,6 +13,7 @@ use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
@@ -33,8 +34,7 @@ class OperarioCargaDescarteTest extends TestCase
             ->assertSet('dialogDescarteAbierto', true)
             ->set('descarteAves', '5')
             ->call('guardarDescarte')
-            ->assertSet('dialogDescarteAbierto', true)
-            ->assertSet('descarteRecienGuardado', true)
+            ->assertSet('dialogDescarteAbierto', false)
             ->assertDispatched('snackbar-show');
 
         $this->assertDatabaseHas('registros_operativos', [
@@ -74,6 +74,21 @@ class OperarioCargaDescarteTest extends TestCase
         $this->expectException(ValidationException::class);
 
         app(RegistrarCargaDescarteAction::class)->execute($operario, $galpon, 1);
+    }
+
+    public function test_registrar_carga_descarte_rejects_galpon_from_other_empresa(): void
+    {
+        [$operario] = $this->createOperarioConGalpon();
+
+        $otraEmpresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $otraGranja = Granja::factory()->create(['empresa_id' => $otraEmpresa->id]);
+        $galponAjeno = Galpon::factory()->forGranja($otraGranja)->create([
+            'aves_actuales' => 100,
+        ]);
+
+        $this->expectException(AuthorizationException::class);
+
+        app(RegistrarCargaDescarteAction::class)->execute($operario, $galponAjeno, 5);
     }
 
     /**

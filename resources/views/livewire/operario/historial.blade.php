@@ -78,41 +78,54 @@
                         </p>
                     </div>
                 @else
+                    @if ($todosRegistrosAnulados)
+                        <p class="avicore-operario-historial-notice" role="status">
+                            Todos los registros de este listado están anulados y no cuentan en los totales del galpón.
+                        </p>
+                    @endif
+
                     <ul class="avicore-operario-historial-list">
                         @foreach ($registros as $carga)
-                            <li
-                                wire:key="historial-{{ $carga->key }}"
-                                @class([
-                                    'avicore-operario-historial-list__item',
-                                    'avicore-operario-historial-list__item--muertes' => $carga->esMortalidad,
-                                    'avicore-operario-historial-list__item--vacunacion' => $carga->esVacunacion,
-                                ])
-                            >
-                                <div class="avicore-operario-historial-list__copy min-w-0 flex-1">
-                                    <p class="avicore-operario-historial-list__label">
-                                        {{ $carga->label }}
-                                    </p>
-                                    <p class="avicore-operario-historial-list__meta">
-                                        <span>{{ $carga->tipoEtiqueta }}</span>
-                                        <span aria-hidden="true">·</span>
-                                        <span>{{ $carga->galponEtiqueta }}</span>
-                                    </p>
-                                    @if ($carga->observacion)
-                                        <p class="avicore-operario-historial-list__note">
-                                            {{ $carga->observacion }}
-                                        </p>
-                                    @endif
-                                </div>
-                                <time
-                                    class="avicore-operario-historial-list__time"
-                                    datetime="{{ $carga->createdAt->toIso8601String() }}"
+                            <li wire:key="historial-{{ $carga->key }}">
+                                <button
+                                    type="button"
+                                    wire:click="abrirDetalle('{{ $carga->key }}')"
+                                    @class([
+                                        'avicore-operario-historial-list__item avicore-operario-historial-list__item--action',
+                                        'avicore-operario-historial-list__item--muertes' => $carga->esMortalidad && ! $carga->anulado,
+                                        'avicore-operario-historial-list__item--vacunacion' => $carga->esVacunacion && ! $carga->anulado,
+                                        'avicore-operario-historial-list__item--anulado' => $carga->anulado,
+                                    ])
                                 >
-                                    @if ($fecha)
-                                        {{ $carga->createdAt->format('H:i') }}
-                                    @else
-                                        {{ $carga->createdAt->format('d/m H:i') }}
-                                    @endif
-                                </time>
+                                    <div class="avicore-operario-historial-list__copy min-w-0 flex-1">
+                                        <p class="avicore-operario-historial-list__label">
+                                            {{ $carga->label }}
+                                            @if ($carga->anulado)
+                                                <span class="avicore-operario-historial-list__badge">Anulado</span>
+                                            @endif
+                                        </p>
+                                        <p class="avicore-operario-historial-list__meta">
+                                            <span>{{ $carga->tipoEtiqueta }}</span>
+                                            <span aria-hidden="true">·</span>
+                                            <span>{{ $carga->galponEtiqueta }}</span>
+                                        </p>
+                                        @if ($carga->observacion)
+                                            <p class="avicore-operario-historial-list__note">
+                                                {{ $carga->observacion }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                    <time
+                                        class="avicore-operario-historial-list__time"
+                                        datetime="{{ $carga->createdAt->toIso8601String() }}"
+                                    >
+                                        @if ($fecha)
+                                            {{ $carga->createdAt->format('H:i') }}
+                                        @else
+                                            {{ $carga->createdAt->format('d/m H:i') }}
+                                        @endif
+                                    </time>
+                                </button>
                             </li>
                         @endforeach
                     </ul>
@@ -126,4 +139,6 @@
             </div>
         </section>
     </div>
+
+    @include('livewire.operario.partials.historial-detalle-dialog', ['detalleItem' => $detalleItem])
 </div>

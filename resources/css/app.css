@@ -1059,11 +1059,25 @@
     /* Móvil: centrado sobre el dock / borde inferior */
     .avicore-snackbar-host--operario {
         @apply inset-x-0 justify-center;
-        bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+        bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
     }
 
     .avicore-snackbar-host--default {
         @apply inset-x-0 bottom-6 justify-center;
+    }
+
+    /* Operario: toast compacto de éxito (pill verde suave) */
+    .avicore-snackbar-host--operario .avicore-snackbar--compact {
+        @apply w-auto max-w-[min(20rem,calc(100vw-2rem))] min-h-11 gap-2.5 rounded-full border border-avicore-primary/25 bg-avicore-soft px-4 py-2.5 shadow-[0_10px_28px_rgba(31,94,59,0.14)] ring-1 ring-avicore-primary/10;
+        border-left-width: 1px;
+    }
+
+    .avicore-snackbar-host--operario .avicore-snackbar--compact .avicore-snackbar__icon {
+        @apply size-8 rounded-full bg-avicore-primary/12 text-avicore-primary [&_svg]:size-4;
+    }
+
+    .avicore-snackbar-host--operario .avicore-snackbar--compact .avicore-snackbar__message {
+        @apply pr-0 text-sm font-semibold text-avicore-primary;
     }
 
     /* Escritorio: anclado abajo a la derecha (área de contenido, no bajo la sidebar) */
@@ -1077,6 +1091,10 @@
         .avicore-snackbar-host--operario .avicore-snackbar,
         .avicore-snackbar-host--default .avicore-snackbar {
             @apply w-auto min-w-[17.5rem] max-w-sm;
+        }
+
+        .avicore-snackbar-host--operario .avicore-snackbar--compact {
+            @apply min-w-0 max-w-sm;
         }
     }
 

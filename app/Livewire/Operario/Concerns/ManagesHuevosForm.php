@@ -7,11 +7,9 @@ use App\Services\OperarioGalponService;
 
 trait ManagesHuevosForm
 {
-    use ManagesCargaOtraVez;
+    use ManagesCargaGuardada;
 
     public bool $dialogHuevosAbierto = false;
-
-    public bool $huevosRecienGuardados = false;
 
     public string $huevos = '';
 
@@ -23,7 +21,6 @@ trait ManagesHuevosForm
             return;
         }
 
-        $this->huevosRecienGuardados = false;
         $this->resetFormularioHuevos();
         $this->dialogHuevosAbierto = true;
     }
@@ -31,19 +28,13 @@ trait ManagesHuevosForm
     public function updatedDialogHuevosAbierto(bool $abierto): void
     {
         if (! $abierto) {
-            $this->huevosRecienGuardados = false;
             $this->resetFormularioHuevos();
         }
     }
 
-    public function cargarOtraVezHuevos(): void
-    {
-        $this->prepararOtraCarga('huevosRecienGuardados', fn () => $this->resetFormularioHuevos());
-    }
-
     public function cerrarDialogoHuevos(): void
     {
-        $this->cerrarDialogoCarga('dialogHuevosAbierto', 'huevosRecienGuardados', fn () => $this->resetFormularioHuevos());
+        $this->cerrarDialogoCarga('dialogHuevosAbierto', fn () => $this->resetFormularioHuevos());
     }
 
     public function guardarHuevos(
@@ -83,8 +74,8 @@ trait ManagesHuevosForm
             null,
         );
 
-        $this->trasGuardarConOtraVez(
-            'huevosRecienGuardados',
+        $this->finalizarGuardadoCarga(
+            'dialogHuevosAbierto',
             fn () => $this->resetFormularioHuevos(),
             'Huevos guardados.',
         );
