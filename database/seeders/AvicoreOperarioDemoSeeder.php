@@ -2,12 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Enums\LoteEstado;
 use App\Enums\RegistroOperativoEstado;
 use App\Enums\RegistroOperativoTipo;
+use App\Enums\VacunaTipo;
 use App\Models\Empresa;
 use App\Models\Galpon;
+use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\User;
+use App\Models\Vacunacion;
 use Illuminate\Database\Seeder;
 
 class AvicoreOperarioDemoSeeder extends Seeder
@@ -42,6 +46,11 @@ class AvicoreOperarioDemoSeeder extends Seeder
             return;
         }
 
+        $lote = Lote::query()
+            ->where('galpon_id', $galpon->id)
+            ->where('estado', LoteEstado::EnProduccion)
+            ->first();
+
         RegistroOperativo::query()->create([
             'empresa_id' => $empresa->id,
             'galpon_id' => $galpon->id,
@@ -69,11 +78,47 @@ class AvicoreOperarioDemoSeeder extends Seeder
             'empresa_id' => $empresa->id,
             'galpon_id' => $galpon->id,
             'user_id' => $operario->id,
+            'tipo' => RegistroOperativoTipo::Descarte,
+            'descarte_aves' => 1,
+            'estado' => RegistroOperativoEstado::Activo,
+            'created_at' => now()->setTime(9, 45),
+            'updated_at' => now()->setTime(9, 45),
+        ]);
+
+        RegistroOperativo::query()->create([
+            'empresa_id' => $empresa->id,
+            'galpon_id' => $galpon->id,
+            'user_id' => $operario->id,
             'tipo' => RegistroOperativoTipo::Alimento,
             'alimento_kg' => 8500,
             'estado' => RegistroOperativoEstado::Activo,
             'created_at' => now()->subDays(2)->setTime(14, 0),
             'updated_at' => now()->subDays(2)->setTime(14, 0),
         ]);
+
+        RegistroOperativo::query()->create([
+            'empresa_id' => $empresa->id,
+            'galpon_id' => $galpon->id,
+            'user_id' => $operario->id,
+            'tipo' => RegistroOperativoTipo::Huevos,
+            'huevos' => 980,
+            'huevos_descarte' => 12,
+            'estado' => RegistroOperativoEstado::Activo,
+            'created_at' => now()->subDay()->setTime(8, 15),
+            'updated_at' => now()->subDay()->setTime(8, 15),
+        ]);
+
+        if ($lote !== null) {
+            Vacunacion::query()->create([
+                'empresa_id' => $empresa->id,
+                'galpon_id' => $galpon->id,
+                'lote_id' => $lote->id,
+                'user_id' => $operario->id,
+                'vacuna' => VacunaTipo::Gumboro,
+                'estado' => RegistroOperativoEstado::Activo,
+                'created_at' => now()->subDays(3)->setTime(10, 30),
+                'updated_at' => now()->subDays(3)->setTime(10, 30),
+            ]);
+        }
     }
 }

@@ -60,7 +60,7 @@ class OperarioPerfilTest extends TestCase
             ->assertSee('avicore-operario-home-sheet', false);
     }
 
-    public function test_operario_perfil_tabs_switch_sections_without_wire_navigate(): void
+    public function test_operario_perfil_tabs_use_wire_navigate_links(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
 
@@ -70,12 +70,17 @@ class OperarioPerfilTest extends TestCase
             'must_change_password' => false,
         ]);
 
+        $perfilUrl = route('operario.perfil');
+        $passwordUrl = route('operario.perfil', ['seccion' => 'password']);
+
         $this->actingAs($operario)
-            ->get(route('operario.perfil'))
+            ->get($perfilUrl)
             ->assertOk()
-            ->assertSee('wire:click="seleccionarSeccion(\'password\')"', false)
-            ->assertSee('wire:click="seleccionarSeccion(\'datos\')"', false)
-            ->assertSee('avicore-operario-perfil__tabs', false);
+            ->assertSee('wire:navigate', false)
+            ->assertSee($perfilUrl, false)
+            ->assertSee($passwordUrl, false)
+            ->assertSee('avicore-operario-perfil__tabs', false)
+            ->assertDontSee('wire:click="seleccionarSeccion', false);
     }
 
     public function test_operario_can_update_name_and_email(): void
@@ -142,19 +147,21 @@ class OperarioPerfilTest extends TestCase
 
         $this->actingAs($operario);
 
-        Livewire::test(ProfileEdit::class)
-            ->assertSet('seccion', 'datos')
-            ->assertSee('Guardar datos')
-            ->call('seleccionarSeccion', 'password')
-            ->assertSet('seccion', 'password')
-            ->assertSee('Guardar contraseña')
-            ->assertSee('Cambiá tu clave de acceso.')
-            ->assertDontSee('Guardar datos')
-            ->call('seleccionarSeccion', 'datos')
-            ->assertSet('seccion', 'datos')
+        $this->get(route('operario.perfil'))
+            ->assertOk()
             ->assertSee('Guardar datos')
             ->assertSee('Actualizá tu nombre y correo de contacto.')
             ->assertDontSee('Guardar contraseña');
+
+        $this->get(route('operario.perfil', ['seccion' => 'password']))
+            ->assertOk()
+            ->assertSee('Guardar contraseña')
+            ->assertSee('Cambiá tu clave de acceso.')
+            ->assertDontSee('Guardar datos');
+
+        Livewire::withQueryParams(['seccion' => 'password'])
+            ->test(ProfileEdit::class)
+            ->assertSet('seccion', 'password');
     }
 
     public function test_inactive_user_cannot_update_profile_via_action(): void

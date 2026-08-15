@@ -7,10 +7,14 @@ use App\Http\View\Composers\AdminLayoutComposer;
 use App\Http\View\Composers\OperarioLayoutComposer;
 use App\Models\Galpon;
 use App\Models\Lote;
+use App\Models\RegistroOperativo;
 use App\Models\User;
+use App\Models\Vacunacion;
 use App\Policies\GalponPolicy;
 use App\Policies\LotePolicy;
+use App\Policies\RegistroOperativoPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\VacunacionPolicy;
 use App\Services\OperarioGalponResumenService;
 use App\Services\OperarioGalponService;
 use Illuminate\Support\Facades\Gate;
@@ -36,7 +40,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(Galpon::class, GalponPolicy::class);
         Gate::policy(Lote::class, LotePolicy::class);
+        Gate::policy(RegistroOperativo::class, RegistroOperativoPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Vacunacion::class, VacunacionPolicy::class);
 
         View::composer('pages.admin.home', AdminHomeComposer::class);
         View::composer('components.layouts.admin', AdminLayoutComposer::class);

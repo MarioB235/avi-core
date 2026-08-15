@@ -25,7 +25,7 @@ class OperarioCargaHuevosTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_cargar_otra_vez_reopens_huevos_form_after_save(): void
+    public function test_guardar_huevos_cierra_dialogo_y_muestra_snackbar(): void
     {
         [$operario, $galpon] = $this->createOperarioConGalpones();
         $operario->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
@@ -36,13 +36,9 @@ class OperarioCargaHuevosTest extends TestCase
             ->set('huevos', '100')
             ->set('huevosDescarte', '0')
             ->call('guardarHuevos')
-            ->assertSet('huevosRecienGuardados', true)
-            ->assertSee('Cargar otra vez', false)
-            ->call('cargarOtraVezHuevos')
-            ->assertSet('huevosRecienGuardados', false)
-            ->assertSee('Huevos aptos', false)
-            ->call('cerrarDialogoHuevos')
-            ->assertSet('dialogHuevosAbierto', false);
+            ->assertSet('dialogHuevosAbierto', false)
+            ->assertDispatched('snackbar-show', message: 'Huevos guardados.', variant: 'success')
+            ->assertDontSee('¿Querés registrar otra del mismo tipo?', false);
     }
 
     public function test_operario_can_select_galpon_register_eggs_and_see_today_loads(): void
@@ -69,8 +65,7 @@ class OperarioCargaHuevosTest extends TestCase
             ->set('huevos', '1500')
             ->set('huevosDescarte', '0')
             ->call('guardarHuevos')
-            ->assertSet('dialogHuevosAbierto', true)
-            ->assertSet('huevosRecienGuardados', true)
+            ->assertSet('dialogHuevosAbierto', false)
             ->assertDispatched('snackbar-show');
 
         $this->assertDatabaseHas('registros_operativos', [

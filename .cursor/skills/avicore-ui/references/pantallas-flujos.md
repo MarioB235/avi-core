@@ -221,13 +221,13 @@ Permitir carga rápida desde celular.
 
 **Cargar:** Huevos, Muertes, **Descarte de aves**, Vacunación, **Alimento** (entrega del camión) y (si el rol puede crear lote) **Nuevo lote** — grilla 2 columnas; con permiso de lote, tile ancho «Nuevo lote». Diálogos: huevos aptos + descarte; descarte de aves vivas; alimento en kg del remito; vacunación con `x-ui.select`; nuevo lote: galpón, **Nº lote SMA** (opcional), tipos Blanca/Colorada, cantidad, fecha nacimiento. Sin carga combinada en móvil.
 
-**Historial:** listado completo del operario (cargas + vacunaciones), filtro por fecha con `x-ui.date-picker` (sin `input type="date"` nativo; error de validación visible bajo el trigger), paginación.
+**Historial:** listado completo del operario (cargas + vacunaciones), filtro por fecha con `x-ui.date-picker` (sin `input type="date"` nativo; error de validación visible bajo el trigger), paginación. Cada ítem abre **detalle** (tipo, galpón, fecha/hora, resumen). Registros **anulados** visibles con badge; el operario puede **anular** registros propios del día con motivo obligatorio (`x-ui.textarea` en el diálogo; muertes/descarte restauran `aves_actuales`; vacunación vía `AnularVacunacionAction`). Dueño/administrativo/encargado pueden anular registros ajenos del día vía policy (sin UI en Historial MVP).
 
 **Compartido:** logo, menú cuenta (avatar), dock inferior (Inicio · Cargar · Historial).
 
 ### Perfil de cuenta (MVP)
 
-**Estado MVP (2026-08-11):** `/operario/perfil` (shell operario) y `/perfil` (shell admin para roles de gestión). Hero y título contextual según sección (`datos` \| `password`); pestañas con `wire:click` + `seleccionarSeccion` y query `?seccion=` vía `#[Url]` (sin `wire:navigate` entre secciones — evita morph que rompe el shell). Desde menú cuenta: resumen lectura + enlaces **Editar datos** y **Cambiar contraseña** (`wire:navigate` a la ruta de perfil). `UpdateProfileAction` y `ChangePasswordAction` exigen `UserPolicy::updateProfile` (usuario activo, solo propio perfil).
+**Estado MVP (2026-08-11):** `/operario/perfil` (shell operario) y `/perfil` (shell admin). Pestañas con `wire:navigate` + query `?seccion=password` (sin morph parcial). Partials `tabs`, `datos-form`, `password-form`. Menú cuenta: **Editar datos** / **Cambiar contraseña** (misma navegación). `UpdateProfileAction` y `ChangePasswordAction` exigen `UserPolicy::updateProfile`.
 
 | Campo | Editable por el usuario |
 |-------|-------------------------|
@@ -245,7 +245,7 @@ Tras guardar: snackbar de confirmación. Sin reset por correo en MVP (contacto s
 Seleccionar tipo de carga en hub → diálogo centrado con formulario → guardar → snackbar → permanece en hub Cargar
 ```
 
-Huevos: aptos + descarte (al menos uno > 0). Muertes, descarte de aves y alimento: formularios separados. Tras **Guardar**, el diálogo ofrece **Cargar otra vez** (mismo tipo, campos en cero) o **Listo** (cerrar). Vacunación: lote activo + tipo (`VacunaTipo`).
+Huevos: aptos + descarte (al menos uno > 0). Muertes, descarte de aves y alimento: formularios separados. Tras **Guardar**: snackbar de confirmación y cierre automático del diálogo (vuelve al hub Cargar). Vacunación: lote activo + tipo (`VacunaTipo`).
 
 ---
 

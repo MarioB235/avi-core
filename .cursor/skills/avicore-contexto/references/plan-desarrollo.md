@@ -7,7 +7,7 @@
 | **1 — Base** | **Hecho** | Laravel 13, Livewire 4, Tailwind 4, layouts, UI base, PostgreSQL + `migrate` OK |
 | **2 — Seguridad** | **Parcial** | Login + cambio obligatorio; **CRUD usuarios admin** (`/admin/usuarios`) hecho; falta auditoría de accesos soporte |
 | **4 — Estructura avícola** | **Parcial** | Migraciones + seeder demo; alta de lote desde operario; sin CRUD admin completo |
-| **5 — Operación móvil** | **Parcial** | Home, selector galpón (chip), hub Cargar (huevos, muertes, vacunación, lote), historial con filtro fecha; alimento/combinada fuera del móvil |
+| **5 — Operación móvil** | **Hecho MVP** | Home, Cargar (huevos, muertes, descarte, vacunación, alimento, lote), Historial (detalle + anulación), perfil, PWA; sin carga combinada ni offline |
 | 3, 6–7 | Pendiente | Según orden de la sección 2 |
 
 Detalle técnico del Bloque 1: [`arbol-proyecto.md`](arbol-proyecto.md) · entorno local: [`arranque-local.md`](arranque-local.md).
@@ -146,13 +146,15 @@ Dashboard refleja la carga
 - [x] Layout móvil (home Livewire en `/operario`).
 - [x] Selector galpón (chip en Inicio/Cargar/Historial; `users.ultimo_galpon_id`) — **sin** ruta dedicada `/operario/galpon`.
 - [x] Hub Cargar (`/operario/cargar`) + deep links `form=`.
-- [x] Carga huevos (`/operario/carga/huevos` y diálogo en hub).
+- [x] Carga huevos (aptos + descarte).
 - [x] Carga muertes.
+- [x] Carga descarte de aves.
 - [x] Carga vacunación.
-- [x] Alta lote desde operario (hub / redirect `CargaLote`).
-- [x] Historial con filtro fecha (`/operario/historial`).
-- [ ] Carga alimento (admin/encargado; no hub operario móvil en MVP).
-- [ ] Carga combinada (fuera del MVP móvil actual).
+- [x] Carga alimento (kg por entrega en hub).
+- [x] Alta lote desde operario (hub / redirect `CargaLote`; código SMA opcional).
+- [x] Historial con filtro fecha, detalle por ítem y anulación propia del día.
+- [x] Perfil de cuenta (`/operario/perfil`).
+- [ ] Carga combinada (fuera del MVP móvil).
 
 ---
 

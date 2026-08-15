@@ -15,7 +15,7 @@ use Livewire\Component;
 #[Title('Mi perfil')]
 class Edit extends Component
 {
-    #[Url(as: 'seccion')]
+    #[Url(as: 'seccion', except: 'datos')]
     public string $seccion = 'datos';
 
     public string $name = '';
@@ -42,20 +42,6 @@ class Edit extends Component
         if (! in_array($this->seccion, ['datos', 'password'], true)) {
             $this->seccion = 'datos';
         }
-    }
-
-    public function seleccionarSeccion(string $seccion): void
-    {
-        if (! in_array($seccion, ['datos', 'password'], true)) {
-            $seccion = 'datos';
-        }
-
-        if ($this->seccion === 'password' && $seccion === 'datos') {
-            $this->reset(['current_password', 'password', 'password_confirmation']);
-            $this->resetValidation();
-        }
-
-        $this->seccion = $seccion;
     }
 
     public function guardarDatos(UpdateProfileAction $updateProfile): void

@@ -53,4 +53,15 @@ class Lote extends Model
     {
         return $this->hasMany(Vacunacion::class);
     }
+
+    public function etiquetaVacunacion(): string
+    {
+        $resumen = $this->codigo.' · '.number_format($this->cantidad_inicial, 0, ',', '.').' aves';
+
+        if ($this->codigo_sma) {
+            return $resumen.' · SMA '.$this->codigo_sma;
+        }
+
+        return $resumen;
+    }
 }

@@ -14,6 +14,7 @@ use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
@@ -34,8 +35,7 @@ class OperarioCargaAlimentoTest extends TestCase
             ->assertSet('dialogAlimentoAbierto', true)
             ->set('alimentoKg', '8500')
             ->call('guardarAlimento')
-            ->assertSet('dialogAlimentoAbierto', true)
-            ->assertSet('alimentoRecienGuardado', true)
+            ->assertSet('dialogAlimentoAbierto', false)
             ->assertDispatched('snackbar-show');
 
         $this->assertDatabaseHas('registros_operativos', [
@@ -83,6 +83,19 @@ class OperarioCargaAlimentoTest extends TestCase
         $this->expectException(ValidationException::class);
 
         app(RegistrarCargaAlimentoAction::class)->execute($operario, $galpon, 1000);
+    }
+
+    public function test_registrar_carga_alimento_rejects_galpon_from_other_empresa(): void
+    {
+        [$operario] = $this->createOperarioConGalpon();
+
+        $otraEmpresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $otraGranja = Granja::factory()->create(['empresa_id' => $otraEmpresa->id]);
+        $galponAjeno = Galpon::factory()->forGranja($otraGranja)->create();
+
+        $this->expectException(AuthorizationException::class);
+
+        app(RegistrarCargaAlimentoAction::class)->execute($operario, $galponAjeno, 1000);
     }
 
     /**

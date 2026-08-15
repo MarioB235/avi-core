@@ -46,7 +46,9 @@ class SnackbarHostTest extends TestCase
             ->assertSee('actionKey', false)
             ->assertSee('avicore-snackbar__action', false)
             ->assertSee('pwa-update', false)
-            ->assertSee('3500', false);
+            ->assertSee('isCompact', false)
+            ->assertSee('avicore-snackbar--compact', false)
+            ->assertSee('2500', false);
     }
 
     public function test_snackbar_progress_bar_css_contract(): void
@@ -67,6 +69,7 @@ class SnackbarHostTest extends TestCase
 
         $this->assertNotFalse($css);
         $this->assertStringContainsString('.avicore-snackbar-host--operario', $css);
+        $this->assertStringContainsString('.avicore-snackbar--compact', $css);
         $this->assertStringContainsString('@media (min-width: 1024px)', $css);
         $this->assertStringContainsString('right-6', $css);
         $this->assertStringContainsString('bottom-6', $css);

@@ -1,11 +1,12 @@
 @props([
     'context' => 'default',
-    'duration' => 3500,
+    'duration' => null,
 ])
 
 @php
     $flashMessage = session('status');
     $flashVariant = session('status_variant', 'success');
+    $resolvedDuration = $duration ?? ($context === 'operario' ? 2500 : 3500);
 @endphp
 
 <div
@@ -15,14 +16,15 @@
         'avicore-snackbar-host--default' => $context === 'default',
     ])
     x-data="{
+        context: @js($context),
         visible: false,
         message: '',
         variant: 'success',
         actionLabel: null,
         actionKey: null,
         timer: null,
-        duration: {{ (int) $duration }},
-        remainingMs: {{ (int) $duration }},
+        duration: {{ (int) $resolvedDuration }},
+        remainingMs: {{ (int) $resolvedDuration }},
         closeAt: null,
         progressKey: 0,
         progressPaused: false,
@@ -30,6 +32,11 @@
             @if ($flashMessage)
                 this.open(@js($flashMessage), @js($flashVariant));
             @endif
+        },
+        isCompact() {
+            return this.context === 'operario'
+                && this.variant === 'success'
+                && ! this.actionLabel;
         },
         open(message, variant = 'success', actionLabel = null, actionKey = null) {
             if (! message) {
@@ -64,7 +71,7 @@
         pauseAutoClose() {
             clearTimeout(this.timer);
 
-            if (! this.visible || this.actionLabel) {
+            if (! this.visible || this.actionLabel || this.isCompact()) {
                 return;
             }
 
@@ -72,7 +79,7 @@
             this.progressPaused = true;
         },
         resumeAutoClose() {
-            if (this.visible && ! this.actionLabel) {
+            if (this.visible && ! this.actionLabel && ! this.isCompact()) {
                 this.scheduleClose(false);
             }
         },
@@ -105,7 +112,7 @@
         $event.detail.actionLabel ?? null,
         $event.detail.actionKey ?? null
     )"
-    @keydown.escape.window="if (visible) close()"
+    @keydown.escape.window="if (visible && ! isCompact()) close()"
 >
     <div
         x-show="visible"
@@ -117,7 +124,10 @@
         x-transition:leave-start="opacity-100 translate-y-0 lg:translate-x-0"
         x-transition:leave-end="opacity-0 translate-y-2 lg:translate-y-0 lg:translate-x-2"
         class="avicore-snackbar"
-        :class="`avicore-snackbar--${variant}`"
+        :class="{
+            [`avicore-snackbar--${variant}`]: true,
+            'avicore-snackbar--compact': isCompact(),
+        }"
         role="status"
         aria-live="polite"
         aria-atomic="true"
@@ -128,7 +138,7 @@
     >
         <div
             class="avicore-snackbar__progress"
-            x-show="! actionLabel"
+            x-show="! actionLabel && ! isCompact()"
             x-cloak
             aria-hidden="true"
         >
@@ -166,6 +176,8 @@
         <button
             type="button"
             class="avicore-snackbar__close"
+            x-show="! isCompact()"
+            x-cloak
             @click="close()"
             aria-label="Cerrar notificación"
         >

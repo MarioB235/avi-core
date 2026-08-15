@@ -37,8 +37,7 @@ class OperarioCargaMuertesTest extends TestCase
             ->assertSet('dialogMuertesAbierto', true)
             ->set('muertes', '8')
             ->call('guardarMuertes')
-            ->assertSet('dialogMuertesAbierto', true)
-            ->assertSet('muertesRecienGuardadas', true)
+            ->assertSet('dialogMuertesAbierto', false)
             ->assertDispatched('snackbar-show');
 
         $this->assertDatabaseHas('registros_operativos', [

@@ -32,15 +32,17 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 - Galpón seleccionado: chip verde sólido (`avicore-primary`); sin galpón: chip ámbar con icono warehouse.
 - Subtítulo hero Inicio: «Resumen de hoy del galpón que elegiste.» en `text-avicore-primary/90`.
 - Datos vía `OperarioLayoutComposer` — no duplicar lógica en cada Livewire.
-- Feedback de confirmación: `<x-ui.snackbar-host context="operario" />` en layout; auto-cierre ~3,5s con barra de progreso superior (vacía hacia la derecha) (pausa al hover/foco; sin barra si hay acción); móvil centrado sobre el dock; escritorio (`lg+`) abajo a la derecha. Livewire `dispatch('snackbar-show', message:, variant:)` o `session()->flash('status')` tras redirect.
+- Feedback de confirmación: `<x-ui.snackbar-host context="operario" />` en layout; **éxito** en pill verde suave (`avicore-snackbar--compact`), ~2,5s, sin barra ni ×; avisos con acción (PWA) o error mantienen tarjeta completa. Livewire `dispatch('snackbar-show', message:, variant:)` o `session()->flash('status')` tras redirect.
 
 ## Perfil operario
 
-- Ruta `/operario/perfil` (shell hero) y `/perfil` (admin). Livewire `Profile/Edit` compartido; `x-operario.perfil-hero` con copy según `seccion` (`datos` \| `password`); `wire:key` en el hero para remorph al cambiar sección.
-- **Pestañas Mis datos / Contraseña:** `wire:click="seleccionarSeccion(…)"` + `#[Url(as: 'seccion')]` — **no** `wire:navigate` entre secciones (morph Livewire rompe el shell flex/overflow). Deep link: `?seccion=password`.
+- Ruta `/operario/perfil` (shell hero) y `/perfil` (admin). Livewire `Profile/Edit` compartido; vista en `livewire/profile/partials/` (`tabs`, `datos-form`, `password-form`); hero en `x-operario.perfil-hero`.
+- **Pestañas Mis datos / Contraseña:** enlaces `<a wire:navigate>` a la misma ruta con `?seccion=password` (igual que menú cuenta **Editar datos** / **Cambiar contraseña**). **Sin** `wire:click` — el morph parcial de Livewire rompe el shell flex del operario.
+- `#[Url(as: 'seccion', except: 'datos')]` — deep link `?seccion=password`; pestaña datos sin query en URL.
+- Hero perfil: espaciador chip (`__chip-spacer`) + subtítulo `min-height` para alinear altura con Inicio/Cargar/Historial.
 - Contenedor: `.avicore-operario-perfil` + `.avicore-operario-home-sheet` (mismo patrón scroll que Inicio/Cargar/Historial).
 - `OperarioLayoutComposer::perfilHeaderTitle()` — título contextual en rutas hero según query `seccion`.
-- Menú cuenta: enlaces a perfil con `wire:navigate` (cambio de ruta); pestañas internas sin navigate.
+- Menú cuenta: **Perfil** = resumen en dropdown; **Editar datos** / **Cambiar contraseña** = `wire:navigate` a `/operario/perfil` (misma navegación que pestañas).
 - Tests: `OperarioPerfilTest` (shell, pestañas, hero, policy usuario inactivo).
 
 ## Inicio operario
@@ -68,8 +70,8 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 ## Historial operario
 
 - `<x-operario.historial-hero>` — hero con degradado suave; chip galpón **interactivo** (mismo selector que Inicio); copy «Todo lo que cargaste, del más nuevo al más viejo.».
-- `.avicore-operario-home-sheet` — **todos** los registros activos del operario (`registros_operativos` + `vacunaciones`), orden **cronológico descendente**. Paginación SQL (`UNION ALL` + `forPage` en `OperarioGalponService::historialPaginado`); hidrata solo la página actual. Ítems con resumen + (desde `md:`) meta `tipo · galpón`; mortalidad/vacunación con clases de color. Filtro fecha `x-ui.date-picker`; paginación 20.
-- Tests: `OperarioHistorialTest`; `DatePickerComponentTest`; `OperarioCargaVacunacionTest`; `OperarioCargaLoteTest`; `OperarioGalponServiceTest` (`historialPaginado` union SQL); `OperarioBottomNavTest` (shell + sidebar + deep links); `SnackbarHostTest` (auto-cierre 3500, `syncProgressDuration`, pause/Escape, contrato desktop `right-6`/`bottom-6`); `OperarioUserMenuTest` (portal + clamp); `IllustrationComponentTest`; `OperarioNavTest`; `SelectComponentTest`; `ScrollRevealTest`; `RevealComponentTest`.
+- `.avicore-operario-home-sheet` — registros del operario (`registros_operativos` + `vacunaciones`), activos y anulados, orden **cronológico descendente**. Paginación SQL (`UNION ALL` + `forPage` en `OperarioGalponService::historialPaginado`); hidrata solo la página actual. Ítem **clicable** → diálogo detalle (`Historial::abrirDetalle`, partial `historial-detalle-dialog`); anulados con badge y estilo tachado. Si todos los ítems visibles están anulados, aviso `avicore-operario-historial-notice`. Anulación propia del día: motivo obligatorio (`x-ui.textarea`); muertes/descarte restauran `aves_actuales` (`AnularRegistroOperativoAction`); vacunación (`AnularVacunacionAction`). Filtro fecha `x-ui.date-picker`; paginación 20.
+- Tests: `OperarioHistorialTest` (detalle, anulación muertes/descarte/vacunación, ya anulado, encargado ajeno, aviso todos anulados); `DatePickerComponentTest`; …
 
 ## Motion (operario)
 

@@ -7,11 +7,9 @@ use App\Services\OperarioGalponService;
 
 trait ManagesAlimentoForm
 {
-    use ManagesCargaOtraVez;
+    use ManagesCargaGuardada;
 
     public bool $dialogAlimentoAbierto = false;
-
-    public bool $alimentoRecienGuardado = false;
 
     public string $alimentoKg = '';
 
@@ -21,7 +19,6 @@ trait ManagesAlimentoForm
             return;
         }
 
-        $this->alimentoRecienGuardado = false;
         $this->resetFormularioAlimento();
         $this->dialogAlimentoAbierto = true;
     }
@@ -29,19 +26,13 @@ trait ManagesAlimentoForm
     public function updatedDialogAlimentoAbierto(bool $abierto): void
     {
         if (! $abierto) {
-            $this->alimentoRecienGuardado = false;
             $this->resetFormularioAlimento();
         }
     }
 
-    public function cargarOtraVezAlimento(): void
-    {
-        $this->prepararOtraCarga('alimentoRecienGuardado', fn () => $this->resetFormularioAlimento());
-    }
-
     public function cerrarDialogoAlimento(): void
     {
-        $this->cerrarDialogoCarga('dialogAlimentoAbierto', 'alimentoRecienGuardado', fn () => $this->resetFormularioAlimento());
+        $this->cerrarDialogoCarga('dialogAlimentoAbierto', fn () => $this->resetFormularioAlimento());
     }
 
     public function guardarAlimento(
@@ -68,8 +59,8 @@ trait ManagesAlimentoForm
             null,
         );
 
-        $this->trasGuardarConOtraVez(
-            'alimentoRecienGuardado',
+        $this->finalizarGuardadoCarga(
+            'dialogAlimentoAbierto',
             fn () => $this->resetFormularioAlimento(),
             'Entrega de alimento guardada.',
         );

@@ -7,11 +7,9 @@ use App\Services\OperarioGalponService;
 
 trait ManagesDescarteForm
 {
-    use ManagesCargaOtraVez;
+    use ManagesCargaGuardada;
 
     public bool $dialogDescarteAbierto = false;
-
-    public bool $descarteRecienGuardado = false;
 
     public string $descarteAves = '';
 
@@ -21,7 +19,6 @@ trait ManagesDescarteForm
             return;
         }
 
-        $this->descarteRecienGuardado = false;
         $this->resetFormularioDescarte();
         $this->dialogDescarteAbierto = true;
     }
@@ -29,19 +26,13 @@ trait ManagesDescarteForm
     public function updatedDialogDescarteAbierto(bool $abierto): void
     {
         if (! $abierto) {
-            $this->descarteRecienGuardado = false;
             $this->resetFormularioDescarte();
         }
     }
 
-    public function cargarOtraVezDescarte(): void
-    {
-        $this->prepararOtraCarga('descarteRecienGuardado', fn () => $this->resetFormularioDescarte());
-    }
-
     public function cerrarDialogoDescarte(): void
     {
-        $this->cerrarDialogoCarga('dialogDescarteAbierto', 'descarteRecienGuardado', fn () => $this->resetFormularioDescarte());
+        $this->cerrarDialogoCarga('dialogDescarteAbierto', fn () => $this->resetFormularioDescarte());
     }
 
     public function guardarDescarte(
@@ -68,8 +59,8 @@ trait ManagesDescarteForm
             null,
         );
 
-        $this->trasGuardarConOtraVez(
-            'descarteRecienGuardado',
+        $this->finalizarGuardadoCarga(
+            'dialogDescarteAbierto',
             fn () => $this->resetFormularioDescarte(),
             'Descarte de aves guardado.',
         );

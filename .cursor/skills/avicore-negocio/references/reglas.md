@@ -124,8 +124,9 @@
 2. Las FK de tablas operativas y de estructura avícola usan `ON DELETE RESTRICT` (no cascade): no se puede borrar físicamente un padre que tenga historial o hijos.
 3. El registro anulado no cuenta en cálculos.
 4. El registro anulado queda en auditoría.
-5. El operario solo anula registros propios del día.
+5. El operario solo anula registros propios del día (desde **Historial** → detalle → motivo obligatorio).
 6. Toda anulación requiere motivo obligatorio.
+7. Muertes y descarte de aves anulados **restauran** `aves_actuales` del galpón.
 
 ---
 

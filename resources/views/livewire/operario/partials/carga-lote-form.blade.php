@@ -73,6 +73,7 @@
         wire:model.defer="codigoSma"
         placeholder="Ej. L-2024-089"
         autocomplete="off"
+        hint="Si el lote ya está en SMA, ingresá el mismo código para trazabilidad."
     />
 
     <x-ui.input
