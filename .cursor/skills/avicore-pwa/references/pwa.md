@@ -18,7 +18,8 @@ Stack: [`vite-plugin-pwa`](https://vite-pwa-org.netlify.app/) + Workbox (solo as
 | Banner instalar | `x-ui.pwa-install-prompt` (Alpine orquesta; lógica en `pwa-install.js`) |
 | Menú cuenta «Instalar app» | `x-ui.user-menu` |
 | Build metadata (Versión en Perfil) | `scripts/write-build-meta.cjs` → `public/build/avicore-build.json`; `App/Services/AppBuildService.php` |
-| Config | `config/avicore.php` → `pwa.enabled`, `pwa.install_prompt` |
+| Versión de producto (semver) | `config/avicore.php` → `version` (`AVICORE_VERSION`, default `0.1.0-dev`) |
+| Config | `config/avicore.php` → `version`, `pwa.enabled`, `pwa.install_prompt` |
 
 Layouts con PWA: `public`, `operario-mobile`, `admin`, `layouts/app`.
 
@@ -28,6 +29,7 @@ Layouts con PWA: `public`, `operario-mobile`, `admin`, `layouts/app`.
 
 | Variable | Default | Efecto |
 |----------|---------|--------|
+| `AVICORE_VERSION` | `0.1.0-dev` | Semver visible en Perfil (junto al build) |
 | `AVICORE_PWA_ENABLED` | `true` | Manifest + service worker |
 | `AVICORE_PWA_INSTALL_PROMPT` | `true` | Banner «Instalar» / guía iOS (solo autenticado) |
 
@@ -72,7 +74,7 @@ Eventos globales: `avicore:pwa-install-ready`, `avicore:pwa-installed`.
 
 - `registerType: autoUpdate` + `onNeedRefresh` en `pwa.js` con registro **diferido** (`immediate: false` — no bloquea el primer paint).
 - Snackbar persistente: «Hay una nueva versión» + botón **Actualizar** (`actionKey: pwa-update` → `window.__avicorePwaUpdate` / `updateSW(true)`).
-- **Perfil (menú cuenta):** campo **Versión** con fecha/hora del último `pnpm run build` + commit corto (`public/build/avicore-build.json`, generado por `scripts/write-build-meta.cjs`).
+- **Perfil (menú cuenta):** campo **Versión** con semver (`AVICORE_VERSION`) + fecha/hora del último `pnpm run build` + commit corto (`public/build/avicore-build.json`, generado por `scripts/write-build-meta.cjs`). Ej.: `0.1.0-dev · 15 ago 2026, 14:30 (a1b2c3d)`. En local sin build: `0.1.0-dev · Desarrollo local`.
 
 ---
 

@@ -1,4 +1,6 @@
-# Patrones web — Admin (Dueño / Administrativo / Encargado)
+# Patrones web — Admin (persona de referencia: **Dueño**)
+
+> **MVP (2026-08-22):** Dueño con 4 tabs (Inicio, Resumen, Equipo, Comercial preview). **Estructura** → Administrativo/Encargado. **Usuarios** CRUD → Administrativo. Ver `permisos.md` §10–§11.
 
 Shell: `components/layouts/admin.blade.php` — **mismo chrome visual que operario** (clases `avicore-operario-*`), con **contenido y flujos solo de gestión**.
 
@@ -10,31 +12,36 @@ Nav: `App\Support\AdminNav` · Composer: `AdminLayoutComposer`.
 ## Layout (paridad visual)
 
 - **Sidebar** (`lg+`) — verde primario, logo + subtítulo empresa/`Administración AviCore`, secciones «Navegación» / «Cuenta», `<x-ui.user-menu variant="sidebar">`.
-- **Bottom nav** (`< lg`) — pestañas `AdminNav` (Inicio · Usuarios).
-- **Header** — en páginas hero (`admin.home`, `admin.usuarios.*`): `avicore-home-nav` (logo + cuenta); en el resto: título + badge de rol + menú cuenta.
+- **Bottom nav** (`< lg`) — `<x-ui.tab-bar>` compartido vía `x-admin.bottom-nav` / `x-operario.bottom-nav`; columnas dinámicas (`--avicore-tab-cols`); mismos íconos y elevación que operario.
+- **Header** — páginas hero (`{rol}.home`, `{rol}.resumen.*`, `{rol}.estructura.*`, `{rol}.usuarios.*`, `profile.edit`): `avicore-home-nav` (logo + cuenta), mismo patrón que operario.
 - **Main** — sheet blanco (`avicore-operario-home-sheet`) bajo heroes; snackbar con dock sobre bottom nav (`context="operario"` = posición UI, no módulo Campo).
 
 ## Navegación (MVP)
 
-| Tab | Ruta | Quién |
-|-----|------|-------|
-| Inicio | `/admin` | Todos los roles de panel |
-| Usuarios | `/admin/usuarios` | Quienes `canViewUsers` |
+| Tab | Ruta (ejemplo) | Quién |
+|-----|----------------|-------|
+| Inicio | `/dueno`, `/administrativo`, … | Todos los roles de panel |
+| Resumen | `/{rol}/resumen` | `canViewResumen` (Dueño, Administrativo, Encargado) |
+| Equipo | `/{rol}/equipo` | `canViewEquipo` (Dueño — solo lectura) |
+| Comercial | `/{rol}/comercial` | `canViewComercial` (Dueño — preview post-MVP) |
+| Estructura | `/{rol}/estructura` | `canViewEstructura` (Administrativo, Encargado) |
+| Usuarios | `/{rol}/usuarios` | `canViewUsers` (Admin AviCore, Administrativo, Encargado) |
+
+**Dueño:** Inicio solo con KPIs del día; Equipo y Comercial en tabs del nav.
 
 **Fuera del panel:** `/operario` (Cargar / Historial) — no aparece como tab ni tile en admin.
 
-Ítems futuros (Estructura, Reportes) van como tiles «Próximamente» en Inicio.
+Ítems futuros (Reportes) se agregarán como tab o tile cuando exista el módulo.
 
 ## Inicio (intereses Dueño)
 
 Contenido **propio de gestión** (no clonar paneles/tiles de carga del operario):
 
-- Hero compartido (saludo + subtítulo) + chip de empresa (`avicore-admin-context`, no chip de galpón).
-- KPIs con `<x-ui.kpi-card>`: Usuarios activos · Granjas y galpones (placeholder).
-- Accesos en lista `avicore-admin-home-action`: Usuarios · Estructura · Reportes (próximamente).
-- Checklist «Estado inicial» en columna paralela en escritorio (`avicore-admin-home-panels`).
+- Hero compartido (saludo + subtítulo `Resumen de {empresa · rol}.`; sin chip duplicado de empresa ni galpón).
+- KPIs operativos: `x-ui.stat-panel` en grilla `avicore-operario-kpi-grid--stat` (2×2 móvil, 4 columnas `lg+`; títulos y valores con tipografía fluida).
+- **Sin checklist onboarding** en Dueño (módulos en bottom nav).
 
-**No usar** en Inicio admin: `avicore-operario-kpi-panel`, `avicore-operario-carga-tile`, `avicore-operario-galpon-chip`.
+**Reutilizar del operario:** grids/paneles KPI, section-head, filter-chip, `x-ui.reveal`. **No usar** chip de galpón ni tiles de carga en campo ni duplicar tabs del dock.
 
 
 ## Densidad y tablas (CRUD)
@@ -58,4 +65,4 @@ Contenido **propio de gestión** (no clonar paneles/tiles de carga del operario)
 
 - Componentes: `x-admin.sidebar-nav`, `bottom-nav`, `header`, `home-hero`, `page-hero`
 - Tokens: `tokens-componentes.md` · menú: `x-ui.user-menu`
-- Pantallas: `pantallas-flujos.md` §3.1–3.2
+- Pantallas: `pantallas-flujos.md` §3.1–3.4

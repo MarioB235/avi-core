@@ -2,10 +2,13 @@
 
 namespace App\Support;
 
+use App\Support\Concerns\MapsNavTabsToTabBar;
 use Illuminate\Support\Facades\Request;
 
 class OperarioNav
 {
+    use MapsNavTabsToTabBar;
+
     /**
      * @return list<array{route: string, patterns: list<string>, label: string, icon: string, headerTitle: string}>
      */

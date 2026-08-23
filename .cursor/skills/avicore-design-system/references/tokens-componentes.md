@@ -43,7 +43,7 @@ Tras cambiar fondos JPEG/PNG o el logo: `python scripts/optimize-brand-assets.py
 
 **Iconos Lucide:** fuente preferida en `resources/images/icons/` (nombres kebab-case); `App\Support\IconSvg` carga el SVG del disco cuando existe y, si no, usa fallback inline en `components/ui/icons/inline.blade.php`. En pantalla: `x-ui.icon` con `stroke="currentColor"` (color vía Tailwind).
 
-**Ilustraciones KPI / marca:** SVG a color en `resources/images/illustrations/` (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`); `App\Support\IllustrationSvg` + `x-ui.illustration` (viewBox responsivo, sin envoltorio Lucide). Contenedor unificado en KPIs Inicio, tiles Cargar e Historial: `.avicore-operario-carga-tile__icon` (`size-11`, `rounded-xl`).
+**Ilustraciones KPI / marca:** SVG a color en `resources/images/illustrations/` (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`, `operario-alimento`, `operario-muertes`, `operario-descarte`); `App\Support\IllustrationSvg` + `x-ui.illustration` (viewBox responsivo, sin envoltorio Lucide). Contenedor unificado en KPIs Inicio, tiles Cargar e Historial: `.avicore-operario-carga-tile__icon` (`size-11`, `rounded-xl`).
 
 Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card` (elevación `shadow-sm`/`shadow-md`, excepción documentada frente a cards KPI). Panel de marca escritorio: `.avicore-auth-brand` alinea logo (`x-ui.logo` size `hero`) y copy en columna (`auth-brand-panel`). Fondos referenciados desde Vite en `resources/css/app.css`.
 
@@ -98,8 +98,11 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-ui.badge` | Estados semánticos; variante `sidebar` para badges sobre fondo verde |
 | `x-ui.logo` | Marca — `public/images/brand/logo-avicore.png` + subtítulo opcional; `entrance` (órbita isotipo en `hero` / `auth-mobile` con `showName`) en auth; `theme="on-primary"` en sidebar admin (texto blanco, icono sobre fondo blanco); `stacked` + `size="auth-mobile"` en login móvil |
 | `x-ui.icon` | SVG inline por nombre (`menu`, `document`, `lock`, `eye`, `circle-x`, `mail`, `message-circle-check`, …) — nav, inputs, acciones; fuente Lucide en `resources/images/icons/` |
-| `x-ui.illustration` | Ilustración SVG a color por nombre (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`, …) — KPIs, tiles Cargar, Historial; fuente en `resources/images/illustrations/` |
-| `x-ui.kpi-card` | Label + valor + hint; prop `icon` opcional; para dashboard e Inicio admin |
+| `x-ui.illustration` | Ilustración SVG a color por nombre (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`, `operario-alimento`, `operario-muertes`, `operario-descarte`, …) — KPIs, tiles Cargar, Historial; fuente en `resources/images/illustrations/` |
+| `x-ui.kpi-card` | Label + valor + hint; prop `icon` opcional; legacy — preferir `x-ui.stat-panel` en admin/operario |
+| `x-ui.stat-panel` | Panel KPI operario (`avicore-operario-kpi-panel`) — label, valor, hint, `icon`, `tone` (`aves` \| `huevos`) |
+| `x-ui.action-tile` | Tile de navegación (`avicore-operario-carga-tile`) — `href`, `label`, `badge`, `icon`; `disabled` para «Próximamente» |
+| `x-ui.section-head` | Cabecera de sección operario — `eyebrow` + `title` |
 | `x-ui.nav-link` | Sidebar (admin u operario escritorio) — props `icon`, `active`, `disabled` |
 | `x-ui.empty-state` | Empty state con icono, título y descripción |
 | `x-ui.setup-checklist` | Lista de pasos de configuración inicial con badge de estado |
@@ -118,9 +121,10 @@ Capa scrim eliminada en auth; legibilidad con tarjeta blanca `.avicore-auth-card
 | `x-operario.header` | Barra operario — variante hero o contextual; integra `<x-operario.user-menu>` (alias de `x-ui.user-menu`); en `lg+` el home-nav se oculta |
 | `x-operario.user-menu` | Alias de `x-ui.user-menu` para vistas operario |
 | `x-operario.sidebar-nav` | Nav escritorio (`lg+`) — logo «Carga en campo», `OperarioNav` + `x-ui.nav-link`, cuenta con `user-menu variant="sidebar"`; oculta en `< lg` |
-| `x-operario.bottom-nav` | Barra inferior integrada — 3 pestañas (Inicio `home`, Cargar `plus`, Historial `calendar`); `lg:hidden`; ítem activo con círculo blanco elevado sobre barra verde; datos desde `OperarioNav` |
+| `x-ui.tab-bar` | Dock inferior móvil compartido — grilla `--avicore-tab-cols`, ítem activo elevado; consumido por `x-operario.bottom-nav` y `x-admin.bottom-nav` |
+| `x-operario.bottom-nav` | Wrapper operario → `x-ui.tab-bar` + `OperarioNav::tabBarItems()` |
 | `x-admin.sidebar-nav` | Nav escritorio panel — mismas clases que operario; tabs `AdminNav`; subtítulo empresa |
-| `x-admin.bottom-nav` | Bottom nav panel (`lg:hidden`) — Inicio · Usuarios (solo gestión) |
+| `x-admin.bottom-nav` | Wrapper admin → `x-ui.tab-bar` + `AdminNav::tabBarItems()` (4 pestañas) |
 | `x-admin.header` | Home-nav en heroes o título+badge; menú `x-ui.user-menu` |
 | `x-admin.home-hero` | Saludo horario + subtítulo + slot chip empresa (Inicio) |
 | `x-admin.page-hero` | Hero de módulo (p. ej. Usuarios) alineado al home-hero |

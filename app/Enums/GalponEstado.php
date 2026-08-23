@@ -13,4 +13,24 @@ enum GalponEstado: string
     {
         return $this === self::Activo;
     }
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::Activo => 'Activo',
+            self::Inactivo => 'Inactivo',
+            self::EnMantenimiento => 'En mantenimiento',
+            self::VacioSanitario => 'Vacío sanitario',
+        };
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function options(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn (self $estado): array => [$estado->value => $estado->label()])
+            ->all();
+    }
 }

@@ -1,7 +1,7 @@
 @php
     $hora = now()->hour;
     $saludo = $hora < 12 ? 'Buenos días' : ($hora < 19 ? 'Buenas tardes' : 'Buenas noches');
-    $empresaNombre = $home->user->empresa?->nombre ?? 'AviCore';
+    $teaser = $home->operativoTeaser;
 @endphp
 
 <x-layouts.admin title="Inicio · AviCore">
@@ -9,79 +9,48 @@
         <x-admin.home-hero
             :saludo="$saludo"
             :subtitle="'Resumen de '.$home->contextLabel.'.'"
-        >
-            <x-slot:contextChip>
-                <div class="avicore-admin-context">
-                    <x-ui.icon name="building" class="size-4 shrink-0" />
-                    <span class="truncate">{{ $empresaNombre }}</span>
-                </div>
-            </x-slot:contextChip>
-        </x-admin.home-hero>
+        />
 
         <div class="avicore-operario-home-sheet">
-            <section class="avicore-admin-home-kpis" aria-label="Indicadores de la empresa">
-                <x-ui.kpi-card
-                    label="Usuarios activos"
-                    :value="number_format($home->activeUsersCount, 0, ',', '.')"
-                    hint="Equipo con acceso a la empresa"
-                    icon="users"
+            <x-ui.reveal as="section" aria-label="Producción de hoy">
+                <x-ui.section-head
+                    eyebrow="Hoy"
+                    title="Producción de hoy"
+                    subtitle="Lo que pasó hoy en tus galpones."
                 />
 
-                <x-ui.kpi-card
-                    label="Granjas y galpones"
-                    value="—"
-                    hint="Se habilitan al configurar la estructura"
-                    icon="layers"
-                />
-            </section>
+                <div class="avicore-operario-kpi-grid avicore-operario-kpi-grid--stat mt-4">
+                    <x-ui.stat-panel
+                        label="Huevos juntados"
+                        :value="number_format($teaser['huevos_hoy'], 0, ',', '.')"
+                        hint="Total de hoy en todos los galpones"
+                        illustration="operario-huevo"
+                        tone="huevos"
+                    />
 
-            <div class="avicore-admin-home-panels">
-                <section aria-label="Accesos de gestión">
-                    <h2 class="avicore-section-title">¿Qué querés gestionar?</h2>
-                    <p class="avicore-section-subtitle mb-4">
-                        Módulos del panel para configurar y seguir la empresa.
-                    </p>
+                    <x-ui.stat-panel
+                        label="Aves que murieron"
+                        :value="number_format($teaser['muertes_hoy'], 0, ',', '.')"
+                        hint="Registradas hoy en campo"
+                        illustration="operario-muertes"
+                    />
 
-                    <div class="avicore-admin-home-actions">
-                        <a
-                            href="{{ route('admin.usuarios.index') }}"
-                            wire:navigate
-                            class="avicore-admin-home-action avicore-admin-home-action--active"
-                        >
-                            <span class="avicore-admin-home-action__icon" aria-hidden="true">
-                                <x-ui.icon name="users" class="size-5 text-avicore-primary" />
-                            </span>
-                            <span class="avicore-admin-home-action__title">Usuarios</span>
-                            <span class="avicore-admin-home-action__meta">Invitá al equipo y asigná roles</span>
-                        </a>
+                    <x-ui.stat-panel
+                        label="Galpones en alerta"
+                        :value="number_format($teaser['alertas_count'], 0, ',', '.')"
+                        hint="Mortalidad por encima de lo normal"
+                        icon="bell"
+                    />
 
-                        <div class="avicore-admin-home-action avicore-admin-home-action--disabled" aria-disabled="true">
-                            <span class="avicore-admin-home-action__icon" aria-hidden="true">
-                                <x-ui.icon name="layers" class="size-5 text-avicore-muted" />
-                            </span>
-                            <span class="avicore-admin-home-action__title">Estructura</span>
-                            <span class="avicore-admin-home-action__meta">Granjas y galpones · Próximamente</span>
-                        </div>
-
-                        <div class="avicore-admin-home-action avicore-admin-home-action--disabled" aria-disabled="true">
-                            <span class="avicore-admin-home-action__icon" aria-hidden="true">
-                                <x-ui.icon name="file-bar-chart" class="size-5 text-avicore-muted" />
-                            </span>
-                            <span class="avicore-admin-home-action__title">Reportes</span>
-                            <span class="avicore-admin-home-action__meta">Exportaciones · Próximamente</span>
-                        </div>
-                    </div>
-                </section>
-
-                <section aria-label="Configuración inicial">
-                    <h2 class="avicore-section-title">Estado inicial</h2>
-                    <p class="avicore-section-subtitle mb-4">
-                        Completá estos pasos para dejar la empresa lista.
-                    </p>
-
-                    <x-ui.setup-checklist :items="$home->setupItems" />
-                </section>
-            </div>
+                    <x-ui.stat-panel
+                        label="Galpones con producción"
+                        :value="number_format($teaser['galpones_activos'], 0, ',', '.')"
+                        hint="Con lotes activos ahora"
+                        illustration="operario-ave"
+                        tone="aves"
+                    />
+                </div>
+            </x-ui.reveal>
         </div>
     </div>
 </x-layouts.admin>

@@ -60,7 +60,7 @@ Permitir el acceso seguro al sistema.
 Tras login exitoso:
 
 1. Si `must_change_password` → `/password/change`.
-2. Si no → home según rol: operario → `/operario`; resto (Dueño, Administrativo, Encargado, Admin AviCore) → `/admin`.
+2. Si no → home según rol (`UserRole::homeRouteName()`): operario → `/operario`; dueño → `/dueno`; administrativo → `/administrativo`; encargado → `/encargado`; reparto → `/reparto`; admin AviCore → `/avicore`. `/admin` redirige al prefijo del rol autenticado.
 
 Usuario autenticado que visita `/login` se redirige a su home correspondiente.
 
@@ -98,15 +98,15 @@ Mismo **layout público** que login: split en escritorio (≥1024px) y bottom sh
 
 ### Comportamiento
 
-Mientras `must_change_password` sea verdadero, el middleware bloquea el acceso a `/admin`, `/operario` y demás rutas protegidas excepto esta pantalla.
+Mientras `must_change_password` sea verdadero, el middleware bloquea el acceso a paneles por rol, `/operario` y demás rutas protegidas excepto esta pantalla.
 
-Tras guardar: `must_change_password` pasa a falso y redirección al home del rol (`/admin` o `/operario`).
+Tras guardar: `must_change_password` pasa a falso y redirección al home del rol (p. ej. `/dueno` o `/operario`).
 
 ---
 
 ## 3.1 Pantalla: Inicio admin (MVP)
 
-**Estado MVP (2026-07-16):** shell **visual** igual al operario (sidebar `lg+`, bottom nav móvil, home-nav + sheet), con **tabs y contenido solo de gestión** (sin Campo/carga). Detalle: `patrones-web-admin.md`.
+**Estado MVP (2026-07-16):** shell **visual** igual al operario (sidebar `lg+`, bottom nav móvil, home-nav + sheet), con **tabs y contenido solo de gestión** (sin Campo/carga). **Persona de referencia:** Dueño (`permisos.md` §10). Detalle: `patrones-web-admin.md`.
 
 ### Objetivo
 
@@ -121,21 +121,45 @@ Landing post-login para roles con panel administrativo (Dueño, Administrativo, 
 
 ### Elementos
 
-- Layout: `components/layouts/admin.blade.php` reutiliza clases `avicore-operario-*`; nav `AdminNav` (Inicio · Usuarios); menú cuenta `x-ui.user-menu`; PWA (`x-ui.pwa-meta` + banner instalar si `AVICORE_PWA_INSTALL_PROMPT=true`).
-- Hero: saludo horario + subtítulo `Resumen de {empresa · rol}.` + chip de empresa (`avicore-admin-context`).
-- KPIs: `<x-ui.kpi-card>` — Usuarios activos (conteo real); Granjas y galpones (placeholder hasta estructura).
-- Accesos («¿Qué querés gestionar?»): tarjetas de gestión (`avicore-admin-home-action`) — Usuarios; Estructura y Reportes → «Próximamente».
-- Checklist «Estado inicial» en panel paralelo (escritorio).
+- Layout: `components/layouts/admin.blade.php` reutiliza clases `avicore-operario-*`; nav `AdminNav` según rol (Dueño: Inicio · Resumen · Equipo · Comercial); menú cuenta `x-ui.user-menu`; PWA (`x-ui.pwa-meta` + banner instalar si `AVICORE_PWA_INSTALL_PROMPT=true`).
+- Hero: saludo horario + subtítulo `Resumen de {empresa · rol}.` (empresa y rol solo en esa línea; sin chip adicional).
+- KPIs operativos: `<x-ui.stat-panel>` en grilla 2×2 — copy en lenguaje llano (huevos juntados, aves que murieron, galpones en alerta, galpones con producción); detalle en §3.4.
+- Navegación a módulos: **bottom nav** (móvil) / **sidebar** (escritorio); sin duplicar tabs en el contenido de Inicio.
 - **No incluye** paneles/tiles de carga operario (`kpi-panel`, `carga-tile`, chip de galpón) ni accesos a Cargar/Historial.
 
 ### Navegación (MVP)
 
-- **Inicio** — `/admin` (hero).
-- **Usuarios** — `/admin/usuarios` (hero + CRUD; §3.2).
+Cada rol con panel usa su prefijo; las vistas Livewire se comparten hasta tener pantallas propias por rol.
+
+- **Dueño:** `/dueno`, `/dueno/resumen`, `/dueno/equipo`, `/dueno/comercial` (sin Estructura ni Usuarios)
+- **Administrativo:** `/administrativo` (+ resumen, estructura, usuarios)
+- **Encargado:** `/encargado` (+ resumen, estructura, usuarios limitado)
+- **Admin AviCore:** `/avicore` (+ usuarios; sin resumen/estructura en nav)
+- **Reparto:** `/reparto` (stub)
 
 ### Comportamiento
 
-Tras login exitoso (sin cambio de contraseña pendiente), roles no operario llegan a `/admin` con esta pantalla.
+Tras login exitoso (sin cambio de contraseña pendiente), cada rol llega a su prefijo (p. ej. Dueño → `/dueno`).
+
+---
+
+## 3.1.1 Pantalla: Equipo (Dueño)
+
+**Estado MVP (2026-08-22):** `/dueno/equipo` — contadores de usuarios activos, operarios y supervisión; **solo lectura** (sin CRUD).
+
+### Usuarios autorizados
+
+- Dueño (`canViewEquipo`).
+
+---
+
+## 3.1.2 Pantalla: Comercial (Dueño, preview)
+
+**Estado MVP (2026-08-22):** `/dueno/comercial` — vista previa con datos de ejemplo (clientes, ventas, pedidos, reservas). Módulo real post-MVP (`producto.md` excluye ventas en MVP).
+
+### Usuarios autorizados
+
+- Dueño (`canViewComercial`).
 
 ---
 
@@ -151,11 +175,11 @@ Gestionar el equipo de la empresa: crear usuarios con rol, editar datos, resetea
 
 | Acción | Admin AviCore | Dueño | Administrativo | Encargado | Operario |
 |--------|---------------|-------|----------------|-----------|----------|
-| Ver listado | Sí (todas las empresas) | Sí (su empresa) | Sí (su empresa) | Sí (su empresa) | No |
-| Crear / editar / activar-desactivar | Sí | Sí | Sí | No | No |
-| Reset contraseña | Sí | Sí | Sí | Sí | No |
+| Ver listado | Sí (todas las empresas) | No (módulo Equipo) | Sí (su empresa) | Sí (su empresa) | No |
+| Crear / editar / activar-desactivar | Sí | No | Sí | No | No |
+| Reset contraseña | Sí | No | Sí | Sí | No |
 
-Roles asignables: Dueño (dueño→operario); Administrativo (administrativo→operario); Admin AviCore (todos, con selector de empresa salvo `admin_avicore`).
+Roles asignables: Administrativo (administrativo→operario/reparto); Dueño solo asigna vía Admin AviCore en alta de empresa; Admin AviCore (todos, con selector de empresa salvo `admin_avicore`).
 
 ### Campos (alta / edición)
 
@@ -183,6 +207,61 @@ Roles asignables: Dueño (dueño→operario); Administrativo (administrativo→o
 ### Comportamiento
 
 Multiempresa: actores de empresa solo ven/modifican usuarios de su `empresa_id`. Operario redirigido fuera de `/admin/*`. Policy: `UserPolicy`.
+
+---
+
+## 3.3 Pantalla: Estructura (admin)
+
+**Estado MVP (2026-08-15):** implementado en `/admin/estructura` — pestañas Granjas · Galpones · Lotes; campo **DICOSE** en granjas; alta/edición con diálogos `x-ui.dialog`.
+
+### Usuarios autorizados
+
+| Acción | Dueño | Administrativo | Encargado |
+|--------|-------|----------------|-----------|
+| Ver listados | No (sin tab) | Sí | Sí |
+| Crear/editar granja y galpón | No | Sí | No |
+| Crear/editar lote | No* | Sí | Sí |
+
+\* Dueño: alta de lote solo vía `/operario` (hub Cargar), no panel Estructura.
+
+Operario y Admin AviCore sin `empresa_id` no acceden a esta pantalla.
+
+### Campos principales
+
+- **Granja:** nombre, DICOSE (único por empresa), código interno, ubicación, activa.
+- **Galpón:** granja, nombre, código, capacidad, estado operativo, activo, observación.
+- **Lote:** galpón, tipo Blanca/Colorada, cantidad, fecha nacimiento, Nº SMA (opcional); edición: SMA, línea/raza, estado, observación.
+
+### Comportamiento
+
+Multiempresa por `empresa_id`. Alta de lote reutiliza `RegistrarLoteAction`. Nav admin: tab **Estructura**.
+
+---
+
+## 3.4 Pantalla: Resumen (admin)
+
+**Estado MVP (2026-08-15):** implementado en `/admin/resumen` — KPIs del día agregados y por galpón; filtros por granja y multiselect de galpones; alertas de mortalidad acumulada (> 1,1% referencia).
+
+### Objetivo
+
+Vista operativa para Dueño, Administrativo y Encargado: seguir producción del día sin entrar al módulo operario.
+
+### Usuarios
+
+- Dueño, Administrativo, Encargado (`canViewResumen`).
+
+### Elementos
+
+- Hero `x-admin.page-hero`.
+- Filtro granja (`x-ui.select`) + chips toggle de galpones.
+- KPIs globales: huevos hoy, muertes hoy, aves actuales, alertas mortalidad.
+- Tarjetas por galpón con KPIs y badge «Alerta» si mortalidad acumulada supera referencia.
+- Servicio `AdminResumenService` (reutiliza `OperarioGalponResumenService`).
+
+### Comportamiento
+
+- Sin galpones activos: empty state con enlace implícito a Estructura.
+- Operario redirigido fuera de `/admin/*`.
 
 ---
 
@@ -219,7 +298,7 @@ Permitir carga rápida desde celular.
 
 **Inicio:** saludo, chip galpón (selector), KPIs del galpón (aves, muertes/descarte aves hoy, huevos **aptos + descarte** hoy y acumulados), lista de lotes activos (con **SMA** si existe).
 
-**Cargar:** Huevos, Muertes, **Descarte de aves**, Vacunación, **Alimento** (entrega del camión) y (si el rol puede crear lote) **Nuevo lote** — grilla 2 columnas; con permiso de lote, tile ancho «Nuevo lote». Diálogos: huevos aptos + descarte; descarte de aves vivas; alimento en kg del remito; vacunación con `x-ui.select`; nuevo lote: galpón, **Nº lote SMA** (opcional), tipos Blanca/Colorada, cantidad, fecha nacimiento. Sin carga combinada en móvil.
+**Cargar:** Huevos, Muertes, **Descarte de aves**, Vacunación, **Alimento** (entrega del camión) y (si el rol puede crear lote) **Nuevo lote** — grilla 2 columnas; con permiso de lote, tile ancho «Nuevo lote». Diálogos: huevos aptos + descarte; descarte de aves vivas; alimento en kg del remito; vacunación con `x-ui.select`; nuevo lote: galpón, **Nº lote SMA** (opcional), tipos Blanca/Colorada, cantidad, fecha nacimiento.
 
 **Historial:** listado completo del operario (cargas + vacunaciones), filtro por fecha con `x-ui.date-picker` (sin `input type="date"` nativo; error de validación visible bajo el trigger), paginación. Cada ítem abre **detalle** (tipo, galpón, fecha/hora, resumen). Registros **anulados** visibles con badge; el operario puede **anular** registros propios del día con motivo obligatorio (`x-ui.textarea` en el diálogo; muertes/descarte restauran `aves_actuales`; vacunación vía `AnularVacunacionAction`). Dueño/administrativo/encargado pueden anular registros ajenos del día vía policy (sin UI en Historial MVP).
 
@@ -227,7 +306,7 @@ Permitir carga rápida desde celular.
 
 ### Perfil de cuenta (MVP)
 
-**Estado MVP (2026-08-11):** `/operario/perfil` (shell operario) y `/perfil` (shell admin). Pestañas con `wire:navigate` + query `?seccion=password` (sin morph parcial). Partials `tabs`, `datos-form`, `password-form`. Menú cuenta: **Editar datos** / **Cambiar contraseña** (misma navegación). `UpdateProfileAction` y `ChangePasswordAction` exigen `UserPolicy::updateProfile`.
+**Estado MVP (2026-08-15):** `/operario/perfil` (layout operario) y `/perfil` (layout admin) comparten **misma vista** (`x-operario.perfil-hero` + `avicore-operario-home-sheet`); el admin usa `avicore-home-nav` en el header (sin badge toolbar legacy). Pestañas con `wire:navigate` + query `?seccion=password` (sin morph parcial). Partials `tabs`, `datos-form`, `password-form`. Menú cuenta: **Editar datos** / **Cambiar contraseña** (misma navegación). `UpdateProfileAction` y `ChangePasswordAction` exigen `UserPolicy::updateProfile`.
 
 | Campo | Editable por el usuario |
 |-------|-------------------------|
@@ -395,7 +474,7 @@ Permitir elegir galpón de trabajo.
 
 ## 9–10. Cargas operario (parcial)
 
-**Estado:** huevos (aptos/descarte), muertes, **descarte de aves**, vacunación y **alimento** implementados en hub `/operario/cargar`; combinada pendiente (fase 15). Reglas en [`avicore-negocio/references/reglas.md`](../../avicore-negocio/references/reglas.md).
+**Estado:** huevos (aptos/descarte), muertes, **descarte de aves**, vacunación y **alimento** implementados en hub `/operario/cargar`. Reglas en [`avicore-negocio/references/reglas.md`](../../avicore-negocio/references/reglas.md).
 
 | Pantalla | Fase | Estado |
 |----------|------|--------|
@@ -404,7 +483,6 @@ Permitir elegir galpón de trabajo.
 | Descarte de aves | — | Hecho — `RegistrarCargaDescarteAction`; deep link `?form=descarte` |
 | Carga de vacunación | — | Hecho — diálogo en hub; `RegistrarVacunacionAction`; deep link `?form=vacunacion` |
 | Carga de alimento | 14 | Hecho — entrega camión (kg); `RegistrarCargaAlimentoAction`; deep link `?form=alimento` |
-| Carga combinada | 15 | **Defer** — dos cargas rápidas en lugar de formulario mixto |
 
 ---
 

@@ -22,9 +22,9 @@ class AdminUsuariosTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_dueno_can_list_create_and_reset_password_for_company_users(): void
+    public function test_administrativo_can_list_create_and_reset_password_for_company_users(): void
     {
-        [$empresa, $dueno] = $this->empresaConDueno();
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
 
         User::factory()->create([
             'empresa_id' => $empresa->id,
@@ -43,14 +43,14 @@ class AdminUsuariosTest extends TestCase
             'must_change_password' => false,
         ]);
 
-        $this->actingAs($dueno)
-            ->get(route('admin.usuarios.index'))
+        $this->actingAs($administrativo)
+            ->get(route('administrativo.usuarios.index'))
             ->assertOk()
             ->assertSee('Operario Uno')
             ->assertDontSee('Ajeno')
             ->assertSee('Nuevo usuario');
 
-        Livewire::actingAs($dueno)
+        Livewire::actingAs($administrativo)
             ->test(UsuariosIndex::class)
             ->call('abrirCrear')
             ->set('name', 'Nuevo Operario')
@@ -68,7 +68,7 @@ class AdminUsuariosTest extends TestCase
         $this->assertTrue($creado->must_change_password);
         $this->assertTrue($creado->activo);
 
-        Livewire::actingAs($dueno)
+        Livewire::actingAs($administrativo)
             ->test(UsuariosIndex::class)
             ->call('resetearPassword', $creado->id)
             ->assertSet('dialogPasswordAbierto', true)
@@ -76,6 +76,15 @@ class AdminUsuariosTest extends TestCase
 
         $creado->refresh();
         $this->assertTrue($creado->must_change_password);
+    }
+
+    public function test_dueno_cannot_access_usuarios_panel(): void
+    {
+        [, $dueno] = $this->empresaConDueno();
+
+        $this->actingAs($dueno)
+            ->get(route('dueno.usuarios.index'))
+            ->assertForbidden();
     }
 
     public function test_encargado_can_view_and_reset_but_cannot_create(): void
@@ -99,7 +108,7 @@ class AdminUsuariosTest extends TestCase
         ]);
 
         $this->actingAs($encargado)
-            ->get(route('admin.usuarios.index'))
+            ->get(route('encargado.usuarios.index'))
             ->assertOk()
             ->assertSee('Operario Reset')
             ->assertDontSee('wire:click="abrirCrear"', false);
@@ -177,7 +186,7 @@ class AdminUsuariosTest extends TestCase
 
     public function test_cannot_access_users_from_other_company(): void
     {
-        [$empresaA, $duenoA] = $this->empresaConDueno('11111111');
+        [$empresaA, $adminA] = $this->empresaConAdministrativo('11111111');
 
         $empresaB = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $operarioB = User::factory()->create([
@@ -189,7 +198,7 @@ class AdminUsuariosTest extends TestCase
 
         $this->expectException(ModelNotFoundException::class);
 
-        Livewire::actingAs($duenoA)
+        Livewire::actingAs($adminA)
             ->test(UsuariosIndex::class)
             ->call('abrirEditar', $operarioB->id);
     }
@@ -205,13 +214,13 @@ class AdminUsuariosTest extends TestCase
         ]);
 
         $this->actingAs($operario)
-            ->get(route('admin.usuarios.index'))
+            ->get(route('dueno.usuarios.index'))
             ->assertRedirect(route('operario.home'));
     }
 
     public function test_update_and_toggle_active_actions(): void
     {
-        [$empresa, $dueno] = $this->empresaConDueno('44444444');
+        [$empresa, $administrativo] = $this->empresaConAdministrativo('44444444');
 
         $operario = User::factory()->create([
             'empresa_id' => $empresa->id,
@@ -222,7 +231,7 @@ class AdminUsuariosTest extends TestCase
             'must_change_password' => false,
         ]);
 
-        app(UpdateUserAction::class)->execute($dueno, $operario, [
+        app(UpdateUserAction::class)->execute($administrativo, $operario, [
             'name' => 'Editable Nuevo',
             'documento' => '55555555',
             'email' => 'edit@demo.test',
@@ -234,7 +243,7 @@ class AdminUsuariosTest extends TestCase
         $this->assertSame('Editable Nuevo', $operario->name);
         $this->assertSame(UserRole::Encargado, $operario->rol);
 
-        Livewire::actingAs($dueno)
+        Livewire::actingAs($administrativo)
             ->test(UsuariosIndex::class)
             ->call('toggleActivo', $operario->id)
             ->assertDispatched('snackbar-show');
@@ -244,7 +253,7 @@ class AdminUsuariosTest extends TestCase
 
     public function test_reset_password_hashes_new_temporary_password(): void
     {
-        [$empresa, $dueno] = $this->empresaConDueno('66666666');
+        [$empresa, $administrativo] = $this->empresaConAdministrativo('66666666');
         $operario = User::factory()->create([
             'empresa_id' => $empresa->id,
             'documento' => '77777777',
@@ -253,7 +262,7 @@ class AdminUsuariosTest extends TestCase
             'must_change_password' => false,
         ]);
 
-        $result = app(ResetUserPasswordAction::class)->execute($dueno, $operario);
+        $result = app(ResetUserPasswordAction::class)->execute($administrativo, $operario);
 
         $this->assertTrue(Hash::check($result['plainPassword'], $operario->fresh()->password));
         $this->assertTrue($operario->fresh()->must_change_password);
@@ -262,25 +271,25 @@ class AdminUsuariosTest extends TestCase
 
     public function test_admin_nav_links_to_usuarios_module(): void
     {
-        [, $dueno] = $this->empresaConDueno('88888888');
+        [, $administrativo] = $this->empresaConAdministrativo('88888888');
 
-        $this->actingAs($dueno)
-            ->get(route('admin.home'))
+        $this->actingAs($administrativo)
+            ->get(route('administrativo.home'))
             ->assertOk()
-            ->assertSee(route('admin.usuarios.index'), false);
+            ->assertSee(route('administrativo.usuarios.index'), false);
     }
 
     public function test_cannot_deactivate_own_account(): void
     {
-        [$empresa, $dueno] = $this->empresaConDueno('90909090');
+        [$empresa, $administrativo] = $this->empresaConAdministrativo('90909090');
 
         $this->expectException(ValidationException::class);
 
-        app(UpdateUserAction::class)->execute($dueno, $dueno, [
-            'name' => $dueno->name,
-            'documento' => $dueno->documento,
-            'email' => $dueno->email,
-            'rol' => $dueno->rol->value,
+        app(UpdateUserAction::class)->execute($administrativo, $administrativo, [
+            'name' => $administrativo->name,
+            'documento' => $administrativo->documento,
+            'email' => $administrativo->email,
+            'rol' => $administrativo->rol->value,
             'activo' => false,
         ]);
     }
@@ -332,7 +341,7 @@ class AdminUsuariosTest extends TestCase
 
     public function test_non_admin_cannot_update_admin_avicore_user(): void
     {
-        [$empresa, $dueno] = $this->empresaConDueno('95959595');
+        [, $administrativo] = $this->empresaConAdministrativo('95959595');
 
         $admin = User::factory()->adminAvicore()->create([
             'documento' => '96969696',
@@ -341,13 +350,34 @@ class AdminUsuariosTest extends TestCase
 
         $this->expectException(AuthorizationException::class);
 
-        app(UpdateUserAction::class)->execute($dueno, $admin, [
+        app(UpdateUserAction::class)->execute($administrativo, $admin, [
             'name' => $admin->name,
             'documento' => $admin->documento,
             'email' => $admin->email,
             'rol' => $admin->rol->value,
             'activo' => true,
         ]);
+    }
+
+    /**
+     * @return array{0: Empresa, 1: User}
+     */
+    private function empresaConAdministrativo(string $documento = '20111222'): array
+    {
+        $empresa = Empresa::factory()->create([
+            'nombre' => 'Avícola Demo',
+            'estado' => EmpresaEstado::Activa,
+        ]);
+
+        $administrativo = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'name' => 'Admin Demo',
+            'documento' => $documento,
+            'rol' => UserRole::Administrativo,
+            'must_change_password' => false,
+        ]);
+
+        return [$empresa, $administrativo];
     }
 
     /**

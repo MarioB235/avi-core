@@ -5,6 +5,7 @@
 
 <div class="note">
   <strong>Cierre 2→5:</strong> mensaje <strong>2</strong> (<code>@rutas</code> al final) → <strong>3</strong> → <strong>4</strong> → <strong>5</strong>.
+  <strong>Versión semver:</strong> manual en msg 4–5 (acordeón abajo) — no sube sola al mergear PR.
   Catálogo: <code>.cursor/skills/README.md</code> · mapa:
   <button type="button" class="portal-inline-link" data-portal-page="dev-contexto" data-portal-href="contenido/desarrollo/contexto.html" data-portal-label="Contexto del proyecto">Contexto del proyecto</button>.
 </div>
@@ -97,6 +98,13 @@ Antes de editar: corré `pnpm run check:docs-impact` (sugerencias por rutas toca
 Si tocaste .cursor/ o plantillas: `pnpm run check:agent-docs`.
 Tooling desvío: GOBERNANZA.md. Contrato: portal/CHANGELOG.md.
 
+Versión semver (manual — revisar en msg 4, aplicar en msg 5 si corresponde):
+- Desarrollo diario / PR normal → dejar AVICORE_VERSION=0.1.0-dev (sin cambio).
+- Demo, piloto con cliente o release → subir semver (ej. 0.1.0) en .env.example + Laravel Cloud; opcional git tag v0.1.0.
+- Build desplegado (fecha + commit) → automático con pnpm run build; no confundir con semver.
+- Criterio según auditoría: subir si hubo contrato (esquema-bd, permisos, reglas, pantallas-flujos user-facing); no subir por solo tests/chore/refactor UI interno.
+- Guía completa: acordeón «Versión del producto» en esta página.
+
 Devolvé:
 1. Tabla: documento | ¿alineado? | acción (actualizar / OK / no aplica)
 2. Docs editados o a commitear
@@ -133,6 +141,7 @@ Redacción: chat 2–4 + diff. Plantilla condensada:
 
 ## Criterios AviCore
 - [ ] Multiempresa · [ ] Permisos · [ ] Validaciones · [ ] Docs (msg 4 o N/A)
+- [ ] Versión semver (AVICORE_VERSION): subida en demo/piloto/release · o marcar «sin cambio — 0.1.0-dev»
 
 ## Verificación
 - [ ] php artisan test · [ ] pnpm run build
@@ -147,6 +156,42 @@ Base (main):
 Título (opcional):
 
 Devolvé: Rama final · Commit (hash corto) · URL PR · Estado pendiente de merge.</code></pre>
+  </div>
+</details>
+
+<details class="template-guide">
+  <summary>Versión del producto · cuándo subir semver (msg 4–5)</summary>
+  <div class="subsection">
+    <p class="copy-hint">Fuente técnica: <code>config/avicore.php</code> (<code>AVICORE_VERSION</code>), <code>.cursor/skills/avicore-pwa/references/pwa.md</code>. Visible en Perfil (menú cuenta).</p>
+    <h3>Dos capas (no mezclar)</h3>
+    <table>
+      <thead><tr><th>Capa</th><th>Dónde</th><th>Cómo cambia</th><th>Ejemplo en Perfil</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Producto</strong> (semver)</td><td><code>AVICORE_VERSION</code> · local <code>.env</code> · Cloud panel</td><td><strong>Manual</strong> — vos decidís en demo/piloto/release</td><td><code>0.1.0-dev</code></td></tr>
+        <tr><td><strong>Build</strong> (trazabilidad)</td><td><code>public/build/avicore-build.json</code></td><td><strong>Automático</strong> al <code>pnpm run build</code> en deploy</td><td><code>15 ago 2026, 14:30 (a1b2c3d)</code></td></tr>
+      </tbody>
+    </table>
+    <p>Etiqueta completa: <code>{semver} · {fecha build} ({commit})</code> — en local sin build: <code>0.1.0-dev · Desarrollo local</code>.</p>
+    <h3>¿Subo la versión después de la auditoría?</h3>
+    <table>
+      <thead><tr><th>Situación</th><th>¿Subir semver?</th><th>Acción</th></tr></thead>
+      <tbody>
+        <tr><td>PR / desarrollo diario</td><td><strong>No</strong></td><td>Dejar <code>0.1.0-dev</code></td></tr>
+        <tr><td>Auditoría tocó <code>esquema-bd</code>, <code>permisos</code>, <code>reglas</code> o flujos en <code>pantallas-flujos</code> (contrato)</td><td><strong>Evaluar</strong> al cerrar demo/piloto</td><td>Minor <code>0.2.0</code> si el cliente ve cambio de producto</td></tr>
+        <tr><td>Solo UI/tokens, tests, chore, refactor sin contrato</td><td><strong>No</strong></td><td>Solo <code>portal/CHANGELOG.md</code> si hubo contrato doc</td></tr>
+        <tr><td>Primera demo estable o piloto en granja</td><td><strong>Sí</strong></td><td><code>0.1.0</code> (sin <code>-dev</code>) + tag Git opcional <code>v0.1.0</code></td></tr>
+        <tr><td>MVP cerrado / go-live</td><td><strong>Sí</strong></td><td><code>1.0.0</code></td></tr>
+        <tr><td>Deploy a Laravel Cloud</td><td>Solo si cortás release</td><td>Actualizar variable en panel Cloud + <code>pnpm run build</code> en CI</td></tr>
+      </tbody>
+    </table>
+    <h3>Qué editar vos (checklist msg 5)</h3>
+    <ol>
+      <li><code>AVICORE_VERSION</code> en tu <code>.env</code> (local) y en Laravel Cloud (staging/producción).</li>
+      <li>Opcional: default en <code>.env.example</code> si el equipo acordó nuevo baseline.</li>
+      <li>Opcional: <code>git tag v0.1.0</code> en el commit del release (no en cada PR).</li>
+      <li><strong>No</strong> tocar semver en cada fila de la tabla de auditoría — solo cuando el criterio de arriba aplica.</li>
+    </ol>
+    <p><strong>Documentación de contrato</strong> (<code>portal/CHANGELOG.md</code>, <code>references/</code>) sigue siendo <em>por cambio</em>, independiente del semver.</p>
   </div>
 </details>
 

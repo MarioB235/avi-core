@@ -6,8 +6,8 @@
 |--------|--------|-------|
 | **1 — Base** | **Hecho** | Laravel 13, Livewire 4, Tailwind 4, layouts, UI base, PostgreSQL + `migrate` OK |
 | **2 — Seguridad** | **Parcial** | Login + cambio obligatorio; **CRUD usuarios admin** (`/admin/usuarios`) hecho; falta auditoría de accesos soporte |
-| **4 — Estructura avícola** | **Parcial** | Migraciones + seeder demo; alta de lote desde operario; sin CRUD admin completo |
-| **5 — Operación móvil** | **Hecho MVP** | Home, Cargar (huevos, muertes, descarte, vacunación, alimento, lote), Historial (detalle + anulación), perfil, PWA; sin carga combinada ni offline |
+| **4 — Estructura avícola** | **Parcial** | Migraciones + seeder demo; alta de lote desde operario; **CRUD admin** granjas/galpones/lotes + DICOSE en `/admin/estructura` |
+| **5 — Operación móvil** | **Hecho MVP** | Home, Cargar (huevos, muertes, descarte, vacunación, alimento, lote), Historial (detalle + anulación), perfil, PWA; sin offline completo |
 | 3, 6–7 | Pendiente | Según orden de la sección 2 |
 
 Detalle técnico del Bloque 1: [`arbol-proyecto.md`](arbol-proyecto.md) · entorno local: [`arranque-local.md`](arranque-local.md).
@@ -20,7 +20,7 @@ Desarrollar módulo por módulo.
 
 No construir todas las pantallas antes del backend.
 
-**Operario primero (2026-08-10):** la captura en galpón es el origen de los datos; completar operario (alimento pendiente) antes de admin/dashboard. Olas y decisiones: [`estrategia-implementacion.md`](estrategia-implementacion.md).
+**Operario primero (2026-08-10):** la captura en galpón es el origen de los datos; completar operario antes de admin/dashboard. **Panel admin Dueño-first (2026-08-15):** diseñar y probar `/admin` como Dueño; Administrativo comparte permisos en MVP. Olas: [`estrategia-implementacion.md`](estrategia-implementacion.md).
 
 ### Fórmula
 
@@ -48,13 +48,12 @@ Interfaz del módulo → backend → validaciones → permisos → auditoría �
 | 12 | Carga de huevos |
 | 13 | Carga de muertes |
 | 14 | Carga de alimento |
-| 15 | Carga combinada |
-| 16 | Anulación y auditoría |
-| 17 | Dashboard |
-| 18 | Tiempo real |
-| 19 | Reportes |
-| 20 | Datos demo |
-| 21 | PWA | **Hecho MVP (2026-08-01)** — instalable, sin offline completo; ver `avicore-pwa/references/pwa.md` |
+| 15 | Anulación y auditoría |
+| 16 | Dashboard |
+| 17 | Tiempo real |
+| 18 | Reportes |
+| 19 | Datos demo |
+| 20 | PWA | **Hecho MVP (2026-08-01)** — instalable, sin offline completo; ver `avicore-pwa/references/pwa.md` |
 
 ---
 
@@ -136,8 +135,8 @@ Dashboard refleja la carga
 
 - [x] Migraciones `granjas`, `galpones`, `lotes`, `registros_operativos`.
 - [x] Seeder demo mínimo (`AvicoreEstructuraAvicolaSeeder`: 1 granja, 2 galpones, 1 lote).
-- [ ] CRUD admin granjas/galpones/lotes.
-- [ ] Estados y tipo de huevo en UI admin.
+- [x] CRUD admin granjas/galpones/lotes + DICOSE — `/admin/estructura`.
+- [ ] Estados y tipo de huevo en UI admin (filtros avanzados).
 
 ---
 
@@ -154,7 +153,6 @@ Dashboard refleja la carga
 - [x] Alta lote desde operario (hub / redirect `CargaLote`; código SMA opcional).
 - [x] Historial con filtro fecha, detalle por ítem y anulación propia del día.
 - [x] Perfil de cuenta (`/operario/perfil`).
-- [ ] Carga combinada (fuera del MVP móvil).
 
 ---
 
@@ -222,3 +220,4 @@ Solo nombres de bloque; el DDL vive en `avicore-modelo-datos/references/esquema-
 | Capacitación §7.6 | registros capacitación | Temario, participantes; retención 2 años |
 | Remitos SMA / faena §8.4 | integración SMA | Protocolo envío a faena; Res. 325/024 |
 | Export planillas Anexo A | `ReporteService` | PDF/Excel con DICOSE; catálogo §8.4 + §9 |
+| Comercial / clientes (post-MVP) | `clientes`, `pedidos_huevos`, `repartos` | Pedidos recurrentes, reservas, última venta; rol reparto; preview en Inicio admin |

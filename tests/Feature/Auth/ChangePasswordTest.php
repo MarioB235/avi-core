@@ -57,7 +57,7 @@ class ChangePasswordTest extends TestCase
             ->set('password', 'NuevaClave2026!')
             ->set('password_confirmation', 'NuevaClave2026!')
             ->call('save')
-            ->assertRedirect(route('admin.home'));
+            ->assertRedirect(route('dueno.home'));
 
         $admin->refresh();
 
