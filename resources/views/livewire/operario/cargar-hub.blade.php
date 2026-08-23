@@ -54,7 +54,7 @@
                     class="avicore-operario-carga-tile avicore-operario-carga-tile--action"
                 >
                     <span class="avicore-operario-carga-tile__icon">
-                        <x-ui.illustration name="operario-ave" />
+                        <x-ui.illustration name="operario-muertes" />
                     </span>
                     <span class="avicore-operario-carga-tile__label">Muertes</span>
                     <span class="avicore-operario-carga-tile__badge">Cuántas aves murieron</span>
@@ -66,7 +66,7 @@
                     class="avicore-operario-carga-tile avicore-operario-carga-tile--action"
                 >
                     <span class="avicore-operario-carga-tile__icon">
-                        <x-ui.illustration name="operario-ave" />
+                        <x-ui.illustration name="operario-descarte" />
                     </span>
                     <span class="avicore-operario-carga-tile__label">Descarte</span>
                     <span class="avicore-operario-carga-tile__badge">Aves que sacaste vivas</span>
@@ -90,7 +90,7 @@
                     class="avicore-operario-carga-tile avicore-operario-carga-tile--action"
                 >
                     <span class="avicore-operario-carga-tile__icon">
-                        <x-ui.icon name="truck" class="size-8 text-avicore-primary" />
+                        <x-ui.illustration name="operario-alimento" />
                     </span>
                     <span class="avicore-operario-carga-tile__label">Alimento</span>
                     <span class="avicore-operario-carga-tile__badge">Entrega del camión</span>

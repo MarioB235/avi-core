@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['empresa_id', 'nombre', 'codigo', 'ubicacion', 'activa'])]
+#[Fillable(['empresa_id', 'nombre', 'codigo', 'dicose', 'ubicacion', 'activa'])]
 class Granja extends Model
 {
     use BelongsToEmpresa, HasFactory;

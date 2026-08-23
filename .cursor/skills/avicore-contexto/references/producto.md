@@ -123,10 +123,10 @@ Un sistema base + configuración por empresa
 ## 6. Roles principales
 
 - Admin AviCore.
-- Dueño.
-- Administrativo.
-- Encargado.
-- Operario.
+- **Dueño** — persona de referencia del **panel admin** en MVP (estructura, usuarios, futuro dashboard/reportes).
+- Administrativo — mismo alcance que Dueño en código MVP; diferenciación de permisos y pantallas → post-MVP (`permisos.md` §10).
+- Encargado — supervisión; panel admin parcial (sin usuarios ni estructura).
+- Operario — vista móvil `/operario` (campo).
 
 ---
 

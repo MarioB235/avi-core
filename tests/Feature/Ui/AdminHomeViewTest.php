@@ -38,7 +38,7 @@ class AdminHomeViewTest extends TestCase
             'must_change_password' => false,
         ]);
 
-        $response = $this->actingAs($encargado)->get(route('admin.home'));
+        $response = $this->actingAs($encargado)->get(route('encargado.home'));
 
         $response->assertOk();
         $response->assertSee('Inicio');
@@ -50,28 +50,30 @@ class AdminHomeViewTest extends TestCase
         $response->assertSee('avicore-operario-home-hero', false);
         $response->assertSee('avicore-operario-home-sheet', false);
         $response->assertSee('avicore-home-nav', false);
-        $response->assertSee('avicore-admin-home-kpis', false);
-        $response->assertSee('avicore-kpi-card', false);
-        $response->assertSee('avicore-admin-home-actions', false);
-        $response->assertSee('avicore-admin-context', false);
-        $response->assertDontSee('avicore-operario-carga-tile', false);
-        $response->assertDontSee('avicore-operario-kpi-panel', false);
+        $response->assertSee('avicore-operario-kpi-grid--stat', false);
+        $response->assertSee('avicore-operario-kpi-panel--stat', false);
+        $response->assertDontSee('avicore-admin-context', false);
+        $response->assertDontSee('avicore-operario-carga-grid', false);
+        $response->assertDontSee('¿Qué querés gestionar?');
         $response->assertDontSee('avicore-operario-galpon-chip', false);
         $response->assertDontSee('avicore-admin-header--toolbar', false);
         $response->assertDontSee('avicore-admin-header--masthead', false);
-        $response->assertSee('Granjas y galpones');
-        $response->assertSee('Usuarios activos');
-        $response->assertSee('2');
-        $response->assertSee('Estado inicial');
-        $response->assertSee('Granjas');
-        $response->assertSee('Galpones');
-        $response->assertSee('Usuarios');
-        $response->assertSee('Pendiente');
-        $response->assertSee('Disponible');
-        $response->assertSee('¿Qué querés gestionar?');
-        $response->assertSee('Estructura');
-        $response->assertSee('Reportes');
-        $response->assertSee('Próximamente');
+        $response->assertSee('Producción de hoy');
+        $response->assertSee('Huevos juntados');
+        $response->assertSee('Aves que murieron');
+        $response->assertSee('Galpones en alerta');
+        $response->assertSee('Galpones con producción');
+        $response->assertDontSee('Clientes y entregas');
+        $response->assertDontSee('Tu gente en AviCore');
+        $response->assertDontSee('Negocios que te compran seguido');
+        $response->assertDontSee('$ 48.500');
+        $response->assertSee('avicore-ui-illustration', false);
+        $response->assertDontSee('Ejemplo');
+        $response->assertDontSee('Próximamente');
+        $response->assertDontSee('Estado inicial');
+        $response->assertDontSee('Onboarding');
+        $response->assertDontSee('Disponible');
+        $response->assertSee('Resumen');
         $response->assertDontSee('Cargar en galpón');
         $response->assertDontSee(route('operario.home'));
         $response->assertDontSee('>Campo<', false);
@@ -124,11 +126,10 @@ class AdminHomeViewTest extends TestCase
         ]);
 
         $this->actingAs($encargado)
-            ->get(route('admin.home'))
+            ->get(route('encargado.home'))
             ->assertOk()
             ->assertSee('Empresa A · Encargado')
-            ->assertSee('Usuarios activos')
-            ->assertSee('2')
+            ->assertSee('Huevos juntados')
             ->assertDontSee('>5<');
     }
 
@@ -162,11 +163,10 @@ class AdminHomeViewTest extends TestCase
         ]);
 
         $this->actingAs($admin)
-            ->get(route('admin.home'))
+            ->get(route('avicore.home'))
             ->assertOk()
             ->assertSee('AviCore · Admin AviCore')
-            ->assertSee('Usuarios activos')
-            ->assertSee('2')
+            ->assertSee('Huevos juntados')
             ->assertDontSee('>Campo<', false)
             ->assertDontSee(route('operario.home'), false);
     }
@@ -184,7 +184,7 @@ class AdminHomeViewTest extends TestCase
         ]);
 
         $this->actingAs($operario)
-            ->get(route('admin.home'))
+            ->get(route('dueno.home'))
             ->assertRedirect(route('operario.home'));
     }
 }

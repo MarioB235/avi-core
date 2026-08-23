@@ -31,13 +31,13 @@ avi-core/
 
 **Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php` (roles demo, empresa inactiva, rate-limit `demoRole`, operario→`/operario`); `tests/Feature/Services/DemoLoginServiceTest.php` (flag, rol único, Admin AviCore sin empresa, empresa DEMO ausente); `tests/Feature/Ui/LoginViewTest.php` (render login, select perfil demo + campos vacíos/disabled); `tests/Feature/Ui/InputComponentTest.php` (toggle password disabled); `tests/Feature/Ui/PublicLayoutTest.php` (shell login móvil + panel marca desktop, logo `entrance`); `tests/Feature/Ui/LogoComponentTest.php` (variantes logo, órbita `entrance`); `tests/Feature/Ui/SelectComponentTest.php` (contrato `x-ui.select`, posicionamiento flip); `tests/Feature/Ui/PwaInstallPromptTest.php` (manifest + banner en login/operario/admin, split `enabled`/`install_prompt` en guest y autenticado, `shouldShowBanner`, `apple-touch-icon` + `pwa-180`).
 
-**Tests admin:** `tests/Feature/Admin/AdminUsuariosTest.php` (CRUD multiempresa, permisos por rol — dueño/administrativo/encargado/operario/Admin AviCore, reset clave, toggle activo, guards rol admin y auto-desactivación); `tests/Feature/Services/AdminHomeServiceTest.php` (KPI usuarios activos, `setupItems`); `tests/Feature/Ui/AdminHomeViewTest.php` (Inicio gestión sin Campo, KPIs, checklist); `tests/Feature/Ui/AdminShellTest.php` (shell operario en admin, tabs Inicio·Usuarios, heroes); `tests/Feature/Ui/AdminUserMenuTest.php` (`x-ui.user-menu` en Inicio y Usuarios: portal, sidebar, home-nav, Versión con `avicore-build.json`).
+**Tests admin:** `tests/Feature/Admin/AdminUsuariosTest.php` (CRUD multiempresa, permisos por rol); `tests/Feature/Admin/AdminEstructuraTest.php` (granja/galpón/lote CRUD, DICOSE único, permisos encargado/administrativo, multiempresa); `tests/Feature/Admin/AdminResumenTest.php` (KPIs, filtros granja/galpón, toggle galpón, redirect operario); `tests/Feature/Services/AdminHomeServiceTest.php` (KPI usuarios, Equipo/Comercial preview); `tests/Feature/Services/AdminResumenServiceTest.php` (KPIs agregados, alertas mortalidad, filtros, multiempresa, teaser); `tests/Feature/Auth/RolePanelRoutesTest.php` (prefijos por rol, middleware panel); `tests/Feature/Ui/AdminHomeViewTest.php` (Inicio gestión); `tests/Feature/Ui/AdminShellTest.php` (shell, tabs por rol incl. Equipo/Comercial dueño); `tests/Feature/Ui/AdminUserMenuTest.php` (`x-ui.user-menu`); `tests/Unit/Support/RolePanelModulesTest.php`, `NavTabBarItemsTest.php` (tabs `AdminNav`).
 
 **Tests operario:** `tests/Feature/Operario/OperarioCargaHuevosTest.php` (flujo E2E, multiempresa, galpón no disponible, redirect sin galpón y apertura automática del selector, Action rechaza mantenimiento), `tests/Feature/Operario/OperarioCargaMuertesTest.php` (flujo E2E muertes, descuento `aves_actuales`, rechazo si supera stock, Action multiempresa y mantenimiento, redirect `CargaMuertes` y `guardarMuertes` sin galpón disponible, query `form=muertes`), `tests/Feature/Operario/OperarioCargaVacunacionTest.php` (flujo E2E vacunación, validación lote/vacuna, Action multiempresa/galpón/lote, hub rechaza lote ajeno, redirect `CargaVacunacion` y `guardarVacunacion` sin galpón, query `form=vacunacion`), `tests/Feature/Operario/OperarioCargaLoteTest.php` (alta lote, codigo/secuencia, multi-tipo, gating operario, administrativo HTTP+registro, Action/policy, validación Livewire fecha/galpón, deep link `form=lote`), `tests/Feature/Operario/OperarioCargaAlimentoTest.php` (multiempresa en Action), `tests/Feature/Operario/OperarioCargaDescarteTest.php` (multiempresa en Action), `tests/Feature/Operario/OperarioPerfilTest.php` (perfil compartido, pestañas `wire:navigate`, hero por sección, shell, `updateProfile` usuario inactivo), `tests/Feature/Operario/OperarioHomeTest.php` (`seleccionarGalpon` rechaza galpón ajeno, en mantenimiento o inactivo), `tests/Feature/Operario/OperarioHomeResumenTest.php` (KPIs galpón, lotes, acumulado, muertes, maples, edad vía service; `resumen` fresco tras nuevo registro; memo `lotesActivos`), `tests/Feature/Operario/OperarioHistorialTest.php` (tipos, vacunaciones mezcladas, filtro fecha validado con mensaje visible y sin acumulación, paginación, multiempresa, date-picker, detalle, anulación muertes/descarte/vacunación, ya anulado, encargado ajeno), `tests/Feature/Services/OperarioGalponServiceTest.php` (`galponDisponibleParaUsuario`, `historialCargasQuery`, `historialPaginado` con vacunaciones, multiempresa, selección, scoped ambos services operario), `tests/Feature/Support/OperarioNavTest.php` (pestaña activa y `headerTitle` por ruta, incl. `operario.historial` e icono `calendar`), `tests/Feature/Ui/OperarioBottomNavTest.php` (dock, transiciones ~150 ms, heroes Inicio/Cargar/Historial, tab activa y `aria-current`, icono `calendar` en Historial, date-picker en historial HTTP, ilustración `operario-reloj`, empty/populated historial HTTP, diálogos huevos/muertes/vacunación/lote vía deep link, hub sin deep link sin `avicore-dialog`, chip galpón vacío/activo, KPI maples), `tests/Feature/Ui/IllustrationComponentTest.php` (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`), `tests/Feature/Ui/SelectComponentTest.php` (`x-ui.select` listbox), `tests/Feature/Ui/DatePickerComponentTest.php` (contrato `x-ui.date-picker`), `tests/Feature/Ui/OperarioUserMenuTest.php` (menú cuenta portal/clamp en home/cargar/historial, ARIA, perfil, logout, Versión), `tests/Feature/Ui/DialogComponentTest.php`, `tests/Feature/Ui/SheetComponentTest.php` (diálogo huevos en `CargarHub`), `tests/Feature/Ui/SnackbarHostTest.php` (host en layout, evento `snackbar-show`, flash `status`, `syncProgressDuration`, pause/Escape/`runAction`, contrato desktop `right-6`/`bottom-6`, contrato `pwa.js`: `immediate: false`, `onNeedRefresh`, `pwa-update`, `__avicorePwaUpdate`), `tests/Feature/Ui/RevealComponentTest.php` (`x-ui.reveal`, `data-reveal-delay`, sin inline), `tests/Feature/Ui/ScrollRevealTest.php` (wiring `scroll-reveal.js`, markers HTTP Inicio/Cargar, edge fade shell).
 
 **Tests unitarios:** `tests/Unit/Services/AppBuildServiceTest.php` (`metadata` null/inválido, `labelForProfile` con y sin commit, hint local).
 
-**PWA (MVP instalable, sin offline completo):** `vite-plugin-pwa` + `resources/js/pwa.js` (registro SW, snackbar actualización) + `resources/js/pwa-install.js` (`__avicorePwaInstall`); manifest en `vite.config.js` → `public/build/manifest.webmanifest` tras `pnpm run build`; `scripts/write-build-meta.cjs` → `public/build/avicore-build.json`; `App/Services/AppBuildService` (Versión en Perfil); `config/avicore.php` → `pwa.enabled`, `pwa.install_prompt` (`AVICORE_PWA_*`); `x-ui.pwa-meta`, `x-ui.pwa-install-prompt` en layouts público, operario, admin y `layouts/app`; iconos `public/images/brand/pwa-*.png` y screenshots `pwa-screenshot-*.jpg` vía `scripts/optimize-brand-assets.py`; `scripts/check-cloud-readiness.cjs` valida assets y dimensiones vs manifest. Contrato: `avicore-pwa/references/pwa.md`.
+**PWA (MVP instalable, sin offline completo):** `vite-plugin-pwa` + `resources/js/pwa.js` (registro SW, snackbar actualización) + `resources/js/pwa-install.js` (`__avicorePwaInstall`); manifest en `vite.config.js` → `public/build/manifest.webmanifest` tras `pnpm run build`; `scripts/write-build-meta.cjs` → `public/build/avicore-build.json`; `App/Services/AppBuildService` (Versión en Perfil: semver `AVICORE_VERSION` + build); `config/avicore.php` → `version`, `pwa.enabled`, `pwa.install_prompt` (`AVICORE_*`); `x-ui.pwa-meta`, `x-ui.pwa-install-prompt` en layouts público, operario, admin y `layouts/app`; iconos `public/images/brand/pwa-*.png` y screenshots `pwa-screenshot-*.jpg` vía `scripts/optimize-brand-assets.py`; `scripts/check-cloud-readiness.cjs` valida assets y dimensiones vs manifest. Contrato: `avicore-pwa/references/pwa.md`.
 
 Reverb y Echo quedan para fases posteriores del plan.
 
@@ -49,19 +49,25 @@ Reverb y Echo quedan para fases posteriores del plan.
 app/
 ├── Actions/
 │   ├── Auth/                 # AttemptLoginAction, ChangePasswordAction
-│   ├── Lote/                 # RegistrarLoteAction
-│   ├── Operacion/            # RegistrarCargaHuevosAction, RegistrarCargaMuertesAction, RegistrarCargaDescarteAction, RegistrarCargaAlimentoAction, RegistrarVacunacionAction, AnularRegistroOperativoAction, AnularVacunacionAction
+│   ├── Galpon/               # CreateGalponAction, UpdateGalponAction
+│   ├── Granja/               # CreateGranjaAction, UpdateGranjaAction
+│   ├── Lote/                 # RegistrarLoteAction, UpdateLoteAction
+│   ├── Operacion/            # RegistrarCargaHuevosAction, RegistrarCargaMuertesAction, …
 │   └── User/                 # CreateUserAction, UpdateUserAction, UpdateProfileAction, ResetUserPasswordAction
 ├── Enums/                    # EmpresaEstado, UserRole, GalponEstado, LoteEstado, TipoHuevo, VacunaTipo, RegistroOperativo*
 ├── Http/
-│   ├── Middleware/           # EnsurePasswordChanged, EnsureAdminPanelAccess, EnsureOperarioAccess, RedirectIfAuthenticated
+│   ├── Middleware/           # EnsurePasswordChanged, EnsureRolePanelAccess, EnsureOperarioAccess, RedirectIfAuthenticated
 │   └── View/
 │       └── Composers/        # AdminHomeComposer, AdminLayoutComposer, OperarioLayoutComposer
 ├── Livewire/
 │   ├── Admin/
+│   │   ├── Comercial/        # Index (preview post-MVP, dueño)
+│   │   ├── Equipo/           # Index (solo lectura, dueño)
+│   │   ├── Estructura/       # Index (granjas, galpones, lotes)
+│   │   ├── Resumen/          # Index (KPIs por galpón)
 │   │   └── Usuarios/         # Index (CRUD listado/alta/edición/reset)
 │   ├── Auth/                 # Login, ChangePassword
-│   └── Operario/             # Home, CargarHub (+ Concerns/: ManagesGalponSelector, ManagesHuevosForm, ManagesAlimentoForm, …), CargaHuevos, CargaMuertes, CargaDescarte, CargaVacunacion, CargaAlimento, CargaLote, Historial
+│   ├── Operario/             # Home, CargarHub (+ Concerns), Carga*, Historial
 │   └── Profile/              # Edit (/operario/perfil, /perfil)
 ├── Models/
 │   ├── Concerns/             # BelongsToEmpresa
@@ -76,6 +82,7 @@ app/
 │   ├── Concerns/
 │   │   └── AuthorizesOperarioAnulacion.php
 │   ├── GalponPolicy.php
+│   ├── GranjaPolicy.php
 │   ├── LotePolicy.php
 │   ├── RegistroOperativoPolicy.php
 │   ├── UserPolicy.php
@@ -86,6 +93,7 @@ app/
 │   ├── AppBuildService.php   # metadata build (Versión en menú cuenta)
 │   ├── DemoLoginService.php
 │   ├── AdminHomeService.php
+│   ├── AdminResumenService.php
 │   ├── EmpresaContextService.php
 │   ├── OperarioGalponService.php
 │   ├── OperarioGalponResumenService.php
@@ -95,6 +103,8 @@ app/
     ├── IconSvg.php
     ├── IllustrationSvg.php      # Ilustraciones KPI operario (SVG en resources/images/illustrations/)
     ├── AdminNav.php             # Pestañas y títulos del shell admin (paridad operario)
+    ├── Concerns/
+    │   └── MapsNavTabsToTabBar.php
     ├── OperarioHistorialItem.php
     └── OperarioNav.php          # Pestañas y títulos del shell operario
 ```
@@ -114,12 +124,12 @@ resources/
 │   │   ├── operario/         # bottom-nav, sidebar-nav, header, user-menu, home-hero, primary-action, cargar-hero, historial-hero
 │   │   ├── layouts/          # público, admin (shell tipo operario), operario-mobile
 │   │   │   └── partials/     # auth-brand-panel
-│   │   └── ui/               # button, input, textarea, select, date-picker, card, badge, alert, logo, icon, illustration, dialog, sheet, kpi-card, nav-link, empty-state, setup-checklist, user-avatar, snackbar-host, reveal, user-menu, pwa-meta, pwa-install-prompt
+│   │   └── ui/               # button, input, …, stat-panel, action-tile, section-head, tab-bar, …
 │   │       └── icons/        # inline.blade.php
 │   ├── livewire/
 │   │   ├── _redirect-placeholder.blade.php
 │   │   ├── auth/             # login, change-password
-│   │   ├── admin/            # usuarios/index
+│   │   ├── admin/            # comercial, equipo, estructura (+ partials), resumen (+ partials), usuarios
 │   │   └── operario/         # home (+ partials/galpon-chip-selector, carga-*-form, historial-detalle-dialog), cargar-hub, historial
 │   └── pages/
 │       ├── admin/home.blade.php
@@ -127,7 +137,7 @@ resources/
 ├── images/
 │   ├── brand/
 │   ├── icons/                  # Lucide file-backed (p. ej. bird.svg)
-│   └── illustrations/          # operario-ave, operario-huevo, operario-reloj, operario-vacuna
+│   └── illustrations/          # operario-ave, operario-huevo, operario-reloj, operario-vacuna, operario-alimento, operario-muertes, operario-descarte
 ├── css/                      # Tailwind 4 + tema AviCore (`app.css`, `operario.css`)
 └── js/                       # `app.js`, `scroll-reveal.js`, `pwa-install.js` (`__avicorePwaInstall`), `pwa.js` (SW + snackbar update), `operario-navigate.js`
 ```
@@ -152,11 +162,16 @@ resources/
 | Módulo | Livewire / vista | Tablas principales |
 |--------|------------------|-------------------|
 | Login / contraseña | `Livewire/Auth/` | `empresas`, `users` |
-| Inicio admin | `pages/admin/home` + `AdminHomeService` | `users` |
+| Inicio admin | `pages/admin/home` + `AdminHomeService` | `users`, `granjas`, `galpones` |
+| Resumen admin | `Livewire/Admin/Resumen/` + `AdminResumenService` | `granjas`, `galpones`, `lotes`, `registros_operativos` |
+| Equipo admin (dueño) | `Livewire/Admin/Equipo/` + `AdminHomeService::teamPreviewItems` | `users` |
+| Comercial admin (preview) | `Livewire/Admin/Comercial/` + `AdminHomeService::comercialPreviewItems` | — (datos demo) |
+| Estructura admin | `Livewire/Admin/Estructura/` + `Actions/Galpon`, `Granja`, `Lote` + Policies | `granjas`, `galpones`, `lotes` |
 | Usuarios admin | `Livewire/Admin/Usuarios/` + `Actions/User/` + `UserPolicy` | `users`, `empresas` |
 | Carga operario | `Livewire/Operario/` | `granjas`, `galpones`, `lotes`, `registros_operativos`, `vacunaciones` |
+| Reparto (stub) | `pages/reparto/home` | — |
 
-Módulos pendientes (Dashboard, Reportes, CRUD estructura, etc.): ver `plan-desarrollo.md` § 13.
+Módulos pendientes (Reportes, Comercial real, auditoría exportable, etc.): ver `plan-desarrollo.md` § 13.
 
 ---
 

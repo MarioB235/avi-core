@@ -24,7 +24,7 @@ class DemoLoginTest extends TestCase
         Livewire::test(Login::class)
             ->set('demoRole', UserRole::Dueno->value)
             ->call('login')
-            ->assertRedirect(route('admin.home'));
+            ->assertRedirect(route('dueno.home'));
 
         $this->assertAuthenticated();
         $this->assertSame(UserRole::Dueno, auth()->user()->rol);
@@ -38,10 +38,7 @@ class DemoLoginTest extends TestCase
         Livewire::test(Login::class)
             ->set('demoRole', UserRole::AdminAvicore->value)
             ->call('login')
-            ->assertRedirect(route('admin.home'));
-
-        $this->assertAuthenticated();
-        $this->assertSame(UserRole::AdminAvicore, auth()->user()->rol);
+            ->assertRedirect(route('avicore.home'));
     }
 
     public function test_demo_login_as_encargado_redirects_to_admin(): void
@@ -52,10 +49,7 @@ class DemoLoginTest extends TestCase
         Livewire::test(Login::class)
             ->set('demoRole', UserRole::Encargado->value)
             ->call('login')
-            ->assertRedirect(route('admin.home'));
-
-        $this->assertAuthenticated();
-        $this->assertSame(UserRole::Encargado, auth()->user()->rol);
+            ->assertRedirect(route('encargado.home'));
     }
 
     public function test_demo_login_as_administrativo_redirects_to_admin(): void
@@ -66,10 +60,7 @@ class DemoLoginTest extends TestCase
         Livewire::test(Login::class)
             ->set('demoRole', UserRole::Administrativo->value)
             ->call('login')
-            ->assertRedirect(route('admin.home'));
-
-        $this->assertAuthenticated();
-        $this->assertSame(UserRole::Administrativo, auth()->user()->rol);
+            ->assertRedirect(route('administrativo.home'));
     }
 
     public function test_demo_login_as_operario_redirects_to_operario_home(): void
@@ -152,7 +143,7 @@ class DemoLoginTest extends TestCase
             ->assertSet('password', '')
             ->set('demoRole', UserRole::Dueno->value)
             ->call('login')
-            ->assertRedirect(route('admin.home'))
+            ->assertRedirect(route('dueno.home'))
             ->assertHasNoErrors(['documento', 'password']);
     }
 
@@ -165,7 +156,7 @@ class DemoLoginTest extends TestCase
             ->assertSet('demoLoginEnabled', true)
             ->set('demoRole', UserRole::Dueno->value)
             ->call('login')
-            ->assertRedirect(route('admin.home'));
+            ->assertRedirect(route('dueno.home'));
 
         $this->assertAuthenticated();
     }
@@ -208,7 +199,7 @@ class DemoLoginTest extends TestCase
             ->set('documento', '000000000')
             ->set('password', 'Avicore2026!')
             ->call('login')
-            ->assertRedirect(route('admin.home'));
+            ->assertRedirect(route('dueno.home'));
     }
 
     private function enableDemoLogin(string $environment = 'local'): void

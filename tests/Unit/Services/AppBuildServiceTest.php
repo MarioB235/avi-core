@@ -26,6 +26,13 @@ class AppBuildServiceTest extends TestCase
         parent::tearDown();
     }
 
+    public function test_product_version_returns_config_value(): void
+    {
+        config(['avicore.version' => '0.2.0']);
+
+        $this->assertSame('0.2.0', app(AppBuildService::class)->productVersion());
+    }
+
     public function test_metadata_returns_null_when_file_missing(): void
     {
         if (File::exists($this->buildMetaPath)) {
@@ -79,6 +86,7 @@ class AppBuildServiceTest extends TestCase
         $label = app(AppBuildService::class)->labelForProfile();
 
         $this->assertNotNull($label);
+        $this->assertStringStartsWith(config('avicore.version').' · ', $label);
         $this->assertStringContainsString('2026', $label);
         $this->assertStringContainsString('(abc1234)', $label);
     }
@@ -93,8 +101,24 @@ class AppBuildServiceTest extends TestCase
         $label = app(AppBuildService::class)->labelForProfile();
 
         $this->assertNotNull($label);
+        $this->assertStringStartsWith(config('avicore.version').' · ', $label);
         $this->assertStringContainsString('2026', $label);
         $this->assertStringNotContainsString('(', $label);
+    }
+
+    public function test_label_for_profile_returns_version_only_in_production_without_build_file(): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
+
+        if (File::exists($this->buildMetaPath)) {
+            File::delete($this->buildMetaPath);
+        }
+
+        config(['avicore.version' => '0.1.0']);
+
+        $label = app(AppBuildService::class)->labelForProfile();
+
+        $this->assertSame('0.1.0', $label);
     }
 
     public function test_label_for_profile_returns_local_hint_without_build_file_in_local(): void
@@ -107,6 +131,6 @@ class AppBuildServiceTest extends TestCase
 
         $label = app(AppBuildService::class)->labelForProfile();
 
-        $this->assertSame('Desarrollo local', $label);
+        $this->assertSame(config('avicore.version').' · Desarrollo local', $label);
     }
 }

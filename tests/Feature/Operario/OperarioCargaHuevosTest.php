@@ -134,8 +134,8 @@ class OperarioCargaHuevosTest extends TestCase
             ->assertOk();
 
         $this->actingAs($dueno)
-            ->get(route('admin.home'))
-            ->assertOk();
+            ->get('/admin')
+            ->assertRedirect(route('dueno.home'));
     }
 
     public function test_carga_huevos_redirects_to_selector_when_no_galpon_selected(): void

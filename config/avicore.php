@@ -4,6 +4,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Versión de producto (semver)
+    |--------------------------------------------------------------------------
+    |
+    | Número visible en Perfil y soporte. El build desplegado (fecha + commit)
+    | se genera aparte en public/build/avicore-build.json al hacer pnpm run build.
+    |
+    */
+
+    'version' => env('AVICORE_VERSION', '0.1.0-dev'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Soporte para recuperación de acceso (MVP)
     |--------------------------------------------------------------------------
     |

@@ -18,6 +18,9 @@ class IllustrationComponentTest extends TestCase
             'operario-huevo' => ['operario-huevo', ['viewBox="0 0 500 500"', 'fill="#085F2F"']],
             'operario-reloj' => ['operario-reloj', ['viewBox="0 0 500 500"', 'fill="#095F2F"']],
             'operario-vacuna' => ['operario-vacuna', ['viewBox="0 0 500 500"', 'fill="#0F623A"']],
+            'operario-alimento' => ['operario-alimento', ['viewBox="0 0 488 511"', 'fill="#0E5A2D"']],
+            'operario-muertes' => ['operario-muertes', ['viewBox="0 0 500 500"', 'fill="#D71917"']],
+            'operario-descarte' => ['operario-descarte', ['viewBox="0 0 500 500"', 'fill="#0E592E"']],
         ];
     }
 

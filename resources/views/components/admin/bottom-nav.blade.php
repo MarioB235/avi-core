@@ -1,36 +1,8 @@
 @php
     use App\Support\AdminNav;
-
-    $tabs = AdminNav::tabs();
 @endphp
 
-<nav class="avicore-operario-tab-bar lg:hidden" aria-label="Navegación panel">
-    <div class="avicore-operario-tab-bar__surface">
-        <div class="avicore-operario-tab-bar__inner">
-            @foreach ($tabs as $tab)
-                @php($active = AdminNav::tabIsActive($tab))
-
-                <a
-                    href="{{ route($tab['route']) }}"
-                    wire:navigate.hover
-                    @class([
-                        'avicore-operario-tab-bar__item',
-                        'avicore-operario-tab-bar__item--active' => $active,
-                    ])
-                    @if ($active) aria-current="page" @endif
-                >
-                    <span class="avicore-operario-tab-bar__icon-wrap">
-                        <x-ui.icon
-                            :name="$tab['icon']"
-                            @class([
-                                'size-5',
-                                'size-[1.3rem]' => $active,
-                            ])
-                        />
-                    </span>
-                    <span class="avicore-operario-tab-bar__label">{{ $tab['label'] }}</span>
-                </a>
-            @endforeach
-        </div>
-    </div>
-</nav>
+<x-ui.tab-bar
+    aria-label="Navegación panel"
+    :tabs="AdminNav::tabBarItems()"
+/>

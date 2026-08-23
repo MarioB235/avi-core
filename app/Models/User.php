@@ -64,6 +64,11 @@ class User extends Authenticatable
 
     public function homeRouteName(): string
     {
-        return $this->rol->isOperario() ? 'operario.home' : 'admin.home';
+        return $this->rol->homeRouteName();
+    }
+
+    public function panelRouteName(string $name): string
+    {
+        return $this->rol->panelRouteName($name);
     }
 }

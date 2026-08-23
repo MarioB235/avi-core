@@ -73,6 +73,7 @@ erDiagram
 | empresa_id | FK | No | |
 | nombre | string | No | |
 | codigo | string | Sí | |
+| dicose | string | Sí | Nº DICOSE del establecimiento; único por `empresa_id` |
 | ubicacion | string | Sí | |
 | activa | boolean | No | |
 | created_at, updated_at | timestamp | No | |

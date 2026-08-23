@@ -35,7 +35,7 @@
                     name="demoRole"
                     wire:model.live="demoRole"
                     :options="$demoRoleOptions"
-                    hint="Elegí el usuario demo — documento y contraseña no se usan en local"
+                    hint="Dueño = panel admin · Operario = carga en galpón · Encargado = supervisión"
                     required
                 />
             @endif

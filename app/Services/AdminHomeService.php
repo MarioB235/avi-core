@@ -2,17 +2,23 @@
 
 namespace App\Services;
 
+use App\Enums\UserRole;
+use App\Models\Galpon;
+use App\Models\Granja;
 use App\Models\User;
 
 class AdminHomeService
 {
+    public function __construct(private AdminResumenService $adminResumen) {}
+
     public function for(User $user): AdminHomeViewData
     {
         return new AdminHomeViewData(
             user: $user,
             contextLabel: $this->contextLabel($user),
             activeUsersCount: $this->activeUsersCount($user),
-            setupItems: $this->setupItems(),
+            estructuraCount: $this->estructuraCount($user),
+            operativoTeaser: $this->adminResumen->teaserFor($user),
         );
     }
 
@@ -36,28 +42,99 @@ class AdminHomeService
             ->count();
     }
 
+    public function estructuraCount(User $user): int
+    {
+        if ($user->empresa_id === null) {
+            return 0;
+        }
+
+        return Granja::query()
+            ->where('empresa_id', $user->empresa_id)
+            ->where('activa', true)
+            ->count()
+            + Galpon::query()
+                ->where('empresa_id', $user->empresa_id)
+                ->where('activo', true)
+                ->count();
+    }
+
     /**
-     * @return list<array{label: string, description: string, icon: string}>
+     * KPIs de equipo para el módulo Equipo (Dueño, solo lectura).
+     *
+     * @return list<array{label: string, value: string, hint: string, icon?: string}>
      */
-    public function setupItems(): array
+    public function teamPreviewItems(User $user): array
+    {
+        if (! $user->rol->canViewEquipo() || $user->empresa_id === null) {
+            return [];
+        }
+
+        $base = User::query()
+            ->where('empresa_id', $user->empresa_id)
+            ->where('activo', true);
+
+        $activos = (clone $base)->count();
+        $operarios = (clone $base)->where('rol', UserRole::Operario)->count();
+        $supervision = (clone $base)->whereIn('rol', [
+            UserRole::Encargado,
+            UserRole::Administrativo,
+        ])->count();
+
+        return [
+            [
+                'label' => 'Usuarios activos',
+                'value' => number_format($activos, 0, ',', '.'),
+                'hint' => 'Personas con acceso a AviCore en tu empresa',
+                'icon' => 'users',
+            ],
+            [
+                'label' => 'Operarios en campo',
+                'value' => number_format($operarios, 0, ',', '.'),
+                'hint' => 'Cuentas para carga en galpón',
+                'icon' => 'smartphone',
+            ],
+            [
+                'label' => 'Supervisión y oficina',
+                'value' => number_format($supervision, 0, ',', '.'),
+                'hint' => 'Encargados y administrativos activos',
+                'icon' => 'clipboard-list',
+            ],
+        ];
+    }
+
+    /**
+     * Datos orientativos del módulo comercial (post-MVP).
+     *
+     * @return list<array{label: string, value: string, hint: string, icon?: string, illustration?: string, tone?: string}>
+     */
+    public function comercialPreviewItems(): array
     {
         return [
             [
-                'label' => 'Granjas',
-                'description' => 'Registrá las unidades productivas de tu empresa.',
-                'icon' => 'building',
-            ],
-            [
-                'label' => 'Galpones',
-                'description' => 'Definí los galpones de tu empresa.',
-                'icon' => 'warehouse',
-            ],
-            [
-                'label' => 'Usuarios',
-                'description' => 'Invitá al equipo y asigná roles de acceso.',
+                'label' => 'Clientes',
+                'value' => '12',
+                'hint' => 'Negocios que te compran seguido',
                 'icon' => 'users',
-                'status' => 'Disponible',
-                'href' => route('admin.usuarios.index'),
+            ],
+            [
+                'label' => 'Última venta',
+                'value' => '$ 48.500',
+                'hint' => 'Monto del último despacho',
+                'icon' => 'truck',
+            ],
+            [
+                'label' => 'Pedido de mañana',
+                'value' => '1.200 huevos',
+                'hint' => 'Entrega programada a las 08:00',
+                'illustration' => 'operario-huevo',
+                'tone' => 'huevos',
+            ],
+            [
+                'label' => 'Huevos reservados',
+                'value' => '3.600 huevos',
+                'hint' => 'Comprometidos con clientes esta semana',
+                'illustration' => 'operario-huevo',
+                'tone' => 'huevos',
             ],
         ];
     }
@@ -66,12 +143,13 @@ class AdminHomeService
 readonly class AdminHomeViewData
 {
     /**
-     * @param  list<array{label: string, description: string, icon: string}>  $setupItems
+     * @param  array{huevos_hoy: int, muertes_hoy: int, alertas_count: int, galpones_activos: int}  $operativoTeaser
      */
     public function __construct(
         public User $user,
         public string $contextLabel,
         public int $activeUsersCount,
-        public array $setupItems,
+        public int $estructuraCount,
+        public array $operativoTeaser,
     ) {}
 }

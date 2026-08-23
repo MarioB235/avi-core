@@ -67,8 +67,10 @@ Al elegir un rol en el selector, el sistema **actualiza ese mismo usuario** con 
 
 ### Rol → pantalla tras login
 
-| Perfil en selector | Destino |
-|--------------------|---------|
-| Admin AviCore | `/admin` |
-| Dueño, Administrativo, Encargado | `/admin` |
-| Operario | `/operario` |
+| Perfil en selector | Destino | Uso en desarrollo |
+|--------------------|---------|-------------------|
+| **Dueño** | `/admin` | **Recomendado** para probar panel admin (estructura, usuarios, futuro dashboard) |
+| Administrativo | `/admin` | Mismo panel que Dueño en MVP; no hace falta probar ambos en cada tarea |
+| Encargado | `/admin` | Supervisión; sin CRUD usuarios ni estructura |
+| Operario | `/operario` | Carga en galpón |
+| Admin AviCore | `/admin` | Soporte multiempresa (sin `empresa_id`) |

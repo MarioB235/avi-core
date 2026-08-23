@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\File;
 
 class AppBuildService
 {
+    public function productVersion(): string
+    {
+        return (string) config('avicore.version');
+    }
+
     public function metadata(): ?array
     {
         $path = public_path('build/avicore-build.json');
@@ -26,20 +31,25 @@ class AppBuildService
 
     public function labelForProfile(): ?string
     {
+        $version = $this->productVersion();
         $metadata = $this->metadata();
 
         if ($metadata === null) {
-            return app()->environment('local') ? 'Desarrollo local' : null;
+            if (app()->environment('local')) {
+                return "{$version} · Desarrollo local";
+            }
+
+            return $version !== '' ? $version : null;
         }
 
         $formatted = Carbon::parse($metadata['built_at'])
             ->locale(app()->getLocale())
             ->isoFormat('D MMM YYYY, HH:mm');
 
-        if (! empty($metadata['commit'])) {
-            return "{$formatted} ({$metadata['commit']})";
-        }
+        $buildPart = ! empty($metadata['commit'])
+            ? "{$formatted} ({$metadata['commit']})"
+            : $formatted;
 
-        return $formatted;
+        return "{$version} · {$buildPart}";
     }
 }

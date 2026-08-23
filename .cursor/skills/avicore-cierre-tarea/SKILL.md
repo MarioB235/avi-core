@@ -22,7 +22,8 @@ Alcance: tabla del mensaje 2 + archivos tocados en el mensaje 3 (**mismo chat**)
 
 1. Tabla `documento | alineado (sí/no) | acción`.
 2. Lista de `references/` editados.
-3. Frase para la PR.
-4. Bloque resumen copiable para mensaje 5.
+3. **Versión semver:** ¿sube en esta sesión? (sí/no + valor si aplica) — ver plantilla «Versión del producto» en `plantillas-cursor.html`.
+4. Frase para la PR.
+5. Bloque resumen copiable para mensaje 5.
 
-Un cambio conceptual → **`references/` del skill dueño** + `CHANGELOG.md`. No regenerar docs por cambios cosméticos.
+Un cambio conceptual → **`references/` del skill dueño** + `CHANGELOG.md`. No regenerar docs por cambios cosméticos. Subir `AVICORE_VERSION` solo en demo/piloto/release (no en cada PR).

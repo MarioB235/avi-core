@@ -18,7 +18,7 @@ class LoginFlowTest extends TestCase
 
     public function test_guest_is_redirected_to_login_from_admin(): void
     {
-        $this->get(route('admin.home'))->assertRedirect(route('login'));
+        $this->get('/admin')->assertRedirect(route('login'));
     }
 
     public function test_admin_avicore_can_login_and_reach_admin_panel(): void
@@ -33,7 +33,7 @@ class LoginFlowTest extends TestCase
             ->set('documento', '900000002')
             ->set('password', 'Avicore2026!')
             ->call('login')
-            ->assertRedirect(route('admin.home'));
+            ->assertRedirect(route('avicore.home'));
 
         $this->assertAuthenticatedAs($user);
     }
@@ -54,7 +54,7 @@ class LoginFlowTest extends TestCase
             ->set('documento', '55555555')
             ->set('password', 'Secret123!')
             ->call('login')
-            ->assertRedirect(route('admin.home'));
+            ->assertRedirect(route('dueno.home'));
 
         $this->assertAuthenticatedAs($user);
     }
@@ -232,7 +232,7 @@ class LoginFlowTest extends TestCase
         ]);
 
         $this->actingAs($dueno)
-            ->get(route('admin.home'))
+            ->get(route('dueno.home'))
             ->assertRedirect(route('password.change'));
     }
 
@@ -247,7 +247,7 @@ class LoginFlowTest extends TestCase
         ]);
 
         $this->actingAs($operario)
-            ->get(route('admin.home'))
+            ->get('/admin')
             ->assertRedirect(route('operario.home'));
     }
 
