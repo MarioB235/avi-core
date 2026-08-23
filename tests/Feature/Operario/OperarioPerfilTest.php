@@ -207,7 +207,7 @@ class OperarioPerfilTest extends TestCase
 
         $this->actingAs($admin)
             ->get(route('operario.perfil'))
-            ->assertRedirect(route('admin.home'));
+            ->assertRedirect(route('avicore.home'));
     }
 
     public function test_dueno_can_access_profile_from_admin_route(): void
@@ -223,7 +223,13 @@ class OperarioPerfilTest extends TestCase
         $this->actingAs($dueno)
             ->get(route('profile.edit'))
             ->assertOk()
-            ->assertSee('Mi perfil')
-            ->assertSee('Guardar datos');
+            ->assertSee('Mis datos')
+            ->assertSee('Guardar datos')
+            ->assertSee('avicore-operario-shell--home', false)
+            ->assertSee('avicore-home-nav', false)
+            ->assertSee('avicore-operario-perfil-hero', false)
+            ->assertSee('avicore-operario-home-sheet', false)
+            ->assertSee('--avicore-tab-cols: 4', false)
+            ->assertDontSee('avicore-operario-header__badge', false);
     }
 }

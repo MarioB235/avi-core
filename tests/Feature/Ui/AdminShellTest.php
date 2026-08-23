@@ -28,10 +28,10 @@ class AdminShellTest extends TestCase
             'name' => 'María Dueña',
         ]);
 
-        $this->assertSame(['Inicio', 'Usuarios'], collect(AdminNav::tabs($dueno))->pluck('label')->all());
+        $this->assertSame(['Inicio', 'Resumen', 'Equipo', 'Comercial'], collect(AdminNav::tabs($dueno))->pluck('label')->all());
 
         $this->actingAs($dueno)
-            ->get(route('admin.home'))
+            ->get(route('dueno.home'))
             ->assertOk()
             ->assertSee('avicore-operario-shell', false)
             ->assertSee('avicore-operario-tab-bar', false)
@@ -39,11 +39,12 @@ class AdminShellTest extends TestCase
             ->assertSee('avicore-home-nav', false)
             ->assertSee('avicore-operario-home-sheet', false)
             ->assertSee('Inicio', false)
-            ->assertSee('Usuarios', false)
-            ->assertSee('¿Qué querés gestionar?', false)
-            ->assertSee('Estructura', false)
-            ->assertSee('Reportes', false)
-            ->assertSee(route('admin.usuarios.index'), false)
+            ->assertSee('Resumen', false)
+            ->assertSee('Equipo', false)
+            ->assertSee('Comercial', false)
+            ->assertDontSee('>Usuarios<', false)
+            ->assertDontSee('>Estructura<', false)
+            ->assertDontSee('¿Qué querés gestionar?')
             ->assertDontSee(route('operario.home'), false)
             ->assertDontSee('Cargar en galpón', false)
             ->assertDontSee('>Campo<', false)
@@ -59,14 +60,14 @@ class AdminShellTest extends TestCase
         $this->assertSame(['Inicio', 'Usuarios'], collect(AdminNav::tabs($admin))->pluck('label')->all());
 
         $this->actingAs($admin)
-            ->get(route('admin.home'))
+            ->get(route('avicore.home'))
             ->assertOk()
             ->assertSee('Administración AviCore', false)
             ->assertDontSee('>Campo<', false)
             ->assertDontSee(route('operario.home'), false);
     }
 
-    public function test_usuarios_page_uses_same_shell_heroes(): void
+    public function test_admin_bottom_nav_shares_tab_bar_component_with_operario(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
 
@@ -77,7 +78,41 @@ class AdminShellTest extends TestCase
         ]);
 
         $this->actingAs($dueno)
-            ->get(route('admin.usuarios.index'))
+            ->get(route('dueno.home'))
+            ->assertOk()
+            ->assertSee('--avicore-tab-cols: 4', false)
+            ->assertSee('aria-label="Navegación panel"', false)
+            ->assertSee('avicore-operario-tab-bar__inner', false)
+            ->assertDontSee('avicore-operario-tab-bar__inner--cols-4', false);
+    }
+
+    public function test_dueno_cannot_access_usuarios_module(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+
+        $dueno = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Dueno,
+            'must_change_password' => false,
+        ]);
+
+        $this->actingAs($dueno)
+            ->get(route('dueno.usuarios.index'))
+            ->assertForbidden();
+    }
+
+    public function test_usuarios_page_uses_same_shell_heroes(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+
+        $administrativo = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Administrativo,
+            'must_change_password' => false,
+        ]);
+
+        $this->actingAs($administrativo)
+            ->get(route('administrativo.usuarios.index'))
             ->assertOk()
             ->assertSee('avicore-operario-shell--home', false)
             ->assertSee('avicore-operario-home-hero', false)

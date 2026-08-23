@@ -54,7 +54,7 @@ class AdminUserMenuTest extends TestCase
         ], JSON_THROW_ON_ERROR));
 
         $this->actingAs($dueno)
-            ->get(route('admin.home'))
+            ->get(route('dueno.home'))
             ->assertOk()
             ->assertSee('avicore-user-menu--sidebar', false)
             ->assertSee('avicore-operario-sidebar__menu-trigger', false)
@@ -70,9 +70,10 @@ class AdminUserMenuTest extends TestCase
             ->assertSee('Versión', false)
             ->assertSee('abc1234', false)
             ->assertDontSee('avicore-admin-header__user-avatar', false)
-            ->assertSee(route('admin.usuarios.index'), false)
-            ->assertSee('Disponible', false)
-            ->assertSee('Resumen de Avícola Demo', false);
+            ->assertSee('Resumen de Avícola Demo', false)
+            ->assertSee('Equipo', false)
+            ->assertDontSee('Accesos rápidos', false)
+            ->assertDontSee('Tu gente en AviCore', false);
     }
 
     public function test_usuarios_page_renders_shared_user_menu_in_sidebar_and_home_nav(): void
@@ -82,16 +83,16 @@ class AdminUserMenuTest extends TestCase
             'nombre' => 'Avícola Demo',
         ]);
 
-        $dueno = User::factory()->create([
+        $administrativo = User::factory()->create([
             'empresa_id' => $empresa->id,
-            'rol' => UserRole::Dueno,
+            'rol' => UserRole::Administrativo,
             'must_change_password' => false,
-            'name' => 'María Dueña',
+            'name' => 'María Admin',
             'documento' => '20111222',
         ]);
 
-        $this->actingAs($dueno)
-            ->get(route('admin.usuarios.index'))
+        $this->actingAs($administrativo)
+            ->get(route('administrativo.usuarios.index'))
             ->assertOk()
             ->assertSee('avicore-user-menu--sidebar', false)
             ->assertSee('avicore-operario-sidebar__menu-trigger', false)

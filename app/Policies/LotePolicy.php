@@ -9,7 +9,8 @@ class LotePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->empresa_id !== null;
+        return $user->empresa_id !== null
+            && ($user->rol->canViewEstructura() || $user->rol->canAccessOperarioMobile());
     }
 
     public function view(User $user, Lote $lote): bool
@@ -22,5 +23,12 @@ class LotePolicy
     {
         return $user->empresa_id !== null
             && $user->rol->canCreateLote();
+    }
+
+    public function update(User $user, Lote $lote): bool
+    {
+        return $user->empresa_id !== null
+            && $user->rol->canManageLotes()
+            && $user->empresa_id === $lote->empresa_id;
     }
 }

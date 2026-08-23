@@ -13,7 +13,7 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 
 ## Navegación
 
-- **Fuente única de rutas y títulos:** `App\Support\OperarioNav` — pestañas (`tabs()`), título de header (`headerTitle()`), activo (`tabIsActive()`). Consumido por `<x-operario.bottom-nav>` y `OperarioLayoutComposer`; no duplicar arrays de rutas en Blade.
+- **Fuente única de rutas y títulos:** `App\Support\OperarioNav` — pestañas (`tabs()`), título de header (`headerTitle()`), activo (`tabIsActive()`), ítems del dock (`tabBarItems()`). Consumido por `<x-operario.bottom-nav>` → `<x-ui.tab-bar>` y `OperarioLayoutComposer`; no duplicar arrays de rutas en Blade.
 - 3 pestañas en fila: Inicio (`home`) · Cargar (`plus`) · Historial (`calendar`) — **mismo diseño** en todos los ítems.
 - Ítem **activo**: círculo **blanco** elevado, icono `avicore-primary`, borde verde fino; sobresale por encima del borde superior de la barra (efecto «notch» visual).
 - Barra inferior **verde marca** (`avicore-primary`): esquinas superiores redondeadas, sombra suave verde hacia arriba, línea superior clara (gradiente blanco/`secondary`), `safe-area-inset-bottom`.

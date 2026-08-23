@@ -253,7 +253,7 @@
     }
 
     .avicore-operario-home-hero__subtitle {
-        @apply text-sm font-medium leading-snug text-avicore-primary/90;
+        @apply max-w-[28rem] text-sm font-medium leading-snug text-balance text-avicore-primary/90;
     }
 
     .avicore-operario-home-hero__galpon {
@@ -415,6 +415,10 @@
         @apply text-base font-bold leading-tight text-avicore-text;
     }
 
+    .avicore-operario-home-section__subtitle {
+        @apply mt-1 max-w-[32rem] text-sm leading-snug text-balance text-avicore-muted;
+    }
+
     .avicore-operario-home-section__link {
         @apply inline-flex shrink-0 items-center gap-0.5 rounded-full bg-avicore-soft px-2.5 py-1 text-xs font-semibold text-avicore-primary ring-1 ring-avicore-primary/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-avicore-primary;
     }
@@ -531,6 +535,57 @@
         @apply grid-cols-1 gap-3.5;
     }
 
+    .avicore-operario-kpi-grid--teaser > :nth-child(3):last-child {
+        grid-column: span 2 / span 2;
+    }
+
+    .avicore-operario-kpi-grid--stat {
+        @apply grid grid-cols-2 items-stretch gap-2 sm:gap-3;
+    }
+
+    .avicore-operario-kpi-panel--stat {
+        @apply flex h-full min-w-0 flex-col p-3 sm:p-4;
+    }
+
+    .avicore-operario-kpi-panel--stat .avicore-operario-kpi-panel__head {
+        @apply mb-2.5 items-start gap-2 sm:mb-3 sm:gap-2.5;
+    }
+
+    .avicore-operario-kpi-panel--stat .avicore-operario-kpi-panel__icon {
+        @apply size-9 shrink-0 sm:size-10;
+    }
+
+    .avicore-operario-kpi-panel--stat .avicore-operario-kpi-panel__icon .avicore-ui-illustration {
+        @apply size-7 sm:size-8;
+    }
+
+    .avicore-operario-kpi-panel--stat .avicore-operario-kpi-panel__title {
+        @apply min-w-0 flex-1 text-[0.8125rem] font-bold leading-snug sm:text-sm lg:text-base;
+    }
+
+    .avicore-operario-kpi-panel--stat .avicore-operario-kpi-panel__metrics {
+        @apply mt-auto;
+    }
+
+    .avicore-operario-kpi-panel--stat .avicore-operario-kpi-panel__metric {
+        @apply px-2 py-2.5 sm:px-2.5 sm:py-3;
+    }
+
+    .avicore-operario-kpi-panel--stat .avicore-operario-kpi-panel__value {
+        @apply text-[clamp(1.125rem,4.6vw,1.65rem)] tabular-nums tracking-tight;
+        overflow-wrap: anywhere;
+    }
+
+    .avicore-operario-kpi-panel--stat .avicore-operario-kpi-panel__label {
+        @apply mt-1.5 text-[0.6875rem] leading-snug text-balance sm:mt-2 sm:text-xs;
+    }
+
+    @media (max-width: 359px) {
+        .avicore-operario-kpi-grid--stat {
+            @apply grid-cols-1;
+        }
+    }
+
     .avicore-operario-kpi-panel {
         @apply relative overflow-hidden rounded-[1.35rem] border border-avicore-border/70 bg-avicore-card p-4 shadow-[0_10px_28px_rgba(31,94,59,0.07)];
     }
@@ -559,6 +614,30 @@
 
     .avicore-operario-kpi-panel__head {
         @apply mb-3.5 flex items-center gap-2.5;
+    }
+
+    .avicore-operario-kpi-panel__head--spread {
+        @apply flex-wrap justify-between gap-y-2;
+    }
+
+    .avicore-operario-kpi-panel--pending {
+        @apply border border-dashed border-avicore-border-strong bg-avicore-surface/90 opacity-95;
+    }
+
+    .avicore-operario-kpi-panel--pending::before {
+        content: none;
+    }
+
+    .avicore-operario-kpi-panel--pending .avicore-operario-kpi-panel__value {
+        @apply text-avicore-muted;
+    }
+
+    .avicore-operario-kpi-panel--preview {
+        @apply border border-dashed border-avicore-secondary/35 bg-gradient-to-b from-avicore-soft/50 via-avicore-card to-avicore-card;
+    }
+
+    .avicore-operario-kpi-panel--preview::before {
+        content: none;
     }
 
     .avicore-operario-kpi-panel__title {
@@ -1036,12 +1115,35 @@
         @apply w-full cursor-pointer;
     }
 
+    a.avicore-operario-carga-tile {
+        @apply w-full no-underline;
+    }
+
+    .avicore-operario-filter-chip {
+        @apply rounded-full px-3 py-1.5 text-sm font-medium transition-colors;
+    }
+
+    .avicore-operario-filter-chip--active {
+        @apply bg-avicore-primary text-white;
+    }
+
+    .avicore-operario-filter-chip--idle {
+        @apply bg-avicore-soft text-avicore-text;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .avicore-operario-filter-chip--idle {
+            @apply md:hover:bg-avicore-soft/80;
+        }
+    }
+
     .avicore-operario-carga-tile--action {
         @apply border-2 border-solid border-avicore-primary bg-avicore-card shadow-[0_8px_22px_rgba(31,94,59,0.14)] ring-1 ring-avicore-primary/10;
     }
 
     @media (prefers-reduced-motion: no-preference) {
-        button.avicore-operario-carga-tile--action {
+        button.avicore-operario-carga-tile--action,
+        a.avicore-operario-carga-tile--action {
             @apply transition-[transform,box-shadow,background-color] duration-150 ease-out active:scale-[0.97] active:bg-avicore-soft/55 active:shadow-[0_3px_10px_rgba(31,94,59,0.1)];
         }
     }
@@ -1098,9 +1200,18 @@
     }
 
     .avicore-operario-tab-bar__inner {
-        @apply mx-auto grid max-w-lg grid-cols-3 items-end px-3 pt-2;
+        @apply mx-auto grid max-w-lg items-end px-3 pt-2;
+        grid-template-columns: repeat(var(--avicore-tab-cols, 3), minmax(0, 1fr));
         min-height: 4.75rem;
         padding-bottom: 0.625rem;
+    }
+
+    .avicore-operario-tab-bar__inner[style*="--avicore-tab-cols: 4"] {
+        @apply px-2;
+    }
+
+    .avicore-operario-tab-bar__inner[style*="--avicore-tab-cols: 4"] .avicore-operario-tab-bar__item {
+        @apply px-0.5;
     }
 
     .avicore-operario-tab-bar__item {
@@ -1513,6 +1624,18 @@
 
         .avicore-operario-kpi-grid--duo {
             @apply grid-cols-2 gap-4;
+        }
+
+        .avicore-operario-kpi-grid--teaser {
+            @apply grid-cols-3 gap-4;
+        }
+
+        .avicore-operario-kpi-grid--teaser > :nth-child(3):last-child {
+            @apply col-span-1;
+        }
+
+        .avicore-operario-kpi-grid--stat {
+            @apply grid-cols-4 gap-4;
         }
 
         .avicore-operario-carga-grid--triple {

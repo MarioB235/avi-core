@@ -126,24 +126,116 @@ class AdminHomeServiceTest extends TestCase
         $this->assertSame($user->id, $home->user->id);
         $this->assertSame('Avícola Demo · Encargado', $home->contextLabel);
         $this->assertSame(1, $home->activeUsersCount);
-        $this->assertCount(3, $home->setupItems);
-        $this->assertSame('Granjas', $home->setupItems[0]['label']);
+        $this->assertArrayHasKey('huevos_hoy', $home->operativoTeaser);
+        $this->assertArrayHasKey('muertes_hoy', $home->operativoTeaser);
     }
 
-    public function test_setup_items_include_onboarding_steps(): void
+    public function test_team_preview_items_for_dueno_equipo_module(): void
     {
-        $items = app(AdminHomeService::class)->setupItems();
+        $empresa = Empresa::factory()->create([
+            'nombre' => 'Avícola Demo',
+            'estado' => EmpresaEstado::Activa,
+        ]);
+
+        $dueno = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Dueno,
+            'activo' => true,
+            'must_change_password' => false,
+        ]);
+
+        User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'activo' => true,
+            'must_change_password' => false,
+        ]);
+
+        User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Encargado,
+            'activo' => true,
+            'must_change_password' => false,
+        ]);
+
+        $items = app(AdminHomeService::class)->teamPreviewItems($dueno);
+
+        $this->assertCount(3, $items);
+        $this->assertSame('3', $items[0]['value']);
+        $this->assertSame('1', $items[1]['value']);
+        $this->assertSame('1', $items[2]['value']);
+
+        $this->actingAs($dueno)
+            ->get(route('dueno.equipo.index'))
+            ->assertOk()
+            ->assertSee('Tu gente en AviCore')
+            ->assertSee('Usuarios activos')
+            ->assertSee('Operarios en campo');
+    }
+
+    public function test_dueno_home_has_no_module_shortcuts(): void
+    {
+        $empresa = Empresa::factory()->create([
+            'estado' => EmpresaEstado::Activa,
+        ]);
+
+        $dueno = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Dueno,
+            'must_change_password' => false,
+        ]);
+
+        $this->actingAs($dueno)
+            ->get(route('dueno.home'))
+            ->assertOk()
+            ->assertDontSee('Accesos rápidos')
+            ->assertDontSee('avicore-operario-carga-grid', false);
+    }
+
+    public function test_comercial_module_for_dueno(): void
+    {
+        $empresa = Empresa::factory()->create([
+            'estado' => EmpresaEstado::Activa,
+        ]);
+
+        $dueno = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Dueno,
+            'must_change_password' => false,
+        ]);
+
+        $this->actingAs($dueno)
+            ->get(route('dueno.comercial.index'))
+            ->assertOk()
+            ->assertSee('Clientes y entregas')
+            ->assertSee('Última venta')
+            ->assertSee('Próximamente');
+    }
+
+    public function test_comercial_preview_items_use_plain_language(): void
+    {
+        $items = app(AdminHomeService::class)->comercialPreviewItems();
 
         $labels = array_column($items, 'label');
 
-        $this->assertSame(['Granjas', 'Galpones', 'Usuarios'], $labels);
-        $this->assertSame('Disponible', $items[2]['status']);
+        $this->assertSame(
+            ['Clientes', 'Última venta', 'Pedido de mañana', 'Huevos reservados'],
+            $labels
+        );
+
+        $this->assertSame('$ 48.500', $items[1]['value']);
+        $this->assertSame('1.200 huevos', $items[2]['value']);
+        $this->assertSame('operario-huevo', $items[2]['illustration']);
 
         foreach ($items as $item) {
-            $this->assertArrayHasKey('description', $item);
-            $this->assertArrayHasKey('icon', $item);
-            $this->assertNotSame('', $item['description']);
-            $this->assertNotSame('', $item['icon']);
+            $this->assertArrayHasKey('value', $item);
+            $this->assertArrayHasKey('hint', $item);
+            $this->assertNotSame('', $item['value']);
+            $this->assertNotSame('', $item['hint']);
+            $this->assertTrue(
+                isset($item['icon']) || isset($item['illustration']),
+                'Each commercial item needs icon or illustration'
+            );
         }
     }
 }

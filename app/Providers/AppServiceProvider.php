@@ -6,11 +6,13 @@ use App\Http\View\Composers\AdminHomeComposer;
 use App\Http\View\Composers\AdminLayoutComposer;
 use App\Http\View\Composers\OperarioLayoutComposer;
 use App\Models\Galpon;
+use App\Models\Granja;
 use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\User;
 use App\Models\Vacunacion;
 use App\Policies\GalponPolicy;
+use App\Policies\GranjaPolicy;
 use App\Policies\LotePolicy;
 use App\Policies\RegistroOperativoPolicy;
 use App\Policies\UserPolicy;
@@ -38,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::policy(Granja::class, GranjaPolicy::class);
         Gate::policy(Galpon::class, GalponPolicy::class);
         Gate::policy(Lote::class, LotePolicy::class);
         Gate::policy(RegistroOperativo::class, RegistroOperativoPolicy::class);

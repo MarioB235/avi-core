@@ -5,8 +5,35 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-08-22
+
+- **[test|admin]** Post-auditoría msg 3: `AdminResumenServiceTest` (KPIs agregados, alertas mortalidad, filtros granja/galpón, multiempresa, teaser); `AdminEstructuraTest` ampliado (editar granja/lote, galpón en granja de otra empresa); `AdminResumenTest` (toggle galpón, rechazo galpón ajeno); guard `empresa_id` en `CreateGranjaAction`; `toggleGalpon` valida scope vía `AdminResumenService`. — `estandares-codigo.md`, tests
+- **[docs|negocio]** Dueño §4 alineado a MVP (sin Estructura; Equipo/Comercial); rol Reparto en §1; `GranjaPolicy` §9 sin ruta `/dueno/estructura`. — `permisos.md`
+- **[docs|contexto]** Árbol proyecto: módulos admin (Resumen, Equipo, Comercial, Estructura), Actions `Granja`/`Galpon`/`Lote`, `GranjaPolicy`, `AdminResumenService`, tests admin ampliados. — `arbol-proyecto.md`
+- **[ui|admin]** Inicio Dueño: quitados accesos rápidos (módulos ya en bottom nav). — `home.blade.php`, `AdminHomeService`, tests, `pantallas-flujos.md`
+- **[negocio|ui]** Dueño: módulos **Equipo** (`/dueno/equipo`) y **Comercial** (`/dueno/comercial`) como tabs; Inicio solo KPIs + accesos rápidos. — `UserRole`, `AdminNav`, Livewire Equipo/Comercial, `home.blade.php`, `permisos.md` §11, tests
+- **[negocio|ui]** Dueño sin tab Usuarios: CRUD en Administrativo; bloque Equipo en Inicio (contadores reales); Encargado mantiene ver + reset. — `UserRole`, `AdminHomeService`, `home.blade.php`, `permisos.md` §11, tests
+- **[negocio|ui]** Nav y permisos alineados por rol: Dueño sin tab Estructura; Administrativo CRUD estructura; Encargado ver + lotes; tabla §11 en `permisos.md`. — `UserRole`, `AdminNav`, `AdminEstructuraTest`, `RolePanelModulesTest`
+- **[arquitectura|auth]** Rutas por rol (Opción A): prefijos `/dueno`, `/administrativo`, `/encargado`, `/avicore`, `/reparto`; middleware `EnsureRolePanelAccess`; `/admin/*` legacy redirige; rol `reparto` en enum; nav dinámico por permisos. — `web.php`, `UserRole`, `AdminNav`, `permisos.md` §7, `pantallas-flujos.md`, tests
+
 ## 2026-08-15
 
+- **[ui|admin]** Inicio/Resumen Dueño: grilla KPI `--stat` responsive (1 col &lt;360px, 2×2 móvil, 4 cols lg+); tipografía fluida en `stat-panel`. — `operario.css`, `stat-panel`, `home.blade.php`, `resumen/`, tests
+- **[ui|admin]** Inicio Dueño: quitados badges «Ejemplo»; copy en lenguaje llano (producción de hoy + clientes y entregas). — `home.blade.php`, `stat-panel`, `AdminHomeService`, tests
+- **[ui|admin]** Inicio Dueño: ilustraciones operario en KPIs (`operario-huevo`, `operario-muertes`, `operario-ave`); comercial con números de ejemplo y badge «Ejemplo». — `stat-panel`, `home.blade.php`, `AdminHomeService`, tests
+- **[ui|admin]** Inicio Dueño: quitado checklist onboarding; sección Comercial con 4 tarjetas «Próximamente» (clientes, venta, demanda, reserva); KPIs operativos ampliados a 2×2 (+ muertes hoy). — `AdminHomeService`, `home.blade.php`, `stat-panel`, `section-head`, `plan-desarrollo.md`, tests
+- **[ui|admin]** Inicio Dueño: quitado chip redundante de empresa (ya va en subtítulo); grilla KPI `--teaser` (3.ª tarjeta ancha en móvil, 3 columnas en lg); `stat-panel` métrica a ancho completo; section-head «Indicadores del día». — `home.blade.php`, `stat-panel.blade.php`, `operario.css`, `pantallas-flujos.md` §3.1, `patrones-web-admin.md`, tests
+- **[ui|admin]** Inicio Dueño: quitados tiles «¿Qué querés gestionar?» (duplicaban bottom nav); quedan KPIs + checklist onboarding. — `home.blade.php`, `pantallas-flujos.md` §3.1, `patrones-web-admin.md`, tests
+- **[ui]** Bottom nav unificado: `x-ui.tab-bar` compartido admin/operario; columnas dinámicas; mismos íconos/elevación; eliminado `--cols-4` legacy. — `tab-bar.blade.php`, `MapsNavTabsToTabBar`, `operario.css`, tests
+- **[ui|admin]** Perfil Dueño unificado con operario: `x-operario.perfil-hero` + home-nav; bottom nav 4 columnas; eliminado header legacy en `/perfil`. — `profile/edit.blade.php`, `AdminNav.php`, `operario.css`, `patrones-web-admin.md`, tests
+- **[ui|admin]** Panel Dueño alineado a patrones operario: `x-ui.stat-panel`, `x-ui.action-tile`, `x-ui.section-head`, filter-chips; eliminados estilos `avicore-admin-home-action`. — `home.blade.php`, `resumen/`, `operario.css`, `patrones-web-admin.md`
+- **[feature|admin]** Resumen operativo Dueño: `/admin/resumen` (KPIs día, filtros granja/galpón, alertas mortalidad); tab Resumen en nav; Inicio con teaser operativo. — `AdminResumenService`, `Admin/Resumen/Index`, `AdminHomeService`, `AdminNav`, `pantallas-flujos.md` §3.4, `patrones-web-admin.md`, tests
+- **[docs|negocio]** Panel admin MVP: **Dueño como persona de referencia**; Administrativo comparte permisos sin UI duplicada; guía en `permisos.md` §10, `patrones-web-admin.md`, `demo.md`, `producto.md`, `estrategia-implementacion.md`; hint login demo.
+- **[feature|admin]** CRUD estructura avícola: `/admin/estructura` (granjas + DICOSE, galpones, lotes); migración `dicose`; policies y Actions; tab Estructura en panel. — `Admin/Estructura/Index`, `GranjaPolicy`, `CreateGranjaAction`, `esquema-bd.md`, `pantallas-flujos.md`, `plan-desarrollo.md`
+- **[docs|producto]** Eliminada «carga combinada» del roadmap (no se implementará). — `plan-desarrollo.md`, `pantallas-flujos.md`
+- **[docs|desarrollo]** Plantillas msg 4–5: guía semver manual (cuándo subir tras auditoría, checklist AVICORE_VERSION, acordeón en plantillas-cursor). — `plantillas-cursor.html`, `mensajes-reutilizables.html`, `avicore-cierre-tarea/SKILL.md`
+- **[chore|producto]** Versión semver centralizada (`AVICORE_VERSION`, default `0.1.0-dev`) visible en Perfil junto al build (fecha + commit). — `config/avicore.php`, `AppBuildService.php`, `.env.example`, `AppBuildServiceTest.php`, `pwa.md`, `arbol-proyecto.md`
+- **[ui|operario]** Tiles Cargar: ilustraciones propias `operario-alimento`, `operario-muertes` y `operario-descarte` (silo, ave roja, ave verde); `operario-ave` queda en KPI Inicio y tile Nuevo lote. — `operario-*.svg`, `cargar-hub.blade.php`, `IllustrationComponentTest.php`, `tokens-componentes.md`, `arbol-proyecto.md`
 - **[docs|operario]** Msg 4: alineación post-auditoría — `x-ui.textarea`, trait `AuthorizesOperarioAnulacion`, policies anulación, tests ampliados, perfil `wire:navigate`. — `tokens-componentes.md`, `permisos.md`, `pantallas-flujos.md`, `patrones-mobile-operario.md`, `estandares-codigo.md`, `arbol-proyecto.md`
 - **[test|operario]** Post-auditoría msg 3: tests anulación (vacunación, descarte, ya anulado, encargado ajeno), multiempresa alimento/descarte; policies unificadas; `x-ui.textarea` en historial. — `AuthorizesOperarioAnulacion`, `OperarioHistorialTest.php`, `OperarioCargaAlimentoTest.php`, `OperarioCargaDescarteTest.php`, `historial-detalle-dialog.blade.php`, `textarea.blade.php`
 - **[docs|operario]** CHANGELOG: aclarado que perfil operario usa `wire:navigate` (entradas `wire:click` quedaron obsoletas). — `CHANGELOG.md`

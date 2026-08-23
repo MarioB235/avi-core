@@ -82,7 +82,7 @@ class PwaInstallPromptTest extends TestCase
 
         $response = $this->withPwaEnabled(installPrompt: true)
             ->actingAs($dueno)
-            ->get(route('admin.home'))
+            ->get(route('dueno.home'))
             ->assertOk();
 
         $this->assertPwaMetaAndInstallPrompt($response);
@@ -124,7 +124,7 @@ class PwaInstallPromptTest extends TestCase
 
         $response = $this->withPwaEnabled(enabled: true, installPrompt: false)
             ->actingAs($dueno)
-            ->get(route('admin.home'))
+            ->get(route('dueno.home'))
             ->assertOk();
 
         $this->assertPwaMeta($response);
