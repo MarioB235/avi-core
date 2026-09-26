@@ -12,4 +12,13 @@ enum EmpresaEstado: string
     {
         return $this === self::Activa;
     }
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::Activa => 'Activa',
+            self::Suspendida => 'Suspendida',
+            self::Inactiva => 'Inactiva',
+        };
+    }
 }

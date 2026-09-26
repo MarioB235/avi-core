@@ -62,7 +62,21 @@ class Galpon extends Model
     {
         return $query
             ->where('activo', true)
-            ->where('estado', GalponEstado::Activo->value);
+            ->where('estado', GalponEstado::Activo->value)
+            ->whereHas('granja', fn (Builder $granja): Builder => $granja->where('activa', true));
+    }
+
+    public function disponibleParaCargaOperativa(): bool
+    {
+        if (! $this->activo || ! $this->estado->permiteCarga()) {
+            return false;
+        }
+
+        if ($this->relationLoaded('granja')) {
+            return $this->granja->activa;
+        }
+
+        return $this->granja()->where('activa', true)->exists();
     }
 
     public function displayName(): string

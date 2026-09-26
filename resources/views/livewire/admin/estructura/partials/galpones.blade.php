@@ -57,12 +57,21 @@
                                         <p class="text-xs text-avicore-muted">{{ $galpon->codigo }}</p>
                                     @endif
                                 </td>
-                                <td class="hidden md:table-cell text-avicore-muted">{{ $galpon->granja->nombre }}</td>
+                                <td class="hidden md:table-cell text-avicore-muted">
+                                    {{ $galpon->granja->nombre }}
+                                    @unless ($galpon->granja->activa)
+                                        <x-ui.badge variant="neutral" class="ml-1">Granja inactiva</x-ui.badge>
+                                    @endunless
+                                </td>
                                 <td class="text-avicore-muted">{{ number_format($galpon->aves_actuales, 0, ',', '.') }}</td>
                                 <td>
-                                    <x-ui.badge variant="{{ $galpon->activo && $galpon->estado->permiteCarga() ? 'success' : 'neutral' }}">
-                                        {{ $galpon->estado->label() }}
-                                    </x-ui.badge>
+                                    @if ($galpon->disponibleParaCargaOperativa())
+                                        <x-ui.badge variant="success">{{ $galpon->estado->label() }}</x-ui.badge>
+                                    @else
+                                        <x-ui.badge variant="neutral" title="No disponible para carga operativa">
+                                            {{ $galpon->estado->label() }}
+                                        </x-ui.badge>
+                                    @endif
                                 </td>
                                 @if ($canManageEstructura)
                                     <td class="text-right">

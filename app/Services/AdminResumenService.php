@@ -17,11 +17,19 @@ class AdminResumenService
     public function __construct(
         private OperarioGalponResumenService $galponResumen,
         private EmpresaScopeService $empresaScope,
+        private EmpresaContextService $empresaContext,
+        private SoporteEmpresaService $soporte,
     ) {}
 
     public function for(User $user, ?int $granjaId = null, ?int $galponId = null): AdminResumenViewData
     {
-        if ($user->empresa_id === null || ! $user->rol->canViewResumen()) {
+        if (! $this->soporte->canViewResumenOperativo($user)) {
+            return $this->resumenVacio();
+        }
+
+        $empresaId = $this->empresaContext->empresaIdFor($user);
+
+        if ($empresaId === null) {
             return $this->resumenVacio();
         }
 
@@ -29,11 +37,11 @@ class AdminResumenService
         $galponIds = $galpones->modelKeys();
 
         /** @var array<int, float> $alimentoPorGalpon */
-        $alimentoPorGalpon = $galponIds === [] || $user->empresa_id === null
+        $alimentoPorGalpon = $galponIds === []
             ? []
             : RegistroOperativo::query()
                 ->activos()
-                ->where('empresa_id', $user->empresa_id)
+                ->where('empresa_id', $empresaId)
                 ->where('tipo', RegistroOperativoTipo::Alimento)
                 ->whereIn('galpon_id', $galponIds)
                 ->delDia()
@@ -110,7 +118,13 @@ class AdminResumenService
      */
     public function pulsoFor(User $user): array
     {
-        if ($user->empresa_id === null || ! $user->rol->canViewResumen()) {
+        if (! $this->soporte->canViewResumenOperativo($user)) {
+            return $this->pulsoVacio();
+        }
+
+        $empresaId = $this->empresaContext->empresaIdFor($user);
+
+        if ($empresaId === null) {
             return $this->pulsoVacio();
         }
 
@@ -122,7 +136,7 @@ class AdminResumenService
             ? []
             : RegistroOperativo::query()
                 ->activos()
-                ->where('empresa_id', $user->empresa_id)
+                ->where('empresa_id', $empresaId)
                 ->whereIn('galpon_id', $galponIds)
                 ->delDia()
                 ->distinct()
@@ -156,7 +170,7 @@ class AdminResumenService
             ? 0
             : (int) RegistroOperativo::query()
                 ->activos()
-                ->where('empresa_id', $user->empresa_id)
+                ->where('empresa_id', $empresaId)
                 ->where('tipo', RegistroOperativoTipo::Huevos)
                 ->whereIn('galpon_id', $galponIds)
                 ->whereDate('created_at', now()->subDay())
@@ -198,7 +212,7 @@ class AdminResumenService
      */
     public function teaserFor(User $user): array
     {
-        if ($user->empresa_id === null || ! $user->rol->canViewResumen()) {
+        if (! $this->soporte->canViewResumenOperativo($user)) {
             return [
                 'huevos_hoy' => 0,
                 'muertes_hoy' => 0,
@@ -222,12 +236,14 @@ class AdminResumenService
      */
     public function granjasParaFiltro(User $user): Collection
     {
-        if ($user->empresa_id === null) {
+        $empresaId = $this->empresaContext->empresaIdFor($user);
+
+        if ($empresaId === null) {
             return new Collection;
         }
 
         return Granja::query()
-            ->where('empresa_id', $user->empresa_id)
+            ->where('empresa_id', $empresaId)
             ->where('activa', true)
             ->orderBy('nombre')
             ->get(['id', 'nombre', 'dicose']);
@@ -248,7 +264,9 @@ class AdminResumenService
      */
     public function posturaSemanal(User $user, ?int $granjaId = null, ?int $galponId = null): array
     {
-        if ($user->empresa_id === null) {
+        $empresaId = $this->empresaContext->empresaIdFor($user);
+
+        if ($empresaId === null) {
             return $this->posturaSemanalVacia();
         }
 
@@ -263,7 +281,7 @@ class AdminResumenService
         /** @var array<string, int|string> $totalesPorFecha */
         $totalesPorFecha = RegistroOperativo::query()
             ->activos()
-            ->where('empresa_id', $user->empresa_id)
+            ->where('empresa_id', $empresaId)
             ->where('tipo', RegistroOperativoTipo::Huevos)
             ->whereIn('galpon_id', $galponIds)
             ->where('created_at', '>=', $inicio)
@@ -325,13 +343,13 @@ class AdminResumenService
 
     private function galponesEnScope(User $user, ?int $granjaId, ?int $galponId): Collection
     {
-        if ($user->empresa_id === null) {
+        if ($this->empresaContext->empresaIdFor($user) === null) {
             return new Collection;
         }
 
         $query = Galpon::query()
             ->with('granja')
-            ->where('activo', true)
+            ->disponiblesParaCarga()
             ->orderBy('nombre');
 
         $query = $this->empresaScope->constrainQuery($query, $user);

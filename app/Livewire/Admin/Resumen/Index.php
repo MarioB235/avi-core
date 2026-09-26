@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Resumen;
 use App\Livewire\Concerns\RequiresAdminModuleAccess;
 use App\Models\User;
 use App\Services\AdminResumenService;
+use App\Services\SoporteEmpresaService;
 use App\Support\HuevosUnidad;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
@@ -27,6 +28,19 @@ class Index extends Component
     protected function requiredAdminModuleAbility(): string
     {
         return 'admin.viewResumen';
+    }
+
+    public function mount(SoporteEmpresaService $soporte): void
+    {
+        $this->authorizeAdminModule();
+
+        $user = auth()->user();
+
+        if ($user instanceof User && $user->isAdminAvicore() && $soporte->isActive()) {
+            $soporte->recordAccionForActiveSession('consulta_resumen', [
+                'ruta' => $soporte->entryRouteName(),
+            ]);
+        }
     }
 
     public function updatedFiltroGranjaId(): void
@@ -54,6 +68,9 @@ class Index extends Component
         $resumen = $adminResumen->for($user, $granjaId, $galponId);
         $posturaSemanal = $adminResumen->posturaSemanal($user, $granjaId, $galponId);
 
+        $user->loadMissing('empresa');
+        $unidades = HuevosUnidad::para($user->empresa);
+
         $granjasOptions = $granjas
             ->mapWithKeys(fn ($granja): array => [
                 (string) $granja->id => $granja->dicose
@@ -75,8 +92,9 @@ class Index extends Component
             'galponesOptions' => $galponesOptions,
             'galponesFiltro' => $galponesFiltro,
             'mortalidadReferencia' => AdminResumenService::MORTALIDAD_REFERENCIA_PCT,
-            'huevosHoyUnidades' => HuevosUnidad::etiquetaSoloCajasMaples($resumen->huevosHoy),
-            'maplesHoy' => HuevosUnidad::maplesDesdeHuevos($resumen->huevosHoy),
+            'huevosHoyUnidades' => $unidades->etiquetaSoloCajasMaples($resumen->huevosHoy),
+            'maplesHoy' => $unidades->maplesDesdeHuevos($resumen->huevosHoy),
+            'huevosHoyDesglose' => $unidades->desgloseDesdeHuevos($resumen->huevosHoy),
         ]);
     }
 }

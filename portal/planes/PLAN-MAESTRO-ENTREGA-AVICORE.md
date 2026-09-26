@@ -183,23 +183,23 @@ Pruebas: PostgreSQL, Feature/Livewire y navegador con página abierta. Render po
 
 Base: `app/Models/Empresa.php`, EmpresaContextService y UserPolicy. Crear pantallas/Actions faltantes tras verificar inventario. Depende de SEG.
 
-- [ ] **EMP-01 — Alta de empresa real.** Nombre, identificador, estado y administrador inicial en transacción. Éxito: operar empresa vacía sin seed demo.
-- [ ] **EMP-02 — Activar/suspender/reactivar.** Motivo, actor, fecha y efectos sobre sesiones/tareas. Éxito: suspensión bloquea según SEG-02 sin borrar historia.
-- [ ] **EMP-03 — Configuración mínima.** Nombre/logo, zona horaria y unidades; reutilizar `empresas.configuracion` si basta. Éxito: no añadir tabla genérica sin necesidad.
-- [ ] **EMP-04 — Unidades consistentes.** Huevo base, maple 30, cajón acordado por empresa y sobrantes visibles. Éxito: pantalla/export calculan igual sin perder huevos.
-- [ ] **EMP-05 — Onboarding corto.** Empresa → administrador → granja → galpón → lote/saldo inicial → operario. Éxito: faltantes accionables sin pasos comerciales.
-- [ ] **EMP-06 — Soporte auditado.** Empresa, motivo, actor, inicio/fin, caducidad, permisos mínimos y banner. Éxito: contexto no da acceso silencioso a producción.
-- [ ] **EMP-07 — Salida de soporte.** Limpiar override al finalizar/logout, validar destino y registrar acciones. Éxito: contexto A no contamina B.
-- [ ] **EMP-08 — Datos personales.** Finalidad/acceso/retención acordada, minimizar documento en vistas/export. Éxito: inventario y política verificable; no afirmar cumplimiento legal sin validación.
+- [x] **EMP-01 — Alta de empresa real.** Nombre, identificador, estado y administrador inicial en transacción. Éxito: operar empresa vacía sin seed demo.
+- [x] **EMP-02 — Activar/suspender/reactivar.** Motivo, actor, fecha y efectos sobre sesiones/tareas. Éxito: suspensión bloquea según SEG-02 sin borrar historia.
+- [x] **EMP-03 — Configuración mínima.** Nombre/logo, zona horaria y unidades; reutilizar `empresas.configuracion` si basta. Éxito: no añadir tabla genérica sin necesidad.
+- [x] **EMP-04 — Unidades consistentes.** Huevo base, maple 30, cajón acordado por empresa y sobrantes visibles. Éxito: pantalla/export calculan igual sin perder huevos.
+- [x] **EMP-05 — Onboarding corto.** Empresa → administrador → granja → galpón → lote/saldo inicial → operario. Éxito: faltantes accionables sin pasos comerciales.
+- [x] **EMP-06 — Soporte auditado.** Empresa, motivo, actor, inicio/fin, caducidad, permisos mínimos y banner. Éxito: contexto no da acceso silencioso a producción.
+- [x] **EMP-07 — Salida de soporte.** Limpiar override al finalizar/logout, validar destino y registrar acciones. Éxito: contexto A no contamina B.
+- [x] **EMP-08 — Datos personales.** Finalidad/acceso/retención acordada, minimizar documento en vistas/export. Éxito: inventario y política verificable; no afirmar cumplimiento legal sin validación.
 
 ## 10. EST — Estructura avícola y lotes
 
 Base: Livewire Admin/Estructura, Actions Granja/Galpon/Lote, policies y migraciones. Depende de SEG. No rehacer CRUD existente.
 
-- [ ] **EST-01 — Granjas completas.** Alta/edición, DICOSE texto, unicidad según regla, estado y datos mínimos. Éxito: duplicados/inconsistencias rechazados con mensajes útiles.
-- [ ] **EST-02 — Galpones completos.** Granja de misma empresa, código/nombre, disponibilidad y estados. Éxito: inactivo/mantenimiento no acepta carga y sigue en historia.
-- [ ] **EST-03 — Jerarquía de estados.** Definir efecto de granja inactiva sobre galpones. Éxito: no operar hijos por ruta alternativa cuando el contrato lo prohíbe.
-- [ ] **EST-04 — Alta de lote autorizada.** Código único, SMA opcional, fechas, población inicial y tipo. Éxito: operario sin permiso no crea; múltiples tipos generan lotes coherentes.
+- [x] **EST-01 — Granjas completas.** Alta/edición, DICOSE texto, unicidad según regla, estado y datos mínimos. Éxito: duplicados/inconsistencias rechazados con mensajes útiles.
+- [x] **EST-02 — Galpones completos.** Granja de misma empresa, código/nombre, disponibilidad y estados. Éxito: inactivo/mantenimiento no acepta carga y sigue en historia.
+- [x] **EST-03 — Jerarquía de estados.** Definir efecto de granja inactiva sobre galpones. Éxito: no operar hijos por ruta alternativa cuando el contrato lo prohíbe.
+- [x] **EST-04 — Alta de lote autorizada.** Código único, SMA opcional, fechas, población inicial y tipo. Éxito: operario sin permiso no crea; múltiples tipos generan lotes coherentes.
 - [ ] **EST-05 — Validación en Action.** Fechas futuras/nacimiento posterior a ingreso, tipos inválidos, cantidades y concurrencia. Éxito: llamada fuera de UI no evade reglas ni duplica código.
 - [ ] **EST-06 — Separar edición/transición.** UpdateLoteAction no cambia estado crítico sin delegar al circuito controlado. Éxito: no reabrir desde formulario genérico sin motivo/auditoría.
 - [ ] **EST-07 — Listados útiles.** Búsqueda y filtros granja/galpón/lote/estado/tipo, paginación. Éxito: conservan empresa y explican indisponibilidad.

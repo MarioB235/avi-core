@@ -6,7 +6,6 @@ use App\Enums\LoteEstado;
 use App\Models\Galpon;
 use App\Models\Lote;
 use App\Models\RegistroOperativo;
-use App\Support\HuevosUnidad;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
@@ -62,11 +61,6 @@ class OperarioGalponResumenService
         return (int) $lote->fecha_nacimiento->diffInWeeks(now());
     }
 
-    public function maplesDesdeHuevos(int $huevos): int
-    {
-        return HuevosUnidad::maplesDesdeHuevos($huevos);
-    }
-
     /**
      * @return array{
      *     aves_actuales: int,
@@ -90,6 +84,8 @@ class OperarioGalponResumenService
         $lotes = $this->lotesActivos($galpon);
         $fechaInicio = $this->fechaInicioVentana($lotes);
 
+        $unidades = $this->unidadesPara($galpon);
+
         $totalesHoy = $this->sumarTotales(
             $this->registrosGalpon($galpon)->delDia(),
         );
@@ -104,12 +100,13 @@ class OperarioGalponResumenService
             'aves_actuales' => (int) $galpon->aves_actuales,
             'huevos_hoy' => $totalesHoy['huevos'],
             'huevos_descarte_hoy' => $totalesHoy['huevos_descarte'],
-            'maples_hoy' => $this->maplesDesdeHuevos($totalesHoy['huevos']),
+            'maples_hoy' => $unidades->maplesDesdeHuevos($totalesHoy['huevos']),
             'muertes_hoy' => $totalesHoy['muertes'],
             'descarte_aves_hoy' => $totalesHoy['descarte_aves'],
             'huevos_acumulados' => $totalesAcumulados['huevos'],
             'huevos_descarte_acumulados' => $totalesAcumulados['huevos_descarte'],
-            'maples_acumulados' => $this->maplesDesdeHuevos($totalesAcumulados['huevos']),
+            'maples_acumulados' => $unidades->maplesDesdeHuevos($totalesAcumulados['huevos']),
+            'huevos_hoy_desglose' => $unidades->desgloseDesdeHuevos($totalesHoy['huevos']),
             'muertes_acumuladas' => $totalesAcumulados['muertes'],
             'descarte_aves_acumuladas' => $totalesAcumulados['descarte_aves'],
             'lotes' => $lotes,
@@ -160,5 +157,12 @@ class OperarioGalponResumenService
             ->forEmpresa((int) $galpon->empresa_id)
             ->where('galpon_id', $galpon->id)
             ->activos();
+    }
+
+    private function unidadesPara(Galpon $galpon): EmpresaHuevosUnidad
+    {
+        $galpon->loadMissing('empresa');
+
+        return EmpresaHuevosUnidad::for($galpon->empresa);
     }
 }

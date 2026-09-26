@@ -69,21 +69,22 @@ Toda consulta debe filtrar por empresa_id salvo Admin AviCore en modo soporte.
 
 Implementado (Bloque 2):
 
-- **`EmpresaContextService`:** resuelve `empresa_id` de la sesión; Admin AviCore puede override en sesión (`avicore.empresa_context_id`) validando que la empresa exista (modo soporte futuro).
+- **`EmpresaContextService`:** `empresaId()` / `empresaIdFor($user)` — usuarios de empresa usan `users.empresa_id`; Admin AviCore solo con `SoporteEmpresaService` activo (`avicore.soporte_sesion_id` → `soporte_sesiones`).
+- **`SoporteEmpresaService`:** sesión auditada, caducidad, banner, `canViewResumenOperativo()`, `blocksProductionMutations()`; Actions `StartSoporteEmpresaAction` / `EndSoporteEmpresaAction`.
 - **Login:** `LoginCandidateResolver` (documento + contraseña + vigencia) y `AccountAccessService` (`activo` + `Empresa::permiteLogin()`); sin selector de empresa en MVP.
 - **Sesiones:** `UserSessionService` invalida filas en `sessions` al resetear clave, cambiar contraseña o desactivar usuario; requiere `SESSION_DRIVER=database` (detalle en `arranque-local.md`; con `file` no-op documentado).
 - **Middleware auth:** `EnsurePasswordChanged`, `EnsureRolePanelAccess`, `EnsureOperarioAccess`, `RedirectIfAuthenticated`.
 - **Vigencia por request:** `EnsureAccountVigente` (grupo `web`, incluye `POST /livewire/update`) revalida usuario y empresa; si falla, cierra sesión sin mutar datos. Refresca usuario en cada request.
 - **Rol y clave en Livewire:** `EnsurePasswordChanged`, `EnsureOperarioAccess` y `EnsureRolePanelAccess` registrados como middleware persistente Livewire para que snapshot abierto no evite restricciones tras cambio de rol o reset de contraseña.
 - **Autorización por request Livewire:** `AdminModulePolicy` + Gates `admin.viewResumen|Equipo|Comercial` y trait `RequiresAdminModuleAccess` (`mount` + `hydrate`) en Resumen/Equipo/Comercial; `UserPolicy` / `GranjaPolicy` / … en Usuarios/Estructura; operario usa `LotePolicy::create` en `ManagesLoteForm`; `authorize()` explícito en mutaciones sensibles.
-- **Scope por empresa:** `EmpresaScopeService` (+ `AdminResumenService::galponesEnScope`) y trait `BelongsToEmpresa::forEmpresa()`; `EmpresaContextService` para override Admin AviCore (soporte futuro).
+- **Scope por empresa:** `EmpresaScopeService` (+ `AdminResumenService::galponesEnScope`) y trait `BelongsToEmpresa::forEmpresa()`; Admin AviCore sin soporte → consultas operativas vacías (`whereRaw('1=0')`); excepciones: `empresas`, `users`, `soporte_sesiones`.
 - **Coherencia padre/hijo:** `EmpresaRelationalGuard` en Actions transaccionales (granja→galpón, galpón→lote, actor→recurso).
 
 En módulos operativos (galpones, lotes, registros): policies y scope por `empresa_id` en consultas y Actions — ver [`permisos.md`](../../avicore-negocio/references/permisos.md).
 
-Pendiente para v1 (plan SEG/EMP):
+Pendiente para v1 (plan EST):
 
-- Circuito completo de empresas y modo soporte auditado.
+- EST-02 en adelante: galpones, lotes y jerarquía de estados (EST-01 granjas cerrada).
 
 ---
 

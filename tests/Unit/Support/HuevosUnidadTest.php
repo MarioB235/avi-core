@@ -45,5 +45,7 @@ class HuevosUnidadTest extends TestCase
     {
         $this->assertSame('3 cajas + 4 maples', HuevosUnidad::etiquetaSoloCajasMaples(1200));
         $this->assertSame('12 cajas', HuevosUnidad::etiquetaSoloCajasMaples(4320));
+        $this->assertSame('2 maples + 5 huevos sueltos', HuevosUnidad::etiquetaSoloCajasMaples(65));
+        $this->assertSame('3 cajas + 4 maples + 15 huevos sueltos', HuevosUnidad::etiquetaSoloCajasMaples(1215));
     }
 }

@@ -10,6 +10,7 @@ use App\Models\Lote;
 use App\Models\User;
 use App\Models\Vacunacion;
 use App\Services\EmpresaRelationalGuard;
+use App\Support\GalponValidacion;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
@@ -30,11 +31,7 @@ class RegistrarVacunacionAction
         $this->relations->assertLoteOfActor($user, $lote);
         $this->relations->assertLoteBelongsToGalpon($lote, $galpon);
 
-        if (! $galpon->estado->permiteCarga() || ! $galpon->activo) {
-            throw ValidationException::withMessages([
-                'galpon_id' => 'El galpón no está disponible para carga.',
-            ]);
-        }
+        GalponValidacion::assertDisponibleParaCarga($galpon);
 
         if (! in_array($lote->estado, [LoteEstado::Activo, LoteEstado::EnProduccion], true)) {
             throw ValidationException::withMessages([

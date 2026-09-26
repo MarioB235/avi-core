@@ -2,13 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Empresa;
 use App\Models\User;
-use InvalidArgumentException;
 
 class EmpresaContextService
 {
-    private const SESSION_KEY = 'avicore.empresa_context_id';
+    public function __construct(private SoporteEmpresaService $soporte) {}
 
     public function empresaId(): ?int
     {
@@ -18,39 +16,26 @@ class EmpresaContextService
             return null;
         }
 
-        if ($user->isAdminAvicore()) {
-            $override = session(self::SESSION_KEY);
+        return $this->empresaIdFor($user);
+    }
 
-            if ($override !== null) {
-                return (int) $override;
+    public function empresaIdFor(User $user): ?int
+    {
+        if ($user->isAdminAvicore()) {
+            $authUser = auth()->user();
+
+            if ($authUser instanceof User && $authUser->id === $user->id) {
+                return $this->soporte->empresaId();
             }
+
+            return null;
         }
 
         return $user->empresa_id;
     }
 
-    /**
-     * Override de soporte para Admin AviCore (modo multiempresa futuro).
-     * Solo acepta null (limpiar) o un id de empresa existente.
-     */
-    public function setEmpresaId(?int $empresaId): void
+    public function isSupportMode(): bool
     {
-        $user = auth()->user();
-
-        if (! $user instanceof User || ! $user->isAdminAvicore()) {
-            return;
-        }
-
-        if ($empresaId === null) {
-            session()->forget(self::SESSION_KEY);
-
-            return;
-        }
-
-        if (! Empresa::query()->whereKey($empresaId)->exists()) {
-            throw new InvalidArgumentException("Empresa inexistente: {$empresaId}");
-        }
-
-        session([self::SESSION_KEY => $empresaId]);
+        return $this->soporte->isActive();
     }
 }

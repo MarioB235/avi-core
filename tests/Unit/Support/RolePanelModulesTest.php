@@ -50,7 +50,7 @@ class RolePanelModulesTest extends TestCase
         );
 
         $this->assertSame(
-            ['Inicio', 'Usuarios'],
+            ['Inicio', 'Empresas', 'Usuarios'],
             collect(AdminNav::tabs($adminAvicore))->pluck('label')->all(),
         );
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EmpresaEstado;
+use App\Support\EmpresaConfiguracion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -49,5 +50,31 @@ class Empresa extends Model
     public function permiteLogin(): bool
     {
         return $this->estado->permiteLogin();
+    }
+
+    /**
+     * @return list<array{estado_anterior: string, estado_nuevo: string, motivo: string, actor_id: int, actor_name: string, fecha: string}>
+     */
+    public function estadoHistorial(): array
+    {
+        $historial = $this->configuracion['estado_historial'] ?? [];
+
+        return is_array($historial) ? $historial : [];
+    }
+
+    public function ultimoCambioEstado(): ?array
+    {
+        $historial = $this->estadoHistorial();
+
+        if ($historial === []) {
+            return null;
+        }
+
+        return $historial[array_key_last($historial)];
+    }
+
+    public function configuracionOperativa(): EmpresaConfiguracion
+    {
+        return EmpresaConfiguracion::fromEmpresa($this);
     }
 }

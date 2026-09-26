@@ -1,11 +1,13 @@
 <?php
 
+use App\Actions\Empresa\EndSoporteEmpresaAction;
 use App\Enums\UserRole;
 use App\Http\Middleware\EnsureOperarioAccess;
 use App\Http\Middleware\EnsurePasswordChanged;
 use App\Http\Middleware\EnsureRolePanelAccess;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Livewire\Admin\Comercial\Index as AdminComercialIndex;
+use App\Livewire\Admin\Empresas\Index as AdminEmpresasIndex;
 use App\Livewire\Admin\Equipo\Index as AdminEquipoIndex;
 use App\Livewire\Admin\Estructura\Index as AdminEstructuraIndex;
 use App\Livewire\Admin\Resumen\Index as AdminResumenIndex;
@@ -22,6 +24,7 @@ use App\Livewire\Operario\CargaVacunacion;
 use App\Livewire\Operario\Historial;
 use App\Livewire\Operario\Home as OperarioHome;
 use App\Livewire\Profile\Edit as ProfileEdit;
+use App\Services\SoporteEmpresaService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +32,13 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::livewire('/login', Login::class)->name('login');
 });
 
-Route::post('/logout', function () {
+Route::post('/logout', function (EndSoporteEmpresaAction $endSoporte) {
+    $user = Auth::user();
+
+    if ($user !== null) {
+        $endSoporte->execute($user, 'logout');
+    }
+
     Auth::logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
@@ -40,6 +49,27 @@ Route::post('/logout', function () {
 Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
     Route::livewire('/password/change', ChangePassword::class)->name('password.change');
     Route::livewire('/perfil', ProfileEdit::class)->name('profile.edit');
+
+    Route::post('/avicore/soporte/finalizar', function (EndSoporteEmpresaAction $endSoporte) {
+        $user = Auth::user();
+
+        if ($user === null || ! $user->isAdminAvicore()) {
+            abort(403);
+        }
+
+        $endSoporte->execute($user, 'manual');
+
+        $destino = request()->string('destino')->toString();
+        $routeName = app(SoporteEmpresaService::class)->resolveExitRoute(
+            $destino !== '' ? $destino : null
+        );
+
+        return redirect()
+            ->route($routeName)
+            ->with('status', 'soporte-finalizado');
+    })
+        ->middleware(EnsureRolePanelAccess::class.':avicore')
+        ->name('avicore.soporte.finalizar');
 
     foreach ([
         UserRole::Dueno,
@@ -58,6 +88,7 @@ Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
                 Route::livewire('/equipo', AdminEquipoIndex::class)->name('equipo.index');
                 Route::livewire('/comercial', AdminComercialIndex::class)->name('comercial.index');
                 Route::livewire('/usuarios', AdminUsuariosIndex::class)->name('usuarios.index');
+                Route::livewire('/empresas', AdminEmpresasIndex::class)->name('empresas.index');
                 Route::livewire('/estructura', AdminEstructuraIndex::class)->name('estructura.index');
             });
     }

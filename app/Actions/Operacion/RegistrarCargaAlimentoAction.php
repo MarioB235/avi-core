@@ -8,6 +8,7 @@ use App\Models\Galpon;
 use App\Models\RegistroOperativo;
 use App\Models\User;
 use App\Services\EmpresaRelationalGuard;
+use App\Support\GalponValidacion;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
@@ -21,11 +22,7 @@ class RegistrarCargaAlimentoAction
 
         $this->relations->assertGalponOfActor($user, $galpon);
 
-        if (! $galpon->estado->permiteCarga() || ! $galpon->activo) {
-            throw ValidationException::withMessages([
-                'galpon_id' => 'El galpón no está disponible para carga.',
-            ]);
-        }
+        GalponValidacion::assertDisponibleParaCarga($galpon);
 
         if ($alimentoKg <= 0) {
             throw ValidationException::withMessages([

@@ -6,13 +6,13 @@ use App\Models\Galpon;
 use App\Models\RegistroOperativo;
 use App\Models\User;
 use App\Models\Vacunacion;
+use App\Support\GalponValidacion;
 use App\Support\OperarioHistorialItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\ValidationException;
 
 class OperarioGalponService
 {
@@ -95,11 +95,7 @@ class OperarioGalponService
 
         app(EmpresaRelationalGuard::class)->assertGalponOfActor($user, $galpon);
 
-        if (! $galpon->estado->permiteCarga() || ! $galpon->activo) {
-            throw ValidationException::withMessages([
-                'galpon_id' => 'El galpón seleccionado no está disponible para carga.',
-            ]);
-        }
+        GalponValidacion::assertDisponibleParaCarga($galpon);
 
         $user->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
 

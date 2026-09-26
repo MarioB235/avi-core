@@ -5,7 +5,13 @@
 1. Cada empresa ve solamente sus datos.
 2. Toda tabla operativa debe tener empresa_id.
 3. El Admin AviCore no accede libremente a datos productivos reales.
-4. El modo soporte requiere motivo y auditoría.
+4. El modo soporte requiere motivo y auditoría (EMP-06): solo Admin AviCore; `StartSoporteEmpresaAction` crea `soporte_sesiones` (empresa, actor, motivo, inicio, caducidad) y guarda `avicore.soporte_sesion_id` en sesión. Sin soporte activo el admin no ve Resumen ni datos operativos de clientes (`EmpresaScopeService` → `1=0`). Con soporte: banner visible, lectura operativa y **sin** mutaciones productivas (`LotePolicy` + `SoporteEmpresaService::blocksProductionMutations`). Salida manual (`POST avicore/soporte/finalizar`) o logout; caducidad automática al expirar `expires_at`.
+5. **Alta de empresa real (EMP-01):** solo Admin AviCore; `CreateEmpresaAction` crea en una transacción la fila `empresas` (nombre, `codigo` único en mayúsculas, estado) y un Dueño inicial con contraseña temporal. La empresa queda operable vacía (sin seed demo).
+6. **Cambio de estado de empresa (EMP-02):** solo Admin AviCore; `UpdateEmpresaEstadoAction` exige motivo (mín. 5 caracteres), registra historial en `configuracion.estado_historial` (estado anterior/nuevo, actor, fecha) y, si el nuevo estado no permite login, invalida sesiones de todos los usuarios de esa empresa. No se borra historia operativa. La empresa demo (`DEMO`) está protegida.
+7. **Configuración mínima de empresa (EMP-03):** solo Admin AviCore; `UpdateEmpresaConfiguracionAction` actualiza nombre, logo (`logo_path` bajo `empresas/logos/`), `zona_horaria` y unidades en `configuracion` sin tabla nueva. Defaults: `America/Montevideo`, 30 huevos/maple, 12 maples/cajón. `EmpresaHuevosUnidad` consume esas unidades (base para EMP-04).
+8. **Onboarding corto (EMP-05):** `EmpresaOnboardingService` evalúa 6 pasos por empresa (activa, administrador dueño/administrativo, granja, galpón, lote/saldo inicial, operario). Se muestra en Inicio admin a Dueño/Administrativo/Encargado mientras haya pendientes; enlaces según permisos (Estructura, Usuarios o `operario/cargar?form=lote`). Sin pasos comerciales.
+9. **Salida de soporte (EMP-07):** al finalizar (`POST avicore/soporte/finalizar`), logout o caducidad se limpia `avicore.soporte_sesion_id` y se registra `fin` en `soporte_sesiones.acciones` con `reason` (`manual`, `logout`, `expired`, `replaced`). Destinos de salida permitidos en `config/avicore.php` (`destinos_salida`); destino inválido → `avicore.empresas.index`. Al abrir soporte en otra empresa se cierra la sesión previa (`replaced`) para que el contexto A no contamine B. Acciones auditadas: `inicio`, `consulta_resumen`, `fin`.
+10. **Datos personales (EMP-08):** inventario y política operativa en `datos-personales.md` (sin afirmar cumplimiento legal). `DatosPersonales` + `x-ui.documento-label` enmascaran documento en listados de solo lectura (Equipo); gestión de Usuarios y perfil propio muestran documento completo según rol. Exportaciones futuras deben usar el mismo helper.
 
 ---
 
@@ -29,7 +35,18 @@
 
 ---
 
-## 3. Galpones
+## 3. Granjas (EST-01)
+
+1. Alta/edición solo **Administrativo** con `empresa_id` (`GranjaPolicy` + `CreateGranjaAction` / `UpdateGranjaAction`).
+2. Datos mínimos: nombre (obligatorio), DICOSE y código interno opcionales, ubicación opcional, estado `activa`.
+3. **DICOSE** texto (números y guiones); único por empresa; se normaliza sin espacios.
+4. **Código interno** único por empresa si se informa.
+5. Validación centralizada en `GranjaValidacion`; errores mapeados al formulario Livewire Estructura.
+6. **Jerarquía (EST-03):** al desactivar una granja, sus galpones pasan a `activo = false` (conservan `estado` e historial). Reactivar la granja **no** reactiva galpones automáticamente.
+
+---
+
+## 4. Galpones
 
 1. La carga operativa se realiza por galpón.
 2. El operario puede elegir cualquier galpón **disponible para carga** de su empresa (`activo` y `estado = activo`).
@@ -38,10 +55,12 @@
 5. Un galpón puede tener uno o varios lotes.
 6. Si tiene varios lotes, se muestra aviso informativo.
 7. El aviso no bloquea la carga.
+8. **Alta/edición admin (EST-02):** `GalponValidacion` — nombre obligatorio, código opcional **único por granja** (`granja_id` + `codigo`), granja de la misma empresa; **alta** solo en granja activa; al pasar a estado distinto de `activo` se sincroniza `activo = false` (bloquea carga, conserva historial).
+9. **Disponibilidad operativa (EST-03):** `Galpon::disponibleParaCargaOperativa()` y `GalponValidacion::assertDisponibleParaCarga()` exigen galpón activo, `estado = activo` y **granja activa**; aplica en selector operario, Actions de carga/lote y resúmenes admin (no se evade por ID directo).
 
 ---
 
-## 4. Lotes
+## 5. Lotes
 
 1. El lote conserva información histórica.
 2. El lote puede trasladarse.
@@ -49,7 +68,7 @@
 4. La reapertura de lote cerrado requiere perfil superior y auditoría.
 5. El tipo de huevo se define en el lote.
 6. No se debe usar solamente fecha de nacimiento como identificador.
-7. **Alta de lote (hub Cargar):** solo perfiles con permiso «Crear lote» (dueño, administrativo, encargado; **no** operario). `fecha_ingreso` = día del registro (hoy). `codigo` generado en servidor: `{codigo_galpon}-{YYYYMMDD}-{B|C}-{secuencia}` (B=blanco, C=color; secuencia por galpón + día + tipo). Índice único `(empresa_id, codigo)`. Si el usuario marca ambos tipos (Blanca y Colorada), se crea **un lote por tipo**. `cantidad_inicial` suma a `aves_actuales` del galpón (transacción + `lockForUpdate`). Estado inicial: `activo`. Validación vía `LotePolicy::create` + `RegistrarLoteAction`.
+7. **Alta de lote (EST-04):** solo perfiles con permiso «Crear lote» (`LotePolicy::create` — dueño, administrativo, encargado; **no** operario). Rutas: hub **Cargar** (`/operario/cargar`, admite dos tipos en un registro) y panel **Estructura → Lotes** (un tipo por alta). `LoteValidacion` centraliza SMA opcional, fecha de nacimiento, cantidades y tipos; `RegistrarLoteAction` genera `codigo` único `{codigo_galpon}-{YYYYMMDD}-{B|C}-{secuencia}`, fija `fecha_ingreso` = hoy, estado `activo` y suma `cantidad_inicial` a `aves_actuales` (transacción + `lockForUpdate`). Galpón debe estar disponible para carga (`GalponValidacion`).
 
 ---
 
@@ -59,10 +78,10 @@
 2. Si hay varios lotes en el galpón, la producción se asigna al galpón completo.
 3. La unidad principal es el huevo.
 4. 1 maple equivale a 30 huevos.
-5. 1 caja equivale a 12 maples (360 huevos) en la convención demo; el cajón es configurable por empresa (`configuraciones_empresa`, post-MVP).
+5. 1 caja/cajón equivale a `maples_por_cajon` maples (por defecto 12); huevo base y maple por empresa en `empresas.configuracion.unidades` (EMP-03/04). Pantallas usan `HuevosUnidad::para($empresa)`; reportes futuros deben usar el mismo resolver.
 6. **Inicio operario — acumulado:** huevos y muertes acumuladas del galpón seleccionado se calculan desde la `fecha_ingreso` más antigua entre lotes con estado `activo` o `en_produccion` del galpón; registros anteriores a esa ventana no cuentan. Sin lotes activos, no hay ventana de acumulado.
 7. **avicore-defer:** objetivo diario por galpón (KPI «Objetivo» en Inicio operario) — pendiente definir meta y umbral por empresa/galpón.
-8. Los reportes del MVP muestran huevos; el panel Dueño también puede mostrar maples y cajas vía `HuevosUnidad`.
+8. Los reportes del MVP muestran huevos; el panel Dueño y operario muestran maples/cajas/sobrantes vía `HuevosUnidad::para($empresa)` (misma lógica que `EmpresaHuevosUnidad`).
 
 ---
 

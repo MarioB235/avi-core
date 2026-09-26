@@ -123,6 +123,7 @@ Landing post-login para roles con panel administrativo (Dueño, Administrativo, 
 
 - Layout: `components/layouts/admin.blade.php` reutiliza clases `avicore-operario-*`; nav `AdminNav` según rol (Dueño: Inicio · Resumen · Equipo · Comercial); menú cuenta `x-ui.user-menu`; PWA (`x-ui.pwa-meta` + banner instalar si `AVICORE_PWA_INSTALL_PROMPT=true`).
 - Hero: saludo horario + subtítulo `{empresa · rol}.`
+- **Primeros pasos (onboarding):** checklist `x-ui.setup-checklist` mientras falte algún paso operativo (granja, galpón, lote, operario, etc.); oculta al completar. Ver `EmpresaOnboardingService`.
 - **Tu empresa:** panorama estructural — granjas y galpones activos (2 KPIs).
 - **Tu empresa hoy (pulso):** estado del día (huevos vs ayer, alertas mortalidad, galpones sin carga), KPIs huevos/muertes hoy con maples/cajas, enlace a Resumen.
 - **Stock y demanda (vista previa):** reserva en cámara, demanda, salida hoy y disponible estimado — **datos ficticios** hasta módulo comercial/stock.
@@ -136,7 +137,7 @@ Cada rol con panel usa su prefijo; las vistas Livewire se comparten hasta tener 
 - **Dueño:** `/dueno`, `/dueno/resumen`, `/dueno/equipo`, `/dueno/comercial` (sin Estructura ni Usuarios)
 - **Administrativo:** `/administrativo` (+ resumen, estructura, usuarios)
 - **Encargado:** `/encargado` (+ resumen, estructura, usuarios limitado)
-- **Admin AviCore:** `/avicore` (+ usuarios; sin resumen/estructura en nav)
+- **Admin AviCore:** `/avicore` (+ empresas, usuarios; tab Resumen solo con sesión de soporte activa)
 - **Reparto:** `/reparto` (stub)
 
 ### Comportamiento
@@ -153,7 +154,7 @@ Tras login exitoso (sin cambio de contraseña pendiente), cada rol llega a su pr
 
 - Resumen en una línea: total de personas activas.
 - Chips de filtro con contador (`avicore-operario-filter-chip`).
-- Lista continua (`avicore-team-list`): nombre, documento, correo y badge de rol; **sin avatar**.
+- Lista continua (`avicore-team-list`): nombre, documento enmascarado (`x-ui.documento-label`), correo y badge de rol; **sin avatar** (EMP-08).
 
 ### Usuarios autorizados
 
@@ -174,6 +175,40 @@ Tras login exitoso (sin cambio de contraseña pendiente), cada rol llega a su pr
 ### Usuarios autorizados
 
 - Dueño (`canViewComercial`).
+
+---
+
+## 3.1.5 Pantalla: Empresas (Admin AviCore)
+
+**Estado MVP (2026-09-26):** `/avicore/empresas` — listado con búsqueda y alta en diálogo; crea empresa + Dueño inicial en transacción (`CreateEmpresaAction`).
+
+### Objetivo
+
+Dar de alta empresas cliente reales sin depender del seed demo: nombre, identificador (`codigo`), estado inicial y administrador Dueño con contraseña temporal.
+
+### Usuarios autorizados
+
+- Solo **Admin AviCore** (`EmpresaPolicy`).
+
+### Campos (alta)
+
+- Nombre de la empresa (obligatorio).
+- Identificador / código (obligatorio, único; se guarda en mayúsculas).
+- Estado inicial (`activa`, `suspendida`, `inactiva`; por defecto `activa`).
+- Dueño inicial: nombre, documento y correo opcional.
+
+### Acciones
+
+- Nueva empresa → transacción empresa + Dueño (`must_change_password = true`); diálogo muestra la clave una sola vez.
+- Listado con búsqueda por nombre o identificador.
+- **Cambiar estado** (EMP-02): diálogo con nuevo estado y motivo obligatorio; registra actor/fecha en `empresas.configuracion.estado_historial[]`; al suspender/inactivar invalida sesiones de la empresa (`UserSessionService::invalidateAllForEmpresa`) y bloquea acceso vía SEG-02. La empresa demo (`codigo` DEMO) no se puede modificar.
+- **Configurar** (EMP-03): nombre visible, zona horaria (`configuracion.zona_horaria`), unidades (`huevos_por_maple`, `maples_por_cajon`) y logo (subida a `empresas/logos/` vía `EmpresaLogoStorageService` + `EmpresaLogoPathGuard`).
+- **Soporte** (EMP-06/07): diálogo con motivo (mín. 10 caracteres) → `StartSoporteEmpresaAction` → redirect a Resumen (`/avicore/resumen`). Banner amarillo (`x-admin.support-banner`) con «Salir de soporte» (`POST avicore/soporte/finalizar`; destino validado en config, default Empresas). Logout también cierra soporte. Bitácora en `soporte_sesiones.acciones` (`inicio`, `consulta_resumen`, `fin`). Cambiar de empresa cliente cierra la sesión anterior sin mezclar contexto.
+
+### Notas
+
+- La empresa queda vacía (sin granjas/galpones); el Dueño puede operar tras login y configurar estructura (Administrativo) o móvil según D02.
+- Unidades por empresa (EMP-04): Inicio admin, Resumen y operario calculan maples/cajas/sobrantes con `HuevosUnidad::para($empresa)`; exportaciones futuras deben reutilizar el mismo resolver.
 
 ---
 
@@ -226,7 +261,7 @@ Multiempresa: actores de empresa solo ven/modifican usuarios de su `empresa_id`.
 
 ## 3.3 Pantalla: Estructura (admin)
 
-**Estado MVP (2026-08-15):** implementado en `/admin/estructura` — pestañas Granjas · Galpones · Lotes; campo **DICOSE** en granjas; alta/edición con diálogos `x-ui.dialog`.
+**Estado MVP (2026-09-26):** implementado en `/admin/estructura` — pestañas Granjas · Galpones · Lotes; granjas con DICOSE/código únicos por empresa y `GranjaValidacion` (EST-01); galpones con código único por granja, estados operativos y `GalponValidacion` (EST-02); desactivar granja bloquea carga de sus galpones (EST-03); alta/edición con diálogos `x-ui.dialog`.
 
 ### Usuarios autorizados
 
@@ -248,7 +283,7 @@ Operario y Admin AviCore sin `empresa_id` no acceden a esta pantalla.
 
 ### Comportamiento
 
-Multiempresa por `empresa_id`. Alta de lote reutiliza `RegistrarLoteAction`. Nav admin: tab **Estructura**.
+Multiempresa por `empresa_id`. Alta de lote reutiliza `RegistrarLoteAction` + `LoteValidacion` (EST-04); panel Lotes con SMA opcional y errores en formulario. Nav admin: tab **Estructura**.
 
 ---
 

@@ -45,7 +45,7 @@
 | Movimientos / cierre de lote | Pendiente | — | MOV-01–13 |
 | Corrección y auditoría transversal | Pendiente | `Actions/Auditoria/.gitkeep` | AUD-04–06 |
 | Reportes PDF / Excel | Pendiente | `Livewire/Reportes/.gitkeep` | REP-01–14 |
-| Alta / suspensión empresas (admin plataforma) | Pendiente | modelo `Empresa` sin circuito UI | EMP-01–02 |
+| Empresas admin plataforma | Parcial | `/avicore/empresas`, Actions Empresa, unidades por empresa en UI | EMP-01–04 OK; export REP pendiente |
 | Tiempo real (Reverb / Echo) | Pendiente | `Events/.gitkeep` | ACT-02–04; `eventos.md` |
 | Portal documental y plan de entrega | Implementado | `portal/`, `plan-entrega.html` | ORQ |
 
@@ -75,7 +75,7 @@ Matriz autoritativa: [`permisos.md`](../../avicore-negocio/references/permisos.m
 | Encargado | Supervisión parcial en panel + móvil según matriz |
 | Operario | Solo `/operario` |
 | Reparto | Fuera v1; denegación controlada (SEG-01) |
-| Admin AviCore | Empresas y soporte (circuito incompleto) |
+| Admin AviCore | Empresas + soporte auditado (EMP-06/07) + política datos personales (EMP-08) |
 
 ---
 

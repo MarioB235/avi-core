@@ -31,11 +31,11 @@ avi-core/
 
 **Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php` (roles demo, empresa inactiva, rate-limit `demoRole`, operario→`/operario`); `tests/Feature/Services/DemoLoginServiceTest.php` (flag, rol único, Admin AviCore sin empresa, empresa DEMO ausente); `tests/Feature/Ui/LoginViewTest.php` (render login, select perfil demo + campos vacíos/disabled); `tests/Feature/Ui/InputComponentTest.php` (toggle password disabled); `tests/Feature/Ui/PublicLayoutTest.php` (shell login móvil + panel marca desktop, logo `entrance`); `tests/Feature/Ui/LogoComponentTest.php` (variantes logo, órbita `entrance`); `tests/Feature/Ui/SelectComponentTest.php` (contrato `x-ui.select`, posicionamiento flip); `tests/Feature/Ui/PwaInstallPromptTest.php` (manifest + banner en login/operario/admin, split `enabled`/`install_prompt` en guest y autenticado, `shouldShowBanner`, `apple-touch-icon` + `pwa-180`).
 
-**Tests admin:** `tests/Feature/Admin/AdminUsuariosTest.php` (CRUD multiempresa, permisos por rol); `tests/Feature/Admin/AdminEstructuraTest.php` (granja/galpón/lote CRUD, DICOSE único, permisos encargado/administrativo, multiempresa); `tests/Feature/Admin/AdminResumenTest.php` (KPIs, filtros granja/galpón, toggle galpón, redirect operario); `tests/Feature/Admin/AdminEquipoTest.php` (filtro segmento, 403 encargado, multiempresa HTTP); `tests/Feature/Admin/AdminComercialTest.php` (dueño HTTP, 403 encargado); `tests/Feature/Services/AdminHomeServiceTest.php` (KPI usuarios, Equipo/Comercial preview, pulso/stock); `tests/Feature/Services/AdminResumenServiceTest.php` (KPIs agregados, alertas mortalidad, filtros, multiempresa, teaser, `pulsoFor`); `tests/Feature/Auth/RolePanelRoutesTest.php` (prefijos por rol, middleware panel); `tests/Feature/Ui/AdminHomeViewTest.php` (Inicio gestión, pulso con seed demo); `tests/Feature/Ui/AdminShellTest.php` (shell, tabs por rol incl. Equipo/Comercial dueño); `tests/Feature/Ui/AdminUserMenuTest.php` (`x-ui.user-menu`); `tests/Feature/Ui/LineChartComponentTest.php`, `ClientMapComponentTest.php`, `PulsePanelComponentTest.php`; `tests/Unit/Support/HuevosUnidadTest.php`; `tests/Unit/Support/RolePanelModulesTest.php`, `NavTabBarItemsTest.php` (tabs `AdminNav`).
+**Tests admin:** `tests/Feature/Admin/AdminEmpresasTest.php` (alta empresa + dueño, estado, config, logo); `tests/Feature/Admin/AdminSoporteEmpresaTest.php` (entrada/salida soporte, banner, scope, anti-fuga, solo lectura `LotePolicy`/Gate); `tests/Feature/Services/EmpresaOnboardingServiceTest.php` (checklist onboarding EMP-05); `tests/Feature/Services/EmpresaUnidadesConsistenciaTest.php` (unidades por empresa EMP-04); `tests/Feature/Admin/AdminUsuariosTest.php` (CRUD multiempresa, permisos por rol); `tests/Feature/Admin/AdminEstructuraTest.php` (granja/galpón/lote CRUD, DICOSE único, permisos encargado/administrativo, multiempresa); `tests/Feature/Admin/AdminResumenTest.php` (KPIs, filtros granja/galpón, toggle galpón, redirect operario); `tests/Feature/Admin/AdminEquipoTest.php` (filtro segmento, 403 encargado, multiempresa HTTP, máscara documento); `tests/Feature/Admin/AdminComercialTest.php` (dueño HTTP, 403 encargado); `tests/Feature/Services/AdminHomeServiceTest.php` (KPI usuarios, Equipo/Comercial preview, pulso/stock); `tests/Feature/Services/AdminResumenServiceTest.php` (KPIs agregados, alertas mortalidad, filtros, multiempresa, teaser, `pulsoFor`); `tests/Feature/Auth/RolePanelRoutesTest.php` (prefijos por rol, middleware panel); `tests/Feature/Ui/AdminHomeViewTest.php` (Inicio gestión, pulso con seed demo); `tests/Feature/Ui/AdminShellTest.php` (shell, tabs por rol incl. Equipo/Comercial dueño); `tests/Feature/Ui/AdminUserMenuTest.php` (`x-ui.user-menu`); `tests/Feature/Ui/DocumentoLabelComponentTest.php` (`x-ui.documento-label`, EMP-08); `tests/Feature/Ui/LineChartComponentTest.php`, `ClientMapComponentTest.php`, `PulsePanelComponentTest.php`; `tests/Unit/Support/HuevosUnidadTest.php`; `tests/Unit/Support/RolePanelModulesTest.php`, `NavTabBarItemsTest.php` (tabs `AdminNav`); `tests/Unit/Policies/LotePolicyTest.php` (soporte solo lectura).
 
 **Tests operario:** `tests/Feature/Operario/OperarioCargaHuevosTest.php` (flujo E2E, multiempresa, galpón no disponible, redirect sin galpón y apertura automática del selector, Action rechaza mantenimiento), `tests/Feature/Operario/OperarioCargaMuertesTest.php` (flujo E2E muertes, descuento `aves_actuales`, rechazo si supera stock, Action multiempresa y mantenimiento, redirect `CargaMuertes` y `guardarMuertes` sin galpón disponible, query `form=muertes`), `tests/Feature/Operario/OperarioCargaVacunacionTest.php` (flujo E2E vacunación, validación lote/vacuna, Action multiempresa/galpón/lote, hub rechaza lote ajeno, redirect `CargaVacunacion` y `guardarVacunacion` sin galpón, query `form=vacunacion`), `tests/Feature/Operario/OperarioCargaLoteTest.php` (alta lote, codigo/secuencia, multi-tipo, gating operario, administrativo HTTP+registro, Action/policy, validación Livewire fecha/galpón, deep link `form=lote`), `tests/Feature/Operario/OperarioCargaAlimentoTest.php` (multiempresa en Action), `tests/Feature/Operario/OperarioCargaDescarteTest.php` (multiempresa en Action), `tests/Feature/Operario/OperarioPerfilTest.php` (perfil compartido, pestañas `wire:navigate`, hero por sección, shell, `updateProfile` usuario inactivo), `tests/Feature/Operario/OperarioHomeTest.php` (`seleccionarGalpon` rechaza galpón ajeno, en mantenimiento o inactivo), `tests/Feature/Operario/OperarioHomeResumenTest.php` (KPIs galpón, lotes, acumulado, muertes, maples, edad vía service; `resumen` fresco tras nuevo registro; memo `lotesActivos`), `tests/Feature/Operario/OperarioHistorialTest.php` (tipos, vacunaciones mezcladas, filtro fecha validado con mensaje visible y sin acumulación, paginación, multiempresa, date-picker, detalle, anulación muertes/descarte/vacunación, ya anulado, encargado ajeno), `tests/Feature/Services/OperarioGalponServiceTest.php` (`galponDisponibleParaUsuario`, `historialCargasQuery`, `historialPaginado` con vacunaciones, multiempresa, selección, scoped ambos services operario), `tests/Feature/Support/OperarioNavTest.php` (pestaña activa y `headerTitle` por ruta, incl. `operario.historial` e icono `calendar`), `tests/Feature/Ui/OperarioBottomNavTest.php` (dock, transiciones ~150 ms, heroes Inicio/Cargar/Historial, tab activa y `aria-current`, icono `calendar` en Historial, date-picker en historial HTTP, ilustración `operario-reloj`, empty/populated historial HTTP, diálogos huevos/muertes/vacunación/lote vía deep link, hub sin deep link sin `avicore-dialog`, chip galpón vacío/activo, KPI maples), `tests/Feature/Ui/IllustrationComponentTest.php` (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`), `tests/Feature/Ui/SelectComponentTest.php` (`x-ui.select` listbox), `tests/Feature/Ui/DatePickerComponentTest.php` (contrato `x-ui.date-picker`), `tests/Feature/Ui/OperarioUserMenuTest.php` (menú cuenta portal/clamp en home/cargar/historial, ARIA, perfil, logout, Versión), `tests/Feature/Ui/DialogComponentTest.php`, `tests/Feature/Ui/SheetComponentTest.php` (diálogo huevos en `CargarHub`), `tests/Feature/Ui/SnackbarHostTest.php` (host en layout, evento `snackbar-show`, flash `status`, `syncProgressDuration`, pause/Escape/`runAction`, contrato desktop `right-6`/`bottom-6`, contrato `pwa.js`: `immediate: false`, `onNeedRefresh`, `pwa-update`, `__avicorePwaUpdate`), `tests/Feature/Ui/RevealComponentTest.php` (`x-ui.reveal`, `data-reveal-delay`, sin inline), `tests/Feature/Ui/ScrollRevealTest.php` (wiring `scroll-reveal.js`, markers HTTP Inicio/Cargar, edge fade shell).
 
-**Tests unitarios:** `tests/Unit/Services/AppBuildServiceTest.php` (`metadata` null/inválido, `labelForProfile` con y sin commit, hint local).
+**Tests unitarios:** `tests/Unit/Services/AppBuildServiceTest.php` (`metadata` null/inválido, `labelForProfile` con y sin commit, hint local); `tests/Unit/Support/DatosPersonalesTest.php`, `EmpresaConfiguracionTest.php`, `GranjaValidacionTest.php`, `GalponValidacionTest.php`, `LoteValidacionTest.php`; `tests/Unit/Policies/AdminModulePolicyTest.php`, `LotePolicyTest.php`; `tests/Unit/Services/EmpresaHuevosUnidadTest.php`, `EmpresaScopeServiceTest.php`, `EmpresaLogoPathGuardTest.php`.
 
 **PWA (MVP instalable, sin offline completo):** `vite-plugin-pwa` + `resources/js/pwa.js` (registro SW, snackbar actualización) + `resources/js/pwa-install.js` (`__avicorePwaInstall`); manifest en `vite.config.js` → `public/build/manifest.webmanifest` tras `pnpm run build`; `scripts/write-build-meta.cjs` → `public/build/avicore-build.json`; `App/Services/AppBuildService` (Versión en Perfil: semver `AVICORE_VERSION` + build); `config/avicore.php` → `version`, `pwa.enabled`, `pwa.install_prompt` (`AVICORE_*`); `x-ui.pwa-meta`, `x-ui.pwa-install-prompt` en layouts público, operario, admin y `layouts/app`; iconos `public/images/brand/pwa-*.png` y screenshots `pwa-screenshot-*.jpg` vía `scripts/optimize-brand-assets.py`; `scripts/check-cloud-readiness.cjs` valida assets y dimensiones vs manifest. Contrato: `avicore-pwa/references/pwa.md`.
 
@@ -49,6 +49,7 @@ Reverb y Echo quedan para fases posteriores del plan.
 app/
 ├── Actions/
 │   ├── Auth/                 # AttemptLoginAction, ChangePasswordAction
+│   ├── Empresa/              # CreateEmpresaAction, UpdateEmpresaEstadoAction, UpdateEmpresaConfiguracionAction, Start/EndSoporteEmpresaAction
 │   ├── Galpon/               # CreateGalponAction, UpdateGalponAction
 │   ├── Granja/               # CreateGranjaAction, UpdateGranjaAction
 │   ├── Lote/                 # RegistrarLoteAction, UpdateLoteAction
@@ -60,9 +61,10 @@ app/
 │   └── View/
 │       └── Composers/        # AdminHomeComposer, AdminLayoutComposer, OperarioLayoutComposer
 ├── Livewire/
-│   ├── Concerns/             # RequiresAdminModuleAccess (Gates admin Resumen/Equipo/Comercial)
+│   ├── Concerns/             # RequiresAdminModuleAccess; MapsEstructuraValidationErrors (mapeo errores Estructura)
 │   ├── Admin/
 │   │   ├── Comercial/        # Index (preview post-MVP, dueño)
+│   │   ├── Empresas/         # Index (Admin AviCore: alta, estado, config, soporte)
 │   │   ├── Equipo/           # Index (solo lectura, dueño)
 │   │   ├── Estructura/       # Index (granjas, galpones, lotes)
 │   │   ├── Resumen/          # Index (KPIs por galpón)
@@ -73,6 +75,7 @@ app/
 ├── Models/
 │   ├── Concerns/             # BelongsToEmpresa
 │   ├── Empresa.php
+│   ├── SoporteSesion.php
 │   ├── Granja.php
 │   ├── Galpon.php
 │   ├── Lote.php
@@ -83,6 +86,7 @@ app/
 │   ├── Concerns/
 │   │   └── AuthorizesOperarioAnulacion.php
 │   ├── AdminModulePolicy.php   # Gates admin.viewResumen|Equipo|Comercial
+│   ├── EmpresaPolicy.php
 │   ├── GalponPolicy.php
 │   ├── GranjaPolicy.php
 │   ├── LotePolicy.php
@@ -96,6 +100,10 @@ app/
 │   ├── AppBuildService.php   # metadata build (Versión en menú cuenta)
 │   ├── DemoLoginService.php
 │   ├── AdminHomeService.php
+│   ├── EmpresaOnboardingService.php
+│   ├── EmpresaHuevosUnidad.php
+│   ├── EmpresaLogoStorageService.php
+│   ├── SoporteEmpresaService.php
 │   ├── AdminResumenService.php
 │   ├── EmpresaContextService.php
 │   ├── EmpresaScopeService.php
@@ -107,7 +115,12 @@ app/
 │   ├── SupportContactService.php
 │   └── TemporaryPasswordGenerator.php
 └── Support/
-    ├── HuevosUnidad.php         # Conversión huevos ↔ maples/cajas (30 huevos/maple, 12 maples/caja)
+    ├── HuevosUnidad.php         # Fachada → EmpresaHuevosUnidad (defaults o por empresa)
+    ├── DatosPersonales.php      # Máscara documento (EMP-08)
+    ├── EmpresaConfiguracion.php
+    ├── GranjaValidacion.php
+    ├── GalponValidacion.php
+    ├── LoteValidacion.php
     ├── IconSvg.php
     ├── IllustrationSvg.php      # Ilustraciones KPI operario (SVG en resources/images/illustrations/)
     ├── ProductionSecurityConfig.php
@@ -129,17 +142,17 @@ resources/
 │   ├── layouts/
 │   │   └── app.blade.php
 │   ├── components/
-│   │   ├── admin/            # sidebar-nav, bottom-nav, header, home-hero, page-hero
+│   │   ├── admin/            # sidebar-nav, bottom-nav, header, home-hero, page-hero, support-banner
 │   │   ├── auth/             # support-contact-dialog
 │   │   ├── operario/         # bottom-nav, sidebar-nav, header, user-menu, home-hero, primary-action, cargar-hero, historial-hero
 │   │   ├── layouts/          # público, admin (shell tipo operario), operario-mobile
 │   │   │   └── partials/     # auth-brand-panel
-│   │   └── ui/               # button, input, …, stat-panel, action-tile, section-head, tab-bar, …
+│   │   └── ui/               # button, input, documento-label, …, stat-panel, action-tile, section-head, tab-bar, …
 │   │       └── icons/        # inline.blade.php
 │   ├── livewire/
 │   │   ├── _redirect-placeholder.blade.php
 │   │   ├── auth/             # login, change-password
-│   │   ├── admin/            # comercial, equipo, estructura (+ partials), resumen (+ partials), usuarios
+│   │   ├── admin/            # comercial, empresas, equipo, estructura (+ partials), resumen (+ partials), usuarios
 │   │   └── operario/         # home (+ partials/galpon-chip-selector, carga-*-form, historial-detalle-dialog), cargar-hub, historial
 │   └── pages/
 │       ├── admin/home.blade.php
@@ -177,6 +190,7 @@ resources/
 | Equipo admin (dueño) | `Livewire/Admin/Equipo/` + `AdminHomeService::teamPreviewItems` | `users` |
 | Comercial admin (preview) | `Livewire/Admin/Comercial/` + `AdminHomeService::comercialPreviewItems` | — (datos demo) |
 | Estructura admin | `Livewire/Admin/Estructura/` + `Actions/Galpon`, `Granja`, `Lote` + Policies | `granjas`, `galpones`, `lotes` |
+| Empresas (Admin AviCore) | `Livewire/Admin/Empresas/` + `Actions/Empresa/` + `EmpresaLogoStorageService`, `EmpresaHuevosUnidad` + `EmpresaPolicy` | `empresas`, `users` |
 | Usuarios admin | `Livewire/Admin/Usuarios/` + `Actions/User/` + `UserPolicy` | `users`, `empresas` |
 | Carga operario | `Livewire/Operario/` | `granjas`, `galpones`, `lotes`, `registros_operativos`, `vacunaciones` |
 | Reparto (stub) | `pages/reparto/home` | — |

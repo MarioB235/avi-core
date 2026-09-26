@@ -33,6 +33,7 @@ class AdminEquipoTest extends TestCase
             'activo' => true,
             'must_change_password' => false,
             'name' => 'Operario Campo',
+            'documento' => '12345678',
         ]);
 
         User::factory()->create([
@@ -48,6 +49,8 @@ class AdminEquipoTest extends TestCase
             ->call('filtrarEquipo', 'campo')
             ->assertSet('filtroSegmento', 'campo')
             ->assertSee('Operario Campo')
+            ->assertSee('•••••678')
+            ->assertDontSee('12345678')
             ->assertDontSee('Encargado Super');
     }
 

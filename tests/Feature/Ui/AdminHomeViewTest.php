@@ -66,9 +66,10 @@ class AdminHomeViewTest extends TestCase
         $response->assertDontSee('avicore-ui-illustration', false);
         $response->assertDontSee('Ejemplo');
         $response->assertDontSee('Próximamente');
-        $response->assertDontSee('Estado inicial');
-        $response->assertDontSee('Onboarding');
-        $response->assertDontSee('Disponible');
+        $response->assertSee('Primeros pasos');
+        $response->assertSee('Granja');
+        $response->assertSee('Pendiente');
+        $response->assertSee('avicore-setup-item', false);
         $response->assertSee('Resumen');
         $response->assertDontSee('Cargar en galpón');
         $response->assertDontSee(route('operario.home'));

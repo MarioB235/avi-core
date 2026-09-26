@@ -1,18 +1,36 @@
 <x-ui.dialog wire:model="dialogGranjaAbierto" :title="$editingGranjaId ? 'Editar granja' : 'Nueva granja'">
     <form wire:submit="guardarGranja" class="space-y-4">
-        <x-ui.input label="Nombre" name="granjaNombre" wire:model="granjaNombre" required />
+        <x-ui.input
+            label="Nombre"
+            name="granjaNombre"
+            wire:model="granjaNombre"
+            required
+            :error="$errors->first('granjaNombre')"
+        />
 
         <x-ui.input
             label="DICOSE"
             name="granjaDicose"
             wire:model="granjaDicose"
             placeholder="Nº de establecimiento habilitado"
-            hint="Opcional. Debe ser único por empresa."
+            hint="Opcional. Solo números y guiones; único por empresa."
+            :error="$errors->first('granjaDicose')"
         />
 
         <div class="grid gap-4 sm:grid-cols-2">
-            <x-ui.input label="Código interno" name="granjaCodigo" wire:model="granjaCodigo" />
-            <x-ui.input label="Ubicación" name="granjaUbicacion" wire:model="granjaUbicacion" />
+            <x-ui.input
+                label="Código interno"
+                name="granjaCodigo"
+                wire:model="granjaCodigo"
+                hint="Opcional. Único por empresa."
+                :error="$errors->first('granjaCodigo')"
+            />
+            <x-ui.input
+                label="Ubicación"
+                name="granjaUbicacion"
+                wire:model="granjaUbicacion"
+                :error="$errors->first('granjaUbicacion')"
+            />
         </div>
 
         @if ($editingGranjaId)
@@ -22,7 +40,10 @@
                     wire:model="granjaActiva"
                     class="size-4 rounded border-avicore-border-strong text-avicore-primary focus:ring-avicore-primary"
                 />
-                <span class="text-sm text-avicore-text">Granja activa</span>
+                <span class="text-sm text-avicore-text">
+                    Granja activa
+                    <span class="block text-xs text-avicore-muted">Si la desactivás, sus galpones dejan de aceptar carga.</span>
+                </span>
             </label>
         @endif
 

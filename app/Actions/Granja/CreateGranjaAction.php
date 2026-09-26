@@ -4,8 +4,8 @@ namespace App\Actions\Granja;
 
 use App\Models\Granja;
 use App\Models\User;
+use App\Support\GranjaValidacion;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class CreateGranjaAction
@@ -25,28 +25,21 @@ class CreateGranjaAction
             ]);
         }
 
-        $validated = validator($data, [
-            'nombre' => ['required', 'string', 'max:120'],
-            'codigo' => ['nullable', 'string', 'max:50'],
-            'dicose' => [
-                'nullable',
-                'string',
-                'max:20',
-                Rule::unique('granjas', 'dicose')->where('empresa_id', $empresaId),
-            ],
-            'ubicacion' => ['nullable', 'string', 'max:255'],
-            'activa' => ['boolean'],
-        ], [
-            'dicose.unique' => 'Ya existe una granja con ese DICOSE en la empresa.',
-        ])->validate();
+        $normalized = GranjaValidacion::normalize($data);
+
+        $validated = validator(
+            $normalized,
+            GranjaValidacion::rules($empresaId),
+            GranjaValidacion::messages()
+        )->validate();
 
         return Granja::query()->create([
             'empresa_id' => $empresaId,
-            'nombre' => trim($validated['nombre']),
-            'codigo' => filled($validated['codigo'] ?? null) ? trim((string) $validated['codigo']) : null,
-            'dicose' => filled($validated['dicose'] ?? null) ? trim((string) $validated['dicose']) : null,
-            'ubicacion' => filled($validated['ubicacion'] ?? null) ? trim((string) $validated['ubicacion']) : null,
-            'activa' => $validated['activa'] ?? true,
+            'nombre' => $validated['nombre'],
+            'codigo' => $validated['codigo'],
+            'dicose' => $validated['dicose'],
+            'ubicacion' => $validated['ubicacion'],
+            'activa' => $validated['activa'],
         ]);
     }
 }

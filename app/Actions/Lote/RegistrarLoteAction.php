@@ -8,11 +8,12 @@ use App\Models\Galpon;
 use App\Models\Lote;
 use App\Models\User;
 use App\Services\EmpresaRelationalGuard;
+use App\Support\GalponValidacion;
+use App\Support\LoteValidacion;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\ValidationException;
 
 class RegistrarLoteAction
 {
@@ -35,34 +36,13 @@ class RegistrarLoteAction
 
         $this->relations->assertGalponOfActor($user, $galpon, 'galponId');
 
-        if (! $galpon->estado->permiteCarga() || ! $galpon->activo) {
-            throw ValidationException::withMessages([
-                'galponId' => 'El galpón no está disponible para carga.',
-            ]);
-        }
+        GalponValidacion::assertDisponibleParaCarga($galpon, 'galponId');
 
-        if ($cantidadesPorTipo === []) {
-            throw ValidationException::withMessages([
-                'tiposHuevo' => 'Marcá al menos un tipo de ave.',
-            ]);
-        }
-
-        foreach ($cantidadesPorTipo as $tipoValue => $cantidad) {
-            if ($cantidad < 1) {
-                throw ValidationException::withMessages([
-                    'cantidad_'.$tipoValue => 'La cantidad debe ser mayor a cero.',
-                ]);
-            }
-        }
-
-        if ($fechaNacimiento->isFuture()) {
-            throw ValidationException::withMessages([
-                'fechaNacimiento' => 'La fecha de nacimiento no puede ser futura.',
-            ]);
-        }
+        LoteValidacion::assertCantidadesPorTipo($cantidadesPorTipo);
+        LoteValidacion::assertFechaNacimiento($fechaNacimiento);
+        $codigoSma = LoteValidacion::assertCodigoSma($codigoSma);
 
         $fechaIngreso ??= Carbon::today();
-        $codigoSma = $codigoSma !== null && trim($codigoSma) !== '' ? trim($codigoSma) : null;
 
         return DB::transaction(function () use ($user, $galpon, $cantidadesPorTipo, $fechaNacimiento, $fechaIngreso, $codigoSma): Collection {
             /** @var Galpon $galponBloqueado */

@@ -96,7 +96,11 @@
                                 <p class="avicore-operario-kpi-panel__label">
                                     Aptos hoy
                                     <span class="avicore-operario-kpi-panel__hint">
-                                        ({{ number_format($resumen['maples_hoy'], 0, ',', '.') }} maples)
+                                        ({{ number_format($resumen['maples_hoy'], 0, ',', '.') }} maples
+                                        @if (($resumen['huevos_hoy_desglose']['huevos'] ?? 0) > 0)
+                                            + {{ number_format($resumen['huevos_hoy_desglose']['huevos'], 0, ',', '.') }} sueltos
+                                        @endif
+                                        )
                                     </span>
                                 </p>
                             </div>
