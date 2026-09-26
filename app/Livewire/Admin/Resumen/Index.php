@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Admin\Resumen;
 
+use App\Livewire\Concerns\RequiresAdminModuleAccess;
 use App\Models\User;
 use App\Services\AdminResumenService;
 use App\Support\HuevosUnidad;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -16,19 +16,17 @@ use Livewire\Component;
 #[Title('Resumen · AviCore')]
 class Index extends Component
 {
+    use RequiresAdminModuleAccess;
+
     #[Url(as: 'granja', except: '', history: true)]
     public string $filtroGranjaId = '';
 
     #[Url(as: 'galpon', except: '', history: true)]
     public string $filtroGalponId = '';
 
-    public function mount(): void
+    protected function requiredAdminModuleAbility(): string
     {
-        $user = auth()->user();
-
-        if ($user === null || ! $user->rol->canViewResumen()) {
-            throw new AuthorizationException;
-        }
+        return 'admin.viewResumen';
     }
 
     public function updatedFiltroGranjaId(): void

@@ -1,0 +1,54 @@
+<p class="page-meta">Desarrollo · Plan v1</p>
+<h1>Plan maestro de entrega</h1>
+<p class="page-updated">
+  Corte: <time datetime="2026-09-26">26 sep 2026</time> ·
+  <span class="page-owner">Responsable: Arquitectura</span>
+</p>
+<p class="lead">
+  Cola de trabajo y registro de aceptación para la primera entrega (operación avícola completa).
+  Los archivos markdown son la fuente; esta página solo enlaza y resume el estado.
+</p>
+
+<div class="note">
+  <strong>Checkpoint:</strong> <code>portal/planes/CHECKPOINT.md</code> — estado de sesión, siguiente ID y mensaje para continuar.
+</div>
+
+<h2 id="documentos">Documentos del plan</h2>
+<table>
+  <thead><tr><th>Documento</th><th>Contenido</th><th>Acceso</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Plan maestro</td>
+      <td>Tareas por fase (ORQ → ENT), puertas GATE, decisiones D01–D07</td>
+      <td><a href="../../planes/PLAN-MAESTRO-ENTREGA-AVICORE.md" download>Descargar .md</a> · <a href="../../planes/PLAN-MAESTRO-ENTREGA-AVICORE.md" target="_blank" rel="noopener">Abrir</a></td>
+    </tr>
+    <tr>
+      <td>Diagnóstico</td>
+      <td>Estado del repo, hallazgos P1/P2, orden recomendado</td>
+      <td><a href="../../planes/DIAGNOSTICO-Y-MEJORAS-AVICORE.md" download>Descargar .md</a> · <a href="../../planes/DIAGNOSTICO-Y-MEJORAS-AVICORE.md" target="_blank" rel="noopener">Abrir</a></td>
+    </tr>
+    <tr>
+      <td>Checkpoint</td>
+      <td>Rama, tests, siguiente tarea, mensaje de reanudación</td>
+      <td><a href="../../planes/CHECKPOINT.md" download>Descargar .md</a> · <a href="../../planes/CHECKPOINT.md" target="_blank" rel="noopener">Abrir</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="como-ejecutar">Cómo ejecutar</h2>
+<ol>
+  <li>Copiá la plantilla <strong>1b — Ejecutar plan maestro</strong> en <button type="button" class="portal-inline-link" data-portal-page="dev-plantillas-cursor" data-portal-href="contenido/desarrollo/plantillas-cursor.html" data-portal-label="Plantillas Cursor">plantillas-cursor.html</button> (o el mensaje corto en <code>CHECKPOINT.md</code>).</li>
+  <li>Usá <code>/avicore-architect-direct</code> en Cursor con ese mensaje.</li>
+  <li>El agente elige la primera tarea P1 desbloqueada, implementa, verifica y actualiza evidencia.</li>
+  <li>No marcar <code>[x]</code> sin prueba de cierre; bloqueos humanos quedan visibles.</li>
+</ol>
+
+<h2 id="alcance">Alcance v1</h2>
+<p>
+  <strong>Incluye:</strong> captura en campo, supervisión, conciliación de aves, historia, exportaciones por empresa.
+  <strong>Excluye etapa 1:</strong> ventas, facturación, logística comercial, reparto operativo (previews se retiran en RES-01).
+</p>
+<p>
+  Contrato de producto detallado: <button type="button" class="portal-inline-link" data-portal-page="dev-contexto" data-portal-href="contenido/desarrollo/contexto.html" data-portal-label="Contexto del proyecto">contexto.html</button> ·
+  skills en <code>.cursor/skills/*/references/</code>.
+</p>

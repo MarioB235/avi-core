@@ -19,8 +19,8 @@ Laravel + PostgreSQL + Livewire + Tailwind CSS + Alpine.js + PWA + Laravel Rever
 | PostgreSQL | Según instalación local (ej. 16–18) |
 | Node.js | **22** (CI y Laravel Cloud) |
 | pnpm | 10.x (`packageManager` en `package.json`; lockfile `pnpm-lock.yaml`) |
-
-Reverb, Echo y PWA: pendientes (Bloques 6–7 del plan).
+| PWA (manifest + SW assets) | **Hecho MVP** — ver [`estado-capacidades.md`](estado-capacidades.md) y `avicore-pwa/references/pwa.md` |
+| Reverb + Echo | **Pendiente** — ver `avicore-tiempo-real/references/eventos.md` |
 
 ---
 
@@ -70,13 +70,32 @@ Toda consulta debe filtrar por empresa_id salvo Admin AviCore en modo soporte.
 Implementado (Bloque 2):
 
 - **`EmpresaContextService`:** resuelve `empresa_id` de la sesión; Admin AviCore puede override en sesión (`avicore.empresa_context_id`) validando que la empresa exista (modo soporte futuro).
-- **Login:** validación de empresa activa vía `Empresa::permiteLogin()` (solo estado `activa`).
-- **Middleware auth:** `EnsurePasswordChanged`, `EnsureAdminPanelAccess`, `EnsureOperarioAccess`, `RedirectIfAuthenticated`.
+- **Login:** `LoginCandidateResolver` (documento + contraseña + vigencia) y `AccountAccessService` (`activo` + `Empresa::permiteLogin()`); sin selector de empresa en MVP.
+- **Sesiones:** `UserSessionService` invalida filas en `sessions` al resetear clave, cambiar contraseña o desactivar usuario; requiere `SESSION_DRIVER=database` (detalle en `arranque-local.md`; con `file` no-op documentado).
+- **Middleware auth:** `EnsurePasswordChanged`, `EnsureRolePanelAccess`, `EnsureOperarioAccess`, `RedirectIfAuthenticated`.
+- **Vigencia por request:** `EnsureAccountVigente` (grupo `web`, incluye `POST /livewire/update`) revalida usuario y empresa; si falla, cierra sesión sin mutar datos. Refresca usuario en cada request.
+- **Rol y clave en Livewire:** `EnsurePasswordChanged`, `EnsureOperarioAccess` y `EnsureRolePanelAccess` registrados como middleware persistente Livewire para que snapshot abierto no evite restricciones tras cambio de rol o reset de contraseña.
+- **Autorización por request Livewire:** `AdminModulePolicy` + Gates `admin.viewResumen|Equipo|Comercial` y trait `RequiresAdminModuleAccess` (`mount` + `hydrate`) en Resumen/Equipo/Comercial; `UserPolicy` / `GranjaPolicy` / … en Usuarios/Estructura; operario usa `LotePolicy::create` en `ManagesLoteForm`; `authorize()` explícito en mutaciones sensibles.
+- **Scope por empresa:** `EmpresaScopeService` (+ `AdminResumenService::galponesEnScope`) y trait `BelongsToEmpresa::forEmpresa()`; `EmpresaContextService` para override Admin AviCore (soporte futuro).
+- **Coherencia padre/hijo:** `EmpresaRelationalGuard` en Actions transaccionales (granja→galpón, galpón→lote, actor→recurso).
 
-Pendiente en módulos siguientes:
+En módulos operativos (galpones, lotes, registros): policies y scope por `empresa_id` en consultas y Actions — ver [`permisos.md`](../../avicore-negocio/references/permisos.md).
 
-- Scope global en modelos operativos.
-- Policies que validen empresa_id en CRUD.
+Pendiente para v1 (plan SEG/EMP):
+
+- Circuito completo de empresas y modo soporte auditado.
+
+---
+
+## 5b. Superficies técnicas (SEG-12)
+
+| Superficie | Implementación |
+|---|---|
+| CSRF | Grupo `web` en rutas POST (p. ej. `/logout`); meta `csrf-token` en layouts; formularios con `@csrf` |
+| Escape XSS | Blade `{{ }}` en datos de usuario; SVG de iconos/ilustraciones solo desde nombres validados (`SafeAssetName`) |
+| Archivos/logo | `EmpresaLogoPathGuard`: rutas relativas bajo `empresas/logos/`, sin URL absoluta ni `..` (listo para EMP-03) |
+| HTTPS/cookies | `trustProxies` en `bootstrap/app.php`; `ProductionSecurityConfig` fuerza `session.secure` + `same_site=lax` en `production` |
+| Dependencias | `composer audit --locked` en CI y `pnpm run check:security` |
 
 ---
 

@@ -34,5 +34,18 @@ class AvicoreAuthSeeder extends Seeder
                 'must_change_password' => false,
             ],
         );
+
+        User::query()->firstOrCreate(
+            ['documento' => '900000000'],
+            [
+                'empresa_id' => null,
+                'name' => 'Admin Demo AviCore',
+                'email' => 'admin.demo@avicore.local',
+                'password' => 'Avicore2026!',
+                'rol' => UserRole::AdminAvicore,
+                'activo' => true,
+                'must_change_password' => false,
+            ],
+        );
     }
 }

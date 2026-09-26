@@ -9,6 +9,7 @@
         "check:agent-docs": "node scripts/check-agent-docs-sync.cjs && node scripts/check-skill-references.cjs",
         "check:docs-impact": "node scripts/check-docs-impact.cjs",
         "check:cloud-readiness": "node scripts/check-cloud-readiness.cjs",
+        "check:security": "composer audit --locked && php artisan test --compact tests/Feature/Security tests/Unit/Services/EmpresaLogoPathGuardTest.php tests/Unit/Support",
         "check:operario": "php artisan test tests/Feature/Operario tests/Feature/Ui/OperarioCargarHubViewTest.php tests/Feature/Ui/OperarioBottomNavTest.php tests/Feature/Ui/OperarioUserMenuTest.php",
         "probe:operario": "php scripts/probe-login-operario.php",
         "portal:dev": "node scripts/serve-portal.cjs"

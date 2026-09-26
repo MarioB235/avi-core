@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Enums\EmpresaEstado;
 use App\Enums\UserRole;
 use App\Livewire\Auth\Login;
+use App\Models\Empresa;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -75,6 +76,7 @@ class DemoLoginTest extends TestCase
 
         $this->assertAuthenticated();
         $this->assertSame(UserRole::Operario, auth()->user()->rol);
+        $this->assertSame('11111111', auth()->user()->documento);
 
         $this->get(route('operario.home'))
             ->assertOk()
@@ -96,6 +98,7 @@ class DemoLoginTest extends TestCase
 
     public function test_demo_login_fails_when_seed_user_is_missing(): void
     {
+        Empresa::factory()->create(['codigo' => 'DEMO']);
         $this->enableDemoLogin();
 
         Livewire::test(Login::class)
@@ -186,6 +189,29 @@ class DemoLoginTest extends TestCase
         $message = $component->errors()->first('demoRole') ?? '';
         $this->assertStringContainsString('Demasiados intentos', $message);
         $this->assertGuest();
+    }
+
+    public function test_demo_login_as_encargado_does_not_mutate_dueno_user(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        $this->enableDemoLogin();
+
+        Livewire::test(Login::class)
+            ->set('demoRole', UserRole::Encargado->value)
+            ->call('login')
+            ->assertRedirect(route('encargado.home'));
+
+        $dueno = User::query()->where('documento', '000000000')->firstOrFail();
+        $this->assertSame(UserRole::Dueno, $dueno->rol);
+    }
+
+    public function test_demo_login_is_disabled_when_demo_empresa_is_missing(): void
+    {
+        config(['avicore.demo_login.enabled_flag' => true]);
+        $this->app['env'] = 'staging';
+
+        Livewire::test(Login::class)
+            ->assertSet('demoLoginEnabled', false);
     }
 
     public function test_demo_login_is_disabled_when_flag_is_false(): void

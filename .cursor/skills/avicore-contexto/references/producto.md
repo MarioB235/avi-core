@@ -50,7 +50,11 @@ El operario carga datos desde celular. El encargado, administrativo o dueño con
 
 ## 4. Alcance del MVP
 
-### Incluye
+> **Estado de implementación (qué existe hoy en código):** [`estado-capacidades.md`](estado-capacidades.md).  
+> **Tareas de cierre para entrega v1:** [`portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md`](../../../../portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md).  
+> Lo siguiente describe el **alcance acordado** de la primera entrega (operación avícola); comercial/reparto quedan en **etapa 2**.
+
+### Incluye (alcance v1)
 
 - Gestión de empresas.
 - Gestión de granjas.
@@ -72,17 +76,17 @@ El operario carga datos desde celular. El encargado, administrativo o dueño con
 - Empresa demo.
 - Identidad visual verde/agro.
 - Logo AviCore.
-- Tiempo real con WebSockets.
+- Actualización consultable en pantalla (tiempo real con WebSockets cuando el plan ACT lo cierre).
 
-### No incluye en el MVP
+### No incluye en el MVP (ni etapa 1)
 
 - Facturación electrónica.
 - Integración DGI.
 - Integración MGAP / SMA / export SNIG (trazabilidad oficial; ver [`mercado-uruguay.md`](mercado-uruguay.md) §4).
 - Cálculo automático de coeficientes técnicos con curvas y alertas (postura, conversión, mortalidad vs. referencia Uruguay; ver [`mercado-uruguay.md`](mercado-uruguay.md) §3 y [`reglas.md`](../../avicore-negocio/references/reglas.md) §15).
 - Stock avanzado de alimento.
-- Ventas.
-- Logística.
+- Ventas, clientes, pedidos y reparto operativo (**etapa 2**; previews actuales no son entrega).
+- Logística comercial.
 - Packing industrial.
 - MOBA.
 - RFID.
@@ -122,11 +126,14 @@ Un sistema base + configuración por empresa
 
 ## 6. Roles principales
 
-- Admin AviCore.
-- **Dueño** — persona de referencia del **panel admin** en MVP (estructura, usuarios, futuro dashboard/reportes).
-- Administrativo — mismo alcance que Dueño en código MVP; diferenciación de permisos y pantallas → post-MVP (`permisos.md` §10).
-- Encargado — supervisión; panel admin parcial (sin usuarios ni estructura).
-- Operario — vista móvil `/operario` (campo).
+Matriz autoritativa: [`permisos.md`](../../avicore-negocio/references/permisos.md).
+
+- **Admin AviCore** — empresas, soporte auditado (circuito incompleto; plan EMP).
+- **Dueño** — resumen, reportes, equipo (lectura), trazabilidad; móvil `/operario`; **no** gestiona estructura en panel admin.
+- **Administrativo** — estructura, usuarios y operación autorizada; **alcance distinto** al Dueño (no duplicar permisos en documentación).
+- **Encargado** — supervisión y correcciones según matriz; panel admin parcial.
+- **Operario** — vista móvil `/operario` (campo).
+- **Reparto** — fuera de v1; denegación controlada en código (SEG-01).
 
 ---
 
@@ -157,7 +164,8 @@ Un sistema base + configuración por empresa
 | Operario | Vista móvil simplificada — **módulo prioritario** (origen de datos en galpón) |
 | Orden de desarrollo | Operario → admin estructura → dashboard/reportes; ver [`estrategia-implementacion.md`](estrategia-implementacion.md) |
 | Reportes | Manuales; Excel planilla productiva antes que PDF |
-| Dashboard | Tiempo real (Reverb post-MVP); coeficientes MGAP en dashboard fase 3 |
+| Dashboard | Supervisión en Inicio/Resumen; Reverb cuando cierre ACT; coeficientes MGAP con validación responsable |
+| Primera entrega | Operación avícola completa; comercial/reparto etapa 2 — ver plan maestro |
 | Stack | Laravel + PostgreSQL + Livewire + Tailwind CSS + Alpine.js + PWA + Laravel Reverb + Echo |
 | Diseño | Verde/agro moderno |
 | Mercado objetivo | Uruguay — sur; productores medianos sin ERP; ver [`mercado-uruguay.md`](mercado-uruguay.md) |

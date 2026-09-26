@@ -55,6 +55,7 @@ const NAV_SECTIONS = [
     title: "Equipo técnico",
     items: [
       { id: "dev-contexto", label: "Contexto del proyecto", href: "contenido/desarrollo/contexto.html" },
+      { id: "dev-plan-entrega", label: "Plan de entrega v1", href: "contenido/desarrollo/plan-entrega.html" },
       { id: "dev-changelog", label: "Changelog", href: "contenido/desarrollo/changelog.html" },
       { id: "dev-plantillas", label: "Mensajes y plantillas", href: "contenido/desarrollo/mensajes-reutilizables.html" },
       { id: "fuentes-docs", label: "Portal vs skills (.md)", href: "contenido/desarrollo/fuentes-documentacion.html" },

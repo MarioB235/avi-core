@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\EnsureOperarioAccess;
+use App\Http\Middleware\EnsurePasswordChanged;
+use App\Http\Middleware\EnsureRolePanelAccess;
 use App\Http\View\Composers\AdminHomeComposer;
 use App\Http\View\Composers\AdminLayoutComposer;
 use App\Http\View\Composers\OperarioLayoutComposer;
@@ -11,6 +14,7 @@ use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\User;
 use App\Models\Vacunacion;
+use App\Policies\AdminModulePolicy;
 use App\Policies\GalponPolicy;
 use App\Policies\GranjaPolicy;
 use App\Policies\LotePolicy;
@@ -19,10 +23,12 @@ use App\Policies\UserPolicy;
 use App\Policies\VacunacionPolicy;
 use App\Services\OperarioGalponResumenService;
 use App\Services\OperarioGalponService;
+use App\Support\ProductionSecurityConfig;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,6 +46,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        ProductionSecurityConfig::apply();
+
+        Gate::define('admin.viewResumen', [AdminModulePolicy::class, 'viewResumen']);
+        Gate::define('admin.viewEquipo', [AdminModulePolicy::class, 'viewEquipo']);
+        Gate::define('admin.viewComercial', [AdminModulePolicy::class, 'viewComercial']);
+
         Gate::policy(Granja::class, GranjaPolicy::class);
         Gate::policy(Galpon::class, GalponPolicy::class);
         Gate::policy(Lote::class, LotePolicy::class);
@@ -57,5 +69,11 @@ class AppServiceProvider extends ServiceProvider
                 ->mixedCase()
                 ->numbers();
         });
+
+        Livewire::addPersistentMiddleware([
+            EnsurePasswordChanged::class,
+            EnsureOperarioAccess::class,
+            EnsureRolePanelAccess::class,
+        ]);
     }
 }

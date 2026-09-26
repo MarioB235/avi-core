@@ -14,7 +14,7 @@
 | **Origen de la verdad** | Huevos, muertes, vacunación y lotes nacen en el galpón (OCA, GBPEA §6). Sin esos datos, dashboard y planillas MGAP no tienen base. |
 | **Norma** | La GBPEA exige registros diarios del E.A.; el operario reemplaza la planilla en papel (§7.12). |
 | **Ventaja competitiva** | «Un registro → muchas planillas» solo funciona si la captura en campo es simple y fiable. |
-| **Estado del repo** | Operario es el bloque más maduro (Home, Cargar, Historial, PWA). Admin avícola y dashboard aún no existen. |
+| **Estado del repo** | Operario es el bloque más maduro (Home, Cargar, Historial, PWA). Admin tiene usuarios, estructura, Inicio y Resumen; movimientos, reportes y entrega v1 siguen en [`estado-capacidades.md`](estado-capacidades.md) y plan maestro. |
 
 **No significa** ignorar admin: la segunda ola completa la estructura (granjas, galpones, DICOSE) y consume lo que el operario ya cargó.
 
@@ -47,7 +47,8 @@ Decisiones que **no requieren más investigación** para avanzar en código.
 | **Alimento en operario** | **Siguiente ítem del hub Cargar** (kg por galpón/día) antes de stock/insumos §7.4 | Conversión alimenticia cuando haya kg + aves vivas |
 | **Movimientos de aves** | Tabla `movimientos_aves` **después** de cerrar alimento operario y DICOSE | Traslados, ajustes, cierre/faena |
 | **Auditoría** | Anulación con motivo (ya en espíritu); tabla `auditorias` en fase dedicada | Sin delete físico en operativos |
-| **Panel admin MVP** | **Dueño = persona de referencia** para diseño, pruebas y demo local | Administrativo comparte permisos en código; no duplicar UX hasta Ola 3+ |
+| **Panel admin MVP** | **Dueño = persona de referencia** para diseño, pruebas y demo local | Administrativo **diferenciado** en `permisos.md` (estructura/usuarios); no afirmar mismo alcance que Dueño |
+| **Primera entrega v1** | Operación avícola completa | Comercial/reparto = etapa 2; previews no cuentan como módulo (`estado-capacidades.md`) |
 
 ---
 
@@ -124,12 +125,15 @@ Bioseguridad §7.3, stock alimento §7.4, plagas, residuos, tiempo real Reverb, 
 
 ## 5. Brecha actual (referencia rápida)
 
-| Capa | Hecho | Siguiente (Ola 1–2) |
-|------|-------|---------------------|
-| Operario | Huevos, muertes, descarte, vacunación, alimento, lotes (SMA), historial (detalle + anulación), perfil, PWA | **Ola 3** — dashboard coeficientes |
-| Admin | Usuarios + estructura (granjas/galpones/lotes/DICOSE) | **Dueño-first** — dashboard, reportes; Administrativo diferenciado post-MVP |
-| Análisis | — | Dashboard coeficientes |
-| Norma | Doc GBPEA completa | Export planilla + SMA manual |
+> Detalle por capacidad: [`estado-capacidades.md`](estado-capacidades.md) · Tareas: [`portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md`](../../../../portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md).
+
+| Capa | Hecho / parcial | Siguiente (plan v1) |
+|------|-----------------|---------------------|
+| Operario | Capturas, historial, anulación día, PWA online | Idempotencia, D03, robustez red (CAP) |
+| Admin | Usuarios, estructura, Inicio, Resumen, Equipo (lectura) | Quitar previews v1, movimientos, reportes (RES, MOV, REP) |
+| Comercial / Reparto | **Preview** (etapa 2) | No contar en progreso v1 |
+| Análisis | Resumen parcial con métricas a reconciliar | RES-02–09 |
+| Norma | Doc GBPEA; export interno pendiente | REP + D05 |
 
 ---
 

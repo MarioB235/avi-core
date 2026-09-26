@@ -3,8 +3,9 @@
 namespace App\Actions\Auth;
 
 use App\Models\User;
+use App\Services\Auth\AccountAccessService;
+use App\Services\Auth\LoginCandidateResolver;
 use App\Services\DemoLoginService;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
@@ -16,6 +17,8 @@ class AttemptLoginAction
 
     public function __construct(
         private readonly DemoLoginService $demoLogin,
+        private readonly AccountAccessService $accountAccess,
+        private readonly LoginCandidateResolver $loginCandidates,
     ) {}
 
     /**
@@ -27,37 +30,13 @@ class AttemptLoginAction
 
         $this->ensureIsNotRateLimited($documento);
 
-        $candidates = User::query()
-            ->with('empresa')
-            ->where('documento', $documento)
-            ->where('activo', true)
-            ->get();
-
-        if ($candidates->isEmpty()) {
+        try {
+            $user = $this->loginCandidates->resolveUniqueUser($documento, $password);
+        } catch (ValidationException $exception) {
             $this->hitRateLimiter($documento);
 
-            throw ValidationException::withMessages([
-                'documento' => 'Credenciales incorrectas.',
-            ]);
+            throw $exception;
         }
-
-        $matches = $candidates->filter(
-            fn (User $user) => Hash::check($password, $user->password)
-        );
-
-        if ($matches->count() !== 1) {
-            $this->hitRateLimiter($documento);
-
-            throw ValidationException::withMessages([
-                'documento' => $matches->isEmpty()
-                    ? 'Credenciales incorrectas.'
-                    : 'No se pudo identificar la cuenta. Contactá al administrador.',
-            ]);
-        }
-
-        $user = $matches->first();
-
-        $this->assertUserMayLogin($user, $documento);
 
         return $this->completeLogin($user, $documento, $remember);
     }
@@ -86,23 +65,21 @@ class AttemptLoginAction
 
     private function assertUserMayLogin(User $user, string $documento, string $errorField = 'documento'): void
     {
-        if (! $user->isAdminAvicore()) {
-            if ($user->empresa_id === null) {
-                $this->hitRateLimiter($documento);
-
-                throw ValidationException::withMessages([
-                    $errorField => 'Usuario sin empresa asignada.',
-                ]);
-            }
-
-            if ($user->empresa === null || ! $user->empresa->permiteLogin()) {
-                $this->hitRateLimiter($documento);
-
-                throw ValidationException::withMessages([
-                    $errorField => 'La empresa no está activa. Contactá al administrador.',
-                ]);
-            }
+        if ($this->accountAccess->mayUseApplication($user)) {
+            return;
         }
+
+        $this->hitRateLimiter($documento);
+
+        $message = ! $user->activo
+            ? 'Tu cuenta no está activa. Contactá al administrador.'
+            : ($user->empresa_id === null
+                ? 'Usuario sin empresa asignada.'
+                : 'La empresa no está activa. Contactá al administrador.');
+
+        throw ValidationException::withMessages([
+            $errorField => $message,
+        ]);
     }
 
     /**

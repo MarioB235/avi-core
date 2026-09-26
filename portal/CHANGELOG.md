@@ -5,6 +5,26 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-09-26
+
+- **[refactor|seg]** Post-auditoría msg 3: `AdminModulePolicy` + Gates unifican autorización Livewire admin; `AdminResumenService` reutiliza `EmpresaScopeService`; `ManagesLoteForm` vía `LotePolicy`; doc `SESSION_DRIVER=database` en `arranque-local.md`. — `permisos.md`, `arquitectura.md`, `arbol-proyecto.md`, tests
+- **[negocio|seg]** SEG-12: superficies técnicas — `SafeAssetName`, `EmpresaLogoPathGuard`, `ProductionSecurityConfig` (cookies seguras en production), tests Security + script `check:security`. — `IconSvg`, `IllustrationSvg`, `AppServiceProvider`, `arquitectura.md`, `reglas.md`, tests
+- **[negocio|seg]** SEG-11: login demo aislado — usuario fijo por rol (sin mutar BD), guards production + empresa DEMO obligatoria; seed Admin Avicore demo. — `DemoLoginService`, `config/avicore.php`, seeders, `demo.md`, `reglas.md`, tests
+- **[negocio|seg]** SEG-10: `UserSessionService` invalida sesiones en reset de clave, cambio voluntario y desactivación; sin log de claves temporales. — `ResetUserPasswordAction`, `ChangePasswordAction`, `UpdateUserAction`, `reglas.md`, `permisos.md`, tests
+- **[negocio|seg]** SEG-09: `LoginCandidateResolver` centraliza login multiempresa (documento + clave + vigencia); sin selector MVP; tests `LoginCandidateResolverTest` y `MultiEmpresaLoginTest`. — `AttemptLoginAction`, `reglas.md`, `permisos.md`, tests
+- **[negocio|seg]** SEG-08: `UserManagementGuard` protege último administrativo activo; refuerzo en `UpdateUserAction`; tests unit/feature en guard y `AdminUsuariosTest`. — `UserManagementGuard`, `UpdateUserAction`, `permisos.md`, tests
+- **[negocio|seg]** SEG-07: cierre D02 Dueño vs Administrativo; matriz canónica en `tests/Support/RoleCapabilitiesMatrix.php`; tests parametrizados `RoleCapabilitiesMatrixTest` y `DuenoAdministrativoAccessTest`. — `permisos.md` §2 D02, plan maestro, tests
+- **[negocio|seg]** SEG-06: `EmpresaRelationalGuard` centraliza validación actor↔empresa y padre↔hijo (granja/galpón/lote); refactors en Actions de estructura, cargas y vacunación; tests `RelationalCoherenceTest` + unit guard. — `EmpresaRelationalGuard`, Actions, `permisos.md`, `arquitectura.md`, tests
+- **[negocio|seg]** SEG-05: `EmpresaScopeService` centraliza scope por empresa; refactors Usuarios/Estructura; defensa Resumen; suite `EmpresaIsolationTest`. — `EmpresaScopeService`, `AdminResumenService`, Livewire admin, tests
+- **[negocio|seg]** SEG-04: autorización por acción Livewire (`RequiresRoleAbility`, `hydrate` en admin, `authorize` en mutaciones Usuarios; lote operario con 403); tests `LivewireActionAuthorizationTest`. — `app/Livewire/`, `permisos.md`, `arquitectura.md`, tests
+- **[negocio|seg]** SEG-03: cambio de rol y reset de clave aplican en sesión existente; middleware persistente Livewire (`EnsurePasswordChanged`, `EnsureOperarioAccess`, `EnsureRolePanelAccess`); tests HTTP `SessionRolResetTest`. — `AppServiceProvider`, `permisos.md`, `arquitectura.md`, tests
+- **[negocio|seg]** SEG-02: vigencia por request con `AccountAccessService` + `EnsureAccountVigente` (grupo `web`, incluye Livewire update); login unificado; tests HTTP de sesión. — `AccountAccessService`, `EnsureAccountVigente`, `AttemptLoginAction`, `permisos.md`, `arquitectura.md`, tests
+- **[negocio|seg]** SEG-01: ramas `Reparto` en `canAccessOperarioMobile`, `canViewResumen` y `assignableRoles` (denegación controlada, sin ampliar permisos); tests `UserRoleTest` y regresión HTTP en `RolePanelRoutesTest`. — `UserRole.php`, `permisos.md`, tests
+- **[test|bas]** BAS-02/03 verificadas: `AdminUserMenuTest` OK; suite 418/418, Pint y build exit 0 (2026-09-26). — `portal/planes/evidencias/BAS-02-03-baseline-verde.md`
+- **[cursor|orq]** ORQ-03/04/07/08: modo ejecutar plan en slash; plantilla 1b; puerta de cierre; worktree sin bloqueo global; anti-drift ampliado. — `.cursor/commands/`, `plantillas-cursor.html`, `avicore-agente-permanente.mdc`, `check-agent-docs-sync.cjs`, `portal/planes/`
+- **[contexto|orq]** ORQ-02: fuente única `estado-capacidades.md` (implementado/parcial/preview/pendiente); alineados `producto.md`, `plan-desarrollo.md`, `arquitectura.md`, `estrategia-implementacion.md`; portal `mvp.html` y `contexto.html`; README raíz. PWA=hecho; Reverb=pendiente; Comercial/Reparto=preview etapa 2; Dueño≠Administrativo según `permisos.md`. — `.cursor/skills/avicore-contexto/references/`, `portal/`, `README.md`
+- **[portal|orq]** Plan de entrega v1: checkpoint persistente (`portal/planes/CHECKPOINT.md`), evidencia ORQ-01, página `plan-entrega.html` con enlaces a MD del plan; ORQ-01 y ORQ-12 verificadas en plan maestro. — `portal/planes/`, `portal/contenido/desarrollo/plan-entrega.html`, `portal/js/site.nav.js`
+
 ## 2026-08-25
 
 - **[fix|admin]** Post-auditoría msg 3: import correcto `Illuminate\Auth\Access\AuthorizationException` en Livewire Resumen/Equipo/Comercial (403 efectivo en mount). — `Admin/*/Index.php`, tests

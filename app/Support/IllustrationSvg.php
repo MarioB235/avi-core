@@ -8,6 +8,7 @@ class IllustrationSvg
 {
     public function markup(string $name, ?string $class = null): ?string
     {
+        $name = SafeAssetName::assert($name);
         $path = resource_path("images/illustrations/{$name}.svg");
 
         if (! File::isReadable($path)) {

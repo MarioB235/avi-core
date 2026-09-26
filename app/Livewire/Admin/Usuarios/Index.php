@@ -8,6 +8,7 @@ use App\Actions\User\UpdateUserAction;
 use App\Enums\UserRole;
 use App\Models\Empresa;
 use App\Models\User;
+use App\Services\EmpresaScopeService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Gate;
@@ -52,6 +53,16 @@ class Index extends Component
     public string $passwordUserName = '';
 
     public function mount(): void
+    {
+        $this->authorizeModuleAccess();
+    }
+
+    public function hydrate(): void
+    {
+        $this->authorizeModuleAccess();
+    }
+
+    protected function authorizeModuleAccess(): void
     {
         $this->authorize('viewAny', User::class);
     }
@@ -110,6 +121,7 @@ class Index extends Component
     {
         if ($this->editingUserId !== null) {
             $target = $this->findScopedUser($this->editingUserId);
+            $this->authorize('update', $target);
             $updateUser->execute(auth()->user(), $target, [
                 'name' => $this->name,
                 'documento' => $this->documento,
@@ -123,6 +135,8 @@ class Index extends Component
 
             return;
         }
+
+        $this->authorize('create', User::class);
 
         $result = $createUser->execute(auth()->user(), [
             'name' => $this->name,
@@ -140,6 +154,7 @@ class Index extends Component
     public function resetearPassword(int $userId, ResetUserPasswordAction $resetUserPassword): void
     {
         $target = $this->findScopedUser($userId);
+        $this->authorize('resetPassword', $target);
         $result = $resetUserPassword->execute(auth()->user(), $target);
         $this->mostrarPasswordTemporal($result['user']->name, $result['plainPassword']);
         $this->dispatch('snackbar-show', message: 'Contraseña temporal generada.', variant: 'success');
@@ -233,13 +248,7 @@ class Index extends Component
     private function findScopedUser(int $userId): User
     {
         $actor = auth()->user();
-        $query = User::query()->whereKey($userId);
-
-        if (! $actor->isAdminAvicore()) {
-            $query->where('empresa_id', $actor->empresa_id);
-        }
-
-        $user = $query->firstOrFail();
+        $user = app(EmpresaScopeService::class)->findForActor(User::query(), $actor, $userId);
         $this->authorize('view', $user);
 
         return $user;

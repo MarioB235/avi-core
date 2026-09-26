@@ -93,6 +93,8 @@ class OperarioGalponService
     {
         Gate::forUser($user)->authorize('view', $galpon);
 
+        app(EmpresaRelationalGuard::class)->assertGalponOfActor($user, $galpon);
+
         if (! $galpon->estado->permiteCarga() || ! $galpon->activo) {
             throw ValidationException::withMessages([
                 'galpon_id' => 'El galpón seleccionado no está disponible para carga.',

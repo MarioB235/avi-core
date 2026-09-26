@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Admin\Equipo;
 
+use App\Livewire\Concerns\RequiresAdminModuleAccess;
 use App\Services\AdminHomeService;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -14,16 +14,14 @@ use Livewire\Component;
 #[Title('Equipo · AviCore')]
 class Index extends Component
 {
+    use RequiresAdminModuleAccess;
+
     #[Url(as: 'grupo', except: 'todos', history: true)]
     public string $filtroSegmento = 'todos';
 
-    public function mount(): void
+    protected function requiredAdminModuleAbility(): string
     {
-        $user = auth()->user();
-
-        if ($user === null || ! $user->rol->canViewEquipo()) {
-            throw new AuthorizationException;
-        }
+        return 'admin.viewEquipo';
     }
 
     public function filtrarEquipo(string $segmento): void

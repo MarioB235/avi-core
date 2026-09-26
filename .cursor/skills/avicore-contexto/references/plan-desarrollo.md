@@ -1,14 +1,20 @@
 # 12 — Plan de desarrollo
 
-## 0. Estado de avance (2026-08-01)
+## 0. Estado de avance (2026-09-26)
+
+**Matriz detallada (fuente única):** [`estado-capacidades.md`](estado-capacidades.md) · **Tareas de entrega v1:** [`portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md`](../../../../portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md).
 
 | Bloque | Estado | Notas |
 |--------|--------|-------|
 | **1 — Base** | **Hecho** | Laravel 13, Livewire 4, Tailwind 4, layouts, UI base, PostgreSQL + `migrate` OK |
-| **2 — Seguridad** | **Parcial** | Login + cambio obligatorio; **CRUD usuarios admin** (`/admin/usuarios`) hecho; falta auditoría de accesos soporte |
-| **4 — Estructura avícola** | **Parcial** | Migraciones + seeder demo; alta de lote desde operario; **CRUD admin** granjas/galpones/lotes + DICOSE en `/admin/estructura` |
-| **5 — Operación móvil** | **Hecho MVP** | Home, Cargar (huevos, muertes, descarte, vacunación, alimento, lote), Historial (detalle + anulación), perfil, PWA; sin offline completo |
-| 3, 6–7 | Pendiente | Según orden de la sección 2 |
+| **2 — Seguridad** | **Parcial** | Login, cambio de clave, CRUD usuarios; falta revocación por request, enum Reparto y circuito soporte (plan SEG) |
+| **3 — Multiempresa / empresas** | **Parcial** | Contexto por sesión y policies; sin alta/suspensión admin plataforma (EMP) |
+| **4 — Estructura avícola** | **Parcial** | CRUD `/admin/estructura` + lotes operario; sin ciclo movimientos/cierre auditado (MOV, EST) |
+| **5 — Operación móvil** | **Hecho MVP** | Hub Cargar completo, historial, anulación día, perfil, PWA online; idempotencia y D03 pendientes (CAP) |
+| **6 — Dashboard / supervisión** | **Parcial** | Inicio y Resumen con datos reales; previews comercial/stock fuera de v1 (RES-01) |
+| **7 — Reportes** | **Pendiente** | Sin exportador; ver `avicore-reportes` |
+| **PWA** | **Hecho MVP** | Instalable; offline completo fuera de alcance — ver `pwa.md` |
+| **Tiempo real** | **Pendiente** | Reverb/Echo no instalados — ver `eventos.md` |
 
 Detalle técnico del Bloque 1: [`arbol-proyecto.md`](arbol-proyecto.md) · entorno local: [`arranque-local.md`](arranque-local.md).
 
@@ -53,7 +59,7 @@ Interfaz del módulo → backend → validaciones → permisos → auditoría �
 | 17 | Tiempo real |
 | 18 | Reportes |
 | 19 | Datos demo |
-| 20 | PWA | **Hecho MVP (2026-08-01)** — instalable, sin offline completo; ver `avicore-pwa/references/pwa.md` |
+| 20 | PWA | **Hecho MVP** — ver [`estado-capacidades.md`](estado-capacidades.md) y `avicore-pwa/references/pwa.md` |
 
 ---
 
@@ -158,12 +164,11 @@ Dashboard refleja la carga
 
 ## 10. Bloque 6 — Dashboard y tiempo real
 
-- Tarjetas.
-- Gráficos.
-- Alertas.
-- Eventos.
-- Reverb.
-- Echo.
+- [x] Inicio admin (`/admin`) — pulso del día, KPIs (parcial; previews RES-01).
+- [x] Resumen (`/admin/resumen`) — métricas por galpón (parcial; semántica RES-02–09).
+- [x] Equipo (`/admin/equipo`) — directorio solo lectura (parcial).
+- [ ] Comercial (`/admin/comercial`) — **preview etapa 2**; no cuenta como módulo v1.
+- [ ] Alertas, eventos, Reverb, Echo — pendiente (`eventos.md`).
 
 ---
 

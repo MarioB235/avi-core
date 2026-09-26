@@ -278,6 +278,96 @@ class AdminUsuariosTest extends TestCase
             ->assertSee(route('administrativo.usuarios.index'), false);
     }
 
+    public function test_cannot_deactivate_last_active_administrativo(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo('70707070');
+
+        $adminAvicore = User::factory()->adminAvicore()->create([
+            'documento' => '70707071',
+            'must_change_password' => false,
+        ]);
+
+        $this->expectException(ValidationException::class);
+
+        app(UpdateUserAction::class)->execute($adminAvicore, $administrativo, [
+            'name' => $administrativo->name,
+            'documento' => $administrativo->documento,
+            'email' => $administrativo->email,
+            'rol' => $administrativo->rol->value,
+            'activo' => false,
+        ]);
+    }
+
+    public function test_cannot_demote_last_active_administrativo_via_livewire(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo('71717171');
+
+        $otro = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'documento' => '72727272',
+            'rol' => UserRole::Operario,
+            'activo' => true,
+            'must_change_password' => false,
+        ]);
+
+        Livewire::actingAs($administrativo)
+            ->test(UsuariosIndex::class)
+            ->call('abrirEditar', $administrativo->id)
+            ->set('rol', UserRole::Encargado->value)
+            ->call('guardar')
+            ->assertHasErrors(['rol']);
+
+        $this->assertSame(UserRole::Administrativo, $administrativo->fresh()->rol);
+        $this->assertTrue($administrativo->fresh()->activo);
+
+        Livewire::actingAs($administrativo)
+            ->test(UsuariosIndex::class)
+            ->call('toggleActivo', $otro->id)
+            ->assertDispatched('snackbar-show');
+    }
+
+    public function test_can_deactivate_administrativo_when_another_active_manager_exists(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo('73737373');
+
+        $otroAdmin = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'documento' => '74747474',
+            'rol' => UserRole::Administrativo,
+            'activo' => true,
+            'must_change_password' => false,
+        ]);
+
+        Livewire::actingAs($administrativo)
+            ->test(UsuariosIndex::class)
+            ->call('toggleActivo', $otroAdmin->id)
+            ->assertDispatched('snackbar-show');
+
+        $this->assertFalse($otroAdmin->fresh()->activo);
+    }
+
+    public function test_administrativo_cannot_escalate_user_to_dueno_on_update(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo('75757575');
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'documento' => '76767676',
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+        ]);
+
+        $this->expectException(ValidationException::class);
+
+        app(UpdateUserAction::class)->execute($administrativo, $operario, [
+            'name' => $operario->name,
+            'documento' => $operario->documento,
+            'email' => $operario->email,
+            'rol' => UserRole::Dueno->value,
+            'activo' => true,
+        ]);
+    }
+
     public function test_cannot_deactivate_own_account(): void
     {
         [$empresa, $administrativo] = $this->empresaConAdministrativo('90909090');

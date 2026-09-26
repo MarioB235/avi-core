@@ -75,7 +75,7 @@ enum UserRole: string
     {
         return match ($this) {
             self::Operario, self::Dueno, self::Administrativo, self::Encargado => true,
-            self::AdminAvicore => false,
+            self::AdminAvicore, self::Reparto => false,
         };
     }
 
@@ -123,7 +123,7 @@ enum UserRole: string
     {
         return match ($this) {
             self::Dueno, self::Administrativo, self::Encargado => true,
-            self::AdminAvicore, self::Operario => false,
+            self::AdminAvicore, self::Operario, self::Reparto => false,
         };
     }
 
@@ -182,7 +182,7 @@ enum UserRole: string
                 self::Operario,
                 self::Reparto,
             ],
-            self::Encargado, self::Operario => [],
+            self::Encargado, self::Operario, self::Reparto => [],
         };
     }
 }

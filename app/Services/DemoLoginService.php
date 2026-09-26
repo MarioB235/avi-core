@@ -15,7 +15,11 @@ class DemoLoginService
             return false;
         }
 
-        return (bool) config('avicore.demo_login.enabled_flag', false);
+        if (! (bool) config('avicore.demo_login.enabled_flag', false)) {
+            return false;
+        }
+
+        return $this->demoEmpresaExists();
     }
 
     public function resolveUser(string $roleValue): User
@@ -28,11 +32,11 @@ class DemoLoginService
             ]);
         }
 
-        $documento = config('avicore.demo_login.documento');
+        $documento = $this->documentoForRole($role);
 
-        if (! is_string($documento) || $documento === '') {
+        if ($documento === '') {
             throw ValidationException::withMessages([
-                'demoRole' => 'No hay usuario demo configurado.',
+                'demoRole' => 'No hay usuario demo configurado para este perfil.',
             ]);
         }
 
@@ -48,23 +52,59 @@ class DemoLoginService
             ]);
         }
 
-        $empresaId = $role === UserRole::AdminAvicore
-            ? null
-            : Empresa::query()->where('codigo', 'DEMO')->value('id');
+        $this->assertDemoUser($user, $role);
 
-        if ($role !== UserRole::AdminAvicore && $empresaId === null) {
+        return $user;
+    }
+
+    private function demoEmpresaExists(): bool
+    {
+        $codigo = config('avicore.demo_login.empresa_codigo', 'DEMO');
+
+        if (! is_string($codigo) || $codigo === '') {
+            return false;
+        }
+
+        return Empresa::query()->where('codigo', $codigo)->exists();
+    }
+
+    private function documentoForRole(UserRole $role): string
+    {
+        $documentos = config('avicore.demo_login.role_documentos', []);
+
+        if (! is_array($documentos)) {
+            return '';
+        }
+
+        $documento = $documentos[$role->value] ?? null;
+
+        return is_string($documento) ? trim($documento) : '';
+    }
+
+    private function assertDemoUser(User $user, UserRole $role): void
+    {
+        if ($role === UserRole::AdminAvicore) {
+            if ($user->rol !== UserRole::AdminAvicore || $user->empresa_id !== null) {
+                throw ValidationException::withMessages([
+                    'demoRole' => 'El usuario demo de soporte no es válido.',
+                ]);
+            }
+
+            return;
+        }
+
+        $empresaCodigo = config('avicore.demo_login.empresa_codigo', 'DEMO');
+
+        if ($user->empresa === null || $user->empresa->codigo !== $empresaCodigo) {
             throw ValidationException::withMessages([
-                'demoRole' => 'Empresa demo no encontrada. Ejecutá php artisan db:seed.',
+                'demoRole' => 'El login demo solo está disponible con datos de Avícola Demo.',
             ]);
         }
 
-        $user->forceFill([
-            'rol' => $role,
-            'empresa_id' => $empresaId,
-        ])->save();
-
-        $user->load('empresa');
-
-        return $user;
+        if ($user->rol !== $role) {
+            throw ValidationException::withMessages([
+                'demoRole' => 'El usuario demo no coincide con el perfil seleccionado.',
+            ]);
+        }
     }
 }
