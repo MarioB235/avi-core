@@ -7,20 +7,19 @@ use App\Enums\RegistroOperativoTipo;
 use App\Models\Galpon;
 use App\Models\RegistroOperativo;
 use App\Models\User;
+use App\Services\EmpresaRelationalGuard;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
 class RegistrarCargaAlimentoAction
 {
+    public function __construct(private EmpresaRelationalGuard $relations) {}
+
     public function execute(User $user, Galpon $galpon, float $alimentoKg, ?string $observacion = null): RegistroOperativo
     {
         Gate::forUser($user)->authorize('view', $galpon);
 
-        if ($user->empresa_id !== $galpon->empresa_id) {
-            throw ValidationException::withMessages([
-                'galpon_id' => 'No podés cargar en un galpón de otra empresa.',
-            ]);
-        }
+        $this->relations->assertGalponOfActor($user, $galpon);
 
         if (! $galpon->estado->permiteCarga() || ! $galpon->activo) {
             throw ValidationException::withMessages([

@@ -3,12 +3,16 @@
 namespace App\Actions\User;
 
 use App\Models\User;
+use App\Services\Auth\UserSessionService;
 use App\Services\TemporaryPasswordGenerator;
 use Illuminate\Support\Facades\Gate;
 
 class ResetUserPasswordAction
 {
-    public function __construct(private TemporaryPasswordGenerator $passwords) {}
+    public function __construct(
+        private TemporaryPasswordGenerator $passwords,
+        private UserSessionService $sessions,
+    ) {}
 
     /**
      * @return array{user: User, plainPassword: string}
@@ -23,6 +27,8 @@ class ResetUserPasswordAction
             'password' => $plainPassword,
             'must_change_password' => true,
         ])->save();
+
+        $this->sessions->invalidateAllForUser($target);
 
         return [
             'user' => $target->refresh(),

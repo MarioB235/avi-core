@@ -12,6 +12,8 @@ Punto de entrada de documentación de producto tras `portal/contenido/desarrollo
 | Necesidad | Referencia |
 |-----------|------------|
 | Visión y alcance MVP | [`references/producto.md`](references/producto.md) |
+| **Estado implementado vs preview** | [`references/estado-capacidades.md`](references/estado-capacidades.md) |
+| Plan de entrega v1 (tareas) | [`portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md`](../../../portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md) |
 | Mercado Uruguay / SMA / coeficientes | [`references/mercado-uruguay.md`](references/mercado-uruguay.md) |
 | **Operario primero / olas / investigación humana** | [`references/estrategia-implementacion.md`](references/estrategia-implementacion.md) |
 | Stack y principios | [`references/arquitectura.md`](references/arquitectura.md) |

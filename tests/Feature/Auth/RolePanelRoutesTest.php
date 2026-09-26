@@ -52,6 +52,36 @@ class RolePanelRoutesTest extends TestCase
             ->assertRedirect(route('dueno.home'));
     }
 
+    public function test_reparto_user_is_redirected_from_operario_mobile(): void
+    {
+        $empresa = Empresa::factory()->create();
+
+        $reparto = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Reparto,
+            'must_change_password' => false,
+        ]);
+
+        $this->actingAs($reparto)
+            ->get(route('operario.home'))
+            ->assertRedirect(route('reparto.home'));
+    }
+
+    public function test_reparto_user_is_redirected_from_dueno_resumen(): void
+    {
+        $empresa = Empresa::factory()->create();
+
+        $reparto = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Reparto,
+            'must_change_password' => false,
+        ]);
+
+        $this->actingAs($reparto)
+            ->get(route('dueno.resumen.index'))
+            ->assertRedirect(route('reparto.home'));
+    }
+
     public function test_reparto_user_reaches_reparto_stub_home(): void
     {
         $empresa = Empresa::factory()->create();

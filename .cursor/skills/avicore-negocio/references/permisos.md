@@ -39,9 +39,27 @@
 
 \* Dueño: alta de lote solo vía vista móvil `/operario` (hub Cargar), no panel Estructura.
 
+### Decisión D02 (cerrada SEG-07, 2026-09-26)
+
+**Problema:** el Dueño necesita lectura simple de su empresa; la operación no puede depender de una sola persona ausente.
+
+**Acuerdo MVP:**
+
+| Faceta | Dueño | Administrativo |
+|--------|-------|----------------|
+| Supervisión (Resumen) | Sí | Sí |
+| Equipo / Comercial | Sí (lectura / preview) | No |
+| Estructura / Usuarios | No | Sí (CRUD oficina) |
+| Móvil `/operario` | Sí (lote + cargas) | Sí (lote + cargas) |
+| Asignar rol Dueño | No (solo Admin Avicore crea Dueño inicial) | No |
+
+**Regla:** roles **complementarios** — el Administrativo cubre granjas, galpones, lotes y usuarios si el Dueño no está; el Dueño mantiene visión estratégica sin duplicar la gestión de oficina.
+
+**Verificación:** `tests/Support/RoleCapabilitiesMatrix.php` + `RoleCapabilitiesMatrixTest` + `DuenoAdministrativoAccessTest`.
+
 ---
 
-## 3. Admin AviCore
+## 3. Admin Avicore
 
 Puede:
 
@@ -121,7 +139,25 @@ Cada rol tiene **prefijo de ruta propio** (Opción A). `/admin` y `/admin/*` red
 
 Middleware `EnsureRolePanelAccess`: solo el rol dueño del prefijo accede a ese panel; otro rol → redirect a su `homeRouteName()`.
 
-Si `must_change_password`, todas las rutas autenticadas excepto `/password/change` redirigen al cambio obligatorio.
+`EnsureAccountVigente` (grupo `web`): en **cada request** revalida usuario `activo` y empresa `permiteLogin()` vía `AccountAccessService`; si falla, cierra sesión y redirige a login (incluye actualizaciones Livewire). Refresca el modelo en memoria para que cambios de rol o `must_change_password` apliquen sin re-login.
+
+`EnsurePasswordChanged`, `EnsureOperarioAccess` y `EnsureRolePanelAccess` también están registrados como **middleware persistente de Livewire** (`AppServiceProvider`): las acciones de componente con snapshot previo respetan el rol y el cambio de clave obligatorio.
+
+**Autorización por acción Livewire (SEG-04):** Resumen/Equipo/Comercial usan `AdminModulePolicy` vía Gates `admin.viewResumen|Equipo|Comercial` y trait `RequiresAdminModuleAccess` (`mount` + `hydrate`); Usuarios/Estructura usan `$this->authorize(...)` con policies de modelo; operario rechaza `guardarLote` / `abrirFormularioLote` vía `Gate` + `LotePolicy::create` (403), no fallo silencioso.
+
+**Aislamiento multiempresa (SEG-05):** `EmpresaScopeService` centraliza `constrainQuery` / `findForActor` para Livewire admin; policies + `forEmpresa()` en Actions/servicios; suite `EmpresaIsolationTest` cubre filtro, alta, edición, anulación y estructura.
+
+**Coherencia relacional (SEG-06):** `EmpresaRelationalGuard` valida actor↔empresa, granja↔galpón y lote↔galpón en Actions de estructura, lotes, cargas y vacunación; suite `RelationalCoherenceTest` + unit `EmpresaRelationalGuardTest`.
+
+**Matriz Dueño/Administrativo (SEG-07 / D02):** `tests/Support/RoleCapabilitiesMatrix.php` es la fuente de verdad para tests; `RoleCapabilitiesMatrixTest` y `DuenoAdministrativoAccessTest` verifican enum + rutas.
+
+**Administración segura (SEG-08):** `UserManagementGuard` impide dejar la empresa sin administrativo activo (desactivar o degradar el último con `canManageUsers`); `UpdateUserAction` ya bloquea auto-desactivación y roles no asignables (`assignableRoles`). Tests: `UserManagementGuardTest`, `AdminUsuariosTest`.
+
+**Login multiempresa (SEG-09):** `LoginCandidateResolver` centraliza documento + contraseña + vigencia (`AccountAccessService`); sin selector de empresa en MVP; ambigüedad → mensaje genérico sin revelar empresas. Tests: `LoginCandidateResolverTest`, `MultiEmpresaLoginTest`, `LoginFlowTest`.
+
+**Recuperación y sesiones (SEG-10):** reset autorizado vía `ResetUserPasswordAction` (`must_change_password` + invalidación de sesiones); cambio voluntario en `ChangePasswordAction` cierra otras sesiones; desactivar usuario invalida sesiones (`UpdateUserAction`); clave temporal solo en UI, sin logs. Invalidación efectiva requiere `SESSION_DRIVER=database` en producción/staging (`arranque-local.md`). Tests: `UserSessionServiceTest`, `SessionRecoveryTest`, `ChangePasswordTest`, `SessionVigenciaTest`.
+
+Si `must_change_password`, todas las rutas autenticadas excepto `/password/change` redirigen al cambio obligatorio (GET y `POST /livewire/update`).
 
 Valores de rol en BD: `admin_avicore`, `dueno`, `administrativo`, `encargado`, `operario`, `reparto` (enum `UserRole`).
 
@@ -175,6 +211,7 @@ No puede:
 | **Encargado** | Inicio, Resumen, Estructura (ver + lotes), Usuarios (ver + reset contraseña) | Pantallas propias en `/encargado` |
 | **Admin AviCore** | Inicio, Usuarios (multiempresa) | Sin cambio |
 | **Operario** | Solo `/operario` | Sin cambio |
+| **Reparto** | Stub `/reparto` (etapa 2); sin móvil ni Resumen | `canAccessOperarioMobile` y `canViewResumen` en **false**; `assignableRoles` vacío |
 
 **Práctica de desarrollo:** login demo **Dueño** para Inicio/Resumen; **Administrativo** para Estructura; **Operario** para campo; **Encargado** para supervisión.
 
@@ -194,6 +231,7 @@ Tabs en `AdminNav` (bottom nav / sidebar). Ruta = `/{prefijo-rol}/…`.
 | Comercial | Sí (preview) | No | No | No |
 | Estructura | No | Sí (CRUD completo) | Sí (ver + lotes) | No |
 | Usuarios | No | Sí (CRUD) | Sí (ver + reset) | Sí (CRUD multiempresa) |
+| Reparto (stub) | No | No | No | No |
 
 Métodos en `UserRole`: `canViewResumen`, `canViewEquipo`, `canViewComercial`, `canViewEstructura`, `canViewUsers`, `canManageEstructura`, `canManageUsers`, `canResetUserPassword`.
 

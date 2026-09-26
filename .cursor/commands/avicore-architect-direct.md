@@ -78,7 +78,7 @@ Mantener completos: código, comandos, tabla auditoría (msg 2) y plantilla PR (
 
 ### 1 — Preparación (solo si la tarea implica escritura)
 
-1. `git status` y rama actual. Si el worktree tiene cambios ajenos sin commit/stash, detenerse y avisar.
+1. `git status` y rama actual. **Worktree:** capturar baseline; conservar cambios locales. Archivos **nuevos** sin colisión o lectura de checkpoint/plan no exigen detener la tarea. **Solo parar** si vas a editar un archivo que ya tiene cambios ajenos sin resolver (no `stash`/`reset`/`pull` a ciegas).
 2. Consultas o plan **sin** modificar archivos: no crear rama ni hacer `pull` obligatorio.
 3. Si está en `main`/`master` **y** la tarea escribe código/docs: `git pull` (si hay remoto) y `git checkout -b [tipo]/[nombre-descriptivo]`.
 4. No commit, push ni PR salvo mensaje **5** con autorización explícita. En commit: **stagear rutas explícitas** (nunca `git add .` a ciegas).
@@ -109,6 +109,8 @@ Elegir **un** skill principal según la intención del usuario (mapa en el READM
 ### 4 — Implementar
 
 Sin confirmaciones intermedias salvo bloqueo crítico. Respetar `avicore-negocio/references/` y reglas `.mdc` por glob.
+
+**Puerta de cierre (tareas de producto):** no declarar terminado sin resultado observable, permisos/empresa/validación comprobados, tests relevantes ejecutados (o bloqueo de entorno documentado) y contrato actualizado si cambió. Test fallido o sin ejecutar ≠ verificado.
 
 ### 5 — Documentación de producto
 
@@ -152,6 +154,35 @@ Verificar: `pnpm run check:agent-docs`
 
 Bloque **Qué sigue** (una acción concreta). Prosa breve: **En corto** primero; skill(s) usados solo si aporta.
 
+En **modo ejecutar plan:** actualizar `portal/planes/CHECKPOINT.md`, evidencia en `portal/planes/evidencias/` y casillero del plan maestro antes de cerrar sesión.
+
+## Modo ejecutar plan
+
+Activar cuando el usuario pide continuar el plan maestro, reanudar sesión o copia la plantilla **1b** de `plantillas-cursor.html`.
+
+| Fuente | Rol |
+|--------|-----|
+| `portal/planes/CHECKPOINT.md` | Estado de sesión, siguiente ID, mensaje de reanudación |
+| `portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md` | Cola de tareas, dependencias, puertas GATE |
+| `portal/planes/DIAGNOSTICO-Y-MEJORAS-AVICORE.md` | Hallazgos P1/P2 (solo lectura inicial) |
+| `avicore-contexto/references/estado-capacidades.md` | Implementado vs preview vs pendiente |
+
+**Bucle por tarea (una unidad coherente por iteración):**
+
+1. Leer checkpoint y plan; inspeccionar rama y diff local.
+2. Elegir la tarea de mayor prioridad **desbloqueada** (`CHECKPOINT` → siguiente ID, o primera P1 sin dependencias abiertas).
+3. Declarar en chat: **ID**, objetivo y **prueba de cierre** (comando o criterio observable).
+4. Leer skills/`references/` del dominio; contrastar con código existente.
+5. Implementar; investigar stack solo con fuentes oficiales si hace falta.
+6. **Verificar** (paso 4 — puerta de cierre); corregir fallos propios.
+7. Marcar `[x]` en el plan **solo** si cumple definición de terminado del plan maestro §2; si no, dejar `[ ]` y registrar bloqueo.
+8. Escribir evidencia (`portal/planes/evidencias/<ID>-*.md` o sección §24 del plan) y actualizar `CHECKPOINT.md` (siguiente ID, tests, en curso).
+9. Si queda trabajo desbloqueado en la misma sesión, volver al paso 2; si no, informar bloqueo concreto o siguiente ID.
+
+**Autonomía:** lectura, implementación local, tests, docs y correcciones relacionadas. **No** autoriza commit/push/PR, producción ni aceptación del cliente.
+
+Plantilla copiable: `portal/contenido/desarrollo/plantillas-cursor.html` → acordeón **1b — Ejecutar plan maestro**.
+
 ## Referencia
 
-`.cursor/README.md` · `.cursor/skills/README.md` · `portal/contenido/desarrollo/contexto.html` · `portal/contenido/desarrollo/mensajes-reutilizables.html`
+`.cursor/README.md` · `.cursor/skills/README.md` · `portal/contenido/desarrollo/contexto.html` · `portal/contenido/desarrollo/mensajes-reutilizables.html` · `portal/planes/CHECKPOINT.md`

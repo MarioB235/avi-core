@@ -3,6 +3,7 @@
 namespace Tests\Feature\Ui;
 
 use App\Livewire\Auth\Login;
+use App\Models\Empresa;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -54,6 +55,8 @@ class LoginViewTest extends TestCase
 
     public function test_login_renders_demo_role_select_when_flag_enabled(): void
     {
+        $this->app['env'] = 'local';
+        Empresa::factory()->create(['codigo' => 'DEMO']);
         config(['avicore.demo_login.enabled_flag' => true]);
 
         $html = Livewire::test(Login::class)

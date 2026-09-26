@@ -14,6 +14,7 @@ use App\Enums\TipoHuevo;
 use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\Lote;
+use App\Services\EmpresaScopeService;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -96,11 +97,21 @@ class Index extends Component
 
     public function mount(): void
     {
-        $this->authorize('viewAny', Granja::class);
+        $this->authorizeModuleAccess();
 
         if (! in_array($this->seccion, ['granjas', 'galpones', 'lotes'], true)) {
             $this->seccion = 'granjas';
         }
+    }
+
+    public function hydrate(): void
+    {
+        $this->authorizeModuleAccess();
+    }
+
+    protected function authorizeModuleAccess(): void
+    {
+        $this->authorize('viewAny', Granja::class);
     }
 
     public function updatedSeccion(): void
@@ -414,13 +425,7 @@ class Index extends Component
     private function findScopedGranja(int $granjaId): Granja
     {
         $actor = auth()->user();
-        $query = Granja::query()->whereKey($granjaId);
-
-        if ($actor->empresa_id !== null) {
-            $query->where('empresa_id', $actor->empresa_id);
-        }
-
-        $granja = $query->firstOrFail();
+        $granja = app(EmpresaScopeService::class)->findForActor(Granja::query(), $actor, $granjaId);
         $this->authorize('view', $granja);
 
         return $granja;
@@ -429,13 +434,7 @@ class Index extends Component
     private function findScopedGalpon(int $galponId): Galpon
     {
         $actor = auth()->user();
-        $query = Galpon::query()->whereKey($galponId);
-
-        if ($actor->empresa_id !== null) {
-            $query->where('empresa_id', $actor->empresa_id);
-        }
-
-        $galpon = $query->firstOrFail();
+        $galpon = app(EmpresaScopeService::class)->findForActor(Galpon::query(), $actor, $galponId);
         $this->authorize('view', $galpon);
 
         return $galpon;
@@ -444,13 +443,7 @@ class Index extends Component
     private function findScopedLote(int $loteId): Lote
     {
         $actor = auth()->user();
-        $query = Lote::query()->whereKey($loteId);
-
-        if ($actor->empresa_id !== null) {
-            $query->where('empresa_id', $actor->empresa_id);
-        }
-
-        $lote = $query->firstOrFail();
+        $lote = app(EmpresaScopeService::class)->findForActor(Lote::query(), $actor, $loteId);
         $this->authorize('view', $lote);
 
         return $lote;

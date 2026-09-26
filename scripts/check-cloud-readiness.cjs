@@ -80,6 +80,12 @@ if (!envExample.includes('AVICORE_DEMO_LOGIN')) {
   ok('AVICORE_DEMO_LOGIN documentado en .env.example');
 }
 
+if (!envExample.includes('SESSION_SECURE_COOKIE')) {
+  fail('.env.example sin SESSION_SECURE_COOKIE');
+} else {
+  ok('SESSION_SECURE_COOKIE documentado en .env.example');
+}
+
 if (!envExample.includes('AVICORE_PWA_ENABLED')) {
   fail('.env.example sin AVICORE_PWA_ENABLED');
 } else {

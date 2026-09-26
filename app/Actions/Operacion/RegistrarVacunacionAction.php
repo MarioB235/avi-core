@@ -9,11 +9,14 @@ use App\Models\Galpon;
 use App\Models\Lote;
 use App\Models\User;
 use App\Models\Vacunacion;
+use App\Services\EmpresaRelationalGuard;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
 class RegistrarVacunacionAction
 {
+    public function __construct(private EmpresaRelationalGuard $relations) {}
+
     public function execute(
         User $user,
         Galpon $galpon,
@@ -23,17 +26,9 @@ class RegistrarVacunacionAction
     ): Vacunacion {
         Gate::forUser($user)->authorize('view', $galpon);
 
-        if ($user->empresa_id !== $galpon->empresa_id || $user->empresa_id !== $lote->empresa_id) {
-            throw ValidationException::withMessages([
-                'lote_id' => 'No podés vacunar en un lote de otra empresa.',
-            ]);
-        }
-
-        if ($lote->galpon_id !== $galpon->id) {
-            throw ValidationException::withMessages([
-                'lote_id' => 'El lote no pertenece al galpón seleccionado.',
-            ]);
-        }
+        $this->relations->assertGalponOfActor($user, $galpon);
+        $this->relations->assertLoteOfActor($user, $lote);
+        $this->relations->assertLoteBelongsToGalpon($lote, $galpon);
 
         if (! $galpon->estado->permiteCarga() || ! $galpon->activo) {
             throw ValidationException::withMessages([

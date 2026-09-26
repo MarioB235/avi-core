@@ -33,37 +33,39 @@ Avícola Demo
 
 ---
 
-## 4. Usuario único de prueba
+## 4. Usuarios de prueba (login demo)
 
-El seed crea **un solo usuario** (`AvicoreAuthSeeder`).
+El seed crea usuarios fijos por rol (`AvicoreAuthSeeder` + `AvicoreEquipoDemoSeeder`). El selector **no muta** el rol en BD: cada perfil entra con su usuario demo.
 
 ### Credenciales (copiar)
 
-```text
-Documento:  000000000
-Contraseña: Avicore2026!
-Nombre:     Usuario Prueba
-```
+Contraseña común en seed: `Avicore2026!`
 
-| Campo | Valor |
-|-------|--------|
-| Nombre | Usuario Prueba |
-| Documento | `000000000` |
-| Contraseña | `Avicore2026!` |
-| Rol inicial en BD | Dueño (cambia al entrar con el selector) |
+| Perfil | Documento | Nombre |
+|--------|-----------|--------|
+| Dueño | `000000000` | Usuario Prueba |
+| Administrativo | `66666666` | Laura Fernández |
+| Encargado | `55555555` | Roberto Méndez |
+| Operario | `11111111` | María López |
+| Reparto | `44444444` | Diego Souza |
+| Admin AviCore | `900000000` | Admin Demo AviCore |
 
-Empresa: **Avícola Demo** (`DEMO`), excepto si elegís **Admin AviCore** en el selector (sin empresa).
+Empresa: **Avícola Demo** (`DEMO`), excepto **Admin AviCore** (sin `empresa_id`).
 
 ### Cómo entrar
 
 | Modo | Variable | Qué haces |
 |------|----------|-----------|
 | **Selector (MVP)** | `AVICORE_DEMO_LOGIN=true` | Elegís rol en **Perfil** → Ingresar. Sin documento ni contraseña. |
-| **Login normal** | `AVICORE_DEMO_LOGIN=false` | Documento `000000000` + `Avicore2026!` (rol = el que quedó en BD tras el último login demo) |
+| **Login normal** | `AVICORE_DEMO_LOGIN=false` | Documento + contraseña del perfil que quieras probar. |
 
-Al elegir un rol en el selector, el sistema **actualiza ese mismo usuario** con el rol elegido y te loguea. Cerrás sesión, elegís otro rol → mismo usuario, distinto permiso.
+### Guards de seguridad (`DemoLoginService`)
 
-**Primera vez / BD vacía:** `php artisan db:seed --force`. Re-ejecutar el seed es seguro (`firstOrCreate` en empresa y usuario demo).
+1. **`APP_ENV=production`:** selector deshabilitado siempre (aunque el flag diga `true`).
+2. **Sin empresa demo:** si no existe empresa con código `DEMO`, el selector no se activa (staging con datos reales).
+3. **Solo usuarios demo:** el login por selector rechaza usuarios fuera de Avícola Demo (o Admin AviCore demo sin empresa).
+
+**Primera vez / BD vacía:** `php artisan db:seed --force`. Re-ejecutar el seed es seguro (`firstOrCreate`).
 
 **Antes de go-live real:** `AVICORE_DEMO_LOGIN=false` y redeploy.
 

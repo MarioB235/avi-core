@@ -20,7 +20,8 @@ Regla ligera: **no duplica** el contrato. Fuentes canónicas abajo.
 | Flujo del slash (7 pasos) | `.cursor/commands/avicore-architect-direct.md` |
 | Mensaje → skill (única tabla) | `.cursor/skills/README.md` |
 | Detalle de producto | `.cursor/skills/*/references/` |
-| Mensajes copiables (5) | `portal/contenido/desarrollo/mensajes-reutilizables.html` |
+| Mensajes copiables (5 + plan 1b) | `portal/contenido/desarrollo/mensajes-reutilizables.html` |
+| Plan de entrega v1 / checkpoint | `portal/planes/CHECKPOINT.md` · modo ejecutar plan en el slash |
 | Config Cursor | `.cursor/README.md` |
 | Chat en prosa natural | `.cursor/rules/avicore-modo-respuesta-clara.mdc` |
 

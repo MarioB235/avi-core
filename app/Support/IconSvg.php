@@ -8,6 +8,7 @@ class IconSvg
 {
     public function fileMarkup(string $name): ?string
     {
+        $name = SafeAssetName::assert($name);
         $path = resource_path("images/icons/{$name}.svg");
 
         if (! File::isReadable($path)) {

@@ -60,6 +60,8 @@ const POINTER_CHECKS = [
   ['comando', comando, 'avicore-negocio'],
   ['comando', comando, 'Arquitectura documental'],
   ['comando', comando, 'portal/contenido/desarrollo/mensajes-reutilizables.html'],
+  ['comando', comando, 'portal/planes/CHECKPOINT.md'],
+  ['comando', comando, 'Modo ejecutar plan'],
   ['comando', comando, 'solo al final del mensaje 2'],
   ['skills README', skillsReadme, 'Única tabla mensaje → skill'],
   ['skills README', skillsReadme, 'avicore-deuda-tecnica'],
@@ -133,6 +135,8 @@ const PLANTILLA_NEEDLES = [
   'pnpm run check:docs-impact',
   '.cursor/skills/README.md',
   'portal/contenido/desarrollo/contexto.html',
+  'portal/planes/CHECKPOINT.md',
+  '1b — Ejecutar plan maestro',
 ];
 for (const needle of PLANTILLA_NEEDLES) {
   if (!desarrolloHtml.includes(needle)) {

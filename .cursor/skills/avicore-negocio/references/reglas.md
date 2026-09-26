@@ -19,12 +19,13 @@
 6. El primer ingreso exige cambio obligatorio de contraseña antes de usar el sistema.
 7. La nueva contraseña debe cumplir política mínima: 8+ caracteres, letras, mayúsculas/minúsculas y números; no puede repetir la actual.
 8. Tras 5 intentos fallidos de login por documento e IP en 60 segundos, se bloquea temporalmente el acceso; en login demo (`AVICORE_DEMO_LOGIN=true`) el mensaje va en el campo `demoRole`.
-9. Si un documento resuelve más de una cuenta activa con credenciales válidas, se rechaza el login (ambigüedad).
+9. Si un documento resuelve más de una cuenta **elegible** (activa, empresa vigente, contraseña correcta), se rechaza el login (ambigüedad). Si solo una cuenta es elegible aunque existan duplicados bloqueados (empresa suspendida/inactiva), se permite el ingreso. No hay selector de empresa en MVP: la contraseña (o la vigencia) desambigua.
 10. Usuario inactivo o empresa no activa impiden el acceso (Admin AviCore exceptuado de validación de empresa).
 11. Usuario no Admin AviCore sin `empresa_id` asignado no puede iniciar sesión.
-12. La recuperación de contraseña en MVP la realiza administrador o encargado autorizado. En login y cambio obligatorio de contraseña, el enlace «¿Olvidaste tu contraseña?» abre un diálogo con contacto de soporte (WhatsApp y/o correo desde `config/avicore.php` / `.env`, URLs validadas en `SupportContactService`); no hay reset automático por correo.
-13. Login demo MVP (`AVICORE_DEMO_LOGIN=true`): un solo usuario (`000000000`); el selector asigna el rol al entrar (sin credenciales en pantalla). Desactivar antes de go-live. Detalle: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4.
+12. La recuperación de contraseña en MVP la realiza administrador o encargado autorizado (`ResetUserPasswordAction`): clave temporal en pantalla, `must_change_password=true`, invalidación de sesiones del usuario (`UserSessionService`). No se registra la clave en logs. En login y cambio obligatorio de contraseña, el enlace «¿Olvidaste tu contraseña?» abre un diálogo con contacto de soporte (WhatsApp y/o correo desde `config/avicore.php` / `.env`, URLs validadas en `SupportContactService`); no hay reset automático por correo.
+13. Login demo MVP (`AVICORE_DEMO_LOGIN=true`): selector de perfil sin credenciales; cada rol usa un usuario demo fijo (no se muta el rol en BD). Solo activo si existe empresa `DEMO`; en `production` queda deshabilitado siempre. Desactivar antes de go-live. Detalle: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4.
 14. **Autogestión de perfil:** todo usuario autenticado puede editar su nombre y correo, y cambiar su contraseña voluntariamente (`/perfil` o `/operario/perfil`). No puede cambiar documento, rol ni empresa; eso lo hace un administrador.
+15. **Superficies técnicas:** rutas web con CSRF; datos de usuario escapados en vistas; logos solo bajo `empresas/logos/` (`EmpresaLogoPathGuard`); cookies seguras forzadas en `production`. Ver [`arquitectura.md`](../../avicore-contexto/references/arquitectura.md) § 5b.
 
 ---
 

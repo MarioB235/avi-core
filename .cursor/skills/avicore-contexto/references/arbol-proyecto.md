@@ -25,7 +25,7 @@ avi-core/
 
 **Migraciones:** skeleton Laravel + `empresas` + `users` + estructura avícola (`granjas`, `galpones`, `lotes`, `registros_operativos`, `vacunaciones`) + `users.ultimo_galpon_id`.
 
-**Auth (Bloque 2):** Livewire `Auth/Login`, `Auth/ChangePassword`; middleware en `bootstrap/app.php`; rutas `/dev/*` solo en entorno `local`. Contacto de recuperación MVP: `config/avicore.php` + `SupportContactService` + `x-auth.support-contact-dialog`. Login demo MVP: un usuario `000000000` (`AvicoreAuthSeeder` idempotente con `firstOrCreate`); el selector asigna rol al entrar (`DemoLoginService` + `executeDemo`).
+**Auth (Bloque 2):** Livewire `Auth/Login`, `Auth/ChangePassword`; middleware `EnsureAccountVigente` en grupo `web`; rutas `/dev/*` solo en entorno `local`. Contacto de recuperación MVP: `config/avicore.php` + `SupportContactService` + `x-auth.support-contact-dialog`. Login demo MVP: usuarios fijos por rol (`DemoLoginService` + `executeDemo`); guards production + empresa `DEMO` obligatoria. Servicios `Auth/AccountAccessService`, `LoginCandidateResolver`, `UserSessionService`.
 
 **Operario (slice mínimo):** Livewire `Operario/Home`, `Operario/CargarHub`, `Operario/CargaHuevos`, `Operario/CargaMuertes`, `Operario/CargaDescarte`, `Operario/CargaVacunacion`, `Operario/CargaAlimento`, `Operario/CargaLote` (redirect-only), `Operario/Historial`; `Profile/Edit` (`/operario/perfil`, `/perfil`); Concerns `ManagesGalponSelector`, `ManagesHuevosForm`, `ManagesMuertesForm`, `ManagesDescarteForm`, `ManagesVacunacionForm`, `ManagesAlimentoForm`, `ManagesLoteForm`, `ManagesCargaGuardada`; rutas `/operario`, `/operario/cargar`, `/operario/carga/huevos`, `/operario/carga/muertes`, `/operario/carga/descarte`, `/operario/carga/vacunacion`, `/operario/carga/alimento`, `/operario/carga/lote`, `/operario/historial`, `/operario/perfil`, `/perfil`; shell responsive con `x-operario.sidebar-nav` (escritorio), `x-operario.header`, `x-operario.user-menu`, `x-operario.home-hero`, `x-operario.perfil-hero`, `x-operario.primary-action`, `x-operario.cargar-hero`, `x-operario.historial-hero`, `x-operario.bottom-nav` (móvil), `x-ui.snackbar-host`, `x-ui.reveal` (secciones Inicio/Cargar), `x-ui.select`, `x-ui.date-picker` (filtro fecha Historial), `x-ui.textarea` (motivo anulación); `resources/js/scroll-reveal.js` + `operario-navigate.js` (scrim nav al scroll); carga huevos, muertes, descarte, alimento, vacunación y nuevo lote en hub vía `x-ui.dialog` (`partials/carga-*-form`); historial detalle/anulación (`partials/historial-detalle-dialog`); selector galpón en Inicio/Cargar/Historial (`ManagesGalponSelector` + `partials/galpon-chip-selector`); `OperarioGalponService` (scoped; `galponActual` con revalidación, `galponDisponibleParaUsuario`, `seleccionarGalpon`, `galponesDisponibles`, `historialCargasQuery`, `historialPaginado` — SQL `UNION ALL` + paginación; `avicore-defer`: unificar count+página si crece), `OperarioGalponResumenService` (scoped; `resumen` sin memo de totales, `lotesActivos` con memo intra-request, `edadSemanas`, KPIs y acumulados por galpón con agregados SQL), `RegistrarCargaHuevosAction`, `RegistrarCargaMuertesAction`, `RegistrarCargaDescarteAction`, `RegistrarCargaAlimentoAction`, `RegistrarVacunacionAction`, `AnularRegistroOperativoAction`, `AnularVacunacionAction`, `RegistrarLoteAction`, `UpdateProfileAction`, `ChangePasswordAction` (`updateProfile`), `Support\OperarioHistorialItem`, `VacunaTipo`, `GalponPolicy`, `LotePolicy`, `RegistroOperativoPolicy`, `VacunacionPolicy` (trait `Policies/Concerns/AuthorizesOperarioAnulacion`), `UserPolicy`, `OperarioLayoutComposer`, `Support\OperarioNav` (pestañas, iconos y títulos de header). `CargarHub::resolveGalponParaGuardar` revalida galpón con `galponDisponibleParaUsuario`. `EnsureOperarioAccess`: operario + dueño/administrativo/encargado.
 
@@ -56,10 +56,11 @@ app/
 │   └── User/                 # CreateUserAction, UpdateUserAction, UpdateProfileAction, ResetUserPasswordAction
 ├── Enums/                    # EmpresaEstado, UserRole, GalponEstado, LoteEstado, TipoHuevo, VacunaTipo, RegistroOperativo*
 ├── Http/
-│   ├── Middleware/           # EnsurePasswordChanged, EnsureRolePanelAccess, EnsureOperarioAccess, RedirectIfAuthenticated
+│   ├── Middleware/           # EnsureAccountVigente, EnsurePasswordChanged, EnsureRolePanelAccess, EnsureOperarioAccess, RedirectIfAuthenticated
 │   └── View/
 │       └── Composers/        # AdminHomeComposer, AdminLayoutComposer, OperarioLayoutComposer
 ├── Livewire/
+│   ├── Concerns/             # RequiresAdminModuleAccess (Gates admin Resumen/Equipo/Comercial)
 │   ├── Admin/
 │   │   ├── Comercial/        # Index (preview post-MVP, dueño)
 │   │   ├── Equipo/           # Index (solo lectura, dueño)
@@ -81,6 +82,7 @@ app/
 ├── Policies/
 │   ├── Concerns/
 │   │   └── AuthorizesOperarioAnulacion.php
+│   ├── AdminModulePolicy.php   # Gates admin.viewResumen|Equipo|Comercial
 │   ├── GalponPolicy.php
 │   ├── GranjaPolicy.php
 │   ├── LotePolicy.php
@@ -90,11 +92,16 @@ app/
 ├── Providers/
 │   └── AppServiceProvider.php
 ├── Services/
+│   ├── Auth/                    # AccountAccessService, LoginCandidateResolver, UserSessionService
 │   ├── AppBuildService.php   # metadata build (Versión en menú cuenta)
 │   ├── DemoLoginService.php
 │   ├── AdminHomeService.php
 │   ├── AdminResumenService.php
 │   ├── EmpresaContextService.php
+│   ├── EmpresaScopeService.php
+│   ├── EmpresaRelationalGuard.php
+│   ├── EmpresaLogoPathGuard.php
+│   ├── UserManagementGuard.php
 │   ├── OperarioGalponService.php
 │   ├── OperarioGalponResumenService.php
 │   ├── SupportContactService.php
@@ -103,6 +110,8 @@ app/
     ├── HuevosUnidad.php         # Conversión huevos ↔ maples/cajas (30 huevos/maple, 12 maples/caja)
     ├── IconSvg.php
     ├── IllustrationSvg.php      # Ilustraciones KPI operario (SVG en resources/images/illustrations/)
+    ├── ProductionSecurityConfig.php
+    ├── SafeAssetName.php
     ├── AdminNav.php             # Pestañas y títulos del shell admin (paridad operario)
     ├── Concerns/
     │   └── MapsNavTabsToTabBar.php
@@ -152,7 +161,7 @@ resources/
 | Reglas de negocio | `Actions/`, `Services/` | Validaciones complejas, cálculos, anulaciones |
 | Datos a vistas Blade estáticas | `Http/View/Composers/` | Inyección sin lógica en Blade (`Route::view`, p. ej. Inicio admin) |
 | HTTP / UI dinámica | `Livewire/` | Estado de formularios, listados |
-| Autorización | `Policies/` | Rol + `empresa_id` |
+| Autorización | `Policies/` (+ Gates `admin.view*` en `AppServiceProvider`) | Rol + `empresa_id` |
 | Tiempo real | `Events/` + canales privados | Ver `eventos.md` (cuando exista) |
 | Persistencia | `Models/`, `database/migrations/` | Espejo de `avicore-modelo-datos/references/esquema-bd.md` |
 

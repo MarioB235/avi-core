@@ -6,12 +6,14 @@ use App\Enums\GalponEstado;
 use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\User;
+use App\Services\EmpresaRelationalGuard;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 
 class CreateGalponAction
 {
+    public function __construct(private EmpresaRelationalGuard $relations) {}
+
     /**
      * @param  array{granja_id: int, nombre: string, codigo?: string|null, capacidad?: int|null, estado?: string, observacion?: string|null}  $data
      */
@@ -21,11 +23,7 @@ class CreateGalponAction
 
         $granja = Granja::query()->whereKey($data['granja_id'] ?? 0)->firstOrFail();
 
-        if ($granja->empresa_id !== $actor->empresa_id) {
-            throw ValidationException::withMessages([
-                'granja_id' => 'La granja no pertenece a tu empresa.',
-            ]);
-        }
+        $this->relations->assertGranjaOfEmpresa($granja, (int) $actor->empresa_id);
 
         $validated = validator($data, [
             'granja_id' => ['required', 'integer', Rule::exists('granjas', 'id')->where('empresa_id', $actor->empresa_id)],

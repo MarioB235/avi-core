@@ -368,7 +368,7 @@ class OperarioCargaLoteTest extends TestCase
             ->set('cantidadBlanco', '1000')
             ->set('fechaNacimiento', '2026-03-01')
             ->call('guardarLote')
-            ->assertNotDispatched('snackbar-show');
+            ->assertForbidden();
 
         $this->assertSame(0, Lote::query()->count());
     }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\UserRole;
+
 return [
 
     /*
@@ -40,15 +42,24 @@ return [
     |--------------------------------------------------------------------------
     |
     | AVICORE_DEMO_LOGIN=true: selector Perfil en /login (sin credenciales).
-    | Un solo usuario demo (AVICORE_DEMO_DOCUMENTO); el rol elegido se aplica al entrar.
-    | Desactivar (false) antes de go-live con clientes reales. En APP_ENV=production
-    | el selector demo queda deshabilitado siempre (DemoLoginService).
+    | Cada perfil usa un usuario demo fijo (role_documentos); no se muta el rol en BD.
+    | Solo funciona si existe empresa demo (empresa_codigo, seed AvicoreAuthSeeder).
+    | En APP_ENV=production el selector queda deshabilitado siempre (DemoLoginService).
+    | Desactivar (false) antes de go-live con clientes reales.
     |
     */
 
     'demo_login' => [
         'enabled_flag' => env('AVICORE_DEMO_LOGIN', false),
-        'documento' => env('AVICORE_DEMO_DOCUMENTO', '000000000'),
+        'empresa_codigo' => env('AVICORE_DEMO_EMPRESA_CODIGO', 'DEMO'),
+        'role_documentos' => [
+            UserRole::Dueno->value => env('AVICORE_DEMO_DOCUMENTO_DUENO', '000000000'),
+            UserRole::Administrativo->value => env('AVICORE_DEMO_DOCUMENTO_ADMINISTRATIVO', '66666666'),
+            UserRole::Encargado->value => env('AVICORE_DEMO_DOCUMENTO_ENCARGADO', '55555555'),
+            UserRole::Operario->value => env('AVICORE_DEMO_DOCUMENTO_OPERARIO', '11111111'),
+            UserRole::Reparto->value => env('AVICORE_DEMO_DOCUMENTO_REPARTO', '44444444'),
+            UserRole::AdminAvicore->value => env('AVICORE_DEMO_DOCUMENTO_ADMIN_AVICORE', '900000000'),
+        ],
     ],
 
     /*

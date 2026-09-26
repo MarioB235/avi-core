@@ -56,6 +56,12 @@ DB_PASSWORD=
 
 Completar `DB_PASSWORD` con la contraseña del rol `postgres`.
 
+### Sesiones (`SESSION_DRIVER`)
+
+En **local** suele bastar `SESSION_DRIVER=file` (default en `.env.example`).
+
+En **producción y staging** usar `SESSION_DRIVER=database` y ejecutar `php artisan session:table` + migración si aún no existe la tabla `sessions`. Sin driver `database`, `UserSessionService` no puede cerrar otras sesiones al resetear contraseña, desactivar usuario o cambiar contraseña (comportamiento documentado; no falla en silencio).
+
 ### Contacto de soporte (login — MVP)
 
 Opcional en `.env` (valores demo en `.env.example`). Alimentan el diálogo «¿Olvidaste tu contraseña?» vía `config/avicore.php` y `SupportContactService`:
@@ -126,9 +132,9 @@ php artisan db:seed
 
 Re-ejecutar el seed es seguro (`AvicoreAuthSeeder` usa `firstOrCreate`).
 
-**Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`): un solo usuario (`000000000`). Elegí **Perfil** en el selector; el rol se aplica al entrar. Sin documento ni contraseña en pantalla.
+**Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`): elegí **Perfil** en el selector (sin documento ni contraseña). Cada perfil usa un usuario demo fijo; no se cambia el rol en BD. Requiere empresa `DEMO` en la base; en `production` el selector no aparece.
 
-**Login normal** (`AVICORE_DEMO_LOGIN=false`): documento `000000000` + `Avicore2026!`.
+**Login normal** (`AVICORE_DEMO_LOGIN=false`): documento + `Avicore2026!` del usuario que quieras probar (ver `demo.md` § 4).
 
 | Perfil en el select | Después del login |
 |--------|-------------------|

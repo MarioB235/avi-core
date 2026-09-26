@@ -4,12 +4,19 @@ namespace App\Actions\User;
 
 use App\Enums\UserRole;
 use App\Models\User;
+use App\Services\Auth\UserSessionService;
+use App\Services\UserManagementGuard;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class UpdateUserAction
 {
+    public function __construct(
+        private UserManagementGuard $userManagement,
+        private UserSessionService $sessions,
+    ) {}
+
     /**
      * @param  array{name: string, documento: string, email?: string|null, rol: string, activo: bool}  $data
      */
@@ -45,6 +52,8 @@ class UpdateUserAction
             ]);
         }
 
+        $this->userManagement->assertCompanyRetainsActiveManager($target, $rol, $activo);
+
         validator(
             [
                 'name' => $data['name'],
@@ -74,6 +83,8 @@ class UpdateUserAction
             ]
         )->validate();
 
+        $wasActive = $target->activo;
+
         $target->fill([
             'name' => trim($data['name']),
             'documento' => trim($data['documento']),
@@ -81,6 +92,10 @@ class UpdateUserAction
             'rol' => $rol,
             'activo' => $activo,
         ])->save();
+
+        if ($wasActive && ! $activo) {
+            $this->sessions->invalidateAllForUser($target);
+        }
 
         return $target->refresh();
     }

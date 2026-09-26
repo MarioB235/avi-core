@@ -4,8 +4,10 @@ namespace App\Livewire\Operario\Concerns;
 
 use App\Actions\Lote\RegistrarLoteAction;
 use App\Enums\TipoHuevo;
+use App\Models\Lote;
 use App\Services\OperarioGalponService;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
 trait ManagesLoteForm
@@ -28,9 +30,7 @@ trait ManagesLoteForm
 
     public function abrirFormularioLote(OperarioGalponService $operarioGalponService): void
     {
-        if (! auth()->user()->rol->canCreateLote()) {
-            return;
-        }
+        $this->authorizeCreateLote();
 
         $this->resetFormularioLote($operarioGalponService);
         $this->dialogLoteAbierto = true;
@@ -47,9 +47,7 @@ trait ManagesLoteForm
         RegistrarLoteAction $registrarLote,
         OperarioGalponService $operarioGalponService,
     ): void {
-        if (! auth()->user()->rol->canCreateLote()) {
-            return;
-        }
+        $this->authorizeCreateLote();
 
         $rules = [
             'loteGalponId' => ['required', 'integer', 'min:1'],
@@ -156,5 +154,10 @@ trait ManagesLoteForm
         ]);
         $this->loteGalponId = $loteGalponId;
         $this->resetValidation();
+    }
+
+    private function authorizeCreateLote(): void
+    {
+        Gate::forUser(auth()->user())->authorize('create', Lote::class);
     }
 }

@@ -8,8 +8,8 @@ Permite registrar y consultar producción diaria por galpón: huevos, mortalidad
 
 | Fase | Contenido |
 |------|-----------|
-| **Hecho** | Bloque 1–2 + operario + admin usuarios: estructura avícola, carga huevos/muertes/vacunación, alta lote, historial, `/admin/usuarios` |
-| **Siguiente** | Ver [`avicore-contexto/references/plan-desarrollo.md`](.cursor/skills/avicore-contexto/references/plan-desarrollo.md) |
+| **Hecho / parcial** | Base, operario completo, PWA, admin usuarios/estructura/Inicio/Resumen — ver matriz en [`estado-capacidades.md`](.cursor/skills/avicore-contexto/references/estado-capacidades.md) |
+| **Entrega v1** | Tareas verificables en [`portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md`](portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md) |
 
 ## Stack
 

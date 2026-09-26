@@ -7,6 +7,7 @@ use App\Enums\TipoHuevo;
 use App\Models\Galpon;
 use App\Models\Lote;
 use App\Models\User;
+use App\Services\EmpresaRelationalGuard;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,8 @@ use Illuminate\Validation\ValidationException;
 
 class RegistrarLoteAction
 {
+    public function __construct(private EmpresaRelationalGuard $relations) {}
+
     /**
      * @param  array<string, int>  $cantidadesPorTipo  claves: valor de `TipoHuevo`
      * @return Collection<int, Lote>
@@ -30,11 +33,7 @@ class RegistrarLoteAction
         Gate::forUser($user)->authorize('create', Lote::class);
         Gate::forUser($user)->authorize('view', $galpon);
 
-        if ($user->empresa_id !== $galpon->empresa_id) {
-            throw ValidationException::withMessages([
-                'galponId' => 'El galpón no pertenece a tu empresa.',
-            ]);
-        }
+        $this->relations->assertGalponOfActor($user, $galpon, 'galponId');
 
         if (! $galpon->estado->permiteCarga() || ! $galpon->activo) {
             throw ValidationException::withMessages([

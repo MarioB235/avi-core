@@ -14,10 +14,17 @@ class AdminResumenService
 {
     public const MORTALIDAD_REFERENCIA_PCT = 1.1;
 
-    public function __construct(private OperarioGalponResumenService $galponResumen) {}
+    public function __construct(
+        private OperarioGalponResumenService $galponResumen,
+        private EmpresaScopeService $empresaScope,
+    ) {}
 
     public function for(User $user, ?int $granjaId = null, ?int $galponId = null): AdminResumenViewData
     {
+        if ($user->empresa_id === null || ! $user->rol->canViewResumen()) {
+            return $this->resumenVacio();
+        }
+
         $galpones = $this->galponesEnScope($user, $granjaId, $galponId);
         $galponIds = $galpones->modelKeys();
 
@@ -302,6 +309,20 @@ class AdminResumenService
         return $puntos;
     }
 
+    private function resumenVacio(): AdminResumenViewData
+    {
+        return new AdminResumenViewData(
+            huevosHoy: 0,
+            huevosDescarteHoy: 0,
+            muertesHoy: 0,
+            avesActuales: 0,
+            alertasCount: 0,
+            alimentoKgHoy: 0.0,
+            galponesResumen: [],
+            galponesActivos: 0,
+        );
+    }
+
     private function galponesEnScope(User $user, ?int $granjaId, ?int $galponId): Collection
     {
         if ($user->empresa_id === null) {
@@ -310,9 +331,10 @@ class AdminResumenService
 
         $query = Galpon::query()
             ->with('granja')
-            ->where('empresa_id', $user->empresa_id)
             ->where('activo', true)
             ->orderBy('nombre');
+
+        $query = $this->empresaScope->constrainQuery($query, $user);
 
         if ($granjaId !== null) {
             $query->where('granja_id', $granjaId);

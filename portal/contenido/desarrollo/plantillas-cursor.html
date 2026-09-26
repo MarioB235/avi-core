@@ -41,6 +41,32 @@ Aquí te detallo la tarea:</code></pre>
 </details>
 
 <details>
+  <summary>1b — Ejecutar plan maestro · reanudar sesión</summary>
+  <div class="subsection">
+    <p class="copy-hint">Cola de trabajo v1 · checkpoint en <code>portal/planes/CHECKPOINT.md</code> · detalle en el slash (modo ejecutar plan)</p>
+    <pre><code>/avicore-architect-direct
+Continuá la ejecución del plan de entrega AviCore.
+
+▶ Modo ejecutar plan (comando slash). Leé en orden:
+1. portal/planes/CHECKPOINT.md
+2. portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md
+3. portal/planes/DIAGNOSTICO-Y-MEJORAS-AVICORE.md (solo si hace falta contexto)
+4. .cursor/skills/avicore-contexto/references/estado-capacidades.md
+
+Empezá por el «Siguiente ID» del checkpoint (o la primera tarea P1 desbloqueada).
+Por cada tarea: declará ID + prueba de cierre → implementá → verificá → evidencia → actualizá checkpoint y plan.
+No marques [x] sin prueba de cierre. Bloqueo humano (D01–D07): registrá y seguí tareas independientes.
+
+Reglas fijas:
+- Sin commit, push, PR ni despliegue sin mensaje 5 explícito.
+- Si cambió contrato: references/ del skill dueño + portal/CHANGELOG.md.
+- Preservá cambios locales; no stash/reset/pull a ciegas.
+
+Al cerrar sesión: actualizá CHECKPOINT.md y evidencia en portal/planes/evidencias/.</code></pre>
+  </div>
+</details>
+
+<details>
   <summary>2 — Auditoría técnica · solo lectura · inicio del cierre</summary>
   <div class="subsection">
     <p class="copy-hint">Skill: <code>avicore-auditoria</code> (revisar)</p>
