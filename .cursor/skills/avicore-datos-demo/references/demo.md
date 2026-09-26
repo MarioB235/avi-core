@@ -26,6 +26,8 @@ Avícola Demo
 - 1 lote activo en Galpón 1 (con `codigo_sma` demo `L-2024-089`).
 - Usuario prueba con `ultimo_galpon_id` = Galpón 1 (si entrás como operario).
 - **Cargas demo** (`AvicoreOperarioDemoSeeder`): huevos 1200 + 30 descarte, 2 muertes, 1 descarte de aves, alimento 8500 kg (hace 2 días), huevos de ayer, vacunación Gumboro (hace 3 días) — solo si el galpón no tenía registros.
+- **Panel Dueño demo** (`AvicoreDuenoDemoSeeder`): lote en Galpón 2, historial de postura 7 días (ambos galpones) y carga de huevos de hoy en G-02 — idempotente por fecha/galpón.
+- **Equipo demo** (`AvicoreEquipoDemoSeeder`): 6 personas ficticias en Avícola Demo (3 operarios, 1 reparto, 1 encargado, 1 administrativo) para poblar el directorio en `/dueno/equipo`. El Dueño sigue siendo `Usuario Prueba` (`000000000`). Idempotente (`firstOrCreate` por documento).
 
 **Demo completa (planificada):** ver [`plan-desarrollo.md`](../../avicore-contexto/references/plan-desarrollo.md) Bloque 7.
 

@@ -70,7 +70,7 @@ class AdminUserMenuTest extends TestCase
             ->assertSee('Versión', false)
             ->assertSee('abc1234', false)
             ->assertDontSee('avicore-admin-header__user-avatar', false)
-            ->assertSee('Resumen de Avícola Demo', false)
+            ->assertSee('Tu empresa', false)
             ->assertSee('Equipo', false)
             ->assertDontSee('Accesos rápidos', false)
             ->assertDontSee('Tu gente en AviCore', false);

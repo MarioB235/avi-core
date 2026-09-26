@@ -3,8 +3,8 @@
 namespace App\Livewire\Admin\Comercial;
 
 use App\Services\AdminHomeService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Auth\Access\AuthorizationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -29,6 +29,7 @@ class Index extends Component
         return view('livewire.admin.comercial.index', [
             'contextLabel' => $adminHome->contextLabel($user),
             'items' => $adminHome->comercialPreviewItems(),
+            'clients' => $adminHome->comercialClientMap()['clients'],
         ]);
     }
 }

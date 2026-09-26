@@ -196,3 +196,5 @@ Tabs en `AdminNav` (bottom nav / sidebar). Ruta = `/{prefijo-rol}/…`.
 | Usuarios | No | Sí (CRUD) | Sí (ver + reset) | Sí (CRUD multiempresa) |
 
 Métodos en `UserRole`: `canViewResumen`, `canViewEquipo`, `canViewComercial`, `canViewEstructura`, `canViewUsers`, `canManageEstructura`, `canManageUsers`, `canResetUserPassword`.
+
+Acceso directo a rutas sin permiso (p. ej. encargado en `/encargado/equipo` o `/encargado/comercial`) → **HTTP 403** vía `AuthorizationException` en `mount()` del Livewire correspondiente.

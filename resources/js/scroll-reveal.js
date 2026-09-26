@@ -10,6 +10,7 @@ function prefersReducedMotion() {
 
 function revealElement(element) {
     element.classList.add(VISIBLE_CLASS);
+    element.dispatchEvent(new CustomEvent('avicore-reveal-visible', { bubbles: true }));
     observer?.unobserve(element);
 }
 

@@ -83,4 +83,16 @@ class LoginViewTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('/id="documento"[^>]*disabled="disabled"/s', $html);
         $this->assertDoesNotMatchRegularExpression('/id="password"[^>]*disabled="disabled"/s', $html);
     }
+
+    public function test_login_hides_demo_role_select_in_production_even_when_flag_enabled(): void
+    {
+        config(['avicore.demo_login.enabled_flag' => true]);
+        $this->app['env'] = 'production';
+
+        $html = Livewire::test(Login::class)->html();
+
+        $this->assertStringNotContainsString('name="demoRole"', $html);
+        $this->assertDoesNotMatchRegularExpression('/id="documento"[^>]*disabled="disabled"/s', $html);
+        $this->assertDoesNotMatchRegularExpression('/id="password"[^>]*disabled="disabled"/s', $html);
+    }
 }

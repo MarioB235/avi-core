@@ -303,6 +303,28 @@ class OperarioCargaHuevosTest extends TestCase
             ->assertRedirect(route('operario.cargar', ['abrir_galpon' => 1]));
     }
 
+    public function test_guardar_huevos_abre_selector_when_galpon_became_unavailable(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpones();
+        $operario->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
+
+        $component = Livewire::actingAs($operario)
+            ->test(CargarHub::class)
+            ->call('abrirFormularioHuevos')
+            ->assertSet('dialogHuevosAbierto', true)
+            ->set('huevos', '150')
+            ->set('huevosDescarte', '0');
+
+        $galpon->update(['estado' => GalponEstado::EnMantenimiento]);
+
+        $component
+            ->call('guardarHuevos')
+            ->assertSet('selectorGalponAbierto', true)
+            ->assertSet('dialogHuevosAbierto', false);
+
+        $this->assertSame(0, RegistroOperativo::query()->count());
+    }
+
     public function test_registrar_carga_huevos_action_rejects_unavailable_galpon(): void
     {
         [$operario, $galpon] = $this->createOperarioConGalpones();

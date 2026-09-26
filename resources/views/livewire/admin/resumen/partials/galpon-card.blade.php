@@ -29,11 +29,23 @@
             </p>
             <p class="avicore-operario-kpi-panel__label">Huevos hoy</p>
         </div>
+        <div class="avicore-operario-kpi-panel__metric">
+            <p class="avicore-operario-kpi-panel__value">
+                {{ number_format($datos['huevos_descarte_hoy'], 0, ',', '.') }}
+            </p>
+            <p class="avicore-operario-kpi-panel__label">Descarte</p>
+        </div>
         <div class="avicore-operario-kpi-panel__metric {{ $datos['muertes_hoy'] > 0 ? 'avicore-operario-kpi-panel__metric--warm avicore-operario-kpi-panel__metric--warm-alert' : '' }}">
             <p class="avicore-operario-kpi-panel__value">
                 {{ number_format($datos['muertes_hoy'], 0, ',', '.') }}
             </p>
             <p class="avicore-operario-kpi-panel__label">Muertes hoy</p>
+        </div>
+        <div class="avicore-operario-kpi-panel__metric">
+            <p class="avicore-operario-kpi-panel__value">
+                {{ number_format($fila['alimento_kg_hoy'], 0, ',', '.') }}
+            </p>
+            <p class="avicore-operario-kpi-panel__label">Alimento kg</p>
         </div>
         <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--alive">
             <p class="avicore-operario-kpi-panel__value">

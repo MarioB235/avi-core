@@ -6,6 +6,7 @@ use App\Enums\LoteEstado;
 use App\Models\Galpon;
 use App\Models\Lote;
 use App\Models\RegistroOperativo;
+use App\Support\HuevosUnidad;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
@@ -63,7 +64,7 @@ class OperarioGalponResumenService
 
     public function maplesDesdeHuevos(int $huevos): int
     {
-        return intdiv($huevos, 30);
+        return HuevosUnidad::maplesDesdeHuevos($huevos);
     }
 
     /**

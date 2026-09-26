@@ -58,10 +58,10 @@
 2. Si hay varios lotes en el galpón, la producción se asigna al galpón completo.
 3. La unidad principal es el huevo.
 4. 1 maple equivale a 30 huevos.
-5. **Inicio operario — acumulado:** huevos y muertes acumuladas del galpón seleccionado se calculan desde la `fecha_ingreso` más antigua entre lotes con estado `activo` o `en_produccion` del galpón; registros anteriores a esa ventana no cuentan. Sin lotes activos, no hay ventana de acumulado.
-6. **avicore-defer:** objetivo diario por galpón (KPI «Objetivo» en Inicio operario) — pendiente definir meta y umbral por empresa/galpón.
-7. El cajón es configurable por empresa.
-8. Los reportes del MVP muestran huevos.
+5. 1 caja equivale a 12 maples (360 huevos) en la convención demo; el cajón es configurable por empresa (`configuraciones_empresa`, post-MVP).
+6. **Inicio operario — acumulado:** huevos y muertes acumuladas del galpón seleccionado se calculan desde la `fecha_ingreso` más antigua entre lotes con estado `activo` o `en_produccion` del galpón; registros anteriores a esa ventana no cuentan. Sin lotes activos, no hay ventana de acumulado.
+7. **avicore-defer:** objetivo diario por galpón (KPI «Objetivo» en Inicio operario) — pendiente definir meta y umbral por empresa/galpón.
+8. Los reportes del MVP muestran huevos; el panel Dueño también puede mostrar maples y cajas vía `HuevosUnidad`.
 
 ---
 
@@ -205,3 +205,12 @@ Referencia: [`mercado-uruguay.md`](../../avicore-contexto/references/mercado-uru
 5. **Cabecera export:** DICOSE, **lote SMA** (`lotes.codigo_sma`, opcional al crear), lote interno, fecha ingreso/nacimiento, línea genética, población inicial, establecimiento.
 6. **Agua:** `avicore-defer` — en granjas con bebederos automáticos el operario **no** registra consumo diario; lectura de medidor o módulo técnico queda para encargado/admin o integración futura.
 7. **Certificación VLE:** texto y espacio de firma en PDF; no sustituye al manual BPA firmado.
+
+---
+
+## 17. Panel Dueño — vistas previa (pre-módulo comercial/stock)
+
+1. **Inicio — Stock y demanda** y **Comercial** pueden mostrar KPIs y mapa con **datos de ejemplo** hasta existir módulo de ventas/stock persistido.
+2. La UI debe indicar **«Vista previa»** (eyebrow o subtítulo); no presentar cifras ficticias como producción real.
+3. Constantes demo en `AdminHomeService` llevan `avicore-defer:`; reemplazar al implementar comercial/stock.
+4. **Pulso** y **Resumen** usan datos operativos reales (`RegistroOperativo`, galpones activos); no mezclar con preview comercial.

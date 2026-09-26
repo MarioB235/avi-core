@@ -1,7 +1,7 @@
 <div class="avicore-operario-home">
     <x-admin.page-hero
         title="Comercial"
-        subtitle="Clientes, ventas y huevos comprometidos módulo en preparación."
+        subtitle="Clientes, ventas y huevos comprometidos — módulo en preparación."
     />
 
     <div class="avicore-operario-home-sheet">
@@ -24,6 +24,16 @@
                     />
                 @endforeach
             </div>
+        </x-ui.reveal>
+
+        <x-ui.reveal as="section" class="mt-6" aria-label="Mapa de clientes">
+            <x-ui.section-head
+                eyebrow="Vista previa"
+                title="Tus clientes en el mapa"
+                subtitle="Datos de ejemplo. Elegí un cliente en el mapa y mirá el detalle abajo."
+            />
+
+            <x-ui.client-map class="mt-4" :clients="$clients" />
         </x-ui.reveal>
     </div>
 </div>

@@ -27,21 +27,23 @@ Nav: `App\Support\AdminNav` · Composer: `AdminLayoutComposer`.
 | Estructura | `/{rol}/estructura` | `canViewEstructura` (Administrativo, Encargado) |
 | Usuarios | `/{rol}/usuarios` | `canViewUsers` (Admin AviCore, Administrativo, Encargado) |
 
-**Dueño:** Inicio solo con KPIs del día; Equipo y Comercial en tabs del nav.
+**Dueño:** Inicio = landing estructural; Resumen/Equipo/Comercial en tabs del nav.
 
 **Fuera del panel:** `/operario` (Cargar / Historial) — no aparece como tab ni tile en admin.
 
-Ítems futuros (Reportes) se agregarán como tab o tile cuando exista el módulo.
+Ítems futuros (Reportes) se agregarán como sección en Inicio o módulo propio cuando exista (nav ya en 4 tabs).
 
 ## Inicio (intereses Dueño)
 
-Contenido **propio de gestión** (no clonar paneles/tiles de carga del operario):
+Landing **sin duplicar** otros tabs:
 
-- Hero compartido (saludo + subtítulo `Resumen de {empresa · rol}.`; sin chip duplicado de empresa ni galpón).
-- KPIs operativos: `x-ui.stat-panel` en grilla `avicore-operario-kpi-grid--stat` (2×2 móvil, 4 columnas `lg+`; títulos y valores con tipografía fluida).
-- **Sin checklist onboarding** en Dueño (módulos en bottom nav).
+- Hero: saludo + `{empresa · rol}.`
+- **Tu empresa:** 2 KPIs estructurales (granjas activas, galpones activos).
+- **Tu empresa hoy:** pulso del día + huevos/muertes con maples/cajas; enlace a Resumen.
+- **Stock y demanda:** preview ficticio (reserva, demanda, salida) hasta módulo comercial; eyebrow **«Vista previa»** obligatorio; constantes con `avicore-defer:` en servicio (ver `reglas.md` §17).
+- Empty state si la estructura aún no está cargada.
 
-**Reutilizar del operario:** grids/paneles KPI, section-head, filter-chip, `x-ui.reveal`. **No usar** chip de galpón ni tiles de carga en campo ni duplicar tabs del dock.
+Producción detallada → **Resumen** · personas → **Equipo** · clientes → **Comercial** (nav inferior / sidebar).
 
 
 ## Densidad y tablas (CRUD)
