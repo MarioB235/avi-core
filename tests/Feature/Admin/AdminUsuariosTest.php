@@ -11,7 +11,6 @@ use App\Livewire\Admin\Usuarios\Index as UsuariosIndex;
 use App\Models\Empresa;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -196,11 +195,11 @@ class AdminUsuariosTest extends TestCase
             'must_change_password' => false,
         ]);
 
-        $this->expectException(ModelNotFoundException::class);
-
         Livewire::actingAs($adminA)
             ->test(UsuariosIndex::class)
-            ->call('abrirEditar', $operarioB->id);
+            ->call('abrirEditar', $operarioB->id)
+            ->assertSet('dialogFormularioAbierto', false)
+            ->assertSet('editingUserId', null);
     }
 
     public function test_operario_is_redirected_from_usuarios(): void
