@@ -118,7 +118,8 @@
         .avicore-operario-shell--home:has(.avicore-select-field--open) .avicore-operario-home,
         .avicore-operario-shell--home:has(.avicore-select-field--open) .avicore-operario-cargar,
         .avicore-operario-shell--home:has(.avicore-select-field--open) .avicore-operario-historial,
-        .avicore-operario-shell--home:has(.avicore-select-field--open) .avicore-operario-perfil {
+        .avicore-operario-shell--home:has(.avicore-select-field--open) .avicore-operario-perfil,
+        .avicore-operario-shell--home:has(.avicore-select-field--open) .avicore-operario-home-hero {
             overflow: visible;
         }
 
