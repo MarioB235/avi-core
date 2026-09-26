@@ -31,6 +31,14 @@ class DemoLoginServiceTest extends TestCase
         $this->assertFalse(app(DemoLoginService::class)->isEnabled());
     }
 
+    public function test_is_disabled_in_production_even_when_flag_is_true(): void
+    {
+        config(['avicore.demo_login.enabled_flag' => true]);
+        $this->app['env'] = 'production';
+
+        $this->assertFalse(app(DemoLoginService::class)->isEnabled());
+    }
+
     public function test_resolve_user_rejects_invalid_role(): void
     {
         try {

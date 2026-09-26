@@ -4,8 +4,9 @@ namespace App\Livewire\Admin\Resumen;
 
 use App\Models\User;
 use App\Services\AdminResumenService;
+use App\Support\HuevosUnidad;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Auth\Access\AuthorizationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
@@ -18,9 +19,8 @@ class Index extends Component
     #[Url(as: 'granja', except: '', history: true)]
     public string $filtroGranjaId = '';
 
-    /** @var list<int> */
-    #[Url(as: 'galpones', history: true)]
-    public array $filtroGalponIds = [];
+    #[Url(as: 'galpon', except: '', history: true)]
+    public string $filtroGalponId = '';
 
     public function mount(): void
     {
@@ -33,37 +33,7 @@ class Index extends Component
 
     public function updatedFiltroGranjaId(): void
     {
-        $this->filtroGalponIds = [];
-    }
-
-    public function toggleGalpon(int $galponId, AdminResumenService $adminResumen): void
-    {
-        $user = auth()->user();
-
-        if ($user === null) {
-            return;
-        }
-
-        $granjaId = $this->filtroGranjaId !== '' ? (int) $this->filtroGranjaId : null;
-        $validIds = $adminResumen->galponesParaFiltro($user, $granjaId)->modelKeys();
-
-        if (! in_array($galponId, $validIds, true)) {
-            return;
-        }
-
-        if (in_array($galponId, $this->filtroGalponIds, true)) {
-            $this->filtroGalponIds = array_values(array_filter(
-                $this->filtroGalponIds,
-                fn (int $id): bool => $id !== $galponId,
-            ));
-        } else {
-            $this->filtroGalponIds[] = $galponId;
-        }
-    }
-
-    public function limpiarFiltroGalpones(): void
-    {
-        $this->filtroGalponIds = [];
+        $this->filtroGalponId = '';
     }
 
     public function render(AdminResumenService $adminResumen): View
@@ -72,11 +42,19 @@ class Index extends Component
         $user = auth()->user();
 
         $granjaId = $this->filtroGranjaId !== '' ? (int) $this->filtroGranjaId : null;
-        $galponIds = $this->filtroGalponIds;
 
         $granjas = $adminResumen->granjasParaFiltro($user);
         $galponesFiltro = $adminResumen->galponesParaFiltro($user, $granjaId);
-        $resumen = $adminResumen->for($user, $granjaId, $galponIds);
+
+        $validGalponIds = $galponesFiltro->modelKeys();
+
+        if ($this->filtroGalponId !== '' && ! in_array((int) $this->filtroGalponId, $validGalponIds, true)) {
+            $this->filtroGalponId = '';
+        }
+
+        $galponId = $this->filtroGalponId !== '' ? (int) $this->filtroGalponId : null;
+        $resumen = $adminResumen->for($user, $granjaId, $galponId);
+        $posturaSemanal = $adminResumen->posturaSemanal($user, $granjaId, $galponId);
 
         $granjasOptions = $granjas
             ->mapWithKeys(fn ($granja): array => [
@@ -86,11 +64,21 @@ class Index extends Component
             ])
             ->all();
 
+        $galponesOptions = $galponesFiltro
+            ->mapWithKeys(fn ($galpon): array => [
+                (string) $galpon->id => $galpon->nombre,
+            ])
+            ->all();
+
         return view('livewire.admin.resumen.index', [
             'resumen' => $resumen,
+            'posturaSemanal' => $posturaSemanal,
             'granjasOptions' => $granjasOptions,
+            'galponesOptions' => $galponesOptions,
             'galponesFiltro' => $galponesFiltro,
             'mortalidadReferencia' => AdminResumenService::MORTALIDAD_REFERENCIA_PCT,
+            'huevosHoyUnidades' => HuevosUnidad::etiquetaSoloCajasMaples($resumen->huevosHoy),
+            'maplesHoy' => HuevosUnidad::maplesDesdeHuevos($resumen->huevosHoy),
         ]);
     }
 }

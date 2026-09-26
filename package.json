@@ -9,6 +9,8 @@
         "check:agent-docs": "node scripts/check-agent-docs-sync.cjs && node scripts/check-skill-references.cjs",
         "check:docs-impact": "node scripts/check-docs-impact.cjs",
         "check:cloud-readiness": "node scripts/check-cloud-readiness.cjs",
+        "check:operario": "php artisan test tests/Feature/Operario tests/Feature/Ui/OperarioCargarHubViewTest.php tests/Feature/Ui/OperarioBottomNavTest.php tests/Feature/Ui/OperarioUserMenuTest.php",
+        "probe:operario": "php scripts/probe-login-operario.php",
         "portal:dev": "node scripts/serve-portal.cjs"
     },
     "devDependencies": {
@@ -19,5 +21,8 @@
         "vite": "^8.0.0",
         "vite-plugin-pwa": "^1.3.0",
         "workbox-window": "^7.4.1"
+    },
+    "dependencies": {
+        "leaflet": "^1.9.4"
     }
 }

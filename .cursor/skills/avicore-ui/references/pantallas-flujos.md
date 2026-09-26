@@ -122,9 +122,11 @@ Landing post-login para roles con panel administrativo (Dueño, Administrativo, 
 ### Elementos
 
 - Layout: `components/layouts/admin.blade.php` reutiliza clases `avicore-operario-*`; nav `AdminNav` según rol (Dueño: Inicio · Resumen · Equipo · Comercial); menú cuenta `x-ui.user-menu`; PWA (`x-ui.pwa-meta` + banner instalar si `AVICORE_PWA_INSTALL_PROMPT=true`).
-- Hero: saludo horario + subtítulo `Resumen de {empresa · rol}.` (empresa y rol solo en esa línea; sin chip adicional).
-- KPIs operativos: `<x-ui.stat-panel>` en grilla 2×2 — copy en lenguaje llano (huevos juntados, aves que murieron, galpones en alerta, galpones con producción); detalle en §3.4.
-- Navegación a módulos: **bottom nav** (móvil) / **sidebar** (escritorio); sin duplicar tabs en el contenido de Inicio.
+- Hero: saludo horario + subtítulo `{empresa · rol}.`
+- **Tu empresa:** panorama estructural — granjas y galpones activos (2 KPIs).
+- **Tu empresa hoy (pulso):** estado del día (huevos vs ayer, alertas mortalidad, galpones sin carga), KPIs huevos/muertes hoy con maples/cajas, enlace a Resumen.
+- **Stock y demanda (vista previa):** reserva en cámara, demanda, salida hoy y disponible estimado — **datos ficticios** hasta módulo comercial/stock.
+- Empty state si no hay granjas ni galpones cargados.
 - **No incluye** paneles/tiles de carga operario (`kpi-panel`, `carga-tile`, chip de galpón) ni accesos a Cargar/Historial.
 
 ### Navegación (MVP)
@@ -145,7 +147,13 @@ Tras login exitoso (sin cambio de contraseña pendiente), cada rol llega a su pr
 
 ## 3.1.1 Pantalla: Equipo (Dueño)
 
-**Estado MVP (2026-08-22):** `/dueno/equipo` — contadores de usuarios activos, operarios y supervisión; **solo lectura** (sin CRUD).
+**Estado MVP (2026-08-22):** `/dueno/equipo` — lista plana con chips de filtro (Todos, Campo, Supervisión, Oficina); **solo lectura** (sin CRUD).
+
+### Elementos
+
+- Resumen en una línea: total de personas activas.
+- Chips de filtro con contador (`avicore-operario-filter-chip`).
+- Lista continua (`avicore-team-list`): nombre, documento, correo y badge de rol; **sin avatar**.
 
 ### Usuarios autorizados
 
@@ -155,7 +163,13 @@ Tras login exitoso (sin cambio de contraseña pendiente), cada rol llega a su pr
 
 ## 3.1.2 Pantalla: Comercial (Dueño, preview)
 
-**Estado MVP (2026-08-22):** `/dueno/comercial` — vista previa con datos de ejemplo (clientes, ventas, pedidos, reservas). Módulo real post-MVP (`producto.md` excluye ventas en MVP).
+**Estado MVP (2026-08-22):** `/dueno/comercial` — vista previa con KPIs de ejemplo + **mapa interactivo** (Leaflet/OSM) y lista de clientes demo con **última compra** (fecha y cantidad de huevos). Módulo real post-MVP (`producto.md` excluye ventas en MVP).
+
+### Elementos
+
+- KPIs orientativos: clientes, última venta, pedido de mañana, huevos reservados.
+- Mapa con pins verdes; al tocar un pin, card de detalle debajo (sin lista ni tooltip flotante).
+- Card: nombre, zona, última compra (fecha) y cantidad de huevos.
 
 ### Usuarios autorizados
 
@@ -240,7 +254,7 @@ Multiempresa por `empresa_id`. Alta de lote reutiliza `RegistrarLoteAction`. Nav
 
 ## 3.4 Pantalla: Resumen (admin)
 
-**Estado MVP (2026-08-15):** implementado en `/admin/resumen` — KPIs del día agregados y por galpón; filtros por granja y multiselect de galpones; alertas de mortalidad acumulada (> 1,1% referencia).
+**Estado MVP (2026-08-15):** implementado en `/admin/resumen` — KPIs del día agregados y por galpón; filtros por granja y galpón (`x-ui.select`); alertas de mortalidad acumulada (> 1,1% referencia).
 
 ### Objetivo
 
@@ -253,9 +267,10 @@ Vista operativa para Dueño, Administrativo y Encargado: seguir producción del 
 ### Elementos
 
 - Hero `x-admin.page-hero`.
-- Filtro granja (`x-ui.select`) + chips toggle de galpones.
-- KPIs globales: huevos hoy, muertes hoy, aves actuales, alertas mortalidad.
-- Tarjetas por galpón con KPIs y badge «Alerta» si mortalidad acumulada supera referencia.
+- Filtro granja y galpón (`x-ui.select`; al cambiar granja se limpia galpón).
+- KPIs globales: huevos hoy, **descarte hoy**, muertes hoy, **alimento kg hoy**, aves actuales, alertas mortalidad.
+- Gráfico de línea «Postura de la semana» (`x-ui.line-chart`, huevos aptos últimos 7 días).
+- Comparación por galpón: **tabla compacta** en `md+` (huevos, descarte, muertes, alimento kg, aves, mortalidad); **cards** en móvil (`< md`).
 - Servicio `AdminResumenService` (reutiliza `OperarioGalponResumenService`).
 
 ### Comportamiento

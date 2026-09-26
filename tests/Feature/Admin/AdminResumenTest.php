@@ -38,13 +38,27 @@ class AdminResumenTest extends TestCase
             ->assertSee('Resumen')
             ->assertSee('Indicadores del día')
             ->assertSee('750')
+            ->assertSee('25 maples')
+            ->assertSee('2 cajas + 1 maple')
             ->assertSee('Por galpón')
             ->assertSee($galpon->nombre, false);
 
         Livewire::actingAs($dueno)
             ->test(ResumenIndex::class)
-            ->assertSee('Huevos hoy')
-            ->assertSee('750');
+            ->assertSee('Postura de la semana')
+            ->assertSee('avicore-line-chart', false);
+    }
+
+    public function test_resumen_shows_galpon_comparison_table_on_desktop(): void
+    {
+        [$dueno, $galpon] = $this->duenoConGalponYLote();
+
+        $this->actingAs($dueno)
+            ->get(route('dueno.resumen.index'))
+            ->assertOk()
+            ->assertSee('Por galpón')
+            ->assertSee('Mortalidad acum.', false)
+            ->assertSee($galpon->nombre, false);
     }
 
     public function test_resumen_filters_by_granja(): void
@@ -106,7 +120,7 @@ class AdminResumenTest extends TestCase
             ->assertRedirect(route('operario.home'));
     }
 
-    public function test_resumen_toggle_galpon_filter_limits_kpis(): void
+    public function test_resumen_galpon_filter_limits_kpis(): void
     {
         [$dueno, $galponA, $galponB] = $this->duenoConDosGalpones();
 
@@ -126,13 +140,24 @@ class AdminResumenTest extends TestCase
 
         Livewire::actingAs($dueno)
             ->test(ResumenIndex::class)
-            ->call('toggleGalpon', $galponA->id)
-            ->assertSet('filtroGalponIds', [$galponA->id])
+            ->set('filtroGalponId', (string) $galponA->id)
+            ->assertSet('filtroGalponId', (string) $galponA->id)
             ->assertSee('400')
             ->assertSee('1 galpón');
     }
 
-    public function test_resumen_ignores_toggle_for_galpon_from_other_company(): void
+    public function test_resumen_clears_galpon_filter_when_granja_changes(): void
+    {
+        [$dueno, $galponA, $galponB] = $this->duenoConDosGalpones();
+
+        Livewire::actingAs($dueno)
+            ->test(ResumenIndex::class)
+            ->set('filtroGalponId', (string) $galponA->id)
+            ->set('filtroGranjaId', (string) $galponB->granja_id)
+            ->assertSet('filtroGalponId', '');
+    }
+
+    public function test_resumen_ignores_invalid_galpon_filter(): void
     {
         [$dueno, $galpon] = $this->duenoConGalponYLote();
 
@@ -142,8 +167,8 @@ class AdminResumenTest extends TestCase
 
         Livewire::actingAs($dueno)
             ->test(ResumenIndex::class)
-            ->call('toggleGalpon', $galponAjeno->id)
-            ->assertSet('filtroGalponIds', []);
+            ->set('filtroGalponId', (string) $galponAjeno->id)
+            ->assertSet('filtroGalponId', '');
     }
 
     /**

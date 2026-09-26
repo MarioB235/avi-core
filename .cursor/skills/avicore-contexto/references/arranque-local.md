@@ -185,6 +185,43 @@ Artefactos de fuentes en desarrollo (`public/fonts-manifest.dev.json`) se genera
 
 ---
 
+## Cierre operario (pre-producción)
+
+Antes de pasar a otro rol o módulo, validar el flujo operario en local o staging.
+
+### Variables obligatorias en producción
+
+| Variable | Valor |
+|----------|--------|
+| `APP_ENV` | `production` |
+| `AVICORE_DEMO_LOGIN` | `false` (en `production` el código lo fuerza aunque el `.env` diga `true`) |
+| `AVICORE_SUPPORT_WHATSAPP` / `AVICORE_SUPPORT_EMAIL` | Contacto real para «¿Olvidaste tu contraseña?» |
+
+### Smoke manual (celular real)
+
+1. Login **sin** selector de perfil (documento + contraseña).
+2. Elegir galpón en Inicio.
+3. Cargar huevos y muertes desde **Cargar**.
+4. Verificar KPIs en Inicio y registros en **Historial**.
+5. (Opcional) Anular un registro propio del día.
+6. (Opcional) Instalar PWA.
+
+### Comandos de verificación
+
+```bash
+php artisan test tests/Feature/Operario
+php artisan test tests/Feature/Ui/OperarioCargarHubViewTest.php
+pnpm run check:cloud-readiness
+```
+
+Con `composer dev` en marcha, probe HTTP del login demo (solo desarrollo):
+
+```bash
+php scripts/probe-login-operario.php
+```
+
+---
+
 ## Verificación
 
 ```bash

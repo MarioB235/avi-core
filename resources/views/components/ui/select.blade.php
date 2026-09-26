@@ -33,6 +33,7 @@
 
 <div
     {{ $attributes->only('class')->merge(['class' => 'avicore-select-field space-y-1.5']) }}
+    x-bind:class="{ 'avicore-select-field--open': open }"
     x-data="{
         open: false,
         placement: 'below',

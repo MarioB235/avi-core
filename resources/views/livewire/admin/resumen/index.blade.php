@@ -14,37 +14,17 @@
                     placeholder="Todas las granjas"
                     :options="$granjasOptions"
                 />
+
+                @if ($galponesFiltro->isNotEmpty())
+                    <x-ui.select
+                        label="Galpón"
+                        name="filtroGalponId"
+                        wire:model.live="filtroGalponId"
+                        placeholder="Todos los galpones"
+                        :options="$galponesOptions"
+                    />
+                @endif
             </div>
-
-            @if ($galponesFiltro->isNotEmpty())
-                <div class="mt-4">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-avicore-text">Galpones</p>
-                        @if ($filtroGalponIds !== [])
-                            <button
-                                type="button"
-                                wire:click="limpiarFiltroGalpones"
-                                class="text-sm font-medium text-avicore-primary md:hover:underline"
-                            >
-                                Ver todos
-                            </button>
-                        @endif
-                    </div>
-
-                    <div class="mt-2 flex flex-wrap gap-2">
-                        @foreach ($galponesFiltro as $galpon)
-                            <button
-                                type="button"
-                                wire:click="toggleGalpon({{ $galpon->id }})"
-                                class="avicore-operario-filter-chip {{ in_array($galpon->id, $filtroGalponIds, true) ? 'avicore-operario-filter-chip--active' : 'avicore-operario-filter-chip--idle' }}"
-                                aria-pressed="{{ in_array($galpon->id, $filtroGalponIds, true) ? 'true' : 'false' }}"
-                            >
-                                {{ $galpon->nombre }}
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
         </x-ui.reveal>
 
         <x-ui.reveal as="section" class="mt-8" aria-label="Indicadores del día">
@@ -57,9 +37,16 @@
                 <x-ui.stat-panel
                     label="Huevos hoy"
                     :value="number_format($resumen->huevosHoy, 0, ',', '.')"
-                    hint="Aptos registrados hoy"
+                    :hint="$huevosHoyUnidades.' · '.number_format($maplesHoy, 0, ',', '.').' maples'"
                     icon="egg"
                     tone="huevos"
+                />
+
+                <x-ui.stat-panel
+                    label="Descarte hoy"
+                    :value="number_format($resumen->huevosDescarteHoy, 0, ',', '.')"
+                    hint="Huevos de descarte registrados hoy"
+                    icon="egg"
                 />
 
                 <x-ui.stat-panel
@@ -67,6 +54,13 @@
                     :value="number_format($resumen->muertesHoy, 0, ',', '.')"
                     hint="En los galpones filtrados"
                     icon="bird"
+                />
+
+                <x-ui.stat-panel
+                    label="Alimento hoy"
+                    :value="number_format($resumen->alimentoKgHoy, 0, ',', '.').' kg'"
+                    hint="Kg entregados hoy en campo"
+                    icon="truck"
                 />
 
                 <x-ui.stat-panel
@@ -86,10 +80,23 @@
             </div>
         </x-ui.reveal>
 
+        <x-ui.reveal as="section" class="mt-8" aria-label="Postura semanal">
+            <x-ui.section-head
+                eyebrow="Tendencia"
+                title="Postura de la semana"
+                subtitle="Huevos aptos por día en los galpones filtrados."
+            />
+
+            <x-ui.card class="mt-4">
+                <x-ui.line-chart :points="$posturaSemanal" />
+            </x-ui.card>
+        </x-ui.reveal>
+
         <x-ui.reveal as="section" class="mt-8" aria-label="Detalle por galpón">
             <x-ui.section-head
                 eyebrow="Detalle"
                 title="Por galpón"
+                subtitle="Compará el día de hoy entre galpones."
             />
 
             @if ($resumen->galponesResumen === [])
@@ -99,7 +106,9 @@
                     description="Creá galpones en Estructura para ver indicadores aquí."
                 />
             @else
-                <div class="avicore-operario-kpi-grid avicore-operario-kpi-grid--duo mt-4">
+                @include('livewire.admin.resumen.partials.galpones-table', ['filas' => $resumen->galponesResumen])
+
+                <div class="avicore-operario-kpi-grid avicore-operario-kpi-grid--duo mt-4 md:hidden">
                     @foreach ($resumen->galponesResumen as $fila)
                         @include('livewire.admin.resumen.partials.galpon-card', ['fila' => $fila])
                     @endforeach

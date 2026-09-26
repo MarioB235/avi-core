@@ -39,7 +39,7 @@ class SelectComponentTest extends TestCase
             />
         BLADE);
 
-        $this->assertStringContainsString('syncPanelPosition', $html);
+        $this->assertStringContainsString('avicore-select-field--open', $html);
         $this->assertStringContainsString('avicore-select-panel--below', $html);
         $this->assertStringContainsString('avicore-select-panel--above', $html);
         $this->assertStringContainsString('listMaxHeight', $html);

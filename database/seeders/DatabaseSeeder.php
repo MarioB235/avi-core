@@ -10,8 +10,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AvicoreAuthSeeder::class,
+            AvicoreEquipoDemoSeeder::class,
             AvicoreEstructuraAvicolaSeeder::class,
             AvicoreOperarioDemoSeeder::class,
+            AvicoreDuenoDemoSeeder::class,
         ]);
     }
 }

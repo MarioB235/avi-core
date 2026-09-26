@@ -41,7 +41,8 @@ return [
     |
     | AVICORE_DEMO_LOGIN=true: selector Perfil en /login (sin credenciales).
     | Un solo usuario demo (AVICORE_DEMO_DOCUMENTO); el rol elegido se aplica al entrar.
-    | Desactivar (false) antes de go-live con clientes reales.
+    | Desactivar (false) antes de go-live con clientes reales. En APP_ENV=production
+    | el selector demo queda deshabilitado siempre (DemoLoginService).
     |
     */
 

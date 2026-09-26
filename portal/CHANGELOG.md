@@ -5,6 +5,35 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-08-25
+
+- **[fix|admin]** Post-auditoría msg 3: import correcto `Illuminate\Auth\Access\AuthorizationException` en Livewire Resumen/Equipo/Comercial (403 efectivo en mount). — `Admin/*/Index.php`, tests
+- **[test|admin]** Cobertura post-auditoría: `AdminEquipoTest` (403 encargado, multiempresa HTTP), `AdminComercialTest` (dueño OK, 403 encargado), `PulsePanelComponentTest`, `LineChartComponentTest`, `ClientMapComponentTest`; `AdminUserMenuTest` alineado al copy de Inicio. — tests
+- **[negocio|admin]** Vistas previa stock/comercial: regla §17 en `reglas.md`; constantes demo con `avicore-defer:` en `AdminHomeService`; memo intra-request `pulsoForUser` (evita doble `pulsoFor` en Inicio). — `reglas.md`, `AdminHomeService`, `patrones-web-admin.md`
+- **[ui]** `x-ui.pulse-panel` documentado en design system; excepciones `!important` Leaflet comentadas en `app.css`. — `tokens-componentes.md`, `app.css`
+- **[chore]** Eliminado artefacto debug `test-fail-tail.txt`; probe login operario ya documentado en `arranque-local.md`. — repo hygiene
+
+## 2026-08-24
+
+- **[operario|prod]** Cierre pre-producción: demo login forzado off en `APP_ENV=production`; tests HTTP hub Cargar (`?form=`), encargado carga huevos+muertes, múltiples cargas/día y galpón en mantenimiento al guardar huevos; checklist en `arranque-local.md`; scripts `pnpm run check:operario` y `probe:operario`. — `DemoLoginService`, tests, `arranque-local.md`, `package.json`
+
+## 2026-08-23
+
+- **[ui|admin]** Inicio Dueño: pulso del día (`pulsoPanel`), stock/demanda preview ficticio, maples/cajas en Resumen; `HuevosUnidad`; seeder `AvicoreDuenoDemoSeeder`. — `AdminHomeService`, `home.blade.php`, `pulse-panel`, `HuevosUnidad`, tests, `pantallas-flujos.md`, `reglas.md`, `demo.md`
+- **[ui|admin]** Resumen Dueño: filtro galpón pasa de chips a `x-ui.select` (mismo patrón que granja); URL `?galpon=`; al cambiar granja se limpia galpón. — `Admin/Resumen/Index`, `AdminResumenService`, `resumen/index.blade.php`, tests, `pantallas-flujos.md` §3.4
+- **[ui|fix]** `x-ui.select`: clase `--open` eleva z-index y libera overflow en `home-sheet` (panel ya no queda detrás de secciones siguientes, p. ej. Galpón en Resumen). — `select.blade.php`, `app.css`, `operario.css`, `SelectComponentTest`
+- **[ui|admin]** Dueño Resumen/Equipo: gráfico postura semanal (`x-ui.line-chart`), tabla comparativa de galpones (`md+`) + cards móvil; tabla de personas en Equipo. — `AdminResumenService`, `AdminHomeService`, vistas admin, `line-chart.blade.php`, tests
+- **[demo]** Equipo demo: `AvicoreEquipoDemoSeeder` con 6 personas ficticias (operarios, reparto, encargado, administrativo) para directorio Dueño. — `database/seeders`, `demo.md`, test
+- **[ui|admin]** Equipo Dueño: lista plana con chips de filtro (sin avatar ni cajas por rol). — `AdminHomeService::teamList`, `equipo/index.blade.php`, `app.css`, tests
+- **[ui|admin]** Comercial Dueño: mapa interactivo (Leaflet/OSM) + lista con última compra (fecha y huevos); datos demo en servicio. — `AdminHomeService::comercialClientMap`, `x-ui.client-map`, `client-map.js`, tests
+- **[ui|fix]** Mapa comercial: montaje al hacerse visible (reveal/IntersectionObserver), `wire:ignore`, popup al tocar pin; lista solo centra el mapa. — `client-map.js`, `scroll-reveal.js`, `client-map.blade.php`, `app.css`
+- **[ui|admin]** Comercial mapa: sin lista ni tooltip; card de detalle bajo el mapa al elegir pin (fecha + cantidad última compra). — `client-map.blade.php`, `client-map.js`, `app.css`, tests, docs
+- **[ui|style]** Mapa comercial: tiles Carto Positron (claro), controles compactos y pins más sutiles. — `client-map.js`, `app.css`
+- **[ui|admin]** Inicio Dueño ejecutivo: semáforo + pulso del día (sin carga, alertas con enlace a Resumen), comparación vs ayer, resumen rápido 2 KPIs, teaser Comercial. — `AdminResumenService::pulsoFor`, `home.blade.php`, `app.css`, tests
+- **[ui|admin]** Inicio Dueño: panel autocontenido — 4 KPIs con contexto, gráfico 7 días y bloque Equipo; sin enlaces a otros tabs (nav ya navega). — `AdminHomeService::inicioPanel`, `home.blade.php`, tests, `pantallas-flujos.md` §3.1
+- **[ui|admin]** Inicio Dueño: solo panorama estructural (granjas + galpones activos); sin KPIs operativos, gráfico ni equipo (viven en Resumen/Equipo/Comercial). — `AdminHomeService::inicioPanel`, `home.blade.php`, tests, docs
+- **[ui|admin]** Resumen Dueño: KPIs descarte y alimento hoy; tabla/cards por galpón con descarte y kg alimento. — `AdminResumenService`, `resumen/`, tests, `pantallas-flujos.md` §3.4
+
 ## 2026-08-22
 
 - **[test|admin]** Post-auditoría msg 3: `AdminResumenServiceTest` (KPIs agregados, alertas mortalidad, filtros granja/galpón, multiempresa, teaser); `AdminEstructuraTest` ampliado (editar granja/lote, galpón en granja de otra empresa); `AdminResumenTest` (toggle galpón, rechazo galpón ajeno); guard `empresa_id` en `CreateGranjaAction`; `toggleGalpon` valida scope vía `AdminResumenService`. — `estandares-codigo.md`, tests

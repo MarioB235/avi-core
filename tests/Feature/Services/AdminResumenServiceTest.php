@@ -69,7 +69,7 @@ class AdminResumenServiceTest extends TestCase
         $this->assertSame(1, $data->galponesActivos);
     }
 
-    public function test_for_filters_by_galpon_ids(): void
+    public function test_for_filters_by_galpon_id(): void
     {
         [$dueno, $galponA, $galponB] = $this->duenoConDosGalpones();
 
@@ -87,10 +87,36 @@ class AdminResumenServiceTest extends TestCase
                 'huevos' => 200,
             ]);
 
-        $data = app(AdminResumenService::class)->for($dueno, null, [$galponB->id]);
+        $data = app(AdminResumenService::class)->for($dueno, null, $galponB->id);
 
         $this->assertSame(200, $data->huevosHoy);
         $this->assertSame(1, $data->galponesActivos);
+    }
+
+    public function test_postura_semanal_sums_huevos_by_day_for_scope(): void
+    {
+        [$dueno, $galpon] = $this->duenoConGalponYLote();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 300,
+                'created_at' => now()->subDays(2),
+            ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 450,
+                'created_at' => now(),
+            ]);
+
+        $puntos = app(AdminResumenService::class)->posturaSemanal($dueno);
+
+        $this->assertCount(7, $puntos);
+        $this->assertSame(750, collect($puntos)->sum('value'));
     }
 
     public function test_for_flags_mortality_alert_above_reference(): void
@@ -128,7 +154,7 @@ class AdminResumenServiceTest extends TestCase
                 'huevos' => 500,
             ]);
 
-        $data = app(AdminResumenService::class)->for($dueno, null, [$galponAjeno->id]);
+        $data = app(AdminResumenService::class)->for($dueno, null, $galponAjeno->id);
 
         $this->assertSame(0, $data->huevosHoy);
         $this->assertSame(0, $data->galponesActivos);
@@ -169,6 +195,105 @@ class AdminResumenServiceTest extends TestCase
             'alertas_count' => 0,
             'galpones_activos' => 0,
         ], $teaser);
+    }
+
+    public function test_for_includes_descarte_and_alimento_totals(): void
+    {
+        [$dueno, $galpon] = $this->duenoConGalponYLote();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 400,
+                'huevos_descarte' => 25,
+            ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Alimento,
+                'alimento_kg' => 150.5,
+            ]);
+
+        $data = app(AdminResumenService::class)->for($dueno);
+
+        $this->assertSame(400, $data->huevosHoy);
+        $this->assertSame(25, $data->huevosDescarteHoy);
+        $this->assertSame(150.5, $data->alimentoKgHoy);
+        $this->assertSame(150.5, $data->galponesResumen[0]['alimento_kg_hoy']);
+    }
+
+    public function test_pulso_for_lists_galpones_without_carga_today(): void
+    {
+        [$dueno, $galponA, $galponB] = $this->duenoConDosGalpones();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galponA, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 300,
+            ]);
+
+        $pulso = app(AdminResumenService::class)->pulsoFor($dueno);
+
+        $this->assertSame('atencion', $pulso['estado']);
+        $this->assertCount(1, $pulso['galpones_sin_carga']);
+        $this->assertSame($galponB->id, $pulso['galpones_sin_carga'][0]['id']);
+        $this->assertSame(300, $pulso['huevos_hoy']);
+    }
+
+    public function test_pulso_for_compares_huevos_with_yesterday(): void
+    {
+        [$dueno, $galpon] = $this->duenoConGalponYLote();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 200,
+                'created_at' => now()->subDay(),
+            ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 250,
+            ]);
+
+        $pulso = app(AdminResumenService::class)->pulsoFor($dueno);
+
+        $this->assertSame(250, $pulso['huevos_hoy']);
+        $this->assertSame(200, $pulso['huevos_ayer']);
+        $this->assertSame(50, $pulso['delta_huevos']);
+        $this->assertSame(25.0, $pulso['delta_huevos_pct']);
+    }
+
+    public function test_pulso_for_marks_revision_when_mortality_alert(): void
+    {
+        [$dueno, $galpon] = $this->duenoConGalponYLote(cantidadInicial: 1000);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Muertes,
+                'muertes' => 15,
+                'created_at' => now()->subDays(2),
+            ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 100,
+            ]);
+
+        $pulso = app(AdminResumenService::class)->pulsoFor($dueno);
+
+        $this->assertSame('revision', $pulso['estado']);
+        $this->assertCount(1, $pulso['alertas']);
+        $this->assertSame($galpon->id, $pulso['alertas'][0]['galpon_id']);
     }
 
     /**

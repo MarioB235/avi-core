@@ -11,6 +11,10 @@ class DemoLoginService
 {
     public function isEnabled(): bool
     {
+        if (app()->environment('production')) {
+            return false;
+        }
+
         return (bool) config('avicore.demo_login.enabled_flag', false);
     }
 

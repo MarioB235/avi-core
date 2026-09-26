@@ -6,6 +6,10 @@ use App\Enums\EmpresaEstado;
 use App\Enums\UserRole;
 use App\Models\Empresa;
 use App\Models\User;
+use Database\Seeders\AvicoreAuthSeeder;
+use Database\Seeders\AvicoreDuenoDemoSeeder;
+use Database\Seeders\AvicoreEstructuraAvicolaSeeder;
+use Database\Seeders\AvicoreOperarioDemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -45,29 +49,21 @@ class AdminHomeViewTest extends TestCase
         $response->assertSee('Granja Santa Elena · Encargado');
         $response->assertSee('María González');
         $response->assertSee('¡Buen');
-        $response->assertSee('Resumen de Granja Santa Elena · Encargado.');
-        $response->assertSee('avicore-operario-shell', false);
-        $response->assertSee('avicore-operario-home-hero', false);
-        $response->assertSee('avicore-operario-home-sheet', false);
-        $response->assertSee('avicore-home-nav', false);
-        $response->assertSee('avicore-operario-kpi-grid--stat', false);
-        $response->assertSee('avicore-operario-kpi-panel--stat', false);
-        $response->assertDontSee('avicore-admin-context', false);
-        $response->assertDontSee('avicore-operario-carga-grid', false);
-        $response->assertDontSee('¿Qué querés gestionar?');
-        $response->assertDontSee('avicore-operario-galpon-chip', false);
-        $response->assertDontSee('avicore-admin-header--toolbar', false);
-        $response->assertDontSee('avicore-admin-header--masthead', false);
-        $response->assertSee('Producción de hoy');
-        $response->assertSee('Huevos juntados');
-        $response->assertSee('Aves que murieron');
-        $response->assertSee('Galpones en alerta');
-        $response->assertSee('Galpones con producción');
+        $response->assertSee('Granja Santa Elena · Encargado.');
+        $response->assertSee('Tu empresa');
+        $response->assertSee('Sin estructura cargada');
+        $response->assertDontSee('Tu empresa hoy');
+        $response->assertDontSee('Tu equipo');
+        $response->assertDontSee('Huevos juntados');
+        $response->assertDontSee('Stock y demanda');
+        $response->assertDontSee('avicore-pulse-status', false);
+        $response->assertDontSee('Huevos de los últimos 7 días');
+        $response->assertDontSee('avicore-line-chart', false);
         $response->assertDontSee('Clientes y entregas');
         $response->assertDontSee('Tu gente en AviCore');
         $response->assertDontSee('Negocios que te compran seguido');
         $response->assertDontSee('$ 48.500');
-        $response->assertSee('avicore-ui-illustration', false);
+        $response->assertDontSee('avicore-ui-illustration', false);
         $response->assertDontSee('Ejemplo');
         $response->assertDontSee('Próximamente');
         $response->assertDontSee('Estado inicial');
@@ -129,7 +125,7 @@ class AdminHomeViewTest extends TestCase
             ->get(route('encargado.home'))
             ->assertOk()
             ->assertSee('Empresa A · Encargado')
-            ->assertSee('Huevos juntados')
+            ->assertSee('Sin estructura cargada')
             ->assertDontSee('>5<');
     }
 
@@ -166,7 +162,7 @@ class AdminHomeViewTest extends TestCase
             ->get(route('avicore.home'))
             ->assertOk()
             ->assertSee('AviCore · Admin AviCore')
-            ->assertSee('Huevos juntados')
+            ->assertSee('Sin indicadores operativos')
             ->assertDontSee('>Campo<', false)
             ->assertDontSee(route('operario.home'), false);
     }
@@ -186,5 +182,29 @@ class AdminHomeViewTest extends TestCase
         $this->actingAs($operario)
             ->get(route('dueno.home'))
             ->assertRedirect(route('operario.home'));
+    }
+
+    public function test_dueno_with_demo_seed_sees_pulso_and_stock_preview(): void
+    {
+        $this->seed([
+            AvicoreAuthSeeder::class,
+            AvicoreEstructuraAvicolaSeeder::class,
+            AvicoreOperarioDemoSeeder::class,
+            AvicoreDuenoDemoSeeder::class,
+        ]);
+
+        $dueno = User::query()->where('documento', '000000000')->firstOrFail();
+        $dueno->update(['rol' => UserRole::Dueno]);
+
+        $this->actingAs($dueno)
+            ->get(route('dueno.home'))
+            ->assertOk()
+            ->assertSee('Tu empresa hoy')
+            ->assertSee('Huevos juntados hoy')
+            ->assertSee('Stock y demanda')
+            ->assertSee('En reserva (cámara)')
+            ->assertSee('12 cajas')
+            ->assertSee('avicore-pulse-status', false)
+            ->assertSee('Ver análisis completo en Resumen');
     }
 }
