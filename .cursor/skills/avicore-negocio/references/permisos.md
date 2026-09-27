@@ -17,8 +17,9 @@
 |---|---|---|---|---|---|
 | Crear empresa cliente | Sí | No | No | No | No |
 | Suspender empresa | Sí | No | No | No | No |
-| Acceso modo soporte | Sí | No | No | No | No |
-| Ver dashboard empresa | Soporte | Sí | Sí/Opcional | Sí | No |
+| Acceso modo soporte | Sí (`enterSupport`) | No | No | No | No |
+| Ver Resumen operativo | Solo con sesión soporte activa | Sí | Sí/Opcional | Sí | No |
+| Mutar lotes/cargas en soporte | No (solo lectura) | Sí* | Sí | Sí | Sí |
 | Crear granja | No | No | Sí | No | No |
 | Crear galpón | No | No | Sí | No | No |
 | Crear lote | No | Sí* | Sí | Sí | No |
@@ -67,13 +68,17 @@ Puede:
 - Suspender empresas.
 - Configurar clientes.
 - Crear administrador inicial.
-- Acceder en modo soporte.
+- Acceder en modo soporte (`StartSoporteEmpresaAction`, motivo mínimo configurable).
+- Ver Resumen y KPIs de la empresa cliente **solo** con sesión de soporte activa y banner visible.
 - Gestionar datos demo.
 
 No debe:
 
-- Operar datos productivos como usuario común.
-- Acceder a clientes sin motivo auditado.
+- Ver datos operativos de clientes sin sesión de soporte (scope vacío).
+- Mutar producción durante soporte (`LotePolicy` + `blocksProductionMutations`).
+- Acceder a clientes sin motivo auditado en `soporte_sesiones`.
+
+**Verificación EMP-06 solo lectura:** `tests/Unit/Policies/LotePolicyTest.php`, `tests/Feature/Admin/AdminSoporteEmpresaTest.php` (`test_support_mode_blocks_production_mutations_via_gate`).
 
 ---
 

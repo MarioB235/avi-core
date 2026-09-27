@@ -213,6 +213,21 @@ class OperarioCargaLoteTest extends TestCase
         );
     }
 
+    public function test_registrar_lote_action_rejects_galpon_in_inactive_granja(): void
+    {
+        [$encargado, $galpon] = $this->createUsuarioConGalpon(UserRole::Encargado);
+        $galpon->granja->update(['activa' => false]);
+
+        $this->expectException(ValidationException::class);
+
+        app(RegistrarLoteAction::class)->execute(
+            $encargado,
+            $galpon,
+            [TipoHuevo::Blanco->value => 1000],
+            Carbon::parse('2026-01-01'),
+        );
+    }
+
     public function test_codigo_sequence_increments_per_galpon_day_and_tipo(): void
     {
         [$encargado, $galpon] = $this->createUsuarioConGalpon(UserRole::Encargado);
@@ -354,6 +369,21 @@ class OperarioCargaLoteTest extends TestCase
         $this->assertDatabaseMissing('lotes', [
             'galpon_id' => $galpon->id,
         ]);
+    }
+
+    public function test_registrar_lote_action_rejects_invalid_codigo_sma(): void
+    {
+        [$encargado, $galpon] = $this->createUsuarioConGalpon(UserRole::Encargado);
+
+        $this->expectException(ValidationException::class);
+
+        app(RegistrarLoteAction::class)->execute(
+            $encargado,
+            $galpon,
+            [TipoHuevo::Blanco->value => 1000],
+            Carbon::parse('2026-01-01'),
+            codigoSma: 'código con espacios',
+        );
     }
 
     public function test_operario_guardar_lote_does_not_persist(): void

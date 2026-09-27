@@ -11,6 +11,7 @@ use App\Actions\Lote\UpdateLoteAction;
 use App\Enums\GalponEstado;
 use App\Enums\LoteEstado;
 use App\Enums\TipoHuevo;
+use App\Livewire\Concerns\MapsEstructuraValidationErrors;
 use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\Lote;
@@ -19,6 +20,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
@@ -30,6 +32,7 @@ use Livewire\WithPagination;
 class Index extends Component
 {
     use AuthorizesRequests;
+    use MapsEstructuraValidationErrors;
     use WithPagination;
 
     #[Url(as: 'seccion', except: 'granjas', history: true)]
@@ -174,13 +177,19 @@ class Index extends Component
             'activa' => $this->granjaActiva,
         ];
 
-        if ($this->editingGranjaId !== null) {
-            $granja = $this->findScopedGranja($this->editingGranjaId);
-            $updateGranja->execute(auth()->user(), $granja, $payload);
-            $mensaje = 'Granja actualizada.';
-        } else {
-            $createGranja->execute(auth()->user(), $payload);
-            $mensaje = 'Granja creada.';
+        try {
+            if ($this->editingGranjaId !== null) {
+                $granja = $this->findScopedGranja($this->editingGranjaId);
+                $updateGranja->execute(auth()->user(), $granja, $payload);
+                $mensaje = 'Granja actualizada.';
+            } else {
+                $createGranja->execute(auth()->user(), $payload);
+                $mensaje = 'Granja creada.';
+            }
+        } catch (ValidationException $exception) {
+            $this->mapearErroresGranja($exception);
+
+            return;
         }
 
         $this->cerrarGranja();
@@ -232,13 +241,19 @@ class Index extends Component
             'observacion' => $this->galponObservacion !== '' ? $this->galponObservacion : null,
         ];
 
-        if ($this->editingGalponId !== null) {
-            $galpon = $this->findScopedGalpon($this->editingGalponId);
-            $updateGalpon->execute(auth()->user(), $galpon, $payload);
-            $mensaje = 'Galpón actualizado.';
-        } else {
-            $createGalpon->execute(auth()->user(), $payload);
-            $mensaje = 'Galpón creado.';
+        try {
+            if ($this->editingGalponId !== null) {
+                $galpon = $this->findScopedGalpon($this->editingGalponId);
+                $updateGalpon->execute(auth()->user(), $galpon, $payload);
+                $mensaje = 'Galpón actualizado.';
+            } else {
+                $createGalpon->execute(auth()->user(), $payload);
+                $mensaje = 'Galpón creado.';
+            }
+        } catch (ValidationException $exception) {
+            $this->mapearErroresGalpon($exception);
+
+            return;
         }
 
         $this->cerrarGalpon();
@@ -263,16 +278,28 @@ class Index extends Component
 
     public function guardarLoteCrear(RegistrarLoteAction $registrarLote): void
     {
-        $galpon = $this->findScopedGalpon((int) $this->loteGalponId);
-        $tipo = TipoHuevo::from($this->loteTipoHuevo);
+        $this->authorize('create', Lote::class);
 
-        $lotes = $registrarLote->execute(
-            auth()->user(),
-            $galpon,
-            [$tipo->value => (int) $this->loteCantidad],
-            Carbon::parse($this->loteFechaNacimiento),
-            codigoSma: $this->loteCodigoSma !== '' ? $this->loteCodigoSma : null,
-        );
+        try {
+            $galpon = $this->findScopedGalpon((int) $this->loteGalponId);
+            $tipo = TipoHuevo::from($this->loteTipoHuevo);
+
+            $lotes = $registrarLote->execute(
+                auth()->user(),
+                $galpon,
+                [$tipo->value => (int) $this->loteCantidad],
+                Carbon::parse($this->loteFechaNacimiento),
+                codigoSma: $this->loteCodigoSma !== '' ? $this->loteCodigoSma : null,
+            );
+        } catch (ValidationException $exception) {
+            $this->mapearErroresLote($exception);
+
+            return;
+        } catch (\ValueError) {
+            $this->addError('loteTipoHuevo', 'Elegí un tipo de ave válido.');
+
+            return;
+        }
 
         $this->cerrarLoteCrear();
         $codigos = $lotes->pluck('codigo')->implode(', ');

@@ -2,11 +2,11 @@
 
 namespace App\Actions\Galpon;
 
-use App\Enums\GalponEstado;
 use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\User;
 use App\Services\EmpresaRelationalGuard;
+use App\Support\GalponValidacion;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
@@ -25,24 +25,31 @@ class UpdateGalponAction
 
         $this->relations->assertGranjaMatchesGalponEmpresa($granja, $galpon);
 
-        $validated = validator($data, [
-            'granja_id' => ['required', 'integer', Rule::exists('granjas', 'id')->where('empresa_id', $galpon->empresa_id)],
-            'nombre' => ['required', 'string', 'max:120'],
-            'codigo' => ['nullable', 'string', 'max:50'],
-            'capacidad' => ['nullable', 'integer', 'min:1'],
-            'estado' => ['required', Rule::enum(GalponEstado::class)],
-            'activo' => ['required', 'boolean'],
-            'observacion' => ['nullable', 'string', 'max:1000'],
-        ])->validate();
+        if ($granja->id !== $galpon->granja_id) {
+            GalponValidacion::assertGranjaActiva($granja);
+        }
+
+        $normalized = GalponValidacion::normalize($data, forUpdate: true);
+
+        $validated = validator(
+            array_merge($normalized, [
+                'estado' => $normalized['estado']->value,
+            ]),
+            array_merge(GalponValidacion::rules($granja->id, $galpon->id), [
+                'granja_id' => ['required', 'integer', Rule::exists('granjas', 'id')->where('empresa_id', $galpon->empresa_id)],
+                'activo' => ['required', 'boolean'],
+            ]),
+            GalponValidacion::messages()
+        )->validate();
 
         $galpon->update([
             'granja_id' => $granja->id,
-            'nombre' => trim($validated['nombre']),
-            'codigo' => filled($validated['codigo'] ?? null) ? trim((string) $validated['codigo']) : null,
-            'capacidad' => $validated['capacidad'] ?? null,
-            'estado' => GalponEstado::from($validated['estado']),
-            'activo' => $validated['activo'],
-            'observacion' => filled($validated['observacion'] ?? null) ? trim((string) $validated['observacion']) : null,
+            'nombre' => $validated['nombre'],
+            'codigo' => $validated['codigo'],
+            'capacidad' => $validated['capacidad'],
+            'estado' => $normalized['estado'],
+            'activo' => $normalized['activo'],
+            'observacion' => $validated['observacion'],
         ]);
 
         return $galpon->fresh();

@@ -38,6 +38,43 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Modo soporte auditado (Admin AviCore — EMP-06)
+    |--------------------------------------------------------------------------
+    |
+    | Sesión con motivo, actor, inicio/fin y caducidad. Sin soporte activo el
+    | admin no ve datos operativos de clientes.
+    |
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | Datos personales (EMP-08)
+    |--------------------------------------------------------------------------
+    |
+    | Política operativa MVP documentada en avicore-negocio/references/datos-personales.md.
+    | No constituye asesoramiento legal ni certificación de cumplimiento normativo.
+    |
+    */
+
+    'datos_personales' => [
+        'documento_visible_digitos' => 3,
+        'retencion_usuarios' => 'vigencia de la relación contractual y backups acordados (OPS-06 / D06)',
+        'retencion_operativa' => 'historial operativo según D07 (AUD-08); anulación lógica, sin borrado físico en MVP',
+    ],
+
+    'soporte' => [
+        'duracion_minutos' => (int) env('AVICORE_SOPORTE_DURACION_MINUTOS', 120),
+        'motivo_min_caracteres' => (int) env('AVICORE_SOPORTE_MOTIVO_MIN', 10),
+        'destino_entrada' => 'avicore.resumen.index',
+        'destino_salida_default' => 'avicore.empresas.index',
+        'destinos_salida' => [
+            'avicore.empresas.index',
+            'avicore.home',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Login demo (selector de perfil, sin credenciales)
     |--------------------------------------------------------------------------
     |

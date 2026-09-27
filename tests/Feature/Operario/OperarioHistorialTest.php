@@ -4,6 +4,7 @@ namespace Tests\Feature\Operario;
 
 use App\Actions\Operacion\AnularRegistroOperativoAction;
 use App\Enums\EmpresaEstado;
+use App\Enums\GalponEstado;
 use App\Enums\LoteEstado;
 use App\Enums\RegistroOperativoEstado;
 use App\Enums\RegistroOperativoTipo;
@@ -487,6 +488,27 @@ class OperarioHistorialTest extends TestCase
             ->test(Historial::class)
             ->assertSee('avicore-operario-historial-notice', false)
             ->assertSee('no cuentan en los totales del galpón', false);
+    }
+
+    public function test_historial_keeps_records_when_galpon_enters_mantenimiento(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 750,
+            ]);
+
+        $galpon->update([
+            'estado' => GalponEstado::EnMantenimiento,
+            'activo' => false,
+        ]);
+
+        Livewire::actingAs($operario)
+            ->test(Historial::class)
+            ->assertSee('750 huevos aptos', false);
     }
 
     /**

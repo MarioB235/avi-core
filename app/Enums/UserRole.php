@@ -103,6 +103,11 @@ enum UserRole: string
         };
     }
 
+    public function canManageEmpresas(): bool
+    {
+        return $this === self::AdminAvicore;
+    }
+
     public function canResetUserPassword(): bool
     {
         return match ($this) {

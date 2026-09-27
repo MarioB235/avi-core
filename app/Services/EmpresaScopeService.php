@@ -11,7 +11,19 @@ class EmpresaScopeService
     public function constrainQuery(Builder $query, User $actor): Builder
     {
         if ($actor->isAdminAvicore()) {
-            return $query;
+            $table = $query->getModel()->getTable();
+
+            if (in_array($table, ['empresas', 'users', 'soporte_sesiones'], true)) {
+                return $query;
+            }
+
+            $empresaId = app(EmpresaContextService::class)->empresaId();
+
+            if ($empresaId === null) {
+                return $query->whereRaw('1 = 0');
+            }
+
+            return $query->where("{$table}.empresa_id", $empresaId);
         }
 
         if ($actor->empresa_id === null) {

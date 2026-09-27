@@ -21,6 +21,8 @@
         <x-admin.sidebar-nav />
 
         <div class="avicore-operario-shell__workspace">
+            <x-admin.support-banner :banner="$adminSupportBanner ?? null" />
+
             @if ($adminIsHeroPage ?? false)
                 <x-admin.header :is-home-page="true" />
             @else

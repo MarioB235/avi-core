@@ -38,6 +38,7 @@ Nav: `App\Support\AdminNav` · Composer: `AdminLayoutComposer`.
 Landing **sin duplicar** otros tabs:
 
 - Hero: saludo + `{empresa · rol}.`
+- **Primeros pasos:** checklist onboarding (`EmpresaOnboardingService`) si hay pendientes; sin pasos comerciales.
 - **Tu empresa:** 2 KPIs estructurales (granjas activas, galpones activos).
 - **Tu empresa hoy:** pulso del día + huevos/muertes con maples/cajas; enlace a Resumen.
 - **Stock y demanda:** preview ficticio (reserva, demanda, salida) hasta módulo comercial; eyebrow **«Vista previa»** obligatorio; constantes con `avicore-defer:` en servicio (ver `reglas.md` §17).

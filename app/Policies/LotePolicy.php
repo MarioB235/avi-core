@@ -4,9 +4,12 @@ namespace App\Policies;
 
 use App\Models\Lote;
 use App\Models\User;
+use App\Services\SoporteEmpresaService;
 
 class LotePolicy
 {
+    public function __construct(private SoporteEmpresaService $soporte) {}
+
     public function viewAny(User $user): bool
     {
         return $user->empresa_id !== null
@@ -21,12 +24,20 @@ class LotePolicy
 
     public function create(User $user): bool
     {
+        if ($this->soporte->blocksProductionMutations($user)) {
+            return false;
+        }
+
         return $user->empresa_id !== null
             && $user->rol->canCreateLote();
     }
 
     public function update(User $user, Lote $lote): bool
     {
+        if ($this->soporte->blocksProductionMutations($user)) {
+            return false;
+        }
+
         return $user->empresa_id !== null
             && $user->rol->canManageLotes()
             && $user->empresa_id === $lote->empresa_id;

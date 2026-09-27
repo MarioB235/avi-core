@@ -35,6 +35,25 @@ class UserSessionService
         $this->invalidateAllForUser($user, $currentSessionId);
     }
 
+    public function invalidateAllForEmpresa(int $empresaId): void
+    {
+        if (config('session.driver') !== 'database') {
+            return;
+        }
+
+        $userIds = User::query()
+            ->where('empresa_id', $empresaId)
+            ->pluck('id');
+
+        if ($userIds->isEmpty()) {
+            return;
+        }
+
+        DB::table($this->sessionTable())
+            ->whereIn('user_id', $userIds)
+            ->delete();
+    }
+
     private function sessionTable(): string
     {
         return (string) config('session.table', 'sessions');

@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Enums\UserRole;
 use App\Models\User;
+use App\Services\SoporteEmpresaService;
 use App\Support\Concerns\MapsNavTabsToTabBar;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
@@ -39,7 +40,10 @@ class AdminNav
             ],
         ];
 
-        if ($user->rol->canViewResumen()) {
+        $canViewResumen = $user->rol->canViewResumen()
+            || ($user->isAdminAvicore() && app(SoporteEmpresaService::class)->isActive());
+
+        if ($canViewResumen) {
             $tabs[] = [
                 'route' => $route('resumen.index'),
                 'patterns' => ["{$prefix}.resumen.*"],
@@ -76,6 +80,16 @@ class AdminNav
                 'label' => 'Estructura',
                 'icon' => 'layers',
                 'headerTitle' => 'Estructura',
+            ];
+        }
+
+        if ($user->rol->canManageEmpresas()) {
+            $tabs[] = [
+                'route' => $route('empresas.index'),
+                'patterns' => ["{$prefix}.empresas.*"],
+                'label' => 'Empresas',
+                'icon' => 'layers',
+                'headerTitle' => 'Empresas',
             ];
         }
 
@@ -138,6 +152,7 @@ class AdminNav
             || str_contains($name, '.equipo.')
             || str_contains($name, '.comercial.')
             || str_contains($name, '.usuarios.')
+            || str_contains($name, '.empresas.')
             || str_contains($name, '.estructura.');
     }
 
@@ -146,6 +161,12 @@ class AdminNav
         $user ??= Auth::user();
 
         if ($user?->isAdminAvicore()) {
+            $soporte = app(SoporteEmpresaService::class)->activeSesion();
+
+            if ($soporte !== null) {
+                return 'Soporte · '.$soporte->empresa->nombre;
+            }
+
             return 'Administración AviCore';
         }
 

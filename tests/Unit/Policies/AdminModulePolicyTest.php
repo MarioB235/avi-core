@@ -19,7 +19,7 @@ class AdminModulePolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new AdminModulePolicy;
+        $this->policy = app(AdminModulePolicy::class);
     }
 
     public function test_dueno_can_view_resumen_equipo_and_comercial(): void

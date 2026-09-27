@@ -58,7 +58,7 @@
                                 <div class="avicore-team-list__main">
                                     <p class="avicore-team-list__name">{{ $member->name }}</p>
                                     <p class="avicore-team-list__meta">
-                                        <span>{{ $member->documento }}</span>
+                                        <x-ui.documento-label :user="$member" />
                                         @if ($member->email)
                                             <span class="avicore-team-list__meta-sep" aria-hidden="true">·</span>
                                             <span class="avicore-team-list__email">{{ $member->email }}</span>

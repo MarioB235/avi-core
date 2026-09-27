@@ -7,6 +7,8 @@
             placeholder="Elegí un galpón"
             :options="$galponesOptions"
             required
+            hint="Solo galpones disponibles para carga."
+            :error="$errors->first('loteGalponId')"
         />
 
         <x-ui.input
@@ -14,6 +16,7 @@
             name="loteCodigoSma"
             wire:model="loteCodigoSma"
             hint="Opcional. Código del sistema del gobierno."
+            :error="$errors->first('loteCodigoSma')"
         />
 
         <x-ui.select
@@ -22,11 +25,27 @@
             wire:model="loteTipoHuevo"
             :options="$tipoHuevoOptions"
             required
+            :error="$errors->first('loteTipoHuevo')"
         />
 
         <div class="grid gap-4 sm:grid-cols-2">
-            <x-ui.input label="Cantidad de aves" name="loteCantidad" wire:model="loteCantidad" type="number" min="1" required />
-            <x-ui.input label="Fecha de nacimiento" name="loteFechaNacimiento" wire:model="loteFechaNacimiento" type="date" required />
+            <x-ui.input
+                label="Cantidad de aves"
+                name="loteCantidad"
+                wire:model="loteCantidad"
+                type="number"
+                min="1"
+                required
+                :error="$errors->first('loteCantidad')"
+            />
+            <x-ui.input
+                label="Fecha de nacimiento"
+                name="loteFechaNacimiento"
+                wire:model="loteFechaNacimiento"
+                type="date"
+                required
+                :error="$errors->first('loteFechaNacimiento')"
+            />
         </div>
 
         <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">

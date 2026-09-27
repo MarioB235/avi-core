@@ -147,7 +147,7 @@ class EmpresaIsolationTest extends TestCase
             ->set('galponGranjaId', (string) $granjaAjena->id)
             ->set('galponNombre', 'Galpón ilegal')
             ->call('guardarGalpon')
-            ->assertHasErrors(['granja_id']);
+            ->assertHasErrors(['galponGranjaId']);
     }
 
     /**

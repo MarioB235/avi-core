@@ -84,7 +84,9 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="hidden md:table-cell text-avicore-muted">{{ $user->documento }}</td>
+                                <td class="hidden md:table-cell text-avicore-muted">
+                                    <x-ui.documento-label :user="$user" :viewer="$actor" />
+                                </td>
                                 <td>
                                     <x-ui.badge variant="primary">{{ $user->rol->label() }}</x-ui.badge>
                                 </td>

@@ -8,45 +8,32 @@ Plan maestro: [PLAN-MAESTRO-ENTREGA-AVICORE.md](PLAN-MAESTRO-ENTREGA-AVICORE.md)
 | Campo | Valor |
 |---|---|
 | Revisión | 2026-09-26 |
-| Base git | `b2623ef` + cambios locales SEG-02–12 |
-| Rama | `feature/admin-resumen-galpon-select` |
-| Siguiente ID | **EMP-01** (recomendado) o **ORQ-05** |
+| Base git | cambios locales EMP-01 → EST-04 |
+| Rama | `feature/emp-01-alta-empresa` |
+| Siguiente ID | **EST-05** (recomendado) u **ORQ-05** |
 | En curso | Ninguno |
-| Tests | **588** total · **588** OK · 2116 aserciones (2026-09-26) |
-| Build | Exit 0 · Pint OK |
-| `check:agent-docs` | OK (15 skills; incluye invariantes plan 1b) |
+| Tests | **653** total · **653** OK · 2327 aserciones (2026-09-26) |
+| Build | Pint OK |
+| `check:agent-docs` | OK |
 | Bloque SEG | **Cerrado** (SEG-01 → SEG-12) |
+| Bloque EMP | **Cerrado** (EMP-01 → EMP-08) |
+| Bloque EST (parcial) | EST-01 → EST-04 verificadas |
 | Alcance v1 | Operación avícola completa; comercial/reparto etapa 2 |
-
-## Contrato activo (entrada única)
-
-| Prioridad | Archivo | Rol |
-|---|---|---|
-| 1 | `portal/contenido/desarrollo/contexto.html` | Contrato humano |
-| 2 | `.cursor/commands/avicore-architect-direct.md` | Flujo slash |
-| 3 | `.cursor/skills/README.md` | Catálogo y enrutamiento |
-| 4 | `AGENTS.md` | Puntero raíz |
-| 5 | `portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md` | Cola de trabajo v1 |
-
-## Decisiones pendientes
-
-D01, D03–D07 — ver plan maestro §4. **D02 cerrada** (SEG-07).
 
 ## Últimos cierres
 
 | ID | Estado | Fecha | Evidencia |
 |---|---|---|---|
-| SEG-10 | VERIFICADA | 2026-09-26 | [evidencias/SEG-10-recuperacion-sesiones.md](evidencias/SEG-10-recuperacion-sesiones.md) |
-| SEG-11 | VERIFICADA | 2026-09-26 | [evidencias/SEG-11-separar-demo.md](evidencias/SEG-11-separar-demo.md) |
-| SEG-12 | VERIFICADA | 2026-09-26 | [evidencias/SEG-12-superficies-tecnicas.md](evidencias/SEG-12-superficies-tecnicas.md) |
+| EST-04 | VERIFICADA | 2026-09-26 | [evidencias/EST-04-alta-lote-autorizada.md](evidencias/EST-04-alta-lote-autorizada.md) |
+| EST-03 | VERIFICADA | 2026-09-26 | [evidencias/EST-03-jerarquia-estados.md](evidencias/EST-03-jerarquia-estados.md) |
+| EST-02 | VERIFICADA | 2026-09-26 | [evidencias/EST-02-galpones-completos.md](evidencias/EST-02-galpones-completos.md) |
 
 ## Mensaje para continuar
 
 ```text
 /avicore-architect-direct
 Ejecutá portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md.
-Leé portal/planes/CHECKPOINT.md y el diagnóstico enlazado.
-Empezá por EMP-01 (alta empresa real) o ORQ-05 si priorizás tooling.
+Leé portal/planes/CHECKPOINT.md.
+Empezá por EST-05 (validación en Action) o ORQ-05 si priorizás tooling.
 No hagas commit, push, PR ni despliegue sin autorización explícita.
-Al cerrar sesión actualizá este checkpoint y la evidencia del plan.
 ```

@@ -7,13 +7,33 @@
             placeholder="Elegí una granja"
             :options="$granjasOptions"
             required
+            :error="$errors->first('galponGranjaId')"
         />
 
-        <x-ui.input label="Nombre" name="galponNombre" wire:model="galponNombre" required />
+        <x-ui.input
+            label="Nombre"
+            name="galponNombre"
+            wire:model="galponNombre"
+            required
+            :error="$errors->first('galponNombre')"
+        />
 
         <div class="grid gap-4 sm:grid-cols-2">
-            <x-ui.input label="Código" name="galponCodigo" wire:model="galponCodigo" />
-            <x-ui.input label="Capacidad (aves)" name="galponCapacidad" wire:model="galponCapacidad" type="number" min="1" />
+            <x-ui.input
+                label="Código"
+                name="galponCodigo"
+                wire:model="galponCodigo"
+                hint="Opcional. Único por granja."
+                :error="$errors->first('galponCodigo')"
+            />
+            <x-ui.input
+                label="Capacidad (aves)"
+                name="galponCapacidad"
+                wire:model="galponCapacidad"
+                type="number"
+                min="1"
+                :error="$errors->first('galponCapacidad')"
+            />
         </div>
 
         <x-ui.select
@@ -22,6 +42,8 @@
             wire:model="galponEstado"
             :options="$galponEstadoOptions"
             required
+            hint="Mantenimiento o inactivo bloquean carga; el historial se conserva."
+            :error="$errors->first('galponEstado')"
         />
 
         @if ($editingGalponId)

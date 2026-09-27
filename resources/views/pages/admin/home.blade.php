@@ -4,6 +4,7 @@
     $inicio = $home->inicio;
     $pulso = $home->pulso;
     $stockPreview = $home->stockPreview;
+    $onboarding = $home->onboarding;
 @endphp
 
 <x-layouts.admin title="Inicio · AviCore">
@@ -14,6 +15,18 @@
         />
 
         <div class="avicore-operario-home-sheet">
+            @if ($onboarding['show'])
+                <x-ui.reveal as="section" aria-label="{{ $onboarding['title'] }}">
+                    <x-ui.section-head
+                        eyebrow="Configuración"
+                        :title="$onboarding['title']"
+                        :subtitle="$onboarding['subtitle']"
+                    />
+
+                    <x-ui.setup-checklist class="mt-4" :items="$onboarding['items']" />
+                </x-ui.reveal>
+            @endif
+
             @if ($inicio['show_estructura'])
                 @if ($pulso['show'])
                     <x-ui.reveal as="section" aria-label="Tu empresa hoy">

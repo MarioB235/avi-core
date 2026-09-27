@@ -296,6 +296,16 @@ class OperarioGalponServiceTest extends TestCase
         );
     }
 
+    public function test_galpon_disponible_para_usuario_returns_null_when_granja_inactive(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+        $galpon->granja->update(['activa' => false]);
+
+        $this->assertNull(
+            app(OperarioGalponService::class)->galponDisponibleParaUsuario($operario, $galpon->id)
+        );
+    }
+
     public function test_galpon_disponible_para_usuario_returns_scoped_galpon(): void
     {
         [$operario, $galpon] = $this->createOperarioConGalpon();

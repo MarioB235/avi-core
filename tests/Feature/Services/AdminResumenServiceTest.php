@@ -139,6 +139,24 @@ class AdminResumenServiceTest extends TestCase
         $this->assertGreaterThan(AdminResumenService::MORTALIDAD_REFERENCIA_PCT, $data->galponesResumen[0]['mortalidad_pct']);
     }
 
+    public function test_for_excludes_galpones_in_inactive_granja(): void
+    {
+        [$dueno, $galpon] = $this->duenoConGalponYLote();
+        $galpon->granja->update(['activa' => false]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 500,
+            ]);
+
+        $data = app(AdminResumenService::class)->for($dueno);
+
+        $this->assertSame(0, $data->huevosHoy);
+        $this->assertSame(0, $data->galponesActivos);
+    }
+
     public function test_for_excludes_other_company_galpones(): void
     {
         [$dueno, $galpon] = $this->duenoConGalponYLote();

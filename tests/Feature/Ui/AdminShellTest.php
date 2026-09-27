@@ -45,8 +45,9 @@ class AdminShellTest extends TestCase
             ->assertDontSee('>Usuarios<', false)
             ->assertDontSee('>Estructura<', false)
             ->assertDontSee('¿Qué querés gestionar?')
-            ->assertDontSee(route('operario.home'), false)
+            ->assertDontSee('href="'.route('operario.home').'"', false)
             ->assertDontSee('Cargar en galpón', false)
+            ->assertSee('Primeros pasos')
             ->assertDontSee('>Campo<', false)
             ->assertDontSee('avicore-admin-header--toolbar', false);
     }
@@ -57,7 +58,7 @@ class AdminShellTest extends TestCase
             'must_change_password' => false,
         ]);
 
-        $this->assertSame(['Inicio', 'Usuarios'], collect(AdminNav::tabs($admin))->pluck('label')->all());
+        $this->assertSame(['Inicio', 'Empresas', 'Usuarios'], collect(AdminNav::tabs($admin))->pluck('label')->all());
 
         $this->actingAs($admin)
             ->get(route('avicore.home'))

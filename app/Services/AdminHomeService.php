@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\UserRole;
+use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\User;
@@ -17,7 +18,12 @@ class AdminHomeService
 
     private ?int $cachedPulsoUserId = null;
 
-    public function __construct(private AdminResumenService $adminResumen) {}
+    public function __construct(
+        private AdminResumenService $adminResumen,
+        private EmpresaOnboardingService $onboarding,
+        private EmpresaContextService $empresaContext,
+        private SoporteEmpresaService $soporte,
+    ) {}
 
     public function for(User $user): AdminHomeViewData
     {
@@ -30,6 +36,7 @@ class AdminHomeService
             inicio: $this->inicioPanel($user),
             pulso: $this->pulsoPanel($user),
             stockPreview: $this->stockPreviewFor($user),
+            onboarding: $this->onboarding->panelFor($user),
         );
     }
 
@@ -40,7 +47,7 @@ class AdminHomeService
      */
     public function inicioPanel(User $user): array
     {
-        if ($user->empresa_id === null || ! $user->rol->canViewResumen()) {
+        if (! $this->soporte->canViewResumenOperativo($user)) {
             return [
                 'granjas' => 0,
                 'galpones' => 0,
@@ -80,7 +87,7 @@ class AdminHomeService
      */
     public function pulsoPanel(User $user): array
     {
-        if ($user->empresa_id === null || ! $user->rol->canViewResumen()) {
+        if (! $this->soporte->canViewResumenOperativo($user)) {
             return $this->pulsoPanelVacio();
         }
 
@@ -90,12 +97,15 @@ class AdminHomeService
             return $this->pulsoPanelVacio();
         }
 
+        $user->loadMissing('empresa');
+        $unidades = HuevosUnidad::para($user->empresa);
+
         return [
             'show' => $pulso['galpones_activos'] > 0,
             ...$pulso,
             'delta_label' => $this->formatDeltaHuevos($pulso),
-            'unidades_hoy' => HuevosUnidad::etiquetaCompacta($pulso['huevos_hoy']),
-            'unidades_cajas_maples' => HuevosUnidad::etiquetaSoloCajasMaples($pulso['huevos_hoy']),
+            'unidades_hoy' => $unidades->etiquetaCompacta($pulso['huevos_hoy']),
+            'unidades_cajas_maples' => $unidades->etiquetaSoloCajasMaples($pulso['huevos_hoy']),
             'resumen_route' => $user->rol->panelRouteName('resumen.index'),
         ];
     }
@@ -111,7 +121,17 @@ class AdminHomeService
      */
     public function stockPreviewFor(User $user): array
     {
-        if ($user->empresa_id === null || ! $user->rol->canViewResumen()) {
+        if (! $this->soporte->canViewResumenOperativo($user)) {
+            return [
+                'show' => false,
+                'preview' => false,
+                'items' => [],
+            ];
+        }
+
+        $empresaId = $this->empresaContext->empresaIdFor($user);
+
+        if ($empresaId === null) {
             return [
                 'show' => false,
                 'preview' => false,
@@ -130,6 +150,8 @@ class AdminHomeService
         }
 
         $salidaHoy = $pulso['huevos_hoy'];
+        $empresa = Empresa::query()->findOrFail($empresaId);
+        $unidades = HuevosUnidad::para($empresa);
         // avicore-defer: módulo stock/comercial real — reemplazar al persistir reserva y demanda
         $reservaHuevos = 4_320;
         $demandaHuevos = 1_800;
@@ -140,14 +162,14 @@ class AdminHomeService
             'items' => [
                 [
                     'label' => 'En reserva (cámara)',
-                    'value' => HuevosUnidad::etiquetaSoloCajasMaples($reservaHuevos),
-                    'hint' => HuevosUnidad::etiquetaCompacta($reservaHuevos).' almacenados',
+                    'value' => $unidades->etiquetaSoloCajasMaples($reservaHuevos),
+                    'hint' => $unidades->etiquetaCompacta($reservaHuevos).' almacenados',
                     'icon' => 'warehouse',
                     'tone' => 'huevos',
                 ],
                 [
                     'label' => 'En demanda',
-                    'value' => HuevosUnidad::etiquetaSoloCajasMaples($demandaHuevos),
+                    'value' => $unidades->etiquetaSoloCajasMaples($demandaHuevos),
                     'hint' => 'Comprometidos con clientes esta semana',
                     'icon' => 'truck',
                     'tone' => 'huevos',
@@ -155,17 +177,17 @@ class AdminHomeService
                 [
                     'label' => 'Salida hoy',
                     'value' => $salidaHoy > 0
-                        ? HuevosUnidad::etiquetaSoloCajasMaples($salidaHoy)
+                        ? $unidades->etiquetaSoloCajasMaples($salidaHoy)
                         : 'Sin carga aún',
                     'hint' => $salidaHoy > 0
-                        ? HuevosUnidad::etiquetaCompacta($salidaHoy).' juntados en galpón'
+                        ? $unidades->etiquetaCompacta($salidaHoy).' juntados en galpón'
                         : 'Cuando operarios carguen huevos, verás el total acá',
                     'icon' => 'egg',
                     'tone' => 'huevos',
                 ],
                 [
                     'label' => 'Disponible estimado',
-                    'value' => HuevosUnidad::etiquetaSoloCajasMaples(max(0, $reservaHuevos + $salidaHoy - $demandaHuevos)),
+                    'value' => $unidades->etiquetaSoloCajasMaples(max(0, $reservaHuevos + $salidaHoy - $demandaHuevos)),
                     'hint' => 'Reserva + producción de hoy − demanda (vista previa)',
                     'icon' => 'layers',
                 ],
@@ -178,7 +200,11 @@ class AdminHomeService
      */
     private function pulsoForUser(User $user): ?array
     {
-        if ($user->empresa_id === null || ! $user->rol->canViewResumen()) {
+        if (! $this->soporte->canViewResumenOperativo($user)) {
+            return null;
+        }
+
+        if ($this->empresaContext->empresaIdFor($user) === null) {
             return null;
         }
 
@@ -265,30 +291,43 @@ class AdminHomeService
 
     public function granjasActivasCount(User $user): int
     {
-        if ($user->empresa_id === null) {
+        $empresaId = $this->empresaContext->empresaIdFor($user);
+
+        if ($empresaId === null) {
             return 0;
         }
 
         return Granja::query()
-            ->where('empresa_id', $user->empresa_id)
+            ->where('empresa_id', $empresaId)
             ->where('activa', true)
             ->count();
     }
 
     public function galponesActivosCount(User $user): int
     {
-        if ($user->empresa_id === null) {
+        $empresaId = $this->empresaContext->empresaIdFor($user);
+
+        if ($empresaId === null) {
             return 0;
         }
 
         return Galpon::query()
-            ->where('empresa_id', $user->empresa_id)
-            ->where('activo', true)
+            ->where('empresa_id', $empresaId)
+            ->disponiblesParaCarga()
             ->count();
     }
 
     public function contextLabel(User $user): string
     {
+        if ($user->isAdminAvicore()) {
+            $sesion = $this->soporte->activeSesion();
+            $empresa = $sesion?->empresa->nombre ?? 'AviCore';
+
+            return $sesion !== null
+                ? "{$empresa} · Soporte"
+                : "{$empresa} · {$user->rol->label()}";
+        }
+
         $empresa = $user->empresa?->nombre ?? 'AviCore';
 
         return "{$empresa} · {$user->rol->label()}";
@@ -717,6 +756,21 @@ readonly class AdminHomeViewData
      *     preview: bool,
      *     items: list<array{label: string, value: string, hint: string, icon?: string, tone?: string}>
      * }  $stockPreview
+     * @param  array{
+     *     show: bool,
+     *     title: string,
+     *     subtitle: string,
+     *     pending_count: int,
+     *     total_count: int,
+     *     items: list<array{
+     *         key: string,
+     *         label: string,
+     *         description: string,
+     *         icon: string,
+     *         status: string,
+     *         href: ?string
+     *     }>
+     * }  $onboarding
      */
     public function __construct(
         public User $user,
@@ -727,5 +781,6 @@ readonly class AdminHomeViewData
         public array $inicio,
         public array $pulso,
         public array $stockPreview,
+        public array $onboarding,
     ) {}
 }

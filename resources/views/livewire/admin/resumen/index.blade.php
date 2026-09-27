@@ -37,7 +37,7 @@
                 <x-ui.stat-panel
                     label="Huevos hoy"
                     :value="number_format($resumen->huevosHoy, 0, ',', '.')"
-                    :hint="$huevosHoyUnidades.' · '.number_format($maplesHoy, 0, ',', '.').' maples'"
+                    :hint="$huevosHoyUnidades.' · '.number_format($maplesHoy, 0, ',', '.').' maples'.(($huevosHoyDesglose['huevos'] ?? 0) > 0 ? ' + '.$huevosHoyDesglose['huevos'].' sueltos' : '')"
                     icon="egg"
                     tone="huevos"
                 />

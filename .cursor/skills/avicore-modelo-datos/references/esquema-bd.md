@@ -21,6 +21,8 @@ erDiagram
     empresas ||--o{ lotes : tiene
     empresas ||--o{ registros_operativos : tiene
     empresas ||--o{ vacunaciones : tiene
+    empresas ||--o{ soporte_sesiones : auditada
+    users ||--o{ soporte_sesiones : actor
     granjas ||--o{ galpones : contiene
     galpones ||--o{ lotes : aloja
     galpones ||--o{ registros_operativos : recibe
@@ -43,7 +45,7 @@ erDiagram
 | codigo | string | Sí | |
 | logo_path | string | Sí | |
 | estado | string | No | `activa`, `suspendida`, `inactiva` |
-| configuracion | json | Sí | |
+| configuracion | json | Sí | `zona_horaria`, `unidades` (`huevos_por_maple`, `maples_por_cajon`), `estado_historial[]` (EMP-02/03) |
 | created_at, updated_at | timestamp | No | |
 
 ### `users`
@@ -65,6 +67,23 @@ erDiagram
 
 **Índices:** `(empresa_id, documento)` único; `users_documento_admin_unique` parcial en `documento` donde `empresa_id IS NULL` (Admin AviCore).
 
+### `soporte_sesiones` (EMP-06)
+
+| Campo | Tipo | Null | Notas |
+|-------|------|------|-------|
+| id | bigint PK | No | |
+| empresa_id | FK empresas | No | Empresa cliente en soporte |
+| actor_id | FK users | No | Admin AvicCore que ingresa |
+| motivo | string | No | Texto libre (mín. configurable) |
+| started_at | timestamp | No | Inicio de sesión |
+| expires_at | timestamp | No | Caducidad automática |
+| ended_at | timestamp | Sí | Null = sesión abierta |
+| end_reason | string | Sí | `manual`, `logout`, `expired`, `replaced`, … |
+| acciones | json | Sí | Bitácora de sesión: `inicio`, `consulta_resumen`, `fin` (EMP-07) |
+| created_at, updated_at | timestamp | No | |
+
+**Índices:** `(actor_id, ended_at)`; `(empresa_id, started_at)`.
+
 ### `granjas`
 
 | Campo | Tipo | Null | Notas |
@@ -72,8 +91,8 @@ erDiagram
 | id | bigint PK | No | |
 | empresa_id | FK | No | |
 | nombre | string | No | |
-| codigo | string | Sí | |
-| dicose | string | Sí | Nº DICOSE del establecimiento; único por `empresa_id` |
+| codigo | string | Sí | Código interno; único por `empresa_id` si se informa (EST-01) |
+| dicose | string | Sí | Nº DICOSE (texto numérico/guiones); único por `empresa_id` |
 | ubicacion | string | Sí | |
 | activa | boolean | No | |
 | created_at, updated_at | timestamp | No | |
@@ -163,6 +182,8 @@ Registro operativo de vacunación por lote (tabla propia; no es fila en `registr
 | Varias | `empresa_id` |
 | registros_operativos | `galpon_id`, `created_at`, `tipo`, `(empresa_id, user_id, created_at)` historial operario |
 | vacunaciones | `empresa_id`, `(lote_id, created_at)`, `(galpon_id, created_at)`, `(empresa_id, user_id, created_at)` historial operario |
+| granjas | `(empresa_id, dicose)` único; `(empresa_id, codigo)` único |
+| galpones | `(granja_id, codigo)` único |
 | lotes | `estado`, `(empresa_id, codigo)` único |
 | users | `(empresa_id, documento)` único |
 | users | `documento` único parcial (`empresa_id IS NULL`, Admin AviCore) |
