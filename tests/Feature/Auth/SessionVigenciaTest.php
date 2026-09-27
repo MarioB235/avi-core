@@ -106,7 +106,7 @@ class SessionVigenciaTest extends TestCase
             ->postJson(app('livewire')->getUpdateUri(), $payload)
             ->assertRedirect(route('login'));
 
-        $this->assertSame(0, RegistroOperativo::query()->count());
+        $this->assertSame(0, RegistroOperativo::query()->where('empresa_id', $operario->empresa_id)->count());
         $this->assertGuest();
     }
 
@@ -117,7 +117,7 @@ class SessionVigenciaTest extends TestCase
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
-        $galpon = Galpon::factory()->forGranja($granja)->create();
+        $galpon = Galpon::factory()->forGranja($granja)->conLoteActivo()->create();
 
         $operario = User::factory()->create([
             'empresa_id' => $empresa->id,

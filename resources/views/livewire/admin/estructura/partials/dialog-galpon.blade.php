@@ -1,14 +1,26 @@
 <x-ui.dialog wire:model="dialogGalponAbierto" :title="$editingGalponId ? 'Editar galpón' : 'Nuevo galpón'">
     <form wire:submit="guardarGalpon" class="space-y-4">
-        <x-ui.select
-            label="Granja"
-            name="galponGranjaId"
-            wire:model="galponGranjaId"
-            placeholder="Elegí una granja"
-            :options="$granjasOptions"
-            required
-            :error="$errors->first('galponGranjaId')"
-        />
+        @if ($galponEditBloqueaReasignacionGranja ?? false)
+            <div class="space-y-1.5">
+                <p class="text-sm font-medium text-avicore-text">Granja</p>
+                <p class="rounded-lg border border-avicore-border bg-avicore-soft/40 px-3 py-2.5 text-sm text-avicore-text">
+                    {{ $galponEditGranjaNombre }}
+                </p>
+                <p class="text-xs text-avicore-muted">
+                    No se puede cambiar: el galpón ya tiene lotes o registros operativos.
+                </p>
+            </div>
+        @else
+            <x-ui.select
+                label="Granja"
+                name="galponGranjaId"
+                wire:model="galponGranjaId"
+                placeholder="Elegí una granja"
+                :options="$granjasOptions"
+                required
+                :error="$errors->first('galponGranjaId')"
+            />
+        @endif
 
         <x-ui.input
             label="Nombre"

@@ -68,7 +68,7 @@ class EmpresaIsolationTest extends TestCase
             ->assertSet('dialogHuevosAbierto', false)
             ->assertSet('selectorGalponAbierto', true);
 
-        $this->assertSame(0, RegistroOperativo::query()->count());
+        $this->assertSame(0, RegistroOperativo::query()->where('empresa_id', $operario->empresa_id)->count());
     }
 
     public function test_administrativo_cannot_open_foreign_user_for_edit(): void

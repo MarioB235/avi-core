@@ -14,7 +14,23 @@ trait MapsEstructuraValidationErrors
                 'fechaNacimiento' => 'loteFechaNacimiento',
                 'codigo_sma' => 'loteCodigoSma',
                 'tiposHuevo' => 'loteTipoHuevo',
+                'estado' => 'loteEstadoActual',
                 default => str_starts_with($field, 'cantidad_') ? 'loteCantidad' : $field,
+            };
+
+            foreach ($messages as $message) {
+                $this->addError($target, $message);
+            }
+        }
+    }
+
+    protected function mapearErroresLoteTransicion(ValidationException $exception): void
+    {
+        foreach ($exception->errors() as $field => $messages) {
+            $target = match ($field) {
+                'estado' => 'loteTransicionEstado',
+                'motivo' => 'loteTransicionMotivo',
+                default => $field,
             };
 
             foreach ($messages as $message) {

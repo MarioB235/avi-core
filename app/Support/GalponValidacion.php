@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Enums\GalponEstado;
+use App\Enums\LoteEstado;
 use App\Models\Galpon;
 use App\Models\Granja;
 use Illuminate\Validation\Rule;
@@ -84,6 +85,59 @@ final class GalponValidacion
         if (! $galpon->disponibleParaCargaOperativa()) {
             throw ValidationException::withMessages([
                 $field => 'El galpón no está disponible para carga.',
+            ]);
+        }
+    }
+
+    public static function tieneLotesActivos(Galpon $galpon): bool
+    {
+        return $galpon->lotes()
+            ->whereIn('estado', [
+                LoteEstado::Activo->value,
+                LoteEstado::EnProduccion->value,
+            ])
+            ->exists();
+    }
+
+    public static function assertLoteActivoParaCargaProductiva(Galpon $galpon, string $field = 'galpon_id'): void
+    {
+        if (! self::tieneLotesActivos($galpon)) {
+            throw ValidationException::withMessages([
+                $field => 'El galpón no tiene lotes activos. Registrá un lote antes de cargar producción.',
+            ]);
+        }
+    }
+
+    public static function assertCicloCerradoParaNuevoLote(Galpon $galpon, string $field = 'galponId'): void
+    {
+        if (self::tieneLotesActivos($galpon)) {
+            throw ValidationException::withMessages([
+                $field => 'Cerrá o trasladá los lotes activos antes de registrar un nuevo ciclo.',
+            ]);
+        }
+
+        if ($galpon->aves_actuales > 0) {
+            throw ValidationException::withMessages([
+                $field => 'El galpón aún tiene aves registradas. Cerrá el ciclo anterior antes de un nuevo lote.',
+            ]);
+        }
+    }
+
+    public static function assertGalponVacioParaEstadoNoOperativo(Galpon $galpon, GalponEstado $estadoDestino): void
+    {
+        if ($estadoDestino->permiteCarga()) {
+            return;
+        }
+
+        if (self::tieneLotesActivos($galpon)) {
+            throw ValidationException::withMessages([
+                'estado' => 'Cerrá o trasladá los lotes activos antes de pasar el galpón a '.$estadoDestino->label().'.',
+            ]);
+        }
+
+        if ($galpon->aves_actuales > 0) {
+            throw ValidationException::withMessages([
+                'estado' => 'El galpón aún tiene aves registradas. No podés pasarlo a '.$estadoDestino->label().' hasta cerrar el ciclo.',
             ]);
         }
     }

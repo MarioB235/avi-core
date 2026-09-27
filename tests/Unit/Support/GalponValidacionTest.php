@@ -4,9 +4,11 @@ namespace Tests\Unit\Support;
 
 use App\Enums\EmpresaEstado;
 use App\Enums\GalponEstado;
+use App\Enums\LoteEstado;
 use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
+use App\Models\Lote;
 use App\Support\GalponValidacion;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
@@ -59,6 +61,51 @@ class GalponValidacionTest extends TestCase
         $this->expectException(ValidationException::class);
 
         GalponValidacion::assertDisponibleParaCarga($galpon);
+    }
+
+    public function test_assert_lote_activo_para_carga_productiva_requires_active_lote(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create(['aves_actuales' => 5000]);
+
+        $this->expectException(ValidationException::class);
+
+        GalponValidacion::assertLoteActivoParaCargaProductiva($galpon);
+    }
+
+    public function test_assert_ciclo_cerrado_rejects_active_lote(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->conLoteActivo()->create();
+
+        $this->expectException(ValidationException::class);
+
+        GalponValidacion::assertCicloCerradoParaNuevoLote($galpon);
+    }
+
+    public function test_assert_ciclo_cerrado_rejects_live_birds_without_active_lote(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create(['aves_actuales' => 100]);
+        Lote::factory()->forGalpon($galpon)->create(['estado' => LoteEstado::Cerrado]);
+
+        $this->expectException(ValidationException::class);
+
+        GalponValidacion::assertCicloCerradoParaNuevoLote($galpon);
+    }
+
+    public function test_assert_galpon_vacio_para_estado_no_operativo_blocks_transition(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->conLoteActivo()->create();
+
+        $this->expectException(ValidationException::class);
+
+        GalponValidacion::assertGalponVacioParaEstadoNoOperativo($galpon, GalponEstado::VacioSanitario);
     }
 
     public function test_rules_reject_short_name(): void

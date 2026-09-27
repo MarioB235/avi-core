@@ -261,7 +261,7 @@ Multiempresa: actores de empresa solo ven/modifican usuarios de su `empresa_id`.
 
 ## 3.3 Pantalla: Estructura (admin)
 
-**Estado MVP (2026-09-26):** implementado en `/admin/estructura` — pestañas Granjas · Galpones · Lotes; granjas con DICOSE/código únicos por empresa y `GranjaValidacion` (EST-01); galpones con código único por granja, estados operativos y `GalponValidacion` (EST-02); desactivar granja bloquea carga de sus galpones (EST-03); alta/edición con diálogos `x-ui.dialog`.
+**Estado MVP (2026-09-26):** implementado en `/admin/estructura` — pestañas Granjas · Galpones · Lotes; granjas con DICOSE/código únicos por empresa y `GranjaValidacion` (EST-01); galpones con código único por granja, estados operativos y `GalponValidacion` (EST-02); desactivar granja bloquea carga de sus galpones (EST-03); alta/edición con diálogos `x-ui.dialog`; edición de lote separa metadatos (`UpdateLoteAction`) de transición de estado con motivo (`TransicionarLoteEstadoAction`, EST-06); listados con búsqueda, filtros en URL y empty states (EST-07).
 
 ### Usuarios autorizados
 
@@ -284,6 +284,20 @@ Operario y Admin AviCore sin `empresa_id` no acceden a esta pantalla.
 ### Comportamiento
 
 Multiempresa por `empresa_id`. Alta de lote reutiliza `RegistrarLoteAction` + `LoteValidacion` (EST-04); panel Lotes con SMA opcional y errores en formulario. Nav admin: tab **Estructura**.
+
+**Listados (EST-07):** búsqueda de texto y filtros persistidos en URL (`#[Url]`):
+
+| Sección | Filtros |
+|---------|---------|
+| Granjas | Activa / inactiva |
+| Galpones | Granja, estado operativo |
+| Lotes | Granja, galpón, estado del lote, tipo de ave |
+
+Paginación por sección. Sin resultados: mensaje contextual; si hay filtros activos, botón **Limpiar filtros**. Galpones y lotes muestran badge o hint cuando la granja está inactiva o el galpón no admite carga operativa. Filtro de granja ajena no filtra registros de otra empresa.
+
+**Baja y reasignación (EST-09):** no hay botón eliminar; desactivar granja/galpón conserva historial. Editar galpón: si ya tiene lotes o cargas, la granja se muestra en lectura (no reasignable). `empresa_id` no se edita en estructura.
+
+**Ficha de lectura (EST-10):** botón **Ver ficha** en galpones y lotes (Encargado y Administrativo). Diálogo readonly con ubicación (granja/DICOSE), saldo vivo, producción del día a nivel galpón, listado de lotes del galpón e historial de estados del lote. Métricas por lote solo si hay un único lote activo/en producción; con varios lotes activos se muestra aviso de que la producción es por galpón. Población inicial del lote y saldo del galpón siempre diferenciados en texto.
 
 ---
 
@@ -401,6 +415,7 @@ Permitir elegir galpón de trabajo.
 - El sistema recuerda el último galpón seleccionado (`users.ultimo_galpon_id`).
 - Si el galpón recordado deja de estar disponible, la carga abre el selector en la pantalla actual (`selectorGalponAbierto`); deep links sin galpón → `/operario/cargar?abrir_galpon=1`. Flash `abrirSelectorGalpon` y `?abrir_galpon=1` los consume `ManagesGalponSelector::bootGalponSelector`.
 - Tras elegir galpón: snackbar «Galpón actualizado.» (`dispatch snackbar-show`).
+- **CAP-01:** `syncGalponSelector` en cada hydrate Livewire; chip muestra granja bajo el nombre del galpón; al guardar carga se revalida `ultimo_galpon_id` (cambio de galpón con diálogo abierto no persiste en el anterior).
 
 ---
 
@@ -420,6 +435,7 @@ Permitir elegir galpón de trabajo.
 - No hay selector de fecha/hora para operario.
 - Al menos un huevo entre aptos y descarte (> 0 en conjunto).
 - Debe guardar en unidad huevos (`huevos` + `huevos_descarte`).
+- **CAP-02:** formulario con teclado numérico (`inputmode="numeric"`), bloque «Llevás hoy…» (acumulado del galpón), confirmación con desglose maples antes de guardar, `idempotencia_clave` por intención (reintento no duplica; dos cargas nuevas suman en Inicio).
 - Requiere galpón disponible; sin galpón o galpón no disponible → redirección a `/operario` con selector abierto (no hay ruta `/operario/galpon`).
 - `RegistrarCargaHuevosAction` valida empresa, permiso (`GalponPolicy`) y estado del galpón.
 - Debe emitir evento en tiempo real.
@@ -428,39 +444,41 @@ Permitir elegir galpón de trabajo.
 
 ## 8. Pantalla: Carga de muertes
 
-**Estado MVP (2026-07-02):** formulario muertes en diálogo centrado desde hub `/operario/cargar` (`CargarHub` + `x-ui.dialog`); solo cantidad obligatoria; descuenta `aves_actuales`; deep link `/operario/carga/muertes` → redirect con `?form=muertes` (`CargaMuertes` usa vista `livewire._redirect-placeholder`). Evento tiempo real: pendiente (Bloque 6).
+**Estado MVP (2026-09-26, CAP-03):** diálogo desde hub con saldo vivo, muertes hoy, confirmación con saldo restante e `idempotencia_clave` por apertura; deep link `?form=muertes`. Evento tiempo real: pendiente (Bloque 6).
 
 ### Campos
 
-- Galpón actual (contexto en hero; no se repite en el diálogo).
-- Cantidad de muertes.
+- Galpón actual (contexto en hero; saldo y acumulado en el diálogo).
+- Cantidad de muertes (`wire:model.live`).
 
 ### Reglas
 
 - Fecha y hora automática.
-- Cantidad obligatoria (> 0) y no mayor que aves vivas del galpón.
+- Cantidad obligatoria (> 0) y no mayor que aves vivas del galpón; error conserva valor y diálogo abierto.
 - Requiere galpón disponible; sin galpón o galpón no disponible → redirección a `/operario` con selector abierto.
-- `RegistrarCargaMuertesAction` valida empresa, permiso (`GalponPolicy`), estado del galpón y stock de aves (bloqueo pesimista en transacción).
+- `RegistrarCargaMuertesAction` valida empresa, permiso (`GalponPolicy`), estado del galpón y stock de aves (bloqueo pesimista en transacción + idempotencia).
 - Debe emitir evento en tiempo real.
 
 ---
 
 ## 8.5 Pantalla: Carga de vacunación
 
-**Estado MVP (2026-07-02):** formulario vacunación en diálogo centrado desde hub `/operario/cargar` (`CargarHub` + `x-ui.dialog` + `partials/carga-vacunacion-form`); lote y vacuna obligatorios; `x-ui.select` con `wire:model.defer` (sin re-render del botón Guardar al elegir); deep link `/operario/carga/vacunacion` → redirect con `?form=vacunacion` (`CargaVacunacion` usa vista `livewire._redirect-placeholder`). Evento tiempo real: pendiente (Bloque 6).
+**Estado MVP (2026-09-26, CAP-06):** diálogo con lote/vacuna obligatorios, observación opcional, confirmación, contador del día, idempotencia y aviso «sin calendario ni receta»; deep link `?form=vacunacion`. Evento tiempo real: pendiente (Bloque 6).
 
 ### Campos
 
-- Galpón actual (contexto en hero; no se repite en el diálogo).
-- Lote a vacunar (solo lotes activos/en producción del galpón).
-- Tipo de vacuna (`VacunaTipo`).
+- Galpón actual (contexto en hero; vacunaciones hoy en el diálogo).
+- Lote a vacunar (`wire:model.live`, solo activos/en producción del galpón).
+- Tipo de vacuna (`VacunaTipo`, `wire:model.live`).
+- Observación opcional (detalle útil, máx. 500 caracteres).
 
 ### Reglas
 
 - Fecha y hora automática (`created_at`).
-- Requiere galpón disponible; sin galpón o galpón no disponible → redirección a `/operario` con selector abierto.
-- `RegistrarVacunacionAction` valida empresa, permiso (`GalponPolicy`), estado del galpón, pertenencia lote↔galpón y estado del lote.
+- Requiere galpón disponible; sin galpón o galpón no disponible → selector abierto.
+- `RegistrarVacunacionAction` valida empresa, permiso, lote↔galpón y estado del lote; error conserva diálogo.
 - Sin lotes activos: mensaje en el diálogo (no se muestra formulario).
+- Varias vacunaciones el mismo día suman en `vacunaciones_hoy`; anulación excluye del contador.
 - Snackbar: «Vacunación guardada.»
 
 ---
@@ -489,36 +507,39 @@ Permitir elegir galpón de trabajo.
 
 ## 8.7 Pantalla: Entrega de alimento
 
-**Estado MVP (2026-08-11):** formulario en diálogo «Entrega de alimento» desde hub `/operario/cargar` (`CargarHub` + `ManagesAlimentoForm` + `partials/carga-alimento-form`); tile con icono camión; deep link `/operario/carga/alimento` → `?form=alimento` (`CargaAlimento` redirect-only).
+**Estado MVP (2026-09-26, CAP-05):** diálogo «Entrega de alimento» con coma decimal, acumulado del día, confirmación, límites visibles e idempotencia; deep link `?form=alimento`.
 
 ### Campos
 
-- Galpón actual (contexto en hero).
-- Kilogramos entregados (remito del camión).
+- Galpón actual (contexto en hero; entregado hoy en el diálogo).
+- Kilogramos entregados (`wire:model.live`, texto con coma decimal).
 
 ### Reglas
 
 - Fecha y hora automática (`created_at`).
-- Cantidad obligatoria (> 0 kg); decimales permitidos.
-- **No** es consumo diario: el operario registra cada llegada del camión (puede haber varios días sin registro).
-- `RegistrarCargaAlimentoAction` — tipo `alimento`, mismo criterio de permisos/galpón que huevos.
+- Cantidad obligatoria (> 0 kg); decimales con coma; máximo 999.999,99 kg por entrega.
+- **No** es consumo diario: registrar solo cuando llega el camión; días sin carga son válidos.
+- Varias entregas el mismo día suman en resumen (`alimento_kg_hoy`).
+- `RegistrarCargaAlimentoAction` — tipo `alimento`, permisos/galpón disponible; sin exigir lote activo.
 - Historial: resumen «X kg entregados».
 
 ---
 
 ## 8.75 Pantalla: Descarte de aves
 
-**Estado MVP (2026-08-11):** diálogo «Descarte de aves» desde hub; tile aparte de Muertes; deep link `/operario/carga/descarte` → `?form=descarte`.
+**Estado MVP (2026-09-26, CAP-04):** diálogo «Descarte de aves» desde hub con saldo vivo, descarte hoy, confirmación, etiqueta diferenciada («no es mortalidad ni huevo descartado») e idempotencia; tile aparte de Muertes; deep link `?form=descarte`.
 
 ### Campos
 
-- Cantidad de aves descartadas (vivas que se sacan del galpón).
+- Galpón actual (contexto en hero; saldo y acumulado en el diálogo).
+- Cantidad de aves descartadas (`wire:model.live`).
 
 ### Reglas
 
-- Distinto de **muertes** (aves que murieron en el piso).
-- Descuenta `aves_actuales` igual que muertes.
-- `RegistrarCargaDescarteAction` — tipo `descarte`, campo `descarte_aves`.
+- Distinto de **muertes** (aves que murieron en el piso) y de **huevos descarte** (rotos/sucios).
+- Descuenta `aves_actuales` igual que muertes; error conserva valor y diálogo abierto.
+- `RegistrarCargaDescarteAction` — tipo `descarte`, campo `descarte_aves`, `lockForUpdate` + idempotencia.
+- Anulación desde Historial restaura aves y deja de contar en resúmenes.
 
 ---
 

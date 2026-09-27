@@ -36,4 +36,6 @@
     @include('livewire.admin.estructura.partials.dialog-galpon')
     @include('livewire.admin.estructura.partials.dialog-lote-crear')
     @include('livewire.admin.estructura.partials.dialog-lote-editar')
+    @include('livewire.admin.estructura.partials.dialog-galpon-ficha')
+    @include('livewire.admin.estructura.partials.dialog-lote-ficha')
 </div>

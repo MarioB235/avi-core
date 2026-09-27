@@ -42,12 +42,22 @@ trait ManagesGalponSelector
 
     protected function bootGalponSelector(OperarioGalponService $operarioGalponService): void
     {
-        $galpon = $operarioGalponService->galponActual(auth()->user());
-        $this->galponId = $galpon?->id;
+        $this->syncGalponSelector($operarioGalponService);
 
         if (request()->boolean('abrir_galpon') || session('abrirSelectorGalpon')) {
             $this->selectorGalponAbierto = true;
             session()->forget('abrirSelectorGalpon');
         }
+    }
+
+    protected function hydrateGalponSelector(OperarioGalponService $operarioGalponService): void
+    {
+        $this->syncGalponSelector($operarioGalponService);
+    }
+
+    protected function syncGalponSelector(OperarioGalponService $operarioGalponService): void
+    {
+        $galpon = $operarioGalponService->galponActual(auth()->user());
+        $this->galponId = $galpon?->id;
     }
 }

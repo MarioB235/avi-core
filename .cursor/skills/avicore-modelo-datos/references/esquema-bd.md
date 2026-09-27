@@ -129,6 +129,7 @@ erDiagram
 | tipo_huevo | string | No | `blanco`, `color` |
 | estado | string | No | `activo`, `en_produccion`, `trasladado`, `cerrado` |
 | observacion | text | Sí | |
+| estado_historial | json | Sí | Transiciones de estado con motivo, actor y fecha (EST-06) |
 | created_at, updated_at | timestamp | No | |
 
 ### `registros_operativos`
@@ -140,6 +141,7 @@ erDiagram
 | galpon_id | FK | No | |
 | user_id | FK users | No | |
 | tipo | string | No | `huevos`, `muertes`, `descarte`, `alimento`, `combinado` |
+| idempotencia_clave | string(64) | Sí | Clave por intención de carga (CAP-02 huevos; base CAP-07); única por `empresa_id` |
 | huevos | integer | Sí | Aptos/comerciales (tipo `huevos` o parte de `combinado`) |
 | huevos_descarte | integer | Sí | Rotos/sucios (tipo `huevos`; default 0) |
 | muertes | integer | Sí | |
@@ -164,7 +166,8 @@ Registro operativo de vacunación por lote (tabla propia; no es fila en `registr
 | lote_id | FK lotes | No | Lote vacunado |
 | user_id | FK users | No | Operario que registra |
 | vacuna | string | No | Enum `VacunaTipo` (`newcastle`, `bronquitis`, `gumboro`, `encefalomielitis`, `pox`) |
-| observacion | text | Sí | |
+| idempotencia_clave | string(64) | Sí | UUID por apertura del diálogo; única por empresa (CAP-06) |
+| observacion | text | Sí | Opcional, máx. 500 caracteres |
 | estado | string | No | `activo`, `anulado` — mismo criterio que registros operativos |
 | anulado_at | timestamp | Sí | |
 | anulado_por | FK users | Sí | |
@@ -180,8 +183,8 @@ Registro operativo de vacunación por lote (tabla propia; no es fila en `registr
 | Tabla | Índice |
 |-------|--------|
 | Varias | `empresa_id` |
-| registros_operativos | `galpon_id`, `created_at`, `tipo`, `(empresa_id, user_id, created_at)` historial operario |
-| vacunaciones | `empresa_id`, `(lote_id, created_at)`, `(galpon_id, created_at)`, `(empresa_id, user_id, created_at)` historial operario |
+| registros_operativos | `galpon_id`, `created_at`, `tipo`, `(empresa_id, user_id, created_at)` historial operario; `(empresa_id, idempotencia_clave)` único |
+| vacunaciones | `empresa_id`, `(lote_id, created_at)`, `(galpon_id, created_at)`, `(empresa_id, user_id, created_at)` historial operario; `(empresa_id, idempotencia_clave)` único |
 | granjas | `(empresa_id, dicose)` único; `(empresa_id, codigo)` único |
 | galpones | `(granja_id, codigo)` único |
 | lotes | `estado`, `(empresa_id, codigo)` único |

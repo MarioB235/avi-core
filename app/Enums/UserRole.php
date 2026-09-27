@@ -166,6 +166,17 @@ enum UserRole: string
     }
 
     /**
+     * Reapertura de lote cerrado (perfil superior; encargado no).
+     */
+    public function canReabrirLote(): bool
+    {
+        return match ($this) {
+            self::Dueno, self::Administrativo => true,
+            self::Encargado, self::AdminAvicore, self::Operario, self::Reparto => false,
+        };
+    }
+
+    /**
      * Roles que este actor puede asignar al crear o editar usuarios.
      *
      * @return list<self>

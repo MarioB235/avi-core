@@ -76,7 +76,7 @@ class OperarioCargaMuertesTest extends TestCase
             ->call('guardarMuertes')
             ->assertHasErrors(['muertes']);
 
-        $this->assertSame(0, RegistroOperativo::query()->count());
+        $this->assertSame(0, RegistroOperativo::query()->where('empresa_id', $operario->empresa_id)->count());
     }
 
     public function test_carga_muertes_rejects_when_exceeds_live_birds(): void
@@ -91,7 +91,7 @@ class OperarioCargaMuertesTest extends TestCase
             ->call('guardarMuertes')
             ->assertHasErrors(['muertes']);
 
-        $this->assertSame(0, RegistroOperativo::query()->count());
+        $this->assertSame(0, RegistroOperativo::query()->where('empresa_id', $operario->empresa_id)->count());
         $galpon->refresh();
         $this->assertSame(10, $galpon->aves_actuales);
     }
@@ -225,7 +225,7 @@ class OperarioCargaMuertesTest extends TestCase
             ->assertSet('selectorGalponAbierto', true)
             ->assertSet('dialogMuertesAbierto', false);
 
-        $this->assertSame(0, RegistroOperativo::query()->count());
+        $this->assertSame(0, RegistroOperativo::query()->where('empresa_id', $operario->empresa_id)->count());
     }
 
     /**
@@ -236,7 +236,7 @@ class OperarioCargaMuertesTest extends TestCase
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
 
-        $galpon = Galpon::factory()->forGranja($granja)->create([
+        $galpon = Galpon::factory()->forGranja($granja)->conLoteActivo()->create([
             'nombre' => 'Galpón A',
             'codigo' => 'GA',
             'aves_actuales' => $avesActuales,

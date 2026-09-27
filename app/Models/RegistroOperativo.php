@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'galpon_id',
     'user_id',
     'tipo',
+    'idempotencia_clave',
     'huevos',
     'huevos_descarte',
     'muertes',

@@ -116,19 +116,28 @@
 
     @if ($galpon && $dialogHuevosAbierto)
         <x-ui.dialog wire:model="dialogHuevosAbierto" title="Huevos de hoy">
-            @include('livewire.operario.partials.carga-huevos-form')
+            @include('livewire.operario.partials.carga-huevos-form', [
+                'resumenGalpon' => $resumenGalpon,
+                'unidadesHuevo' => $unidadesHuevo,
+            ])
         </x-ui.dialog>
     @endif
 
     @if ($galpon && $dialogMuertesAbierto)
         <x-ui.dialog wire:model="dialogMuertesAbierto" title="Muertes de hoy">
-            @include('livewire.operario.partials.carga-muertes-form')
+            @include('livewire.operario.partials.carga-muertes-form', [
+                'galpon' => $galpon,
+                'resumenGalpon' => $resumenGalpon,
+            ])
         </x-ui.dialog>
     @endif
 
     @if ($galpon && $dialogDescarteAbierto)
         <x-ui.dialog wire:model="dialogDescarteAbierto" title="Descarte de aves">
-            @include('livewire.operario.partials.carga-descarte-form')
+            @include('livewire.operario.partials.carga-descarte-form', [
+                'galpon' => $galpon,
+                'resumenGalpon' => $resumenGalpon,
+            ])
         </x-ui.dialog>
     @endif
 
@@ -137,13 +146,16 @@
             @include('livewire.operario.partials.carga-vacunacion-form', [
                 'lotesActivos' => $lotesActivos,
                 'vacunas' => $vacunas,
+                'resumenGalpon' => $resumenGalpon,
             ])
         </x-ui.dialog>
     @endif
 
     @if ($galpon && $dialogAlimentoAbierto)
         <x-ui.dialog wire:model="dialogAlimentoAbierto" title="Entrega de alimento">
-            @include('livewire.operario.partials.carga-alimento-form')
+            @include('livewire.operario.partials.carga-alimento-form', [
+                'resumenGalpon' => $resumenGalpon,
+            ])
         </x-ui.dialog>
     @endif
 

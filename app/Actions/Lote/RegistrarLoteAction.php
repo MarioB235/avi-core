@@ -37,19 +37,28 @@ class RegistrarLoteAction
         $this->relations->assertGalponOfActor($user, $galpon, 'galponId');
 
         GalponValidacion::assertDisponibleParaCarga($galpon, 'galponId');
+        GalponValidacion::assertCicloCerradoParaNuevoLote($galpon, 'galponId');
 
         LoteValidacion::assertCantidadesPorTipo($cantidadesPorTipo);
         LoteValidacion::assertFechaNacimiento($fechaNacimiento);
-        $codigoSma = LoteValidacion::assertCodigoSma($codigoSma);
 
         $fechaIngreso ??= Carbon::today();
+
+        LoteValidacion::assertFechaIngreso($fechaIngreso);
+        LoteValidacion::assertFechasCoherentes($fechaNacimiento, $fechaIngreso);
+
+        $codigoSma = LoteValidacion::assertCodigoSma($codigoSma);
 
         return DB::transaction(function () use ($user, $galpon, $cantidadesPorTipo, $fechaNacimiento, $fechaIngreso, $codigoSma): Collection {
             /** @var Galpon $galponBloqueado */
             $galponBloqueado = Galpon::query()
+                ->with('granja')
                 ->whereKey($galpon->id)
                 ->lockForUpdate()
                 ->firstOrFail();
+
+            GalponValidacion::assertDisponibleParaCarga($galponBloqueado, 'galponId');
+            GalponValidacion::assertCicloCerradoParaNuevoLote($galponBloqueado, 'galponId');
 
             $lotesCreados = new Collection;
 

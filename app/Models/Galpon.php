@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\GalponEstado;
 use App\Models\Concerns\BelongsToEmpresa;
+use App\Models\Concerns\PreventsHardDelete;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 ])]
 class Galpon extends Model
 {
-    use BelongsToEmpresa, HasFactory;
+    use BelongsToEmpresa, HasFactory, PreventsHardDelete;
 
     protected $table = 'galpones';
 
@@ -84,5 +85,23 @@ class Galpon extends Model
         $codigo = $this->codigo ? " ({$this->codigo})" : '';
 
         return $this->nombre.$codigo;
+    }
+
+    public function tieneHistorialTrazable(): bool
+    {
+        if ($this->lotes()->exists()) {
+            return true;
+        }
+
+        if ($this->registrosOperativos()->exists()) {
+            return true;
+        }
+
+        return $this->vacunaciones()->exists();
+    }
+
+    public function vacunaciones(): HasMany
+    {
+        return $this->hasMany(Vacunacion::class);
     }
 }

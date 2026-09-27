@@ -6,6 +6,7 @@ use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\User;
 use App\Services\EmpresaRelationalGuard;
+use App\Support\EstructuraValidacion;
 use App\Support\GalponValidacion;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -25,11 +26,16 @@ class UpdateGalponAction
 
         $this->relations->assertGranjaMatchesGalponEmpresa($granja, $galpon);
 
+        EstructuraValidacion::assertSinCambioEmpresa($galpon, $data['empresa_id'] ?? null);
+        EstructuraValidacion::assertReasignacionGranjaGalponSegura($galpon, $granja->id);
+
         if ($granja->id !== $galpon->granja_id) {
             GalponValidacion::assertGranjaActiva($granja);
         }
 
         $normalized = GalponValidacion::normalize($data, forUpdate: true);
+
+        GalponValidacion::assertGalponVacioParaEstadoNoOperativo($galpon, $normalized['estado']);
 
         $validated = validator(
             array_merge($normalized, [

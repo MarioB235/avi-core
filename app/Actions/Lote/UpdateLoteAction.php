@@ -2,32 +2,41 @@
 
 namespace App\Actions\Lote;
 
-use App\Enums\LoteEstado;
 use App\Models\Lote;
 use App\Models\User;
+use App\Support\EstructuraValidacion;
+use App\Support\LoteValidacion;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class UpdateLoteAction
 {
     /**
-     * @param  array{codigo_sma?: string|null, linea_raza?: string|null, estado: string, observacion?: string|null}  $data
+     * @param  array{codigo_sma?: string|null, linea_raza?: string|null, observacion?: string|null}  $data
      */
     public function execute(User $actor, Lote $lote, array $data): Lote
     {
         Gate::forUser($actor)->authorize('update', $lote);
 
+        EstructuraValidacion::assertSinCambioEmpresa($lote, $data['empresa_id'] ?? null);
+        EstructuraValidacion::assertSinReasignacionPadre($data, 'galpon_id');
+
+        if (array_key_exists('estado', $data)) {
+            throw ValidationException::withMessages([
+                'estado' => 'El estado del lote se cambia desde «Cambiar estado», con motivo.',
+            ]);
+        }
+
+        $codigoSma = LoteValidacion::assertCodigoSma($data['codigo_sma'] ?? null);
+
         $validated = validator($data, [
-            'codigo_sma' => ['nullable', 'string', 'max:80'],
             'linea_raza' => ['nullable', 'string', 'max:120'],
-            'estado' => ['required', Rule::enum(LoteEstado::class)],
             'observacion' => ['nullable', 'string', 'max:1000'],
         ])->validate();
 
         $lote->update([
-            'codigo_sma' => filled($validated['codigo_sma'] ?? null) ? trim((string) $validated['codigo_sma']) : null,
+            'codigo_sma' => $codigoSma,
             'linea_raza' => filled($validated['linea_raza'] ?? null) ? trim((string) $validated['linea_raza']) : null,
-            'estado' => LoteEstado::from($validated['estado']),
             'observacion' => filled($validated['observacion'] ?? null) ? trim((string) $validated['observacion']) : null,
         ]);
 

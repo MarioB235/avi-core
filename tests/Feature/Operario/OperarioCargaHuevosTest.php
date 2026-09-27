@@ -269,7 +269,7 @@ class OperarioCargaHuevosTest extends TestCase
             ->call('guardarHuevos')
             ->assertHasErrors(['huevos']);
 
-        $this->assertSame(0, RegistroOperativo::query()->count());
+        $this->assertSame(0, RegistroOperativo::query()->where('empresa_id', $operario->empresa_id)->count());
     }
 
     public function test_selector_rejects_unavailable_galpon(): void
@@ -322,7 +322,7 @@ class OperarioCargaHuevosTest extends TestCase
             ->assertSet('selectorGalponAbierto', true)
             ->assertSet('dialogHuevosAbierto', false);
 
-        $this->assertSame(0, RegistroOperativo::query()->count());
+        $this->assertSame(0, RegistroOperativo::query()->where('empresa_id', $operario->empresa_id)->count());
     }
 
     public function test_registrar_carga_huevos_action_rejects_unavailable_galpon(): void
@@ -330,6 +330,22 @@ class OperarioCargaHuevosTest extends TestCase
         [$operario, $galpon] = $this->createOperarioConGalpones();
         $galpon->update(['estado' => GalponEstado::EnMantenimiento]);
         $galpon->refresh();
+
+        $this->expectException(ValidationException::class);
+
+        app(RegistrarCargaHuevosAction::class)->execute($operario, $galpon, 100);
+    }
+
+    public function test_registrar_carga_huevos_rejects_galpon_without_active_lote(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create(['aves_actuales' => 5000]);
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+        ]);
 
         $this->expectException(ValidationException::class);
 
@@ -344,12 +360,12 @@ class OperarioCargaHuevosTest extends TestCase
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
 
-        $galponA = Galpon::factory()->forGranja($granja)->create([
+        $galponA = Galpon::factory()->forGranja($granja)->conLoteActivo()->create([
             'nombre' => 'Galpón A',
             'codigo' => 'GA',
         ]);
 
-        $galponB = Galpon::factory()->forGranja($granja)->create([
+        $galponB = Galpon::factory()->forGranja($granja)->conLoteActivo()->create([
             'nombre' => 'Galpón B',
             'codigo' => 'GB',
         ]);

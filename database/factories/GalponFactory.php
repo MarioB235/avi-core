@@ -3,9 +3,11 @@
 namespace Database\Factories;
 
 use App\Enums\GalponEstado;
+use App\Enums\LoteEstado;
 use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
+use App\Models\Lote;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -36,5 +38,18 @@ class GalponFactory extends Factory
             'empresa_id' => $granja->empresa_id,
             'granja_id' => $granja->id,
         ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $loteOverrides
+     */
+    public function conLoteActivo(array $loteOverrides = []): static
+    {
+        return $this->afterCreating(function (Galpon $galpon) use ($loteOverrides): void {
+            Lote::factory()->forGalpon($galpon)->create(array_merge([
+                'cantidad_inicial' => max(1, (int) $galpon->aves_actuales),
+                'estado' => LoteEstado::EnProduccion,
+            ], $loteOverrides));
+        });
     }
 }

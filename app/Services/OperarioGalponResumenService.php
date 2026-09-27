@@ -6,6 +6,7 @@ use App\Enums\LoteEstado;
 use App\Models\Galpon;
 use App\Models\Lote;
 use App\Models\RegistroOperativo;
+use App\Models\Vacunacion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
@@ -69,6 +70,8 @@ class OperarioGalponResumenService
      *     maples_hoy: int,
      *     muertes_hoy: int,
      *     descarte_aves_hoy: int,
+     *     alimento_kg_hoy: float,
+     *     vacunaciones_hoy: int,
      *     huevos_acumulados: int,
      *     huevos_descarte_acumulados: int,
      *     maples_acumulados: int,
@@ -103,6 +106,8 @@ class OperarioGalponResumenService
             'maples_hoy' => $unidades->maplesDesdeHuevos($totalesHoy['huevos']),
             'muertes_hoy' => $totalesHoy['muertes'],
             'descarte_aves_hoy' => $totalesHoy['descarte_aves'],
+            'alimento_kg_hoy' => $totalesHoy['alimento_kg'],
+            'vacunaciones_hoy' => $this->contarVacunacionesHoy($galpon),
             'huevos_acumulados' => $totalesAcumulados['huevos'],
             'huevos_descarte_acumulados' => $totalesAcumulados['huevos_descarte'],
             'maples_acumulados' => $unidades->maplesDesdeHuevos($totalesAcumulados['huevos']),
@@ -116,7 +121,7 @@ class OperarioGalponResumenService
     }
 
     /**
-     * @return array{huevos: int, huevos_descarte: int, muertes: int, descarte_aves: int}
+     * @return array{huevos: int, huevos_descarte: int, muertes: int, descarte_aves: int, alimento_kg: float}
      */
     private function sumarTotales(Builder $query): array
     {
@@ -125,6 +130,7 @@ class OperarioGalponResumenService
             ->selectRaw('COALESCE(SUM(huevos_descarte), 0) as huevos_descarte')
             ->selectRaw('COALESCE(SUM(muertes), 0) as muertes')
             ->selectRaw('COALESCE(SUM(descarte_aves), 0) as descarte_aves')
+            ->selectRaw('COALESCE(SUM(alimento_kg), 0) as alimento_kg')
             ->first();
 
         return [
@@ -132,11 +138,12 @@ class OperarioGalponResumenService
             'huevos_descarte' => (int) ($totales->huevos_descarte ?? 0),
             'muertes' => (int) ($totales->muertes ?? 0),
             'descarte_aves' => (int) ($totales->descarte_aves ?? 0),
+            'alimento_kg' => (float) ($totales->alimento_kg ?? 0),
         ];
     }
 
     /**
-     * @return array{huevos: int, huevos_descarte: int, muertes: int, descarte_aves: int}
+     * @return array{huevos: int, huevos_descarte: int, muertes: int, descarte_aves: int, alimento_kg: float}
      */
     private function totalesVacios(): array
     {
@@ -145,6 +152,7 @@ class OperarioGalponResumenService
             'huevos_descarte' => 0,
             'muertes' => 0,
             'descarte_aves' => 0,
+            'alimento_kg' => 0.0,
         ];
     }
 
@@ -157,6 +165,16 @@ class OperarioGalponResumenService
             ->forEmpresa((int) $galpon->empresa_id)
             ->where('galpon_id', $galpon->id)
             ->activos();
+    }
+
+    private function contarVacunacionesHoy(Galpon $galpon): int
+    {
+        return Vacunacion::query()
+            ->forEmpresa((int) $galpon->empresa_id)
+            ->where('galpon_id', $galpon->id)
+            ->activos()
+            ->delDia()
+            ->count();
     }
 
     private function unidadesPara(Galpon $galpon): EmpresaHuevosUnidad

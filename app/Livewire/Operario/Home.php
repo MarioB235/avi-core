@@ -24,6 +24,11 @@ class Home extends Component
         $this->bootGalponSelector($operarioGalponService);
     }
 
+    public function hydrate(OperarioGalponService $operarioGalponService): void
+    {
+        $this->hydrateGalponSelector($operarioGalponService);
+    }
+
     public function render(
         OperarioGalponService $operarioGalponService,
         OperarioGalponResumenService $operarioGalponResumenService,

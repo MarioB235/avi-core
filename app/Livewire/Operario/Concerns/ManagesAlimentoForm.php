@@ -4,6 +4,9 @@ namespace App\Livewire\Operario\Concerns;
 
 use App\Actions\Operacion\RegistrarCargaAlimentoAction;
 use App\Services\OperarioGalponService;
+use App\Support\AlimentoValidacion;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 trait ManagesAlimentoForm
 {
@@ -12,6 +15,8 @@ trait ManagesAlimentoForm
     public bool $dialogAlimentoAbierto = false;
 
     public string $alimentoKg = '';
+
+    public string $alimentoIdempotenciaClave = '';
 
     public function abrirFormularioAlimento(OperarioGalponService $operarioGalponService): void
     {
@@ -39,12 +44,23 @@ trait ManagesAlimentoForm
         RegistrarCargaAlimentoAction $registrarCargaAlimento,
         OperarioGalponService $operarioGalponService,
     ): void {
-        $validated = $this->validate([
-            'alimentoKg' => ['required', 'numeric', 'min:0.01'],
-        ], [
-            'alimentoKg.required' => 'Ingresá los kilos entregados.',
-            'alimentoKg.min' => 'Los kilos deben ser mayor a cero.',
-        ]);
+        $kg = AlimentoValidacion::parseKg($this->alimentoKg);
+
+        if ($kg === null) {
+            $this->addError('alimentoKg', 'Ingresá los kilos con números (podés usar coma decimal).');
+
+            return;
+        }
+
+        try {
+            AlimentoValidacion::assertRango($kg);
+        } catch (ValidationException $exception) {
+            foreach ($exception->errors() as $field => $messages) {
+                $this->addError($field, $messages[0]);
+            }
+
+            return;
+        }
 
         $galpon = $this->resolveGalponParaGuardar($operarioGalponService, 'dialogAlimentoAbierto');
 
@@ -52,12 +68,21 @@ trait ManagesAlimentoForm
             return;
         }
 
-        $registrarCargaAlimento->execute(
-            auth()->user(),
-            $galpon,
-            (float) $validated['alimentoKg'],
-            null,
-        );
+        try {
+            $registrarCargaAlimento->execute(
+                auth()->user(),
+                $galpon,
+                $kg,
+                null,
+                $this->alimentoIdempotenciaClave,
+            );
+        } catch (ValidationException $exception) {
+            foreach ($exception->errors() as $field => $messages) {
+                $this->addError($field, $messages[0]);
+            }
+
+            return;
+        }
 
         $this->finalizarGuardadoCarga(
             'dialogAlimentoAbierto',
@@ -69,6 +94,7 @@ trait ManagesAlimentoForm
     private function resetFormularioAlimento(): void
     {
         $this->reset(['alimentoKg']);
+        $this->alimentoIdempotenciaClave = (string) Str::uuid();
         $this->resetValidation();
     }
 }
