@@ -57,6 +57,13 @@
 7. El aviso no bloquea la carga.
 8. **Alta/edición admin (EST-02):** `GalponValidacion` — nombre obligatorio, código opcional **único por granja** (`granja_id` + `codigo`), granja de la misma empresa; **alta** solo en granja activa; al pasar a estado distinto de `activo` se sincroniza `activo = false` (bloquea carga, conserva historial).
 9. **Disponibilidad operativa (EST-03):** `Galpon::disponibleParaCargaOperativa()` y `GalponValidacion::assertDisponibleParaCarga()` exigen galpón activo, `estado = activo` y **granja activa**; aplica en selector operario, Actions de carga/lote y resúmenes admin (no se evade por ID directo).
+10. **Baja y reasignación (EST-09):** no hay borrado físico de granja/galpón/lote (`PreventsHardDelete` + FK `RESTRICT`); la baja es lógica (`activa`/`activo`/estado). `empresa_id` es inmutable en edición. Reasignar galpón a otra granja solo si **no** tiene lotes ni registros operativos; con historial, la granja queda fija en UI y `EstructuraValidacion` rechaza el cambio. Reasignar lote a otro galpón o empresa: no permitido en MVP.
+11. **Vacío, mantenimiento y ciclos (EST-08):**
+    - Estados `inactivo`, `en_mantenimiento` y `vacio_sanitario` bloquean **toda** carga operativa (sin checklist POES automático; post-MVP).
+    - **Sin lote activo** (`activo` / `en_produccion`): no se cargan huevos, muertes ni descarte (`assertLoteActivoParaCargaProductiva`); vacunación ya exige lote elegible.
+    - **Carga excepcional:** alimento en galpón disponible **sin** lote activo (logística entre ciclos; no mezcla población).
+    - **Nuevo ciclo:** `RegistrarLoteAction` exige sin lotes activos/en producción y `aves_actuales = 0`.
+    - **Transición a estado no operativo:** `UpdateGalponAction` exige ciclo cerrado (sin lotes activos ni aves vivas registradas).
 
 ---
 
@@ -64,11 +71,12 @@
 
 1. El lote conserva información histórica.
 2. El lote puede trasladarse.
-3. El lote cerrado no permite cargas normales.
-4. La reapertura de lote cerrado requiere perfil superior y auditoría.
+3. El lote cerrado no permite cargas normales (`LoteEstado::permiteCargaNormal()`).
+4. La reapertura de lote cerrado requiere perfil superior (`UserRole::canReabrirLote` — Dueño o Administrativo) y motivo en `estado_historial`.
 5. El tipo de huevo se define en el lote.
 6. No se debe usar solamente fecha de nacimiento como identificador.
-7. **Alta de lote (EST-04):** solo perfiles con permiso «Crear lote» (`LotePolicy::create` — dueño, administrativo, encargado; **no** operario). Rutas: hub **Cargar** (`/operario/cargar`, admite dos tipos en un registro) y panel **Estructura → Lotes** (un tipo por alta). `LoteValidacion` centraliza SMA opcional, fecha de nacimiento, cantidades y tipos; `RegistrarLoteAction` genera `codigo` único `{codigo_galpon}-{YYYYMMDD}-{B|C}-{secuencia}`, fija `fecha_ingreso` = hoy, estado `activo` y suma `cantidad_inicial` a `aves_actuales` (transacción + `lockForUpdate`). Galpón debe estar disponible para carga (`GalponValidacion`).
+7. **Edición y transición de lote (EST-06):** `UpdateLoteAction` solo metadatos (SMA, raza, observación); no acepta `estado`. Cambios de estado vía `TransicionarLoteEstadoAction` + motivo obligatorio + historial JSON; matriz en `LoteEstado::transicionesPermitidas()`. UI Estructura: «Cambiar estado» separado del formulario de edición.
+8. **Alta de lote (EST-04/05):** solo perfiles con permiso «Crear lote» (`LotePolicy::create` — dueño, administrativo, encargado; **no** operario). Rutas: hub **Cargar** (`/operario/cargar`, admite dos tipos en un registro) y panel **Estructura → Lotes** (un tipo por alta). `LoteValidacion` centraliza SMA opcional, fechas (nacimiento ≤ hoy, ingreso ≤ hoy, nacimiento ≤ ingreso), cantidades enteras (1…`CANTIDAD_MAXIMA`) y tipos válidos; `RegistrarLoteAction` aplica esas reglas aunque la llamada no pase por Livewire, revalida galpón bajo `lockForUpdate`, genera `codigo` único `{codigo_galpon}-{YYYYMMDD}-{B|C}-{secuencia}`, fija `fecha_ingreso` = hoy por defecto, estado `activo` y suma `cantidad_inicial` a `aves_actuales`.
 
 ---
 
@@ -91,7 +99,8 @@
 2. Si hay varios lotes, la mortalidad se asigna al galpón completo.
 3. Las muertes descuentan aves vivas (`aves_actuales` del galpón).
 4. No se permite que aves vivas quede negativo; `RegistrarCargaMuertesAction` valida cantidad > 0 y ≤ aves vivas (transacción con `lockForUpdate` en el galpón).
-5. Mismo criterio de permisos y empresa que huevos: `GalponPolicy::view`, `empresa_id` y galpón disponible para carga.
+5. Cada apertura del diálogo genera `idempotencia_clave` (UUID); reintento con la misma clave no duplica registro; nueva apertura permite otra carga aunque la cantidad sea igual (CAP-03).
+6. Mismo criterio de permisos y empresa que huevos: `GalponPolicy::view`, `empresa_id` y galpón disponible para carga.
 
 ---
 
@@ -99,7 +108,9 @@
 
 1. **Descarte** = gallinas **vivas** que se sacan del galpón (no murieron en el piso). Distinto de mortalidad.
 2. Tipo de registro `descarte`, campo `descarte_aves`.
-3. Descuenta `aves_actuales` con las mismas validaciones que muertes (`RegistrarCargaDescarteAction`).
+3. Descuenta `aves_actuales` con las mismas validaciones que muertes (`RegistrarCargaDescarteAction`: `lockForUpdate`, idempotencia por apertura CAP-04).
+4. Anulación restaura aves vivas y excluye el registro de resúmenes (`OperarioGalponResumenService` solo suma registros activos).
+5. No confundir con `huevos_descarte` (huevos rotos/sucios) ni con tipo `muertes`.
 
 ---
 
@@ -112,7 +123,10 @@
 5. Mismo criterio de permisos y galpón disponible que huevos/muertes: `GalponPolicy::view` vía `RegistrarVacunacionAction`.
 6. Persistencia en tabla `vacunaciones` (no en `registros_operativos`).
 7. Historial operario incluye vacunaciones activas del usuario, mezcladas con `registros_operativos` por `created_at` descendente (`OperarioHistorialItem`).
-8. **avicore-defer:** plan sanitario completo (calendario, dosis, stock vacunas) — fuera del hub operario; ver `plan-desarrollo.md`.
+8. Observación opcional (máx. 500 caracteres, `VacunacionValidacion`) para detalle útil (vía, lote completo, etc.); sin inventar calendario ni prescripción.
+9. Cada apertura del diálogo genera `idempotencia_clave` (UUID); reintento con la misma clave no duplica (CAP-06).
+10. Anulación desde Historial con motivo; registros anulados no cuentan en `vacunaciones_hoy`.
+11. **avicore-defer:** plan sanitario completo (calendario, dosis, stock vacunas) — fuera del hub operario; ver `plan-desarrollo.md`.
 
 ---
 
@@ -121,9 +135,12 @@
 1. El MVP no maneja stock de alimento.
 2. Solo se registra **alimento entregado** (kg del remito cuando llega el camión), no consumo diario estimado.
 3. La unidad es kilos.
-4. Se permiten decimales.
-5. El alimento puede cargarse sin huevos ni muertes.
-6. Puede haber varios días sin registro entre entregas.
+4. Se permiten decimales (hasta 2); UI acepta coma decimal (`1250,5` o `8.500,50`).
+5. Rango por entrega: mínimo `0,01` kg, máximo `999.999,99` kg (`AlimentoValidacion`).
+6. El alimento puede cargarse sin huevos ni muertes y **sin lote activo** (logística entre ciclos).
+7. Puede haber varios días sin registro entre entregas; la omisión **no** implica falta de alimentación.
+8. Varias entregas el mismo día suman en `alimento_kg_hoy` del resumen operario.
+9. Cada apertura del diálogo genera `idempotencia_clave` (UUID); reintento con la misma clave no duplica (CAP-05).
 
 ---
 
@@ -220,7 +237,7 @@ Referencia: [`mercado-uruguay.md`](../../avicore-contexto/references/mercado-uru
 
 1. **Rubro MVP:** gallinas **ponedoras** (aves de ciclo largo); no usar planilla de pollos parrilleros (engorde).
 2. **Registro diario obligatorio:** mortalidad, **descarte de aves** (tipo `descarte`), **huevos aptos** y **huevos de descarte** (rotos/sucios), alimento (kg por entrega) y agua (cuando esté operativo).
-3. **Huevos:** `huevos` = aptos/comerciales; `huevos_descarte` = rotos/sucios (puede ser 0). Al menos un total > 0 por registro.
+3. **Huevos:** `huevos` = aptos/comerciales; `huevos_descarte` = rotos/sucios (puede ser 0). Al menos un total > 0 por registro. Cada apertura del diálogo genera `idempotencia_clave` (UUID); reintento con la misma clave no duplica registro; nueva apertura permite otra carga aunque las cantidades sean iguales (CAP-02).
 4. **Pre-faena:** al exportar o cerrar lote hacia faena, incluir historial de las **últimas 9 semanas** de producción (norma DGSG).
 5. **Cabecera export:** DICOSE, **lote SMA** (`lotes.codigo_sma`, opcional al crear), lote interno, fecha ingreso/nacimiento, línea genética, población inicial, establecimiento.
 6. **Agua:** `avicore-defer` — en granjas con bebederos automáticos el operario **no** registra consumo diario; lectura de medidor o módulo técnico queda para encargado/admin o integración futura.

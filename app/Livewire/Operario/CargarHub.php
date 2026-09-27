@@ -13,6 +13,7 @@ use App\Livewire\Operario\Concerns\ManagesMuertesForm;
 use App\Livewire\Operario\Concerns\ManagesVacunacionForm;
 use App\Models\Galpon;
 use App\Models\Lote;
+use App\Services\EmpresaHuevosUnidad;
 use App\Services\OperarioGalponResumenService;
 use App\Services\OperarioGalponService;
 use Illuminate\Contracts\View\View;
@@ -92,6 +93,11 @@ class CargarHub extends Component
         $this->dialogVacunacionAbierto = true;
     }
 
+    public function hydrate(OperarioGalponService $operarioGalponService): void
+    {
+        $this->hydrateGalponSelector($operarioGalponService);
+    }
+
     public function render(
         OperarioGalponService $operarioGalponService,
         OperarioGalponResumenService $operarioGalponResumenService,
@@ -105,11 +111,22 @@ class CargarHub extends Component
             ? $operarioGalponResumenService->lotesActivos($galpon)
             : new Collection;
 
+        $resumenGalpon = $galpon !== null
+            ? $operarioGalponResumenService->resumen($galpon)
+            : null;
+
+        $user->loadMissing('empresa');
+        $unidadesHuevo = $user->empresa !== null
+            ? EmpresaHuevosUnidad::for($user->empresa)
+            : EmpresaHuevosUnidad::defaults();
+
         return view('livewire.operario.cargar-hub', [
             'galpon' => $galpon,
             'galpones' => $galpones,
             'galponEtiqueta' => $operarioGalponService->etiquetaGalpon($galpon),
             'lotesActivos' => $lotesActivos,
+            'resumenGalpon' => $resumenGalpon,
+            'unidadesHuevo' => $unidadesHuevo,
             'vacunas' => VacunaTipo::options(),
             'puedeRegistrarLote' => $user->rol->canCreateLote(),
             'galponesDisponibles' => $galpones,

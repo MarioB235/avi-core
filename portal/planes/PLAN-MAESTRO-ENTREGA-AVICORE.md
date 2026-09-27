@@ -200,12 +200,12 @@ Base: Livewire Admin/Estructura, Actions Granja/Galpon/Lote, policies y migracio
 - [x] **EST-02 — Galpones completos.** Granja de misma empresa, código/nombre, disponibilidad y estados. Éxito: inactivo/mantenimiento no acepta carga y sigue en historia.
 - [x] **EST-03 — Jerarquía de estados.** Definir efecto de granja inactiva sobre galpones. Éxito: no operar hijos por ruta alternativa cuando el contrato lo prohíbe.
 - [x] **EST-04 — Alta de lote autorizada.** Código único, SMA opcional, fechas, población inicial y tipo. Éxito: operario sin permiso no crea; múltiples tipos generan lotes coherentes.
-- [ ] **EST-05 — Validación en Action.** Fechas futuras/nacimiento posterior a ingreso, tipos inválidos, cantidades y concurrencia. Éxito: llamada fuera de UI no evade reglas ni duplica código.
-- [ ] **EST-06 — Separar edición/transición.** UpdateLoteAction no cambia estado crítico sin delegar al circuito controlado. Éxito: no reabrir desde formulario genérico sin motivo/auditoría.
-- [ ] **EST-07 — Listados útiles.** Búsqueda y filtros granja/galpón/lote/estado/tipo, paginación. Éxito: conservan empresa y explican indisponibilidad.
-- [ ] **EST-08 — Vacío y mantenimiento.** Acordar sin lote, carga excepcional y vacío sanitario sin automatismo normativo inventado. Éxito: no mezclar ciclos.
-- [ ] **EST-09 — Baja y reasignación seguras.** Padres con historia retenidos; no cambiar empresa rompiendo referencias. Éxito: bajas lógicas conservan trazabilidad.
-- [ ] **EST-10 — Ficha de lote/galpón.** Población, estado, ubicaciones e historia; métricas por lote solo si atribuibles. Éxito: origen y límites del saldo visibles.
+- [x] **EST-05 — Validación en Action.** Fechas futuras/nacimiento posterior a ingreso, tipos inválidos, cantidades y concurrencia. Éxito: llamada fuera de UI no evade reglas ni duplica código.
+- [x] **EST-06 — Separar edición/transición.** UpdateLoteAction no cambia estado crítico sin delegar al circuito controlado. Éxito: no reabrir desde formulario genérico sin motivo/auditoría.
+- [x] **EST-07 — Listados útiles.** Búsqueda y filtros granja/galpón/lote/estado/tipo, paginación. Éxito: conservan empresa y explican indisponibilidad.
+- [x] **EST-08 — Vacío y mantenimiento.** Acordar sin lote, carga excepcional y vacío sanitario sin automatismo normativo inventado. Éxito: no mezclar ciclos.
+- [x] **EST-09 — Baja y reasignación seguras.** Padres con historia retenidos; no cambiar empresa rompiendo referencias. Éxito: bajas lógicas conservan trazabilidad.
+- [x] **EST-10 — Ficha de lote/galpón.** Población, estado, ubicaciones e historia; métricas por lote solo si atribuibles. Éxito: origen y límites del saldo visibles.
 
 ## 11. CAP — Operación móvil confiable
 
@@ -220,12 +220,12 @@ Base: `app/Livewire/Operario/`, concerns, Actions Operacion, OperarioGalponServi
 | Vacunación | Lote elegible del galpón/empresa y tipo permitido | No lote ajeno/cerrado |
 | Alta de lote | Solo perfiles autorizados | No dar permiso por mostrar botón |
 
-- [ ] **CAP-01 — Selector robusto.** Recordar galpón disponible, invalidar ajeno/inactivo, mostrar contexto siempre. Éxito: no guardar en galpón anterior tras cambiar selección.
-- [ ] **CAP-02 — Huevos punta a punta.** Cantidades, teclado, confirmación y acumulado. Éxito: dos cargas nuevas suman; reintento no duplica.
-- [ ] **CAP-03 — Muertes transaccionales.** Lock de saldo y error conservando entrada. Éxito: solicitudes simultáneas no dejan saldo negativo.
-- [ ] **CAP-04 — Descarte de aves.** Integridad de saldo, etiqueta diferenciada y anulación. Éxito: no contabiliza muerte ni huevo descartado.
-- [ ] **CAP-05 — Alimento entregado.** Precisión, coma decimal en UI, límites documentados y múltiples entregas. Éxito: días sin entrega no significan falta de alimentación.
-- [ ] **CAP-06 — Vacunación básica.** Lote/empresa/galpón vigente, tipo y detalle útil; anulación. Éxito: historia sanitaria sin inventar calendario o prescripción.
+- [x] **CAP-01 — Selector robusto.** Recordar galpón disponible, invalidar ajeno/inactivo, mostrar contexto siempre. Éxito: no guardar en galpón anterior tras cambiar selección.
+- [x] **CAP-02 — Huevos punta a punta.** Cantidades, teclado, confirmación y acumulado. Éxito: dos cargas nuevas suman; reintento no duplica.
+- [x] **CAP-03 — Muertes transaccionales.** Lock de saldo y error conservando entrada. Éxito: solicitudes simultáneas no dejan saldo negativo.
+- [x] **CAP-04 — Descarte de aves.** Integridad de saldo, etiqueta diferenciada y anulación. Éxito: no contabiliza muerte ni huevo descartado.
+- [x] **CAP-05 — Alimento entregado.** Precisión, coma decimal en UI, límites documentados y múltiples entregas. Éxito: días sin entrega no significan falta de alimentación.
+- [x] **CAP-06 — Vacunación básica.** Lote/empresa/galpón vigente, tipo y detalle útil; anulación. Éxito: historia sanitaria sin inventar calendario o prescripción.
 - [ ] **CAP-07 — Idempotencia.** Clave por intención/empresa y resultado persistido. Éxito: doble toque/timeout crea una operación; nueva intención de igual cantidad crea otra.
 - [ ] **CAP-08 — Estado actual bajo lock.** Revalidar disponibilidad y saldo dentro de mutación crítica. Éxito: inactivación/cierre concurrente no acepta carga prohibida.
 - [ ] **CAP-09 — Red y respuesta perdida.** Mantener formulario y distinguir pendiente/error/confirmado. Éxito: reintento usa misma clave, éxito solo después de persistir.

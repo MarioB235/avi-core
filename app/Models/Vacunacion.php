@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'lote_id',
     'user_id',
     'vacuna',
+    'idempotencia_clave',
     'observacion',
     'estado',
     'anulado_at',

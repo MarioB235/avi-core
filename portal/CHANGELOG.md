@@ -5,8 +5,24 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-09-27
+
+- **[test|seg]** Post-auditoría msg 3 (sesión CAP/EST): opciones de transición de lote en Estructura filtradas por `empresa_id`; `EstructuraFichaService::lote` cuenta lotes activos con scope de empresa; tests `VacunacionValidacionTest`, multiempresa en ficha y anti-tampering de `editingLoteId` en transición. — `Admin/Estructura/Index.php`, `EstructuraFichaService`, `AdminEstructuraTest`, `estandares-codigo.md`, `arbol-proyecto.md`
+
 ## 2026-09-26
 
+- **[negocio|operario]** CAP-06: vacunación básica — confirmación lote+vacuna, observación opcional, idempotencia, contador del día y anulación; tests `OperarioCargaVacunacionCap06Test`. — `RegistrarVacunacionAction`, `carga-vacunacion-form`, `esquema-bd.md`, `reglas.md`, `pantallas-flujos.md`
+- **[negocio|operario]** CAP-05: alimento entregado — coma decimal, límites `AlimentoValidacion`, acumulado del día, idempotencia y aclaración «no es consumo diario»; tests `OperarioCargaAlimentoCap05Test`. — `RegistrarCargaAlimentoAction`, `carga-alimento-form`, `OperarioGalponResumenService`, `reglas.md`, `pantallas-flujos.md`
+- **[negocio|operario]** CAP-04: descarte de aves — saldo vivo, confirmación, etiqueta diferenciada, idempotencia y anulación que restaura saldo; tests `OperarioCargaDescarteCap04Test`. — `RegistrarCargaDescarteAction`, `carga-descarte-form`, `reglas.md`, `pantallas-flujos.md`
+- **[negocio|operario]** CAP-03: muertes transaccionales — `lockForUpdate`, idempotencia, confirmación con saldo restante y error conservando entrada; tests `OperarioCargaMuertesCap03Test`. — `RegistrarCargaMuertesAction`, `carga-muertes-form`, `reglas.md`, `pantallas-flujos.md`
+- **[negocio|operario]** CAP-02: huevos punta a punta — `idempotencia_clave` en registros, confirmación con maples y acumulado del día, teclado numérico; tests `OperarioCargaHuevosCap02Test`. — `RegistrarCargaHuevosAction`, `carga-huevos-form`, `esquema-bd.md`, `reglas.md`, `pantallas-flujos.md`
+- **[ui|operario]** CAP-01: selector galpón robusto — sync en hydrate, granja visible bajo chip, `resolveGalponParaGuardar` sin galpón stale; tests `OperarioGalponSelectorTest`. — `ManagesGalponSelector`, `galpon-chip-selector`, `pantallas-flujos.md`
+- **[ui|est]** EST-10: ficha readonly galpón/lote en Estructura — `EstructuraFichaService`, diálogos «Ver ficha», métricas por lote solo si atribuibles, notas de saldo; tests unit/feature. — `pantallas-flujos.md`, evidencia EST-10
+- **[negocio|est]** EST-09: baja y reasignación seguras — sin hard-delete en estructura; `empresa_id` inmutable; reasignación de granja en galpón solo sin historial; UI bloquea selector con trazabilidad. — `EstructuraValidacion`, `PreventsHardDelete`, Actions/Index, `reglas.md`, tests
+- **[negocio|est]** EST-08: vacío/mantenimiento y ciclos — producción exige lote activo; alimento permitido sin lote (carga excepcional); nuevo lote y paso a vacío/mantenimiento exigen ciclo cerrado; sin POES automático. — `GalponValidacion`, Actions carga/lote/galpón, `reglas.md`, tests
+- **[ui|est]** EST-07: listados Estructura con búsqueda y filtros URL (granja/galpón/activa/estado operativo/estado y tipo lote), empty states con «Limpiar filtros» e hints de indisponibilidad; scope empresa en queries. — `Admin/Estructura/Index`, partials granjas/galpones/lotes, `AdminEstructuraTest`, `pantallas-flujos.md`
+- **[negocio|est]** EST-06: edición vs transición de lote — `UpdateLoteAction` solo metadatos; `TransicionarLoteEstadoAction` con motivo e `estado_historial` JSON; reapertura Dueño/Administrativo; UI «Cambiar estado» separado. — `TransicionarLoteEstadoAction.php`, `LoteEstado.php`, `LotePolicy`, migración, Estructura admin, tests
+- **[negocio|est]** EST-05: validación en Action — fechas ingreso/nacimiento coherentes, cantidades enteras con tope, revalidación de galpón bajo `lockForUpdate`; tests directos a `RegistrarLoteAction`. — `LoteValidacion.php`, `RegistrarLoteAction.php`, `reglas.md`
 - **[test|auditoría]** Post-auditoría msg 3 (sesión EMP/EST): soporte solo-lectura (`LotePolicyTest`, `AdminSoporteEmpresaTest`), `DocumentoLabelComponentTest`, trait `MapsEstructuraValidationErrors` en Estructura admin; suite 660/660. — `estandares-codigo.md`, `arbol-proyecto.md`, `permisos.md`, `datos-personales.md`, tests
 - **[negocio|est]** EST-04: alta de lote autorizada — `LoteValidacion`, `RegistrarLoteAction` unificado (hub Cargar + Estructura), SMA opcional, código servidor, permisos y errores mapeados; tests ampliados. — `reglas.md`, `pantallas-flujos.md`
 - **[negocio|est]** EST-03: jerarquía granja→galpones — cascada `activo=false` al desactivar granja; `disponibleParaCargaOperativa` + `assertDisponibleParaCarga` en Actions/cargas/resúmenes; tests bypass y operario. — `reglas.md`, `pantallas-flujos.md`

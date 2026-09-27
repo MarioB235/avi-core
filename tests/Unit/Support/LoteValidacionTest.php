@@ -2,7 +2,10 @@
 
 namespace Tests\Unit\Support;
 
+use App\Enums\LoteEstado;
 use App\Enums\TipoHuevo;
+use App\Enums\UserRole;
+use App\Models\User;
 use App\Support\LoteValidacion;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
@@ -53,5 +56,63 @@ class LoteValidacionTest extends TestCase
         ]);
 
         $this->assertTrue(true);
+    }
+
+    public function test_assert_cantidades_por_tipo_rejects_non_integer(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        LoteValidacion::assertCantidadesPorTipo([
+            TipoHuevo::Blanco->value => 100.5,
+        ]);
+    }
+
+    public function test_assert_cantidades_por_tipo_rejects_excessive_quantity(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        LoteValidacion::assertCantidadesPorTipo([
+            TipoHuevo::Blanco->value => LoteValidacion::CANTIDAD_MAXIMA + 1,
+        ]);
+    }
+
+    public function test_assert_fecha_ingreso_rejects_future_date(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        LoteValidacion::assertFechaIngreso(Carbon::tomorrow());
+    }
+
+    public function test_assert_fechas_coherentes_rejects_birth_after_ingreso(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        LoteValidacion::assertFechasCoherentes(
+            Carbon::parse('2026-03-15'),
+            Carbon::parse('2026-03-01'),
+        );
+    }
+
+    public function test_assert_fechas_coherentes_accepts_same_day(): void
+    {
+        LoteValidacion::assertFechasCoherentes(
+            Carbon::parse('2026-03-01'),
+            Carbon::parse('2026-03-01'),
+        );
+
+        $this->assertTrue(true);
+    }
+
+    public function test_assert_transicion_estado_rejects_invalid_transition(): void
+    {
+        $encargado = User::factory()->make(['rol' => UserRole::Encargado]);
+
+        $this->expectException(ValidationException::class);
+
+        LoteValidacion::assertTransicionEstado(
+            LoteEstado::Trasladado,
+            LoteEstado::Activo,
+            $encargado,
+        );
     }
 }

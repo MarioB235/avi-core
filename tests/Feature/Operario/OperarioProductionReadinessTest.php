@@ -110,7 +110,7 @@ class OperarioProductionReadinessTest extends TestCase
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
 
-        $galpon = Galpon::factory()->forGranja($granja)->create([
+        $galpon = Galpon::factory()->forGranja($granja)->conLoteActivo()->create([
             'aves_actuales' => $avesActuales,
         ]);
 

@@ -7,7 +7,10 @@ use App\Enums\VacunaTipo;
 use App\Models\Lote;
 use App\Services\OperarioGalponResumenService;
 use App\Services\OperarioGalponService;
+use App\Support\VacunacionValidacion;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 trait ManagesVacunacionForm
 {
@@ -18,6 +21,10 @@ trait ManagesVacunacionForm
     public string $loteId = '';
 
     public string $vacuna = '';
+
+    public string $observacionVacunacion = '';
+
+    public string $vacunacionIdempotenciaClave = '';
 
     public function abrirFormularioVacunacion(
         OperarioGalponService $operarioGalponService,
@@ -59,6 +66,7 @@ trait ManagesVacunacionForm
         $validated = $this->validate([
             'loteId' => ['required', 'integer', 'min:1'],
             'vacuna' => ['required', Rule::enum(VacunaTipo::class)],
+            'observacionVacunacion' => ['nullable', 'string', 'max:'.VacunacionValidacion::OBSERVACION_MAX],
         ], [
             'loteId.required' => 'Elegí el lote a vacunar.',
             'vacuna.required' => 'Elegí la vacuna aplicada.',
@@ -81,13 +89,23 @@ trait ManagesVacunacionForm
             return;
         }
 
-        $registrarVacunacion->execute(
-            auth()->user(),
-            $galpon,
-            $lote,
-            VacunaTipo::from($validated['vacuna']),
-            null,
-        );
+        try {
+            $registrarVacunacion->execute(
+                auth()->user(),
+                $galpon,
+                $lote,
+                VacunaTipo::from($validated['vacuna']),
+                $validated['observacionVacunacion'] ?? null,
+                $this->vacunacionIdempotenciaClave,
+            );
+        } catch (ValidationException $exception) {
+            foreach ($exception->errors() as $field => $messages) {
+                $campo = $field === 'lote_id' ? 'loteId' : $field;
+                $this->addError($campo, $messages[0]);
+            }
+
+            return;
+        }
 
         $this->finalizarGuardadoCarga(
             'dialogVacunacionAbierto',
@@ -111,8 +129,9 @@ trait ManagesVacunacionForm
             }
         }
 
-        $this->reset(['vacuna']);
+        $this->reset(['vacuna', 'observacionVacunacion']);
         $this->loteId = $loteId;
+        $this->vacunacionIdempotenciaClave = (string) Str::uuid();
         $this->resetValidation();
     }
 }

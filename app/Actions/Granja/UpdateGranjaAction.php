@@ -4,6 +4,7 @@ namespace App\Actions\Granja;
 
 use App\Models\Granja;
 use App\Models\User;
+use App\Support\EstructuraValidacion;
 use App\Support\GranjaValidacion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -16,6 +17,8 @@ class UpdateGranjaAction
     public function execute(User $actor, Granja $granja, array $data): Granja
     {
         Gate::forUser($actor)->authorize('update', $granja);
+
+        EstructuraValidacion::assertSinCambioEmpresa($granja, $data['empresa_id'] ?? null);
 
         $normalized = GranjaValidacion::normalize($data);
         $normalized['activa'] = (bool) ($data['activa'] ?? $normalized['activa']);

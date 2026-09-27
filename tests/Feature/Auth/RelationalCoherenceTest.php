@@ -75,7 +75,7 @@ class RelationalCoherenceTest extends TestCase
             ->call('guardarLoteCrear')
             ->assertNotFound();
 
-        $this->assertSame(0, Lote::query()->count());
+        $this->assertDatabaseMissing('lotes', ['galpon_id' => $galponAjeno->id]);
     }
 
     /**

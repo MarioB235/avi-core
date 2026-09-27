@@ -4,6 +4,8 @@ namespace App\Livewire\Operario\Concerns;
 
 use App\Actions\Operacion\RegistrarCargaMuertesAction;
 use App\Services\OperarioGalponService;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 trait ManagesMuertesForm
 {
@@ -12,6 +14,8 @@ trait ManagesMuertesForm
     public bool $dialogMuertesAbierto = false;
 
     public string $muertes = '';
+
+    public string $muertesIdempotenciaClave = '';
 
     public function abrirFormularioMuertes(OperarioGalponService $operarioGalponService): void
     {
@@ -52,12 +56,21 @@ trait ManagesMuertesForm
             return;
         }
 
-        $registrarCargaMuertes->execute(
-            auth()->user(),
-            $galpon,
-            (int) $validated['muertes'],
-            null,
-        );
+        try {
+            $registrarCargaMuertes->execute(
+                auth()->user(),
+                $galpon,
+                (int) $validated['muertes'],
+                null,
+                $this->muertesIdempotenciaClave,
+            );
+        } catch (ValidationException $exception) {
+            foreach ($exception->errors() as $field => $messages) {
+                $this->addError($field, $messages[0]);
+            }
+
+            return;
+        }
 
         $this->finalizarGuardadoCarga(
             'dialogMuertesAbierto',
@@ -69,6 +82,7 @@ trait ManagesMuertesForm
     private function resetFormularioMuertes(): void
     {
         $this->reset(['muertes']);
+        $this->muertesIdempotenciaClave = (string) Str::uuid();
         $this->resetValidation();
     }
 }

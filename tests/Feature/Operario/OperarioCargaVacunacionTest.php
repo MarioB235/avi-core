@@ -230,7 +230,7 @@ class OperarioCargaVacunacionTest extends TestCase
             ->set('loteId', (string) $loteAjeno->id)
             ->set('vacuna', VacunaTipo::Newcastle->value)
             ->call('guardarVacunacion')
-            ->assertHasErrors(['lote_id']);
+            ->assertHasErrors(['loteId']);
 
         $this->assertDatabaseMissing('vacunaciones', [
             'lote_id' => $loteAjeno->id,

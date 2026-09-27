@@ -106,7 +106,7 @@ class OperarioCargaLoteTest extends TestCase
 
         $galpon->refresh();
         $this->assertSame(5500, $galpon->aves_actuales);
-        $this->assertSame(2, Lote::query()->count());
+        $this->assertSame(2, Lote::query()->where('galpon_id', $galpon->id)->count());
     }
 
     public function test_carga_lote_requires_tipo_and_cantidad(): void
@@ -130,7 +130,7 @@ class OperarioCargaLoteTest extends TestCase
             ->call('guardarLote')
             ->assertHasErrors(['cantidadBlanco']);
 
-        $this->assertSame(0, Lote::query()->count());
+        $this->assertSame(0, Lote::query()->where('galpon_id', $galpon->id)->count());
     }
 
     public function test_carga_lote_route_redirects_to_hub_with_form_param(): void
@@ -236,6 +236,7 @@ class OperarioCargaLoteTest extends TestCase
         Lote::factory()->forGalpon($galpon)->create([
             'codigo' => "{$galpon->codigo}-{$fechaIngreso->format('Ymd')}-B-1",
             'fecha_ingreso' => $fechaIngreso,
+            'estado' => LoteEstado::Cerrado,
         ]);
 
         $lotes = app(RegistrarLoteAction::class)->execute(
@@ -323,7 +324,7 @@ class OperarioCargaLoteTest extends TestCase
             ->call('guardarLote')
             ->assertHasErrors(['fechaNacimiento']);
 
-        $this->assertSame(0, Lote::query()->count());
+        $this->assertSame(0, Lote::query()->where('galpon_id', $galpon->id)->count());
     }
 
     public function test_carga_lote_rejects_unavailable_galpon_via_livewire(): void
@@ -341,7 +342,7 @@ class OperarioCargaLoteTest extends TestCase
             ->call('guardarLote')
             ->assertHasErrors(['loteGalponId']);
 
-        $this->assertSame(0, Lote::query()->count());
+        $this->assertSame(0, Lote::query()->where('galpon_id', $galpon->id)->count());
     }
 
     public function test_carga_lote_rejects_foreign_galpon_via_livewire(): void
@@ -362,7 +363,7 @@ class OperarioCargaLoteTest extends TestCase
             ->call('guardarLote')
             ->assertHasErrors(['loteGalponId']);
 
-        $this->assertSame(0, Lote::query()->count());
+        $this->assertSame(0, Lote::query()->where('galpon_id', $galpon->id)->count());
         $this->assertDatabaseMissing('lotes', [
             'galpon_id' => $galponAjeno->id,
         ]);
@@ -386,6 +387,80 @@ class OperarioCargaLoteTest extends TestCase
         );
     }
 
+    public function test_registrar_lote_action_rejects_future_ingreso_date(): void
+    {
+        [$encargado, $galpon] = $this->createUsuarioConGalpon(UserRole::Encargado);
+
+        $this->expectException(ValidationException::class);
+
+        app(RegistrarLoteAction::class)->execute(
+            $encargado,
+            $galpon,
+            [TipoHuevo::Blanco->value => 1000],
+            Carbon::parse('2026-01-01'),
+            Carbon::tomorrow(),
+        );
+    }
+
+    public function test_registrar_lote_action_rejects_birth_after_ingreso(): void
+    {
+        [$encargado, $galpon] = $this->createUsuarioConGalpon(UserRole::Encargado);
+
+        $this->expectException(ValidationException::class);
+
+        app(RegistrarLoteAction::class)->execute(
+            $encargado,
+            $galpon,
+            [TipoHuevo::Blanco->value => 1000],
+            Carbon::parse('2026-03-15'),
+            Carbon::parse('2026-03-01'),
+        );
+    }
+
+    public function test_registrar_lote_action_rejects_invalid_tipo_directly(): void
+    {
+        [$encargado, $galpon] = $this->createUsuarioConGalpon(UserRole::Encargado);
+
+        $this->expectException(ValidationException::class);
+
+        app(RegistrarLoteAction::class)->execute(
+            $encargado,
+            $galpon,
+            ['tipo-invalido' => 1000],
+            Carbon::parse('2026-01-01'),
+        );
+    }
+
+    public function test_registrar_lote_action_assigns_unique_codes_on_back_to_back_registrations(): void
+    {
+        [$encargado, $galpon] = $this->createUsuarioConGalpon(UserRole::Encargado);
+        $fechaIngreso = Carbon::today();
+        $action = app(RegistrarLoteAction::class);
+
+        $primerLote = $action->execute(
+            $encargado,
+            $galpon,
+            [TipoHuevo::Blanco->value => 1000],
+            Carbon::parse('2026-01-01'),
+            $fechaIngreso,
+        )->first();
+
+        $primerLote->forceFill(['estado' => LoteEstado::Cerrado])->save();
+        Galpon::query()->whereKey($galpon->id)->update(['aves_actuales' => 0]);
+        $galpon = $galpon->fresh();
+
+        $segundoLote = $action->execute(
+            $encargado,
+            $galpon,
+            [TipoHuevo::Blanco->value => 500],
+            Carbon::parse('2026-01-01'),
+            $fechaIngreso,
+        )->first();
+
+        $this->assertNotSame($primerLote->codigo, $segundoLote->codigo);
+        $this->assertSame(2, Lote::query()->where('galpon_id', $galpon->id)->count());
+    }
+
     public function test_operario_guardar_lote_does_not_persist(): void
     {
         [$operario, $galpon] = $this->createUsuarioConGalpon(UserRole::Operario);
@@ -400,7 +475,7 @@ class OperarioCargaLoteTest extends TestCase
             ->call('guardarLote')
             ->assertForbidden();
 
-        $this->assertSame(0, Lote::query()->count());
+        $this->assertSame(0, Lote::query()->where('galpon_id', $galpon->id)->count());
     }
 
     /**

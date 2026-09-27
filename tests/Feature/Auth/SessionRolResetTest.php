@@ -83,7 +83,7 @@ class SessionRolResetTest extends TestCase
             ->postJson(app('livewire')->getUpdateUri(), $payload)
             ->assertRedirect(route('reparto.home'));
 
-        $this->assertSame(0, RegistroOperativo::query()->count());
+        $this->assertSame(0, RegistroOperativo::query()->where('empresa_id', $operario->empresa_id)->count());
     }
 
     public function test_livewire_action_after_password_reset_redirects_to_change_password(): void
@@ -110,7 +110,7 @@ class SessionRolResetTest extends TestCase
             ->postJson(app('livewire')->getUpdateUri(), $payload)
             ->assertRedirect(route('password.change'));
 
-        $this->assertSame(0, RegistroOperativo::query()->count());
+        $this->assertSame(0, RegistroOperativo::query()->where('empresa_id', $operario->empresa_id)->count());
     }
 
     /**
@@ -147,7 +147,7 @@ class SessionRolResetTest extends TestCase
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
-        $galpon = Galpon::factory()->forGranja($granja)->create();
+        $galpon = Galpon::factory()->forGranja($granja)->conLoteActivo()->create();
 
         $operario = User::factory()->create([
             'empresa_id' => $empresa->id,

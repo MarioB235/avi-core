@@ -1,12 +1,20 @@
 <div class="space-y-4">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div class="grid min-w-0 flex-1 gap-3 sm:grid-cols-2">
+        <div class="grid min-w-0 flex-1 gap-3 sm:grid-cols-3">
             <x-ui.select
                 label="Granja"
                 name="filtroGranjaId"
                 wire:model.live="filtroGranjaId"
                 placeholder="Todas las granjas"
                 :options="$granjasOptions"
+            />
+
+            <x-ui.select
+                label="Estado operativo"
+                name="filtroGalponEstado"
+                wire:model.live="filtroGalponEstado"
+                placeholder="Todos"
+                :options="$galponEstadoOptions"
             />
 
             <x-ui.input
@@ -30,9 +38,16 @@
             <div class="p-8">
                 <x-ui.empty-state
                     title="No hay galpones para mostrar"
-                    description="Creá un galpón dentro de una granja activa."
+                    :description="$emptyListadoMensaje"
                     icon="warehouse"
                 />
+                @if ($filtrosActivos)
+                    <div class="mt-4 text-center">
+                        <x-ui.button type="button" variant="secondary" size="sm" wire:click="limpiarFiltros">
+                            Limpiar filtros
+                        </x-ui.button>
+                    </div>
+                @endif
             </div>
         @else
             <div class="overflow-x-auto">
@@ -43,9 +58,7 @@
                             <th scope="col" class="hidden md:table-cell">Granja</th>
                             <th scope="col">Aves</th>
                             <th scope="col">Estado</th>
-                            @if ($canManageEstructura)
-                                <th scope="col" class="text-right"><span class="sr-only">Acciones</span></th>
-                            @endif
+                            <th scope="col" class="text-right"><span class="sr-only">Acciones</span></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -68,18 +81,26 @@
                                     @if ($galpon->disponibleParaCargaOperativa())
                                         <x-ui.badge variant="success">{{ $galpon->estado->label() }}</x-ui.badge>
                                     @else
-                                        <x-ui.badge variant="neutral" title="No disponible para carga operativa">
+                                        <x-ui.badge
+                                            variant="neutral"
+                                            title="{{ $galpon->granja->activa ? 'No disponible para carga operativa' : 'Granja inactiva: no admite carga' }}"
+                                        >
                                             {{ $galpon->estado->label() }}
                                         </x-ui.badge>
                                     @endif
                                 </td>
-                                @if ($canManageEstructura)
-                                    <td class="text-right">
-                                        <x-ui.button type="button" variant="ghost" size="sm" wire:click="abrirEditarGalpon({{ $galpon->id }})">
-                                            Editar
+                                <td class="text-right">
+                                    <div class="flex justify-end gap-1">
+                                        <x-ui.button type="button" variant="ghost" size="sm" wire:click="abrirFichaGalpon({{ $galpon->id }})">
+                                            Ver ficha
                                         </x-ui.button>
-                                    </td>
-                                @endif
+                                        @if ($canManageEstructura)
+                                            <x-ui.button type="button" variant="ghost" size="sm" wire:click="abrirEditarGalpon({{ $galpon->id }})">
+                                                Editar
+                                            </x-ui.button>
+                                        @endif
+                                    </div>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

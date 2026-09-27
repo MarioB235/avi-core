@@ -74,6 +74,21 @@ class OperarioCargaAlimentoTest extends TestCase
             ->assertRedirect(route('operario.cargar', ['abrir_galpon' => 1]));
     }
 
+    public function test_alimento_is_allowed_without_active_lote(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+        $galpon->update(['aves_actuales' => 0]);
+        $operario->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
+
+        app(RegistrarCargaAlimentoAction::class)->execute($operario, $galpon, 1200);
+
+        $this->assertDatabaseHas('registros_operativos', [
+            'galpon_id' => $galpon->id,
+            'tipo' => RegistroOperativoTipo::Alimento->value,
+            'alimento_kg' => 1200,
+        ]);
+    }
+
     public function test_registrar_carga_alimento_rejects_unavailable_galpon(): void
     {
         [$operario, $galpon] = $this->createOperarioConGalpon();

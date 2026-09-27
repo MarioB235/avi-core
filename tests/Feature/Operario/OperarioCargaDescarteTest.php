@@ -99,7 +99,7 @@ class OperarioCargaDescarteTest extends TestCase
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
-        $galpon = Galpon::factory()->forGranja($granja)->create($galponOverrides);
+        $galpon = Galpon::factory()->forGranja($granja)->conLoteActivo()->create($galponOverrides);
 
         $operario = User::factory()->create([
             'empresa_id' => $empresa->id,

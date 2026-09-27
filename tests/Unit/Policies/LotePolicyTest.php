@@ -4,6 +4,7 @@ namespace Tests\Unit\Policies;
 
 use App\Actions\Empresa\StartSoporteEmpresaAction;
 use App\Enums\EmpresaEstado;
+use App\Enums\LoteEstado;
 use App\Enums\UserRole;
 use App\Models\Empresa;
 use App\Models\Galpon;
@@ -74,5 +75,22 @@ class LotePolicyTest extends TestCase
         $this->actingAs($admin);
 
         $this->assertFalse(app(SoporteEmpresaService::class)->blocksProductionMutations($admin));
+    }
+
+    public function test_encargado_can_transition_active_lote_but_not_reopen_closed(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create();
+        $loteActivo = Lote::factory()->forGalpon($galpon)->create(['estado' => LoteEstado::Activo]);
+        $loteCerrado = Lote::factory()->forGalpon($galpon)->create(['estado' => LoteEstado::Cerrado]);
+
+        $encargado = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Encargado,
+        ]);
+
+        $this->assertTrue($this->policy->transition($encargado, $loteActivo));
+        $this->assertFalse($this->policy->transition($encargado, $loteCerrado));
     }
 }

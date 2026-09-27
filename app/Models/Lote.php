@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\LoteEstado;
 use App\Enums\TipoHuevo;
 use App\Models\Concerns\BelongsToEmpresa;
+use App\Models\Concerns\PreventsHardDelete;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,10 +24,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'tipo_huevo',
     'estado',
     'observacion',
+    'estado_historial',
 ])]
 class Lote extends Model
 {
-    use BelongsToEmpresa, HasFactory;
+    use BelongsToEmpresa, HasFactory, PreventsHardDelete;
 
     protected function casts(): array
     {
@@ -36,6 +38,7 @@ class Lote extends Model
             'cantidad_inicial' => 'integer',
             'tipo_huevo' => TipoHuevo::class,
             'estado' => LoteEstado::class,
+            'estado_historial' => 'array',
         ];
     }
 

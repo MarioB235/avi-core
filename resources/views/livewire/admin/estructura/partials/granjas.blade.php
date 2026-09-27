@@ -1,11 +1,19 @@
 <div class="space-y-4">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div class="min-w-0 flex-1">
+        <div class="grid min-w-0 flex-1 gap-3 sm:grid-cols-2">
             <x-ui.input
                 label="Buscar"
                 name="busqueda"
                 wire:model.live.debounce.300ms="busqueda"
                 placeholder="Nombre, código, DICOSE o ubicación"
+            />
+
+            <x-ui.select
+                label="Estado"
+                name="filtroGranjaActiva"
+                wire:model.live="filtroGranjaActiva"
+                placeholder="Todas"
+                :options="$granjaActivaOptions"
             />
         </div>
 
@@ -22,9 +30,16 @@
             <div class="p-8">
                 <x-ui.empty-state
                     title="No hay granjas para mostrar"
-                    description="Registrá la primera granja de tu empresa con su DICOSE."
+                    :description="$emptyListadoMensaje"
                     icon="building"
                 />
+                @if ($filtrosActivos)
+                    <div class="mt-4 text-center">
+                        <x-ui.button type="button" variant="secondary" size="sm" wire:click="limpiarFiltros">
+                            Limpiar filtros
+                        </x-ui.button>
+                    </div>
+                @endif
             </div>
         @else
             <div class="overflow-x-auto">

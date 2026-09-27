@@ -4,6 +4,8 @@ namespace App\Livewire\Operario\Concerns;
 
 use App\Actions\Operacion\RegistrarCargaDescarteAction;
 use App\Services\OperarioGalponService;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 trait ManagesDescarteForm
 {
@@ -12,6 +14,8 @@ trait ManagesDescarteForm
     public bool $dialogDescarteAbierto = false;
 
     public string $descarteAves = '';
+
+    public string $descarteIdempotenciaClave = '';
 
     public function abrirFormularioDescarte(OperarioGalponService $operarioGalponService): void
     {
@@ -52,12 +56,21 @@ trait ManagesDescarteForm
             return;
         }
 
-        $registrarCargaDescarte->execute(
-            auth()->user(),
-            $galpon,
-            (int) $validated['descarteAves'],
-            null,
-        );
+        try {
+            $registrarCargaDescarte->execute(
+                auth()->user(),
+                $galpon,
+                (int) $validated['descarteAves'],
+                null,
+                $this->descarteIdempotenciaClave,
+            );
+        } catch (ValidationException $exception) {
+            foreach ($exception->errors() as $field => $messages) {
+                $this->addError($field, $messages[0]);
+            }
+
+            return;
+        }
 
         $this->finalizarGuardadoCarga(
             'dialogDescarteAbierto',
@@ -69,6 +82,7 @@ trait ManagesDescarteForm
     private function resetFormularioDescarte(): void
     {
         $this->reset(['descarteAves']);
+        $this->descarteIdempotenciaClave = (string) Str::uuid();
         $this->resetValidation();
     }
 }

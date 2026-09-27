@@ -92,6 +92,9 @@ class AdminHomeServiceTest extends TestCase
             'must_change_password' => false,
         ]);
 
+        $service = app(AdminHomeService::class);
+        $activosAntes = $service->activeUsersCount($admin);
+
         User::factory()->create([
             'empresa_id' => $empresa->id,
             'rol' => UserRole::Operario,
@@ -106,7 +109,7 @@ class AdminHomeServiceTest extends TestCase
             'must_change_password' => false,
         ]);
 
-        $this->assertSame(2, app(AdminHomeService::class)->activeUsersCount($admin));
+        $this->assertSame($activosAntes + 1, $service->activeUsersCount($admin));
     }
 
     public function test_for_composes_view_data_object(): void

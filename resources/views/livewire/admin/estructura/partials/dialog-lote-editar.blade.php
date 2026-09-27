@@ -9,13 +9,17 @@
 
         <x-ui.input label="Línea / raza" name="loteLineaRaza" wire:model="loteLineaRaza" />
 
-        <x-ui.select
-            label="Estado"
-            name="loteEstado"
-            wire:model="loteEstado"
-            :options="$loteEstadoOptions"
-            required
-        />
+        <div class="space-y-2">
+            <p class="text-sm font-medium text-avicore-ink">Estado actual</p>
+            <p class="text-sm text-avicore-muted">
+                {{ \App\Enums\LoteEstado::tryFrom($loteEstadoActual)?->label() ?? '—' }}
+            </p>
+            @if ($loteTransicionEstadoOptions !== [])
+                <x-ui.button type="button" variant="secondary" size="sm" wire:click="abrirTransicionLote">
+                    Cambiar estado
+                </x-ui.button>
+            @endif
+        </div>
 
         <x-ui.textarea label="Observación" name="loteObservacion" wire:model="loteObservacion" rows="3" />
 
@@ -25,3 +29,5 @@
         </div>
     </form>
 </x-ui.dialog>
+
+@include('livewire.admin.estructura.partials.dialog-lote-transicion')

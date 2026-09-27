@@ -4,6 +4,7 @@ namespace App\Livewire\Operario\Concerns;
 
 use App\Actions\Operacion\RegistrarCargaHuevosAction;
 use App\Services\OperarioGalponService;
+use Illuminate\Support\Str;
 
 trait ManagesHuevosForm
 {
@@ -14,6 +15,8 @@ trait ManagesHuevosForm
     public string $huevos = '';
 
     public string $huevosDescarte = '0';
+
+    public string $huevosIdempotenciaClave = '';
 
     public function abrirFormularioHuevos(OperarioGalponService $operarioGalponService): void
     {
@@ -72,6 +75,7 @@ trait ManagesHuevosForm
             $huevosAptos,
             $huevosDescarte,
             null,
+            $this->huevosIdempotenciaClave,
         );
 
         $this->finalizarGuardadoCarga(
@@ -85,6 +89,7 @@ trait ManagesHuevosForm
     {
         $this->reset(['huevos', 'huevosDescarte']);
         $this->huevosDescarte = '0';
+        $this->huevosIdempotenciaClave = (string) Str::uuid();
         $this->resetValidation();
     }
 }

@@ -28,6 +28,12 @@
         />
     </button>
 
+    @if ($galpon?->granja?->nombre)
+        <p class="avicore-operario-home-hero__galpon-context truncate text-center text-xs text-avicore-primary/85">
+            {{ $galpon->granja->nombre }}
+        </p>
+    @endif
+
     <div
         x-show="open"
         x-cloak

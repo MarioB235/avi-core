@@ -25,7 +25,7 @@ class OperarioCargarHubViewTest extends TestCase
             ->assertOk()
             ->assertSee('Huevos de hoy', false)
             ->assertSee('Huevos aptos (comerciales)', false)
-            ->assertSee('wire:model="huevos"', false);
+            ->assertSee('wire:model.live="huevos"', false);
     }
 
     public function test_cargar_hub_opens_muertes_dialog_via_http_query_param(): void
@@ -38,7 +38,55 @@ class OperarioCargarHubViewTest extends TestCase
             ->assertOk()
             ->assertSee('Muertes de hoy', false)
             ->assertSee('¿Cuántas aves murieron?', false)
-            ->assertSee('wire:model="muertes"', false);
+            ->assertSee('wire:model.live="muertes"', false);
+    }
+
+    public function test_cargar_hub_opens_descarte_dialog_via_http_query_param(): void
+    {
+        [$operario, $galpon] = $this->createUsuarioConGalpon(UserRole::Operario);
+        $operario->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
+
+        $this->actingAs($operario)
+            ->get(route('operario.cargar', ['form' => 'descarte']))
+            ->assertOk()
+            ->assertSee('Descarte de aves', false)
+            ->assertSee('No es mortalidad ni huevo descartado', false)
+            ->assertSee('wire:model.live="descarteAves"', false);
+    }
+
+    public function test_cargar_hub_opens_alimento_dialog_via_http_query_param(): void
+    {
+        [$operario, $galpon] = $this->createUsuarioConGalpon(UserRole::Operario);
+        $operario->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
+
+        $this->actingAs($operario)
+            ->get(route('operario.cargar', ['form' => 'alimento']))
+            ->assertOk()
+            ->assertSee('Entrega de alimento', false)
+            ->assertSee('No es consumo diario', false)
+            ->assertSee('wire:model.live="alimentoKg"', false);
+    }
+
+    public function test_cargar_hub_opens_vacunacion_dialog_via_http_query_param(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->conLoteActivo()->create();
+
+        $operario = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'must_change_password' => false,
+            'ultimo_galpon_id' => $galpon->id,
+        ]);
+
+        $this->actingAs($operario)
+            ->get(route('operario.cargar', ['form' => 'vacunacion']))
+            ->assertOk()
+            ->assertSee('Vacunación de hoy', false)
+            ->assertSee('No hay calendario ni receta automática', false)
+            ->assertSee('¿Qué lote vacunaste?', false)
+            ->assertSee('Observación (opcional)', false);
     }
 
     public function test_cargar_hub_without_galpon_opens_selector_via_http_abrir_galpon(): void

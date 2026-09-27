@@ -41,6 +41,11 @@ class Historial extends Component
         $this->validarFecha();
     }
 
+    public function hydrate(OperarioGalponService $operarioGalponService): void
+    {
+        $this->hydrateGalponSelector($operarioGalponService);
+    }
+
     public function updatedFecha(): void
     {
         $this->validarFecha();

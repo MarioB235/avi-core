@@ -89,7 +89,7 @@ class AdminEstructuraTest extends TestCase
     {
         [$empresa] = $this->empresaConDueno();
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
-        $galpon = Galpon::factory()->forGranja($granja)->create();
+        $galpon = Galpon::factory()->forGranja($granja)->create(['aves_actuales' => 0]);
 
         $encargado = User::factory()->create([
             'empresa_id' => $empresa->id,
@@ -233,6 +233,7 @@ class AdminEstructuraTest extends TestCase
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
         $galpon = Galpon::factory()->forGranja($granja)->create([
             'estado' => GalponEstado::Activo,
+            'aves_actuales' => 0,
         ]);
 
         Livewire::actingAs($administrativo)
@@ -246,6 +247,61 @@ class AdminEstructuraTest extends TestCase
         $galpon->refresh();
         $this->assertSame(GalponEstado::VacioSanitario, $galpon->estado);
         $this->assertFalse($galpon->activo);
+    }
+
+    public function test_administrativo_cannot_set_vacio_sanitario_with_active_lote(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->conLoteActivo()->create([
+            'estado' => GalponEstado::Activo,
+        ]);
+
+        Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'galpones')
+            ->call('abrirEditarGalpon', $galpon->id)
+            ->set('galponEstado', GalponEstado::VacioSanitario->value)
+            ->call('guardarGalpon')
+            ->assertHasErrors(['galponEstado']);
+    }
+
+    public function test_administrativo_cannot_reassign_galpon_with_operational_history(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
+        $granjaA = Granja::factory()->create(['empresa_id' => $empresa->id, 'nombre' => 'Granja Norte']);
+        $granjaB = Granja::factory()->create(['empresa_id' => $empresa->id, 'nombre' => 'Granja Sur']);
+        $galpon = Galpon::factory()->forGranja($granjaA)->conLoteActivo()->create();
+
+        Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'galpones')
+            ->call('abrirEditarGalpon', $galpon->id)
+            ->assertSee('Granja Norte')
+            ->assertSee('No se puede cambiar')
+            ->set('galponGranjaId', (string) $granjaB->id)
+            ->call('guardarGalpon')
+            ->assertHasErrors(['galponGranjaId']);
+
+        $this->assertSame($granjaA->id, $galpon->fresh()->granja_id);
+    }
+
+    public function test_administrativo_can_reassign_galpon_without_history(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
+        $granjaA = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $granjaB = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granjaA)->create(['aves_actuales' => 0]);
+
+        Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'galpones')
+            ->call('abrirEditarGalpon', $galpon->id)
+            ->set('galponGranjaId', (string) $granjaB->id)
+            ->call('guardarGalpon')
+            ->assertHasNoErrors();
+
+        $this->assertSame($granjaB->id, $galpon->fresh()->granja_id);
     }
 
     public function test_codigo_must_be_unique_per_granja(): void
@@ -371,7 +427,10 @@ class AdminEstructuraTest extends TestCase
     {
         [$empresa, $administrativo] = $this->empresaConAdministrativo();
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
-        $galpon = Galpon::factory()->forGranja($granja)->create(['codigo' => 'G-SMA']);
+        $galpon = Galpon::factory()->forGranja($granja)->create([
+            'codigo' => 'G-SMA',
+            'aves_actuales' => 0,
+        ]);
 
         Livewire::actingAs($administrativo)
             ->test(EstructuraIndex::class)
@@ -396,7 +455,7 @@ class AdminEstructuraTest extends TestCase
         ]);
     }
 
-    public function test_administrativo_can_update_lote(): void
+    public function test_administrativo_can_update_lote_metadata_without_changing_estado(): void
     {
         [$empresa, $administrativo] = $this->empresaConAdministrativo();
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
@@ -406,20 +465,49 @@ class AdminEstructuraTest extends TestCase
             ->create([
                 'estado' => LoteEstado::EnProduccion,
                 'observacion' => null,
+                'linea_raza' => null,
             ]);
 
         Livewire::actingAs($administrativo)
             ->test(EstructuraIndex::class)
             ->set('seccion', 'lotes')
             ->call('abrirEditarLote', $lote->id)
-            ->set('loteEstado', LoteEstado::Cerrado->value)
-            ->set('loteObservacion', 'Cierre por rotación')
+            ->set('loteLineaRaza', 'Hy-Line Brown')
+            ->set('loteObservacion', 'Lote en revisión')
             ->call('guardarLoteEditar')
             ->assertHasNoErrors();
 
         $lote->refresh();
+        $this->assertSame(LoteEstado::EnProduccion, $lote->estado);
+        $this->assertSame('Hy-Line Brown', $lote->linea_raza);
+        $this->assertSame('Lote en revisión', $lote->observacion);
+    }
+
+    public function test_administrativo_can_transition_lote_estado_with_motivo(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create();
+        $lote = Lote::factory()
+            ->forGalpon($galpon)
+            ->create([
+                'estado' => LoteEstado::EnProduccion,
+            ]);
+
+        Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'lotes')
+            ->call('abrirEditarLote', $lote->id)
+            ->call('abrirTransicionLote')
+            ->set('loteTransicionEstado', LoteEstado::Cerrado->value)
+            ->set('loteTransicionMotivo', 'Cierre por rotación')
+            ->call('guardarLoteTransicion')
+            ->assertHasNoErrors();
+
+        $lote->refresh();
         $this->assertSame(LoteEstado::Cerrado, $lote->estado);
-        $this->assertSame('Cierre por rotación', $lote->observacion);
+        $this->assertCount(1, $lote->estado_historial);
+        $this->assertSame('Cierre por rotación', $lote->estado_historial[0]['motivo']);
     }
 
     public function test_administrativo_cannot_create_galpon_in_other_company_granja(): void
@@ -439,6 +527,216 @@ class AdminEstructuraTest extends TestCase
             ->assertHasErrors(['galponGranjaId']);
 
         $this->assertNull(Galpon::query()->where('nombre', 'Galpón ilegal')->first());
+    }
+
+    public function test_lotes_list_filters_by_estado_tipo_and_scoped_granja(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
+        $granjaA = Granja::factory()->create(['empresa_id' => $empresa->id, 'nombre' => 'Granja A']);
+        $granjaB = Granja::factory()->create(['empresa_id' => $empresa->id, 'nombre' => 'Granja B']);
+        $galponA = Galpon::factory()->forGranja($granjaA)->create(['codigo' => 'GA']);
+        $galponB = Galpon::factory()->forGranja($granjaB)->create(['codigo' => 'GB']);
+
+        $loteVisible = Lote::factory()->forGalpon($galponA)->create([
+            'codigo' => 'GA-LOTE-1',
+            'estado' => LoteEstado::EnProduccion,
+            'tipo_huevo' => TipoHuevo::Blanco,
+        ]);
+
+        Lote::factory()->forGalpon($galponA)->create([
+            'codigo' => 'GA-LOTE-2',
+            'estado' => LoteEstado::Cerrado,
+            'tipo_huevo' => TipoHuevo::Color,
+        ]);
+
+        Lote::factory()->forGalpon($galponB)->create([
+            'codigo' => 'GB-LOTE-1',
+            'estado' => LoteEstado::EnProduccion,
+            'tipo_huevo' => TipoHuevo::Blanco,
+        ]);
+
+        $component = Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'lotes')
+            ->set('filtroGranjaId', (string) $granjaA->id)
+            ->set('filtroLoteEstado', LoteEstado::EnProduccion->value)
+            ->set('filtroLoteTipo', TipoHuevo::Blanco->value);
+
+        $codigos = $component->viewData('lotes')->pluck('codigo')->all();
+
+        $this->assertSame(['GA-LOTE-1'], $codigos);
+    }
+
+    public function test_foreign_granja_filter_does_not_leak_other_company_lotes(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
+        $otraEmpresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granjaAjena = Granja::factory()->create(['empresa_id' => $otraEmpresa->id]);
+        $galponAjeno = Galpon::factory()->forGranja($granjaAjena)->create(['codigo' => 'AJENO']);
+
+        Lote::factory()->forGalpon($galponAjeno)->create(['codigo' => 'LOTE-AJENO-1']);
+
+        Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'lotes')
+            ->set('filtroGranjaId', (string) $granjaAjena->id)
+            ->assertDontSee('LOTE-AJENO-1')
+            ->call('limpiarFiltros')
+            ->assertSet('filtroGranjaId', '');
+    }
+
+    public function test_galpones_list_filters_by_estado_operativo(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        Galpon::factory()->forGranja($granja)->create([
+            'nombre' => 'Galpón filtro activo',
+            'codigo' => 'GAL-FILTRO-OK',
+            'estado' => GalponEstado::Activo,
+        ]);
+        Galpon::factory()->forGranja($granja)->create([
+            'nombre' => 'Galpón filtro pausa',
+            'codigo' => 'GAL-FILTRO-PAUSA',
+            'estado' => GalponEstado::EnMantenimiento,
+        ]);
+
+        $component = Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'galpones')
+            ->set('filtroGalponEstado', GalponEstado::Activo->value);
+
+        $galpones = $component->viewData('galpones');
+        $codigos = $galpones->pluck('codigo')->all();
+
+        $this->assertContains('GAL-FILTRO-OK', $codigos);
+        $this->assertNotContains('GAL-FILTRO-PAUSA', $codigos);
+    }
+
+    public function test_administrativo_can_open_galpon_and_lote_ficha(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
+        $granja = Granja::factory()->create([
+            'empresa_id' => $empresa->id,
+            'nombre' => 'Granja ficha',
+            'dicose' => '0999888777',
+        ]);
+        $galpon = Galpon::factory()->forGranja($granja)->create([
+            'nombre' => 'Galpón ficha',
+            'codigo' => 'GAL-FICHA',
+            'aves_actuales' => 1500,
+        ]);
+        $lote = Lote::factory()->forGalpon($galpon)->create([
+            'codigo' => 'LOTE-FICHA-01',
+            'estado' => LoteEstado::EnProduccion,
+            'cantidad_inicial' => 1500,
+            'estado_historial' => [[
+                'fecha' => now()->subDay()->toIso8601String(),
+                'estado_anterior' => LoteEstado::Activo->value,
+                'estado_nuevo' => LoteEstado::EnProduccion->value,
+                'motivo' => 'Inicio producción',
+                'actor_name' => $administrativo->name,
+            ]],
+        ]);
+
+        Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'galpones')
+            ->assertSee('Ver ficha')
+            ->call('abrirFichaGalpon', $galpon->id)
+            ->assertSet('dialogGalponFichaAbierto', true)
+            ->assertSee('Galpón ficha')
+            ->assertSee('0999888777')
+            ->assertSee('LOTE-FICHA-01')
+            ->call('cerrarFichaGalpon')
+            ->assertSet('dialogGalponFichaAbierto', false);
+
+        Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'lotes')
+            ->call('abrirFichaLote', $lote->id)
+            ->assertSet('dialogLoteFichaAbierto', true)
+            ->assertSee('LOTE-FICHA-01')
+            ->assertSee('Inicio producción')
+            ->assertSee('Métricas de hoy');
+    }
+
+    public function test_encargado_can_view_ficha_but_not_edit_galpon(): void
+    {
+        [$empresa] = $this->empresaConDueno();
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create(['nombre' => 'Galpón encargado']);
+
+        $encargado = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Encargado,
+            'must_change_password' => false,
+        ]);
+
+        Livewire::actingAs($encargado)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'galpones')
+            ->assertSee('Ver ficha')
+            ->assertDontSee('wire:click="abrirEditarGalpon"', false)
+            ->call('abrirFichaGalpon', $galpon->id)
+            ->assertSet('dialogGalponFichaAbierto', true)
+            ->assertSee('Galpón encargado');
+    }
+
+    public function test_foreign_lote_ficha_is_forbidden(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
+        $otraEmpresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granjaAjena = Granja::factory()->create(['empresa_id' => $otraEmpresa->id]);
+        $galponAjeno = Galpon::factory()->forGranja($granjaAjena)->create();
+        $loteAjeno = Lote::factory()->forGalpon($galponAjeno)->create(['codigo' => 'LOTE-AJENO-FICHA']);
+
+        Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'lotes')
+            ->call('abrirFichaLote', $loteAjeno->id)
+            ->assertNotFound();
+    }
+
+    public function test_foreign_lote_does_not_expose_transition_options_when_editing_id_is_tampered(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
+        $otraEmpresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granjaAjena = Granja::factory()->create(['empresa_id' => $otraEmpresa->id]);
+        $galponAjeno = Galpon::factory()->forGranja($granjaAjena)->create();
+        $loteAjeno = Lote::factory()->forGalpon($galponAjeno)->create(['estado' => LoteEstado::EnProduccion]);
+
+        Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'lotes')
+            ->set('editingLoteId', $loteAjeno->id)
+            ->set('dialogLoteTransicionAbierto', true)
+            ->assertViewHas('loteTransicionEstadoOptions', []);
+    }
+
+    public function test_granjas_list_filters_by_activa_and_shows_empty_hint(): void
+    {
+        [$empresa, $administrativo] = $this->empresaConAdministrativo();
+        Granja::factory()->create([
+            'empresa_id' => $empresa->id,
+            'nombre' => 'Granja filtro activa',
+            'codigo' => 'GRJ-ACTIVA',
+            'activa' => true,
+        ]);
+        Granja::factory()->create([
+            'empresa_id' => $empresa->id,
+            'nombre' => 'Granja filtro pausada',
+            'codigo' => 'GRJ-PAUSADA',
+            'activa' => false,
+        ]);
+
+        Livewire::actingAs($administrativo)
+            ->test(EstructuraIndex::class)
+            ->set('seccion', 'granjas')
+            ->set('filtroGranjaActiva', '0')
+            ->assertSee('GRJ-PAUSADA')
+            ->assertDontSee('GRJ-ACTIVA')
+            ->set('busqueda', 'ZZZ-SIN-RESULTADOS')
+            ->assertSee('No hay resultados con los filtros actuales');
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Actions\Galpon\UpdateGalponAction;
 use App\Actions\Granja\CreateGranjaAction;
 use App\Actions\Granja\UpdateGranjaAction;
 use App\Actions\Lote\RegistrarLoteAction;
+use App\Actions\Lote\TransicionarLoteEstadoAction;
 use App\Actions\Lote\UpdateLoteAction;
 use App\Enums\GalponEstado;
 use App\Enums\LoteEstado;
@@ -16,6 +17,7 @@ use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\Lote;
 use App\Services\EmpresaScopeService;
+use App\Services\EstructuraFichaService;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -38,11 +40,26 @@ class Index extends Component
     #[Url(as: 'seccion', except: 'granjas', history: true)]
     public string $seccion = 'granjas';
 
+    #[Url(as: 'q', except: '', history: true)]
     public string $busqueda = '';
 
+    #[Url(as: 'granja', except: '', history: true)]
     public string $filtroGranjaId = '';
 
+    #[Url(as: 'galpon', except: '', history: true)]
     public string $filtroGalponId = '';
+
+    #[Url(as: 'granja_activa', except: '', history: true)]
+    public string $filtroGranjaActiva = '';
+
+    #[Url(as: 'galpon_estado', except: '', history: true)]
+    public string $filtroGalponEstado = '';
+
+    #[Url(as: 'lote_estado', except: '', history: true)]
+    public string $filtroLoteEstado = '';
+
+    #[Url(as: 'lote_tipo', except: '', history: true)]
+    public string $filtroLoteTipo = '';
 
     public bool $dialogGranjaAbierto = false;
 
@@ -92,11 +109,25 @@ class Index extends Component
 
     public ?int $editingLoteId = null;
 
-    public string $loteEstado = '';
+    public string $loteEstadoActual = '';
 
     public string $loteLineaRaza = '';
 
     public string $loteObservacion = '';
+
+    public bool $dialogLoteTransicionAbierto = false;
+
+    public string $loteTransicionEstado = '';
+
+    public string $loteTransicionMotivo = '';
+
+    public bool $dialogGalponFichaAbierto = false;
+
+    public ?int $fichaGalponId = null;
+
+    public bool $dialogLoteFichaAbierto = false;
+
+    public ?int $fichaLoteId = null;
 
     public function mount(): void
     {
@@ -121,6 +152,19 @@ class Index extends Component
     {
         $this->resetPage();
         $this->busqueda = '';
+        $this->filtroGranjaActiva = '';
+        $this->filtroGalponEstado = '';
+        $this->filtroLoteEstado = '';
+        $this->filtroLoteTipo = '';
+
+        if ($this->seccion === 'granjas') {
+            $this->filtroGranjaId = '';
+            $this->filtroGalponId = '';
+        }
+
+        if ($this->seccion === 'galpones') {
+            $this->filtroGalponId = '';
+        }
     }
 
     public function updatingBusqueda(): void
@@ -136,6 +180,49 @@ class Index extends Component
 
     public function updatingFiltroGalponId(): void
     {
+        $this->resetPage();
+    }
+
+    public function updatingFiltroGranjaActiva(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFiltroGalponEstado(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFiltroLoteEstado(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFiltroLoteTipo(): void
+    {
+        $this->resetPage();
+    }
+
+    public function limpiarFiltros(): void
+    {
+        $this->busqueda = '';
+
+        if ($this->seccion === 'granjas') {
+            $this->filtroGranjaActiva = '';
+        }
+
+        if ($this->seccion === 'galpones') {
+            $this->filtroGranjaId = '';
+            $this->filtroGalponEstado = '';
+        }
+
+        if ($this->seccion === 'lotes') {
+            $this->filtroGranjaId = '';
+            $this->filtroGalponId = '';
+            $this->filtroLoteEstado = '';
+            $this->filtroLoteTipo = '';
+        }
+
         $this->resetPage();
     }
 
@@ -314,7 +401,7 @@ class Index extends Component
         $this->editingLoteId = $lote->id;
         $this->loteCodigoSma = (string) ($lote->codigo_sma ?? '');
         $this->loteLineaRaza = (string) ($lote->linea_raza ?? '');
-        $this->loteEstado = $lote->estado->value;
+        $this->loteEstadoActual = $lote->estado->value;
         $this->loteObservacion = (string) ($lote->observacion ?? '');
         $this->dialogLoteEditarAbierto = true;
         $this->resetValidation();
@@ -326,24 +413,96 @@ class Index extends Component
         $this->editingLoteId = null;
         $this->loteCodigoSma = '';
         $this->loteLineaRaza = '';
-        $this->loteEstado = '';
+        $this->loteEstadoActual = '';
         $this->loteObservacion = '';
         $this->resetValidation();
+    }
+
+    public function abrirTransicionLote(): void
+    {
+        $lote = $this->findScopedLote((int) $this->editingLoteId);
+        $this->authorize('transition', $lote);
+
+        $this->loteTransicionEstado = '';
+        $this->loteTransicionMotivo = '';
+        $this->dialogLoteTransicionAbierto = true;
+        $this->resetValidation(['loteTransicionEstado', 'loteTransicionMotivo']);
+    }
+
+    public function cerrarTransicionLote(): void
+    {
+        $this->dialogLoteTransicionAbierto = false;
+        $this->loteTransicionEstado = '';
+        $this->loteTransicionMotivo = '';
+        $this->resetValidation(['loteTransicionEstado', 'loteTransicionMotivo']);
     }
 
     public function guardarLoteEditar(UpdateLoteAction $updateLote): void
     {
         $lote = $this->findScopedLote((int) $this->editingLoteId);
 
-        $updateLote->execute(auth()->user(), $lote, [
-            'codigo_sma' => $this->loteCodigoSma !== '' ? $this->loteCodigoSma : null,
-            'linea_raza' => $this->loteLineaRaza !== '' ? $this->loteLineaRaza : null,
-            'estado' => $this->loteEstado,
-            'observacion' => $this->loteObservacion !== '' ? $this->loteObservacion : null,
-        ]);
+        try {
+            $updateLote->execute(auth()->user(), $lote, [
+                'codigo_sma' => $this->loteCodigoSma !== '' ? $this->loteCodigoSma : null,
+                'linea_raza' => $this->loteLineaRaza !== '' ? $this->loteLineaRaza : null,
+                'observacion' => $this->loteObservacion !== '' ? $this->loteObservacion : null,
+            ]);
+        } catch (ValidationException $exception) {
+            $this->mapearErroresLote($exception);
+
+            return;
+        }
 
         $this->cerrarLoteEditar();
         $this->dispatch('snackbar-show', message: 'Lote actualizado.', variant: 'success');
+    }
+
+    public function guardarLoteTransicion(TransicionarLoteEstadoAction $transicionarLote): void
+    {
+        $lote = $this->findScopedLote((int) $this->editingLoteId);
+
+        try {
+            $lote = $transicionarLote->execute(auth()->user(), $lote, [
+                'estado' => $this->loteTransicionEstado,
+                'motivo' => $this->loteTransicionMotivo,
+            ]);
+        } catch (ValidationException $exception) {
+            $this->mapearErroresLoteTransicion($exception);
+
+            return;
+        }
+
+        $this->loteEstadoActual = $lote->estado->value;
+        $this->cerrarTransicionLote();
+        $this->dispatch('snackbar-show', message: 'Estado del lote actualizado.', variant: 'success');
+    }
+
+    public function abrirFichaGalpon(int $galponId): void
+    {
+        $this->findScopedGalpon($galponId);
+
+        $this->fichaGalponId = $galponId;
+        $this->dialogGalponFichaAbierto = true;
+    }
+
+    public function cerrarFichaGalpon(): void
+    {
+        $this->dialogGalponFichaAbierto = false;
+        $this->fichaGalponId = null;
+    }
+
+    public function abrirFichaLote(int $loteId): void
+    {
+        $this->findScopedLote($loteId);
+
+        $this->fichaLoteId = $loteId;
+        $this->dialogLoteFichaAbierto = true;
+    }
+
+    public function cerrarFichaLote(): void
+    {
+        $this->dialogLoteFichaAbierto = false;
+        $this->fichaLoteId = null;
     }
 
     public function render(): View
@@ -370,9 +529,25 @@ class Index extends Component
             ->mapWithKeys(fn (Galpon $galpon): array => [(string) $galpon->id => $galpon->displayName()])
             ->all();
 
+        $galponEnEdicion = $this->editingGalponId !== null && $this->dialogGalponAbierto
+            ? $this->findScopedGalpon($this->editingGalponId)
+            : null;
+
+        $fichaService = app(EstructuraFichaService::class);
+
+        $fichaGalpon = $this->dialogGalponFichaAbierto && $this->fichaGalponId !== null
+            ? $fichaService->galpon($this->findScopedGalpon($this->fichaGalponId))
+            : null;
+
+        $fichaLote = $this->dialogLoteFichaAbierto && $this->fichaLoteId !== null
+            ? $fichaService->lote($this->findScopedLote($this->fichaLoteId))
+            : null;
+
         return view('livewire.admin.estructura.index', [
             'actor' => $actor,
             'canManageEstructura' => $actor->rol->canManageEstructura(),
+            'galponEditBloqueaReasignacionGranja' => $galponEnEdicion?->tieneHistorialTrazable() ?? false,
+            'galponEditGranjaNombre' => $galponEnEdicion?->granja?->nombre,
             'canManageLotes' => Gate::forUser($actor)->allows('create', Lote::class),
             'granjas' => $this->seccion === 'granjas' ? $this->granjasQuery()->paginate(15) : null,
             'galpones' => $this->seccion === 'galpones' ? $this->galponesQuery()->paginate(15) : null,
@@ -380,11 +555,73 @@ class Index extends Component
             'granjasOptions' => $granjasOptions,
             'galponesOptions' => $galponesOptions,
             'galponEstadoOptions' => GalponEstado::options(),
-            'loteEstadoOptions' => collect(LoteEstado::cases())
-                ->mapWithKeys(fn (LoteEstado $estado): array => [$estado->value => $estado->label()])
-                ->all(),
+            'loteEstadoOptions' => LoteEstado::options(),
+            'loteTransicionEstadoOptions' => $this->loteTransicionEstadoOptions(),
             'tipoHuevoOptions' => TipoHuevo::optionsUi(),
+            'granjaActivaOptions' => [
+                '1' => 'Activas',
+                '0' => 'Inactivas',
+            ],
+            'filtrosActivos' => $this->filtrosActivosEnSeccion(),
+            'emptyListadoMensaje' => $this->emptyListadoMensaje(),
+            'fichaGalpon' => $fichaGalpon,
+            'fichaLote' => $fichaLote,
         ]);
+    }
+
+    public function filtrosActivosEnSeccion(): bool
+    {
+        return match ($this->seccion) {
+            'granjas' => $this->busqueda !== '' || $this->filtroGranjaActiva !== '',
+            'galpones' => $this->busqueda !== ''
+                || $this->filtroGranjaId !== ''
+                || $this->filtroGalponEstado !== '',
+            'lotes' => $this->busqueda !== ''
+                || $this->filtroGranjaId !== ''
+                || $this->filtroGalponId !== ''
+                || $this->filtroLoteEstado !== ''
+                || $this->filtroLoteTipo !== '',
+            default => false,
+        };
+    }
+
+    public function emptyListadoMensaje(): string
+    {
+        if ($this->filtrosActivosEnSeccion()) {
+            return 'No hay resultados con los filtros actuales. Probá ampliar la búsqueda o limpiar filtros.';
+        }
+
+        return match ($this->seccion) {
+            'granjas' => 'Registrá la primera granja de tu empresa con su DICOSE.',
+            'galpones' => 'Creá un galpón dentro de una granja activa.',
+            'lotes' => 'Registrá un lote en un galpón disponible.',
+            default => 'No hay registros para mostrar.',
+        };
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function loteTransicionEstadoOptions(): array
+    {
+        if ($this->editingLoteId === null) {
+            return [];
+        }
+
+        $actor = auth()->user();
+
+        $lote = Lote::query()
+            ->when($actor->empresa_id !== null, fn ($q) => $q->where('empresa_id', $actor->empresa_id))
+            ->whereKey($this->editingLoteId)
+            ->first();
+
+        if ($lote === null) {
+            return [];
+        }
+
+        return collect($lote->estado->transicionesPermitidas($actor->rol->canReabrirLote()))
+            ->mapWithKeys(fn (LoteEstado $estado): array => [$estado->value => $estado->label()])
+            ->all();
     }
 
     private function granjasQuery()
@@ -403,6 +640,8 @@ class Index extends Component
                         ->orWhere('ubicacion', 'ilike', $term);
                 });
             })
+            ->when($this->filtroGranjaActiva === '1', fn ($q) => $q->where('activa', true))
+            ->when($this->filtroGranjaActiva === '0', fn ($q) => $q->where('activa', false))
             ->orderBy('nombre');
     }
 
@@ -414,6 +653,7 @@ class Index extends Component
             ->with('granja')
             ->when($actor->empresa_id !== null, fn ($q) => $q->where('empresa_id', $actor->empresa_id))
             ->when($this->filtroGranjaId !== '', fn ($q) => $q->where('granja_id', (int) $this->filtroGranjaId))
+            ->when($this->filtroGalponEstado !== '', fn ($q) => $q->where('estado', $this->filtroGalponEstado))
             ->when($this->busqueda !== '', function ($query): void {
                 $term = '%'.$this->busqueda.'%';
                 $query->where(function ($builder) use ($term): void {
@@ -436,6 +676,8 @@ class Index extends Component
             ->when($this->filtroGranjaId !== '', function ($query): void {
                 $query->whereHas('galpon', fn ($q) => $q->where('granja_id', (int) $this->filtroGranjaId));
             })
+            ->when($this->filtroLoteEstado !== '', fn ($q) => $q->where('estado', $this->filtroLoteEstado))
+            ->when($this->filtroLoteTipo !== '', fn ($q) => $q->where('tipo_huevo', $this->filtroLoteTipo))
             ->when($this->busqueda !== '', function ($query): void {
                 $term = '%'.$this->busqueda.'%';
                 $query->where(function ($builder) use ($term): void {
