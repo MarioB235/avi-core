@@ -199,7 +199,7 @@ php artisan db:seed --force
 | `environment variables could not be parsed` | Espacios sin comillas o `APP_KEY` duplicado | Corregir bloque `.env`; ver ejemplo arriba |
 | `corepack: command not found` | Cloud sin corepack en build | `npm install -g pnpm@10.32.1` en build commands |
 | Login sin perfiles tras deploy | BD vacía (solo migrate) | `php artisan db:seed --force` en Commands |
-| «La demo aún no está lista» o error de perfil | Migrate sin seed (empresa o usuarios faltantes) | `php artisan db:seed --force` en Commands; luego recargar `/login` |
+| Aviso «Faltan datos demo» o error de perfil | Migrate sin seed (empresa o usuarios faltantes) | `php artisan db:seed --force` en Commands; luego recargar `/login` |
 | Advertencia «overwriting injected variables» | Custom reemplaza valores de Cloud | Esperado; guardar y redeploy |
 
 ---

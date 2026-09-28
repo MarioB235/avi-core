@@ -101,7 +101,7 @@ return [
     |
     | AVICORE_DEMO_LOGIN=true: selector Perfil en /login (sin credenciales).
     | Cada perfil usa un usuario demo fijo (role_documentos); no se muta el rol en BD.
-    | Solo funciona si existe empresa demo (empresa_codigo, seed AvicoreAuthSeeder).
+    | El selector aparece con el flag (no en production); el ingreso requiere empresa demo y usuarios del seed.
     | En APP_ENV=production el selector queda deshabilitado siempre (DemoLoginService).
     | Desactivar (false) antes de go-live con clientes reales.
     |

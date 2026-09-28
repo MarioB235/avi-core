@@ -45,18 +45,18 @@ class DemoLoginServiceTest extends TestCase
         $this->assertFalse(app(DemoLoginService::class)->isEnabled());
     }
 
-    public function test_is_disabled_when_demo_empresa_is_missing(): void
+    public function test_setup_is_pending_when_demo_empresa_is_missing(): void
     {
         config(['avicore.demo_login.enabled_flag' => true]);
         $this->app['env'] = 'staging';
 
         $service = app(DemoLoginService::class);
 
-        $this->assertFalse($service->isEnabled());
+        $this->assertTrue($service->isEnabled());
         $this->assertTrue($service->isRequestedButUnavailable());
     }
 
-    public function test_is_disabled_when_demo_users_are_missing(): void
+    public function test_setup_is_pending_when_demo_users_are_missing(): void
     {
         Empresa::factory()->create(['codigo' => 'DEMO']);
         config(['avicore.demo_login.enabled_flag' => true]);
@@ -64,11 +64,11 @@ class DemoLoginServiceTest extends TestCase
 
         $service = app(DemoLoginService::class);
 
-        $this->assertFalse($service->isEnabled());
+        $this->assertTrue($service->isEnabled());
         $this->assertTrue($service->isRequestedButUnavailable());
     }
 
-    public function test_is_disabled_when_partial_seed_users_exist(): void
+    public function test_setup_is_pending_when_partial_seed_users_exist(): void
     {
         $this->seed(DatabaseSeeder::class);
         User::query()->where('documento', '11111111')->delete();
@@ -77,7 +77,7 @@ class DemoLoginServiceTest extends TestCase
 
         $service = app(DemoLoginService::class);
 
-        $this->assertFalse($service->isEnabled());
+        $this->assertTrue($service->isEnabled());
         $this->assertTrue($service->isRequestedButUnavailable());
     }
 
@@ -115,7 +115,8 @@ class DemoLoginServiceTest extends TestCase
             $this->fail('Expected ValidationException');
         } catch (ValidationException $exception) {
             $this->assertArrayHasKey('demoRole', $exception->errors());
-            $this->assertStringContainsString('demo aún no está lista', strtolower($exception->errors()['demoRole'][0]));
+            $this->assertStringContainsString('faltan datos demo', strtolower($exception->errors()['demoRole'][0]));
+            $this->assertStringContainsString('migrate --seed', $exception->errors()['demoRole'][0]);
         }
     }
 

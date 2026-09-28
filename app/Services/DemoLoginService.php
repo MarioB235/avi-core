@@ -9,30 +9,26 @@ use Illuminate\Validation\ValidationException;
 
 class DemoLoginService
 {
+    public const MESSAGE_DEMO_SEED_MISSING = 'Faltan datos demo en la base. Ejecutá php artisan migrate --seed e intentá de nuevo con el perfil elegido.';
+
+    /**
+     * Modo selector demo solicitado (flag activo y no production). No implica que el seed esté completo.
+     */
     public function isEnabled(): bool
     {
         if (app()->environment('production')) {
             return false;
         }
 
-        if (! (bool) config('avicore.demo_login.enabled_flag', false)) {
-            return false;
-        }
-
-        return $this->demoLoginReady();
+        return (bool) config('avicore.demo_login.enabled_flag', false);
     }
 
+    /**
+     * Flag demo activo pero falta empresa DEMO o algún usuario de role_documentos en BD.
+     */
     public function isRequestedButUnavailable(): bool
     {
-        if (app()->environment('production')) {
-            return false;
-        }
-
-        if (! (bool) config('avicore.demo_login.enabled_flag', false)) {
-            return false;
-        }
-
-        return ! $this->demoLoginReady();
+        return $this->isEnabled() && ! $this->demoLoginReady();
     }
 
     public function resolveUser(string $roleValue): User
@@ -61,7 +57,7 @@ class DemoLoginService
 
         if ($user === null) {
             throw ValidationException::withMessages([
-                'demoRole' => 'No pudimos ingresar con ese perfil. La demo aún no está lista; contactá al equipo de AviCore.',
+                'demoRole' => self::MESSAGE_DEMO_SEED_MISSING,
             ]);
         }
 

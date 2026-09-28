@@ -1,7 +1,7 @@
 <p class="page-meta">Desarrollo · Contrato</p>
 <h1>Contexto del proyecto AviCore</h1>
 <p class="page-updated">
-  Corte: <time datetime="2026-09-26">26 sep 2026</time> ·
+  Corte: <time datetime="2026-09-28">28 sep 2026</time> ·
   <span class="page-owner">Responsable: Arquitectura</span>
 </p>
 <p class="lead">
@@ -70,6 +70,18 @@
 5. Action/Service  6. Permisos  7. Validaciones  8. Auditoría/eventos si aplica
 9. Probar PC y móvil  10. Actualizar reference del skill dueño si cambió contrato</code></pre>
 
+<h2 id="acceso-mvp">Acceso en desarrollo (<code>/login</code>)</h2>
+<p>
+  Con <code>AVICORE_DEMO_LOGIN=true</code> fuera de <code>production</code>: solo selector <strong>Perfil</strong> (sin documento ni contraseña en pantalla).
+  El ingreso usa usuarios demo del seed; si falta empresa <code>DEMO</code> o algún usuario de <code>role_documentos</code>, <code>/login</code> muestra aviso y el envío falla en <code>demoRole</code> con el mismo texto (<code>DemoLoginService::MESSAGE_DEMO_SEED_MISSING</code>).
+  Primera vez: <code>php artisan migrate --seed</code>. Con flag en <code>false</code> o en producción: login normal documento + contraseña.
+</p>
+<p>
+  Contrato agente: <code>avicore-datos-demo/references/demo.md</code> § 4 ·
+  <code>avicore-ui/references/pantallas-flujos.md</code> § Login ·
+  <code>avicore-negocio/references/reglas.md</code> §13 · arranque <code>arranque-local.md</code>.
+</p>
+
 <h2 id="comandos">Comandos locales</h2>
 <p>Ver <code>avicore-contexto/references/arranque-local.md</code>. Atajo: <code>composer dev</code> → <strong>http://localhost:8000</strong></p>
 <p>Portal documental: <code>pnpm run portal:dev</code> → <strong>http://127.0.0.1:5500/</strong></p>
@@ -103,6 +115,7 @@
     <tr><td>Tabla, campo, FK</td><td><code>avicore-modelo-datos/references/esquema-bd.md</code></td></tr>
     <tr><td>Regla de negocio</td><td><code>avicore-negocio/references/reglas.md</code></td></tr>
     <tr><td>Pantalla o flujo</td><td><code>avicore-ui/references/pantallas-flujos.md</code></td></tr>
+    <tr><td>Login demo / datos seed</td><td><code>avicore-datos-demo/references/demo.md</code> (+ § Login en <code>pantallas-flujos.md</code>, §13 en <code>reglas.md</code>)</td></tr>
     <tr><td>Permiso por rol</td><td><code>avicore-negocio/references/permisos.md</code></td></tr>
     <tr><td>Token / componente UI</td><td><code>avicore-design-system/references/</code></td></tr>
     <tr><td>PWA</td><td><code>avicore-pwa/references/pwa.md</code></td></tr>
