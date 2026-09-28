@@ -155,6 +155,86 @@
 
 ---
 
+## 8.5 Idempotencia de capturas (CAP-07)
+
+1. Cada intención de guardado (apertura del diálogo en hub **Cargar**) genera UUID con `IdempotenciaCaptura::generarClave()`.
+2. Las Actions de captura delegan en `IdempotenciaCaptura::resolverRegistroOperativo` o `resolverVacunacion`: buscan resultado persistido por `empresa_id` + clave (+ `tipo` en registros operativos) antes de insertar; ante carrera concurrente recuperan el registro existente por violación de índice único.
+3. Reintento con la **misma** clave (doble toque, timeout de red) devuelve el registro ya guardado — una sola operación persistida.
+4. **Nueva** apertura del diálogo genera clave distinta aunque la cantidad sea igual — varias cargas válidas el mismo día siguen permitidas.
+5. Clave vacía o solo espacios se trata como ausente (sin idempotencia); la UI operario siempre envía clave.
+6. Alcance transversal: huevos, muertes, descarte, alimento (`registros_operativos`) y vacunación (`vacunaciones`). Tests: `OperarioCargaIdempotenciaCap07Test`.
+
+---
+
+## 8.6 Revalidación bajo lock (CAP-08)
+
+1. Toda mutación crítica de captura usa `GalponValidacion::bloquearParaMutacion()` dentro de transacción antes de persistir.
+2. Tras el lock se revalida disponibilidad (`revalidarParaCargaBajoLock`); producción (huevos/muertes/descarte) exige lote activo; alimento no.
+3. Muertes y descarte comparan `aves_actuales` **después** del lock, no con modelo en memoria.
+4. Vacunación bloquea también el lote y rechaza si fue cerrado concurrentemente.
+5. Validación previa en Livewire/Action sigue siendo fast-fail; el lock evita carreras con inactivación, mantenimiento o cierre de lote. Tests: `OperarioCargaEstadoBajoLockCap08Test`.
+
+---
+
+## 8.7 Red y respuesta perdida (CAP-09)
+
+1. Los formularios de captura en hub **Cargar** usan `ejecutarEnvioCarga`: validación de negocio conserva el diálogo; fallo de red/servidor muestra aviso sin cerrar ni resetear datos.
+2. Estados visibles: **Guardando…** (`wire:loading`), **error de envío** (`cargaEnvioError` + botón «Reintentar»), **confirmado** (snackbar de éxito y cierre solo tras persistir en servidor).
+3. El reintento reutiliza la misma `idempotencia_clave` hasta éxito o cierre manual del diálogo (CAP-07).
+4. Errores de validación no muestran banner de red. Tests: `OperarioCargaEnvioRedCap09Test`.
+
+---
+
+## 8.8 Cero confirmado y omisión (CAP-10, D03)
+
+1. Huevos, muertes y descarte de aves admiten **confirmación explícita de cero** (`cero_confirmado=true`) sin implicar cierre diario obligatorio.
+2. **Omisión** = sin registro activo del tipo hoy; **cero confirmado** = registro con bandera y cantidades en 0; **registrado** = suma del día &gt; 0. Resolución: `CapturaCeroEstado::resolverEstadoDia`.
+3. Alimento **excluido**: no registrar alimento no implica falta de alimentación ni admite cero confirmado en MVP.
+4. Cero en muertes/descarte **no decrementa** `aves_actuales`; anular ese registro tampoco restaura aves (cantidad 0).
+5. UI operario: botón «Confirmar 0 hoy» en formularios de captura; home distingue «Sin registro hoy» vs «0 confirmado hoy»; historial muestra «0 … (confirmado)» en detalle. Tests: `CapturaCeroEstadoTest`, `OperarioCargaCeroConfirmadoCap10Test` (Actions + Livewire huevos/muertes/descarte), `OperarioHistorialTest`.
+
+---
+
+## 8.9 Día operativo y hora de corte (CAP-11)
+
+1. El **día lógico** de capturas usa `configuracion.zona_horaria` de la empresa (default `America/Montevideo`); corte a **medianoche local** de esa zona.
+2. Historial (`enFecha`), totales (`delDia`), anulación del operario, pulso admin y gráfico **Postura de la semana** (`AdminResumenService::posturaSemanal`) comparten el mismo rango UTC derivado (`DiaOperativoEmpresa`).
+3. `created_at` sigue siendo timestamp real (UTC en BD); el filtro interpreta el instante en la zona de la empresa.
+4. Filtro de historial: fecha máxima = día lógico actual de la empresa, no `today()` del servidor.
+5. Postura semanal: últimos **7 días lógicos** de la empresa (incluido hoy), no `DATE(created_at)` en calendario del servidor.
+6. Tests: `DiaOperativoEmpresaTest`, `OperarioDiaOperativoCap11Test`, `AdminResumenServiceTest` (postura semanal TZ).
+
+---
+
+## 8.10 Perfil y ayuda (CAP-12)
+
+1. Todo usuario autenticado edita **solo** nombre y correo (`UpdateProfileAction`); cambio voluntario de contraseña en pestaña dedicada.
+2. Documento, rol y empresa son **solo lectura** en perfil; no hay campos editables ni persistencia de esos atributos desde autogestión.
+3. Pestaña **Ayuda** (`?seccion=ayuda`) muestra contacto real de soporte vía `SupportContactService` / `config/avicore.php` (WhatsApp y/o correo).
+4. Misma vista compartida en `/operario/perfil` y `/perfil` (admin). Tests: `OperarioPerfilTest`, `OperarioPerfilCap12Test`.
+
+---
+
+## 8.11 Formularios obsoletos (CAP-13)
+
+1. Al abrir un diálogo de captura en hub **Cargar**, se registra contexto (`ultimo_galpon_id` + rol del usuario).
+2. Si cambia el galpón seleccionado o el galpón deja de estar disponible mientras hay diálogo abierto, se **cierra y resetea** el formulario y se muestra aviso (snackbar warning).
+3. Si cambia el rol o se pierde permiso (p. ej. lote sin `canCreateLote()`), mismo cierre + reset.
+4. Antes de persistir, `resolveGalponParaGuardar` / `abortarSiCapturaObsoleta` bloquea guardado con contexto obsoleto (defensa en profundidad).
+5. Tests: `OperarioFormulariosObsoletosCap13Test`, regresión `OperarioGalponSelectorTest`.
+
+---
+
+## 8.12 Recorrido móvil operario (CAP-14)
+
+1. Camino feliz verificado de punta a punta: **login** → elegir **galpón** → **capturas** (hub Cargar) → **historial** → **anular** registro propio del día con motivo obligatorio.
+2. Shell móvil operario (`operario-mobile`): dock inferior, `viewport-fit=cover`, navegación `wire:navigate` entre Inicio/Cargar/Historial.
+3. Formularios de captura con teclado numérico (`inputmode="numeric"`) y feedback snackbar tras guardar o anular.
+4. Sin cola offline ni asistencia técnica en el flujo MVP; red perdida cubierta por CAP-09 en cada formulario.
+5. Tests: `OperarioRecorridoMovilCap14Test`, regresión `OperarioBottomNavTest` y `OperarioHistorialTest`.
+
+---
+
 ## 9. Anulación
 
 1. Se usa “anular”, no eliminar.

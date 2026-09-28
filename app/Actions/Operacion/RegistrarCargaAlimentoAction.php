@@ -10,7 +10,8 @@ use App\Models\User;
 use App\Services\EmpresaRelationalGuard;
 use App\Support\AlimentoValidacion;
 use App\Support\GalponValidacion;
-use Illuminate\Database\QueryException;
+use App\Support\IdempotenciaCaptura;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class RegistrarCargaAlimentoAction
@@ -32,64 +33,25 @@ class RegistrarCargaAlimentoAction
 
         AlimentoValidacion::assertRango($alimentoKg);
 
-        $clave = $this->normalizarClaveIdempotencia($idempotenciaClave);
+        return IdempotenciaCaptura::resolverRegistroOperativo(
+            $user,
+            $idempotenciaClave,
+            RegistroOperativoTipo::Alimento,
+            fn (?string $clave) => DB::transaction(function () use ($user, $galpon, $alimentoKg, $observacion, $clave): RegistroOperativo {
+                $galponBloqueado = GalponValidacion::bloquearParaMutacion($galpon->id);
+                GalponValidacion::revalidarParaCargaBajoLock($galponBloqueado);
 
-        if ($clave !== null) {
-            $existente = $this->buscarPorClaveIdempotencia($user, $clave);
-
-            if ($existente !== null) {
-                return $existente;
-            }
-        }
-
-        try {
-            return RegistroOperativo::query()->create([
-                'empresa_id' => $user->empresa_id,
-                'galpon_id' => $galpon->id,
-                'user_id' => $user->id,
-                'tipo' => RegistroOperativoTipo::Alimento,
-                'idempotencia_clave' => $clave,
-                'alimento_kg' => round($alimentoKg, 2),
-                'observacion' => $observacion !== '' ? $observacion : null,
-                'estado' => RegistroOperativoEstado::Activo,
-            ]);
-        } catch (QueryException $exception) {
-            if ($clave !== null && $this->esViolacionUnicaIdempotencia($exception)) {
-                $existente = $this->buscarPorClaveIdempotencia($user, $clave);
-
-                if ($existente !== null) {
-                    return $existente;
-                }
-            }
-
-            throw $exception;
-        }
-    }
-
-    private function normalizarClaveIdempotencia(?string $clave): ?string
-    {
-        $clave = $clave !== null ? trim($clave) : '';
-
-        return $clave !== '' ? $clave : null;
-    }
-
-    private function buscarPorClaveIdempotencia(User $user, string $clave): ?RegistroOperativo
-    {
-        if ($user->empresa_id === null) {
-            return null;
-        }
-
-        return RegistroOperativo::query()
-            ->forEmpresa((int) $user->empresa_id)
-            ->where('idempotencia_clave', $clave)
-            ->where('tipo', RegistroOperativoTipo::Alimento)
-            ->first();
-    }
-
-    private function esViolacionUnicaIdempotencia(QueryException $exception): bool
-    {
-        $sqlState = $exception->errorInfo[0] ?? '';
-
-        return in_array($sqlState, ['23000', '23505'], true);
+                return RegistroOperativo::query()->create([
+                    'empresa_id' => $user->empresa_id,
+                    'galpon_id' => $galponBloqueado->id,
+                    'user_id' => $user->id,
+                    'tipo' => RegistroOperativoTipo::Alimento,
+                    'idempotencia_clave' => $clave,
+                    'alimento_kg' => round($alimentoKg, 2),
+                    'observacion' => $observacion !== '' ? $observacion : null,
+                    'estado' => RegistroOperativoEstado::Activo,
+                ]);
+            }),
+        );
     }
 }

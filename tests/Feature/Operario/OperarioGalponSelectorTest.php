@@ -79,7 +79,7 @@ class OperarioGalponSelectorTest extends TestCase
         $this->assertSame(1, RegistroOperativo::query()->where('galpon_id', $galponB->id)->count());
     }
 
-    public function test_guardar_with_open_dialog_after_changing_galpon_uses_new_galpon(): void
+    public function test_changing_galpon_with_open_dialog_closes_form_without_cross_save(): void
     {
         [$operario, $galponA, $galponB] = $this->createOperarioConDosGalpones();
         $operario->forceFill(['ultimo_galpon_id' => $galponA->id])->save();
@@ -88,12 +88,13 @@ class OperarioGalponSelectorTest extends TestCase
             ->test(CargarHub::class)
             ->call('abrirFormularioHuevos')
             ->assertSet('dialogHuevosAbierto', true)
-            ->call('seleccionarGalpon', $galponB->id)
             ->set('huevos', '200')
-            ->set('huevosDescarte', '0')
+            ->call('seleccionarGalpon', $galponB->id)
+            ->assertSet('dialogHuevosAbierto', false)
+            ->assertSet('huevos', '')
             ->call('guardarHuevos');
 
-        $this->assertDatabaseHas('registros_operativos', [
+        $this->assertDatabaseMissing('registros_operativos', [
             'galpon_id' => $galponB->id,
             'huevos' => 200,
         ]);

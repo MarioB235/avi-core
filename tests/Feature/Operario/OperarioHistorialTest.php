@@ -18,8 +18,10 @@ use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\User;
 use App\Models\Vacunacion;
+use App\Support\DiaOperativoEmpresa;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -37,7 +39,7 @@ class OperarioHistorialTest extends TestCase
             ->create([
                 'tipo' => RegistroOperativoTipo::Huevos,
                 'huevos' => 900,
-                'created_at' => now()->subDay()->setTime(9, 15),
+                'created_at' => $this->instanteDiaOperativoAyer($operario, 9, 15),
             ]);
 
         RegistroOperativo::factory()
@@ -46,7 +48,7 @@ class OperarioHistorialTest extends TestCase
                 'tipo' => RegistroOperativoTipo::Muertes,
                 'huevos' => null,
                 'muertes' => 3,
-                'created_at' => now()->setTime(11, 30),
+                'created_at' => $this->instanteDiaOperativoHoy($operario, 11, 30),
             ]);
 
         Livewire::actingAs($operario)
@@ -76,14 +78,14 @@ class OperarioHistorialTest extends TestCase
             ->create([
                 'tipo' => RegistroOperativoTipo::Huevos,
                 'huevos' => 600,
-                'created_at' => now()->subMinutes(30),
+                'created_at' => $this->instanteDiaOperativoHoy($operario, 11, 45),
             ]);
 
         Vacunacion::factory()
             ->forLote($lote, $operario)
             ->create([
                 'vacuna' => VacunaTipo::Gumboro,
-                'created_at' => now(),
+                'created_at' => $this->instanteDiaOperativoHoy($operario, 12, 0),
             ]);
 
         Livewire::actingAs($operario)
@@ -99,14 +101,14 @@ class OperarioHistorialTest extends TestCase
     {
         [$operario, $galpon] = $this->createOperarioConGalpon();
 
-        $ayer = now()->subDay();
+        $ayer = DiaOperativoEmpresa::ayerParaEmpresa((int) $operario->empresa_id)->fechaLogica;
 
         RegistroOperativo::factory()
             ->forGalponAndUser($galpon, $operario)
             ->create([
                 'tipo' => RegistroOperativoTipo::Huevos,
                 'huevos' => 500,
-                'created_at' => $ayer->copy()->setTime(8, 0),
+                'created_at' => $this->instanteDiaOperativoAyer($operario, 8, 0),
             ]);
 
         RegistroOperativo::factory()
@@ -115,7 +117,7 @@ class OperarioHistorialTest extends TestCase
                 'tipo' => RegistroOperativoTipo::Muertes,
                 'huevos' => null,
                 'muertes' => 2,
-                'created_at' => now()->setTime(10, 0),
+                'created_at' => $this->instanteDiaOperativoHoy($operario, 10, 0),
             ]);
 
         Livewire::actingAs($operario)
@@ -245,7 +247,7 @@ class OperarioHistorialTest extends TestCase
                 'tipo' => RegistroOperativoTipo::Huevos,
                 'huevos' => 750,
                 'huevos_descarte' => 5,
-                'created_at' => now()->setTime(7, 30),
+                'created_at' => $this->instanteDiaOperativoHoy($operario, 7, 30),
             ]);
 
         Livewire::actingAs($operario)
@@ -255,7 +257,26 @@ class OperarioHistorialTest extends TestCase
             ->assertSee('Detalle del registro', false)
             ->assertSee('750 aptos · 5 descarte', false)
             ->assertSee('Fecha y hora', false)
-            ->assertSee('07:30', false);
+            ->assertSee($registro->fresh()->created_at->format('H:i'), false);
+    }
+
+    public function test_historial_detail_shows_cero_confirmado_summary(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+
+        $registro = RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->ceroConfirmado()
+            ->create([
+                'tipo' => RegistroOperativoTipo::Muertes,
+                'huevos' => null,
+                'created_at' => $this->instanteDiaOperativoHoy($operario, 8, 0),
+            ]);
+
+        Livewire::actingAs($operario)
+            ->test(Historial::class)
+            ->call('abrirDetalle', 'registro-'.$registro->id)
+            ->assertSee('0 muertes (confirmado)', false);
     }
 
     public function test_historial_anula_registro_propio_del_dia_con_motivo(): void
@@ -268,7 +289,7 @@ class OperarioHistorialTest extends TestCase
                 'tipo' => RegistroOperativoTipo::Muertes,
                 'huevos' => null,
                 'muertes' => 4,
-                'created_at' => now()->setTime(11, 0),
+                'created_at' => $this->instanteDiaOperativoHoy($operario, 11, 0),
             ]);
 
         $galpon->update(['aves_actuales' => 496]);
@@ -304,7 +325,7 @@ class OperarioHistorialTest extends TestCase
             ->create([
                 'tipo' => RegistroOperativoTipo::Huevos,
                 'huevos' => 400,
-                'created_at' => now()->subDay()->setTime(8, 0),
+                'created_at' => $this->instanteDiaOperativoAyer($operario, 8, 0),
             ]);
 
         Livewire::actingAs($operario)
@@ -345,7 +366,7 @@ class OperarioHistorialTest extends TestCase
             ->forLote($lote, $operario)
             ->create([
                 'vacuna' => VacunaTipo::Newcastle,
-                'created_at' => now()->setTime(9, 45),
+                'created_at' => $this->instanteDiaOperativoHoy($operario, 9, 45),
             ]);
 
         Livewire::actingAs($operario)
@@ -373,7 +394,7 @@ class OperarioHistorialTest extends TestCase
                 'tipo' => RegistroOperativoTipo::Descarte,
                 'huevos' => null,
                 'descarte_aves' => 6,
-                'created_at' => now()->setTime(10, 15),
+                'created_at' => $this->instanteDiaOperativoHoy($operario, 10, 15),
             ]);
 
         $galpon->update(['aves_actuales' => 494]);
@@ -440,7 +461,7 @@ class OperarioHistorialTest extends TestCase
                 'tipo' => RegistroOperativoTipo::Muertes,
                 'huevos' => null,
                 'muertes' => 3,
-                'created_at' => now()->setTime(14, 0),
+                'created_at' => $this->instanteDiaOperativoHoy($operario, 14, 0),
             ]);
 
         $galpon->update(['aves_actuales' => 997]);
@@ -529,5 +550,23 @@ class OperarioHistorialTest extends TestCase
         ]);
 
         return [$operario, $galpon];
+    }
+
+    private function instanteDiaOperativoHoy(User $operario, int $hour, int $minute = 0): Carbon
+    {
+        return DiaOperativoEmpresa::hoyParaEmpresa((int) $operario->empresa_id)
+            ->fechaLogica
+            ->copy()
+            ->setTime($hour, $minute)
+            ->utc();
+    }
+
+    private function instanteDiaOperativoAyer(User $operario, int $hour, int $minute = 0): Carbon
+    {
+        return DiaOperativoEmpresa::ayerParaEmpresa((int) $operario->empresa_id)
+            ->fechaLogica
+            ->copy()
+            ->setTime($hour, $minute)
+            ->utc();
     }
 }

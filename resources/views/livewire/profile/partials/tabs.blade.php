@@ -32,4 +32,18 @@
     >
         Contraseña
     </a>
+    <a
+        href="{{ $profileRouteBase }}?seccion=ayuda"
+        wire:navigate
+        role="tab"
+        id="perfil-tab-ayuda"
+        aria-controls="perfil-panel-ayuda"
+        aria-selected="{{ $seccion === 'ayuda' ? 'true' : 'false' }}"
+        @class([
+            'avicore-operario-perfil__tab',
+            'avicore-operario-perfil__tab--active' => $seccion === 'ayuda',
+        ])
+    >
+        Ayuda
+    </a>
 </nav>

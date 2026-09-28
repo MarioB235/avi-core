@@ -11,8 +11,9 @@ use App\Models\User;
 use App\Models\Vacunacion;
 use App\Services\EmpresaRelationalGuard;
 use App\Support\GalponValidacion;
+use App\Support\IdempotenciaCaptura;
 use App\Support\VacunacionValidacion;
-use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
@@ -43,63 +44,37 @@ class RegistrarVacunacionAction
             ]);
         }
 
-        $clave = $this->normalizarClaveIdempotencia($idempotenciaClave);
+        return IdempotenciaCaptura::resolverVacunacion(
+            $user,
+            $idempotenciaClave,
+            fn (?string $clave) => DB::transaction(function () use ($user, $galpon, $lote, $vacuna, $observacion, $clave): Vacunacion {
+                $galponBloqueado = GalponValidacion::bloquearParaMutacion($galpon->id);
+                GalponValidacion::revalidarParaCargaBajoLock($galponBloqueado);
 
-        if ($clave !== null) {
-            $existente = $this->buscarPorClaveIdempotencia($user, $clave);
+                $loteBloqueado = Lote::query()
+                    ->whereKey($lote->id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
 
-            if ($existente !== null) {
-                return $existente;
-            }
-        }
+                $this->relations->assertLoteBelongsToGalpon($loteBloqueado, $galponBloqueado);
 
-        try {
-            return Vacunacion::query()->create([
-                'empresa_id' => $user->empresa_id,
-                'galpon_id' => $galpon->id,
-                'lote_id' => $lote->id,
-                'user_id' => $user->id,
-                'vacuna' => $vacuna,
-                'idempotencia_clave' => $clave,
-                'observacion' => VacunacionValidacion::normalizarObservacion($observacion),
-                'estado' => RegistroOperativoEstado::Activo,
-            ]);
-        } catch (QueryException $exception) {
-            if ($clave !== null && $this->esViolacionUnicaIdempotencia($exception)) {
-                $existente = $this->buscarPorClaveIdempotencia($user, $clave);
-
-                if ($existente !== null) {
-                    return $existente;
+                if (! in_array($loteBloqueado->estado, [LoteEstado::Activo, LoteEstado::EnProduccion], true)) {
+                    throw ValidationException::withMessages([
+                        'lote_id' => 'El lote no admite vacunación.',
+                    ]);
                 }
-            }
 
-            throw $exception;
-        }
-    }
-
-    private function normalizarClaveIdempotencia(?string $clave): ?string
-    {
-        $clave = $clave !== null ? trim($clave) : '';
-
-        return $clave !== '' ? $clave : null;
-    }
-
-    private function buscarPorClaveIdempotencia(User $user, string $clave): ?Vacunacion
-    {
-        if ($user->empresa_id === null) {
-            return null;
-        }
-
-        return Vacunacion::query()
-            ->forEmpresa((int) $user->empresa_id)
-            ->where('idempotencia_clave', $clave)
-            ->first();
-    }
-
-    private function esViolacionUnicaIdempotencia(QueryException $exception): bool
-    {
-        $sqlState = $exception->errorInfo[0] ?? '';
-
-        return in_array($sqlState, ['23000', '23505'], true);
+                return Vacunacion::query()->create([
+                    'empresa_id' => $user->empresa_id,
+                    'galpon_id' => $galponBloqueado->id,
+                    'lote_id' => $loteBloqueado->id,
+                    'user_id' => $user->id,
+                    'vacuna' => $vacuna,
+                    'idempotencia_clave' => $clave,
+                    'observacion' => VacunacionValidacion::normalizarObservacion($observacion),
+                    'estado' => RegistroOperativoEstado::Activo,
+                ]);
+            }),
+        );
     }
 }

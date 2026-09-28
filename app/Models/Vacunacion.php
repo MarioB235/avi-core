@@ -5,11 +5,13 @@ namespace App\Models;
 use App\Enums\RegistroOperativoEstado;
 use App\Enums\VacunaTipo;
 use App\Models\Concerns\BelongsToEmpresa;
+use App\Support\DiaOperativoEmpresa;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 #[Fillable([
     'empresa_id',
@@ -69,18 +71,18 @@ class Vacunacion extends Model
         return $query->where('estado', RegistroOperativoEstado::Activo->value);
     }
 
-    public function scopeDelDia(Builder $query): Builder
+    public function scopeDelDia(Builder $query, int $empresaId, ?Carbon $referencia = null): Builder
     {
-        return $query->whereDate('created_at', today());
+        return DiaOperativoEmpresa::forEmpresa($empresaId, $referencia)->aplicarAlQuery($query);
     }
 
-    public function scopeEnFecha(Builder $query, ?string $fecha): Builder
+    public function scopeEnFecha(Builder $query, ?string $fecha, int $empresaId): Builder
     {
         if ($fecha === null || $fecha === '') {
             return $query;
         }
 
-        return $query->whereDate('created_at', $fecha);
+        return DiaOperativoEmpresa::enFechaParaEmpresa($empresaId, $fecha)->aplicarAlQuery($query);
     }
 
     public function cantidadResumen(): string

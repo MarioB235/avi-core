@@ -62,6 +62,8 @@
         </div>
     @endif
 
+    @include('livewire.operario.partials.carga-envio-feedback')
+
     <x-ui.button
         type="submit"
         class="w-full py-4 text-base"
@@ -69,7 +71,7 @@
         wire:target="guardarAlimento"
         :disabled="$kgIngresados < 0.01 || $excedeLimite"
     >
-        <span wire:loading.remove wire:target="guardarAlimento">Guardar entrega</span>
+        <span wire:loading.remove wire:target="guardarAlimento">{{ $cargaEnvioError ? 'Reintentar' : 'Guardar entrega' }}</span>
         <span wire:loading wire:target="guardarAlimento">Guardando…</span>
     </x-ui.button>
 </form>

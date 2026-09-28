@@ -24,6 +24,7 @@ class RegistroOperativoFactory extends Factory
             'galpon_id' => Galpon::factory(),
             'user_id' => User::factory(),
             'tipo' => RegistroOperativoTipo::Huevos,
+            'cero_confirmado' => false,
             'huevos' => null,
             'huevos_descarte' => null,
             'muertes' => null,
@@ -43,6 +44,17 @@ class RegistroOperativoFactory extends Factory
             'empresa_id' => $galpon->empresa_id,
             'galpon_id' => $galpon->id,
             'user_id' => $user->id,
+        ]);
+    }
+
+    public function ceroConfirmado(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'cero_confirmado' => true,
+            'huevos' => 0,
+            'huevos_descarte' => 0,
+            'muertes' => 0,
+            'descarte_aves' => 0,
         ]);
     }
 }

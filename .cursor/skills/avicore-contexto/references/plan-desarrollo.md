@@ -10,7 +10,7 @@
 | **2 — Seguridad** | **Parcial** | Login, cambio de clave, CRUD usuarios; falta revocación por request, enum Reparto y circuito soporte (plan SEG) |
 | **3 — Multiempresa / empresas** | **Parcial** | Contexto por sesión y policies; sin alta/suspensión admin plataforma (EMP) |
 | **4 — Estructura avícola** | **Parcial** | CRUD `/admin/estructura` + lotes operario; EST-01–10 (validación, transición, fichas, baja segura); MOV/cierre ciclo completo pendiente |
-| **5 — Operación móvil** | **Hecho MVP** | Hub Cargar completo, historial, anulación día, perfil, PWA online; idempotencia CAP-02–06; D03 offline/lote dedicado pendiente |
+| **5 — Operación móvil** | **Hecho MVP** | Hub Cargar completo, historial, anulación día, perfil, PWA online; idempotencia transversal CAP-07 (`IdempotenciaCaptura`); D03 offline/lote dedicado pendiente |
 | **6 — Dashboard / supervisión** | **Parcial** | Inicio y Resumen con datos reales; previews comercial/stock fuera de v1 (RES-01) |
 | **7 — Reportes** | **Pendiente** | Sin exportador; ver `avicore-reportes` |
 | **PWA** | **Hecho MVP** | Instalable; offline completo fuera de alcance — ver `pwa.md` |

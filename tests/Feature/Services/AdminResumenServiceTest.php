@@ -14,11 +14,19 @@ use App\Models\RegistroOperativo;
 use App\Models\User;
 use App\Services\AdminResumenService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class AdminResumenServiceTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function tearDown(): void
+    {
+        Carbon::setTestNow();
+
+        parent::tearDown();
+    }
 
     public function test_for_aggregates_kpis_for_company_galpones(): void
     {
@@ -117,6 +125,46 @@ class AdminResumenServiceTest extends TestCase
 
         $this->assertCount(7, $puntos);
         $this->assertSame(750, collect($puntos)->sum('value'));
+    }
+
+    public function test_postura_semanal_uses_logical_day_in_empresa_timezone(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-09-28 03:30:00', 'UTC'));
+
+        [$dueno, $galpon] = $this->duenoConGalponYLote();
+
+        $dueno->empresa?->forceFill([
+            'configuracion' => [
+                'zona_horaria' => 'America/Montevideo',
+                'unidades' => [
+                    'huevos_por_maple' => 30,
+                    'maples_por_cajon' => 12,
+                ],
+            ],
+        ])->save();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 111,
+                'created_at' => Carbon::parse('2026-09-28 02:30:00', 'UTC'),
+            ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 222,
+                'created_at' => Carbon::parse('2026-09-28 04:00:00', 'UTC'),
+            ]);
+
+        $puntos = app(AdminResumenService::class)->posturaSemanal($dueno);
+        $hoy = collect($puntos)->firstWhere('date', '2026-09-28');
+
+        $this->assertNotNull($hoy);
+        $this->assertSame(222, $hoy['value']);
+        $this->assertSame(111, collect($puntos)->firstWhere('date', '2026-09-27')['value'] ?? 0);
     }
 
     public function test_for_flags_mortality_alert_above_reference(): void

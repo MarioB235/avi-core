@@ -13,7 +13,7 @@ Flujo y plantilla usuario: mensajes 2 y 3 en `portal/contenido/desarrollo/planti
 **No modificar código.**
 
 1. Base: [`references/estandares-codigo.md`](references/estandares-codigo.md) + `references/` del skill dueño según alcance.
-2. Auditar solo archivos con `@rutas` al final del mensaje 2.
+2. Alcance por defecto: archivos con seguimiento git y cambios pendientes en la rama (`git status` + diff). Si el mensaje 2 trae `@rutas` al final, limitar a esas rutas.
 3. Si hay código de app, incluir tests relacionados en `tests/`.
 
 | Dimensión | Contraste principal |

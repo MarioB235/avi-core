@@ -318,13 +318,14 @@ Vista operativa para Dueño, Administrativo y Encargado: seguir producción del 
 - Hero `x-admin.page-hero`.
 - Filtro granja y galpón (`x-ui.select`; al cambiar granja se limpia galpón).
 - KPIs globales: huevos hoy, **descarte hoy**, muertes hoy, **alimento kg hoy**, aves actuales, alertas mortalidad.
-- Gráfico de línea «Postura de la semana» (`x-ui.line-chart`, huevos aptos últimos 7 días).
+- Gráfico de línea «Postura de la semana» (`x-ui.line-chart`, huevos aptos últimos **7 días lógicos** de la empresa — CAP-11, no calendario UTC del servidor).
 - Comparación por galpón: **tabla compacta** en `md+` (huevos, descarte, muertes, alimento kg, aves, mortalidad); **cards** en móvil (`< md`).
 - Servicio `AdminResumenService` (reutiliza `OperarioGalponResumenService`).
 
 ### Comportamiento
 
 - Sin galpones activos: empty state con enlace implícito a Estructura.
+- Postura semanal agrupa con `DiaOperativoEmpresa` + `delDia` (misma ventana que KPIs y pulso).
 - Operario redirigido fuera de `/admin/*`.
 
 ---
@@ -370,7 +371,7 @@ Permitir carga rápida desde celular.
 
 ### Perfil de cuenta (MVP)
 
-**Estado MVP (2026-08-15):** `/operario/perfil` (layout operario) y `/perfil` (layout admin) comparten **misma vista** (`x-operario.perfil-hero` + `avicore-operario-home-sheet`); el admin usa `avicore-home-nav` en el header (sin badge toolbar legacy). Pestañas con `wire:navigate` + query `?seccion=password` (sin morph parcial). Partials `tabs`, `datos-form`, `password-form`. Menú cuenta: **Editar datos** / **Cambiar contraseña** (misma navegación). `UpdateProfileAction` y `ChangePasswordAction` exigen `UserPolicy::updateProfile`.
+**Estado MVP (2026-08-15):** `/operario/perfil` (layout operario) y `/perfil` (layout admin) comparten **misma vista** (`x-operario.perfil-hero` + `avicore-operario-home-sheet`); el admin usa `avicore-home-nav` en el header (sin badge toolbar legacy). Pestañas con `wire:navigate` + query `?seccion=password|ayuda` (sin morph parcial). Partials `tabs`, `datos-form`, `password-form`, `ayuda-panel` (`x-support.contact-links`). Menú cuenta: **Editar datos** / **Cambiar contraseña** (misma navegación). `UpdateProfileAction` y `ChangePasswordAction` exigen `UserPolicy::updateProfile`.
 
 | Campo | Editable por el usuario |
 |-------|-------------------------|
@@ -415,7 +416,14 @@ Permitir elegir galpón de trabajo.
 - El sistema recuerda el último galpón seleccionado (`users.ultimo_galpon_id`).
 - Si el galpón recordado deja de estar disponible, la carga abre el selector en la pantalla actual (`selectorGalponAbierto`); deep links sin galpón → `/operario/cargar?abrir_galpon=1`. Flash `abrirSelectorGalpon` y `?abrir_galpon=1` los consume `ManagesGalponSelector::bootGalponSelector`.
 - Tras elegir galpón: snackbar «Galpón actualizado.» (`dispatch snackbar-show`).
-- **CAP-01:** `syncGalponSelector` en cada hydrate Livewire; chip muestra granja bajo el nombre del galpón; al guardar carga se revalida `ultimo_galpon_id` (cambio de galpón con diálogo abierto no persiste en el anterior).
+- **CAP-01:** `syncGalponSelector` en cada hydrate Livewire; chip muestra granja bajo el nombre del galpón; al guardar carga se revalida `ultimo_galpon_id`.
+- **CAP-13:** cambio de galpón o rol con diálogo abierto cierra y resetea el formulario (snackbar warning); evita datos cruzados y falsa confirmación.
+- **CAP-09:** fallo de red mantiene diálogo y datos; banner «No pudimos confirmar…» + botón «Reintentar» (misma `idempotencia_clave`); éxito solo tras persistir (snackbar + cierre).
+- **CAP-10:** huevos/muertes/descarte admiten «Confirmar 0 hoy» (`cero_confirmado`); home distingue «Sin registro hoy» vs «0 confirmado hoy»; alimento sin cero confirmado.
+- **CAP-11:** día lógico por `zona_horaria` de empresa (medianoche local); historial, totales, anulación y postura semanal admin usan `DiaOperativoEmpresa`.
+- **CAP-12:** perfil con datos propios + contraseña + pestaña Ayuda (contacto soporte); documento/rol/empresa solo lectura.
+- **CAP-13:** formularios de captura invalidados al cambiar galpón/rol/disponibilidad; `ManagesCapturaContexto` en `CargarHub`.
+- **CAP-14:** recorrido móvil login → galpón → capturas → historial → anular; verificado en `OperarioRecorridoMovilCap14Test`.
 
 ---
 

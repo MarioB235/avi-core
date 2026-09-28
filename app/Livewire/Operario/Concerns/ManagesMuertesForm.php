@@ -4,8 +4,7 @@ namespace App\Livewire\Operario\Concerns;
 
 use App\Actions\Operacion\RegistrarCargaMuertesAction;
 use App\Services\OperarioGalponService;
-use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
+use App\Support\IdempotenciaCaptura;
 
 trait ManagesMuertesForm
 {
@@ -25,6 +24,7 @@ trait ManagesMuertesForm
 
         $this->resetFormularioMuertes();
         $this->dialogMuertesAbierto = true;
+        $this->registrarContextoCapturaAlAbrirDialogo();
     }
 
     public function updatedDialogMuertesAbierto(bool $abierto): void
@@ -56,33 +56,50 @@ trait ManagesMuertesForm
             return;
         }
 
-        try {
-            $registrarCargaMuertes->execute(
+        $this->ejecutarEnvioCarga(
+            fn () => $registrarCargaMuertes->execute(
                 auth()->user(),
                 $galpon,
                 (int) $validated['muertes'],
                 null,
                 $this->muertesIdempotenciaClave,
-            );
-        } catch (ValidationException $exception) {
-            foreach ($exception->errors() as $field => $messages) {
-                $this->addError($field, $messages[0]);
-            }
-
-            return;
-        }
-
-        $this->finalizarGuardadoCarga(
+            ),
             'dialogMuertesAbierto',
             fn () => $this->resetFormularioMuertes(),
             'Muertes guardadas.',
         );
     }
 
+    public function confirmarCeroMuertes(
+        RegistrarCargaMuertesAction $registrarCargaMuertes,
+        OperarioGalponService $operarioGalponService,
+    ): void {
+        $galpon = $this->resolveGalponParaGuardar($operarioGalponService, 'dialogMuertesAbierto');
+
+        if ($galpon === null) {
+            return;
+        }
+
+        $this->ejecutarEnvioCarga(
+            fn () => $registrarCargaMuertes->execute(
+                auth()->user(),
+                $galpon,
+                0,
+                null,
+                $this->muertesIdempotenciaClave,
+                true,
+            ),
+            'dialogMuertesAbierto',
+            fn () => $this->resetFormularioMuertes(),
+            'Cero confirmado.',
+        );
+    }
+
     private function resetFormularioMuertes(): void
     {
         $this->reset(['muertes']);
-        $this->muertesIdempotenciaClave = (string) Str::uuid();
+        $this->muertesIdempotenciaClave = IdempotenciaCaptura::generarClave();
+        $this->limpiarEstadoEnvioCarga();
         $this->resetValidation();
     }
 }

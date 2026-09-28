@@ -5,6 +5,7 @@ namespace App\Policies\Concerns;
 use App\Enums\RegistroOperativoEstado;
 use App\Enums\UserRole;
 use App\Models\User;
+use App\Support\DiaOperativoEmpresa;
 use Illuminate\Support\Carbon;
 
 trait AuthorizesOperarioAnulacion
@@ -24,7 +25,7 @@ trait AuthorizesOperarioAnulacion
             return false;
         }
 
-        if (! $createdAt?->isToday()) {
+        if (! DiaOperativoEmpresa::esDiaOperativoActual($registroEmpresaId, $createdAt)) {
             return false;
         }
 

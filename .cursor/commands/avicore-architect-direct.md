@@ -102,7 +102,7 @@ Inferir alcance: `feature` | `fix` | `refactor` | `docs` | `style` | `chore` | `
 Plantillas usuario: `portal/contenido/desarrollo/mensajes-reutilizables.html`  
 **Catálogo y enrutamiento mensaje 1 (única tabla):** [`.cursor/skills/README.md`](../skills/README.md) — no duplicar la matriz aquí.
 
-**Cierre 2→5:** `@rutas` **solo al final del mensaje 2**.
+**Cierre 2→5:** diff git por defecto en mensaje 2; `@rutas` solo al final del mensaje 2 **opcional** (prioridad si se pegan).
 
 Elegir **un** skill principal según la intención del usuario (mapa en el README); combinar con skills vecinos si la tarea lo pide.
 
@@ -158,7 +158,7 @@ En **modo ejecutar plan:** actualizar `portal/planes/CHECKPOINT.md`, evidencia e
 
 ## Modo ejecutar plan
 
-Activar cuando el usuario pide continuar el plan maestro, reanudar sesión o copia la plantilla **1b** de `plantillas-cursor.html`.
+Activar cuando el usuario pide continuar el plan maestro, reanudar sesión o copia las plantillas **P1–P3** de `plantillas-cursor.html`.
 
 | Fuente | Rol |
 |--------|-----|
@@ -181,7 +181,7 @@ Activar cuando el usuario pide continuar el plan maestro, reanudar sesión o cop
 
 **Autonomía:** lectura, implementación local, tests, docs y correcciones relacionadas. **No** autoriza commit/push/PR, producción ni aceptación del cliente.
 
-Plantilla copiable: `portal/contenido/desarrollo/plantillas-cursor.html` → acordeón **1b — Ejecutar plan maestro**.
+Plantillas copiables: `portal/contenido/desarrollo/plantillas-cursor.html` → sección **Plan de entrega — P1–P3** (fuera del flujo 1–5).
 
 ## Referencia
 

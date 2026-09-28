@@ -141,7 +141,8 @@ erDiagram
 | galpon_id | FK | No | |
 | user_id | FK users | No | |
 | tipo | string | No | `huevos`, `muertes`, `descarte`, `alimento`, `combinado` |
-| idempotencia_clave | string(64) | Sí | Clave por intención de carga (CAP-02 huevos; base CAP-07); única por `empresa_id` |
+| idempotencia_clave | string(64) | Sí | UUID por intención de carga (`IdempotenciaCaptura`, CAP-07); única por `empresa_id` |
+| cero_confirmado | boolean | No | Default `false`; `true` = operario confirmó explícitamente cero (CAP-10, huevos/muertes/descarte) |
 | huevos | integer | Sí | Aptos/comerciales (tipo `huevos` o parte de `combinado`) |
 | huevos_descarte | integer | Sí | Rotos/sucios (tipo `huevos`; default 0) |
 | muertes | integer | Sí | |
@@ -166,7 +167,7 @@ Registro operativo de vacunación por lote (tabla propia; no es fila en `registr
 | lote_id | FK lotes | No | Lote vacunado |
 | user_id | FK users | No | Operario que registra |
 | vacuna | string | No | Enum `VacunaTipo` (`newcastle`, `bronquitis`, `gumboro`, `encefalomielitis`, `pox`) |
-| idempotencia_clave | string(64) | Sí | UUID por apertura del diálogo; única por empresa (CAP-06) |
+| idempotencia_clave | string(64) | Sí | UUID por apertura del diálogo (`IdempotenciaCaptura`, CAP-07); única por empresa |
 | observacion | text | Sí | Opcional, máx. 500 caracteres |
 | estado | string | No | `activo`, `anulado` — mismo criterio que registros operativos |
 | anulado_at | timestamp | Sí | |

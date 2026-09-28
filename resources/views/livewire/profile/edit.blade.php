@@ -15,6 +15,8 @@
 
         @if ($seccion === 'password')
             @include('livewire.profile.partials.password-form')
+        @elseif ($seccion === 'ayuda')
+            @include('livewire.profile.partials.ayuda-panel')
         @else
             @include('livewire.profile.partials.datos-form', [
                 'user' => $user,

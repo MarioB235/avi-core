@@ -5,6 +5,7 @@ namespace App\Livewire\Operario;
 use App\Enums\TipoHuevo;
 use App\Enums\VacunaTipo;
 use App\Livewire\Operario\Concerns\ManagesAlimentoForm;
+use App\Livewire\Operario\Concerns\ManagesCapturaContexto;
 use App\Livewire\Operario\Concerns\ManagesDescarteForm;
 use App\Livewire\Operario\Concerns\ManagesGalponSelector;
 use App\Livewire\Operario\Concerns\ManagesHuevosForm;
@@ -27,6 +28,7 @@ use Livewire\Component;
 class CargarHub extends Component
 {
     use ManagesAlimentoForm;
+    use ManagesCapturaContexto;
     use ManagesDescarteForm;
     use ManagesGalponSelector;
     use ManagesHuevosForm;
@@ -53,6 +55,7 @@ class CargarHub extends Component
 
             $this->resetFormularioLote($operarioGalponService);
             $this->dialogLoteAbierto = true;
+            $this->registrarContextoCapturaAlAbrirDialogo();
 
             return;
         }
@@ -64,6 +67,7 @@ class CargarHub extends Component
         if ($form === 'huevos') {
             $this->resetFormularioHuevos();
             $this->dialogHuevosAbierto = true;
+            $this->registrarContextoCapturaAlAbrirDialogo();
 
             return;
         }
@@ -71,6 +75,7 @@ class CargarHub extends Component
         if ($form === 'muertes') {
             $this->resetFormularioMuertes();
             $this->dialogMuertesAbierto = true;
+            $this->registrarContextoCapturaAlAbrirDialogo();
 
             return;
         }
@@ -78,6 +83,7 @@ class CargarHub extends Component
         if ($form === 'descarte') {
             $this->resetFormularioDescarte();
             $this->dialogDescarteAbierto = true;
+            $this->registrarContextoCapturaAlAbrirDialogo();
 
             return;
         }
@@ -85,17 +91,47 @@ class CargarHub extends Component
         if ($form === 'alimento') {
             $this->resetFormularioAlimento();
             $this->dialogAlimentoAbierto = true;
+            $this->registrarContextoCapturaAlAbrirDialogo();
 
             return;
         }
 
         $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService);
         $this->dialogVacunacionAbierto = true;
+        $this->registrarContextoCapturaAlAbrirDialogo();
     }
 
-    public function hydrate(OperarioGalponService $operarioGalponService): void
-    {
+    public function hydrate(
+        OperarioGalponService $operarioGalponService,
+        OperarioGalponResumenService $operarioGalponResumenService,
+    ): void {
+        $galponIdAnterior = $this->galponId;
+
         $this->hydrateGalponSelector($operarioGalponService);
+
+        $this->revalidarCapturaObsoletaEnHydrate(
+            $operarioGalponService,
+            $operarioGalponResumenService,
+            $galponIdAnterior,
+        );
+    }
+
+    protected function afterSeleccionarGalpon(
+        ?int $galponAnteriorId,
+        int $galponNuevoId,
+        OperarioGalponService $operarioGalponService,
+    ): void {
+        if ($galponAnteriorId !== $galponNuevoId && $this->tieneDialogoCapturaAbierto()) {
+            $this->invalidarFormulariosCapturaObsoletos(
+                $operarioGalponService,
+                app(OperarioGalponResumenService::class),
+                'Cambió el galpón: reiniciamos el formulario abierto.',
+            );
+
+            return;
+        }
+
+        $this->dispatch('snackbar-show', message: 'Galpón actualizado.', variant: 'success');
     }
 
     public function render(
@@ -149,6 +185,10 @@ class CargarHub extends Component
         OperarioGalponService $operarioGalponService,
         string $dialogProperty,
     ): ?Galpon {
+        if ($this->abortarSiCapturaObsoleta($operarioGalponService, app(OperarioGalponResumenService::class))) {
+            return null;
+        }
+
         $user = auth()->user();
 
         if ($user === null || $user->ultimo_galpon_id === null) {

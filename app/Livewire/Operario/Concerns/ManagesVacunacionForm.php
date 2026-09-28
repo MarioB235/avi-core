@@ -7,10 +7,9 @@ use App\Enums\VacunaTipo;
 use App\Models\Lote;
 use App\Services\OperarioGalponResumenService;
 use App\Services\OperarioGalponService;
+use App\Support\IdempotenciaCaptura;
 use App\Support\VacunacionValidacion;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 
 trait ManagesVacunacionForm
 {
@@ -36,6 +35,7 @@ trait ManagesVacunacionForm
 
         $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService);
         $this->dialogVacunacionAbierto = true;
+        $this->registrarContextoCapturaAlAbrirDialogo();
     }
 
     public function updatedDialogVacunacionAbierto(
@@ -89,25 +89,15 @@ trait ManagesVacunacionForm
             return;
         }
 
-        try {
-            $registrarVacunacion->execute(
+        $this->ejecutarEnvioCarga(
+            fn () => $registrarVacunacion->execute(
                 auth()->user(),
                 $galpon,
                 $lote,
                 VacunaTipo::from($validated['vacuna']),
                 $validated['observacionVacunacion'] ?? null,
                 $this->vacunacionIdempotenciaClave,
-            );
-        } catch (ValidationException $exception) {
-            foreach ($exception->errors() as $field => $messages) {
-                $campo = $field === 'lote_id' ? 'loteId' : $field;
-                $this->addError($campo, $messages[0]);
-            }
-
-            return;
-        }
-
-        $this->finalizarGuardadoCarga(
+            ),
             'dialogVacunacionAbierto',
             fn () => $this->resetFormularioVacunacion($operarioGalponService, $operarioGalponResumenService),
             'Vacunación guardada.',
@@ -131,7 +121,8 @@ trait ManagesVacunacionForm
 
         $this->reset(['vacuna', 'observacionVacunacion']);
         $this->loteId = $loteId;
-        $this->vacunacionIdempotenciaClave = (string) Str::uuid();
+        $this->vacunacionIdempotenciaClave = IdempotenciaCaptura::generarClave();
+        $this->limpiarEstadoEnvioCarga();
         $this->resetValidation();
     }
 }

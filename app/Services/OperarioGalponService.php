@@ -114,7 +114,7 @@ class OperarioGalponService
         return RegistroOperativo::query()
             ->forEmpresa($user->empresa_id)
             ->where('user_id', $user->id)
-            ->enFecha($fecha)
+            ->enFecha($fecha, (int) $user->empresa_id)
             ->orderByDesc('created_at');
     }
 
@@ -151,7 +151,7 @@ class OperarioGalponService
         $vacunacionesSub = Vacunacion::query()
             ->forEmpresa($user->empresa_id)
             ->where('user_id', $user->id)
-            ->enFecha($fecha)
+            ->enFecha($fecha, (int) $user->empresa_id)
             ->selectRaw("id, 'vacunacion' as source_type, created_at");
 
         $union = $registrosSub->unionAll($vacunacionesSub);

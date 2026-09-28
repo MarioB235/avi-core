@@ -26,6 +26,11 @@
                 </div>
             </x-ui.reveal>
         @else
+            @php
+                $huevosEstadoHoy = $resumen['huevos_estado_hoy'] ?? \App\Support\CapturaCeroEstado::OMISION;
+                $muertesEstadoHoy = $resumen['muertes_estado_hoy'] ?? \App\Support\CapturaCeroEstado::OMISION;
+                $descarteEstadoHoy = $resumen['descarte_estado_hoy'] ?? \App\Support\CapturaCeroEstado::OMISION;
+            @endphp
             <x-ui.reveal as="section" class="avicore-operario-home-summary" aria-label="Estado del galpón">
                 <div class="avicore-operario-kpi-grid avicore-operario-kpi-grid--duo">
                     <article class="avicore-operario-kpi-panel avicore-operario-kpi-panel--aves">
@@ -49,17 +54,35 @@
                                 'avicore-operario-kpi-panel__metric--warm',
                                 'avicore-operario-kpi-panel__metric--warm-alert' => $resumen['muertes_hoy'] > 0 || $resumen['descarte_aves_hoy'] > 0,
                             ])>
-                                <p class="avicore-operario-kpi-panel__value">
-                                    {{ number_format($resumen['muertes_hoy'], 0, ',', '.') }}
-                                </p>
-                                <p class="avicore-operario-kpi-panel__label">Murieron hoy</p>
+                                @if ($muertesEstadoHoy === \App\Support\CapturaCeroEstado::CERO_CONFIRMADO)
+                                    <p class="avicore-operario-kpi-panel__value">0</p>
+                                    <p class="avicore-operario-kpi-panel__label">0 confirmado hoy</p>
+                                @elseif ($muertesEstadoHoy === \App\Support\CapturaCeroEstado::OMISION && $resumen['muertes_hoy'] === 0)
+                                    <p class="avicore-operario-kpi-panel__value text-avicore-muted">—</p>
+                                    <p class="avicore-operario-kpi-panel__label">Sin registro hoy</p>
+                                @else
+                                    <p class="avicore-operario-kpi-panel__value">
+                                        {{ number_format($resumen['muertes_hoy'], 0, ',', '.') }}
+                                    </p>
+                                    <p class="avicore-operario-kpi-panel__label">Murieron hoy</p>
+                                @endif
                             </div>
                         </div>
 
-                        @if ($resumen['descarte_aves_hoy'] > 0)
+                        @if ($descarteEstadoHoy === \App\Support\CapturaCeroEstado::CERO_CONFIRMADO)
+                            <p class="avicore-operario-kpi-panel__note">
+                                <span class="avicore-operario-kpi-panel__note-dot" aria-hidden="true"></span>
+                                Descarte de aves: 0 confirmado hoy.
+                            </p>
+                        @elseif ($resumen['descarte_aves_hoy'] > 0)
                             <p class="avicore-operario-kpi-panel__note">
                                 <span class="avicore-operario-kpi-panel__note-dot" aria-hidden="true"></span>
                                 {{ number_format($resumen['descarte_aves_hoy'], 0, ',', '.') }} aves descartadas hoy.
+                            </p>
+                        @elseif ($descarteEstadoHoy === \App\Support\CapturaCeroEstado::OMISION)
+                            <p class="avicore-operario-kpi-panel__note">
+                                <span class="avicore-operario-kpi-panel__note-dot" aria-hidden="true"></span>
+                                Descarte de aves: sin registro hoy.
                             </p>
                         @endif
 
@@ -89,28 +112,40 @@
                         </header>
 
                         <div class="avicore-operario-kpi-panel__metrics">
-                            <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--outline">
-                                <p class="avicore-operario-kpi-panel__value">
-                                    {{ number_format($resumen['huevos_hoy'], 0, ',', '.') }}
-                                </p>
-                                <p class="avicore-operario-kpi-panel__label">
-                                    Aptos hoy
-                                    <span class="avicore-operario-kpi-panel__hint">
-                                        ({{ number_format($resumen['maples_hoy'], 0, ',', '.') }} maples
-                                        @if (($resumen['huevos_hoy_desglose']['huevos'] ?? 0) > 0)
-                                            + {{ number_format($resumen['huevos_hoy_desglose']['huevos'], 0, ',', '.') }} sueltos
-                                        @endif
-                                        )
-                                    </span>
-                                </p>
-                            </div>
+                            @if ($huevosEstadoHoy === \App\Support\CapturaCeroEstado::CERO_CONFIRMADO)
+                                <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--outline">
+                                    <p class="avicore-operario-kpi-panel__value">0</p>
+                                    <p class="avicore-operario-kpi-panel__label">0 confirmado hoy</p>
+                                </div>
+                            @elseif ($huevosEstadoHoy === \App\Support\CapturaCeroEstado::OMISION && $resumen['huevos_hoy'] === 0 && $resumen['huevos_descarte_hoy'] === 0)
+                                <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--outline">
+                                    <p class="avicore-operario-kpi-panel__value text-avicore-muted">—</p>
+                                    <p class="avicore-operario-kpi-panel__label">Sin registro hoy</p>
+                                </div>
+                            @else
+                                <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--outline">
+                                    <p class="avicore-operario-kpi-panel__value">
+                                        {{ number_format($resumen['huevos_hoy'], 0, ',', '.') }}
+                                    </p>
+                                    <p class="avicore-operario-kpi-panel__label">
+                                        Aptos hoy
+                                        <span class="avicore-operario-kpi-panel__hint">
+                                            ({{ number_format($resumen['maples_hoy'], 0, ',', '.') }} maples
+                                            @if (($resumen['huevos_hoy_desglose']['huevos'] ?? 0) > 0)
+                                                + {{ number_format($resumen['huevos_hoy_desglose']['huevos'], 0, ',', '.') }} sueltos
+                                            @endif
+                                            )
+                                        </span>
+                                    </p>
+                                </div>
 
-                            <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--outline">
-                                <p class="avicore-operario-kpi-panel__value">
-                                    {{ number_format($resumen['huevos_descarte_hoy'], 0, ',', '.') }}
-                                </p>
-                                <p class="avicore-operario-kpi-panel__label">Descarte hoy</p>
-                            </div>
+                                <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--outline">
+                                    <p class="avicore-operario-kpi-panel__value">
+                                        {{ number_format($resumen['huevos_descarte_hoy'], 0, ',', '.') }}
+                                    </p>
+                                    <p class="avicore-operario-kpi-panel__label">Descarte hoy</p>
+                                </div>
+                            @endif
                         </div>
 
                         @if ($resumen['huevos_acumulados'] > 0 || $resumen['huevos_descarte_acumulados'] > 0)

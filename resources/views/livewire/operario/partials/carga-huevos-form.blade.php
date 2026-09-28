@@ -4,6 +4,7 @@
     $totalIngresado = $aptosIngresados + $descarteIngresado;
     $huevosHoyGalpon = (int) ($resumenGalpon['huevos_hoy'] ?? 0);
     $descarteHoyGalpon = (int) ($resumenGalpon['huevos_descarte_hoy'] ?? 0);
+    $huevosEstadoHoy = $resumenGalpon['huevos_estado_hoy'] ?? \App\Support\CapturaCeroEstado::OMISION;
 @endphp
 
 <form wire:submit="guardarHuevos" class="space-y-4">
@@ -82,6 +83,16 @@
         </div>
     @endif
 
+    @include('livewire.operario.partials.carga-envio-feedback')
+
+    @include('livewire.operario.partials.carga-cero-confirmar', [
+        'estadoHoy' => $huevosEstadoHoy,
+        'totalesHoy' => $huevosHoyGalpon + $descarteHoyGalpon,
+        'tipoLabel' => 'producción de huevos',
+        'wireMethod' => 'confirmarCeroHuevos',
+        'wireTarget' => 'confirmarCeroHuevos',
+    ])
+
     <x-ui.button
         type="submit"
         class="w-full py-4 text-base"
@@ -89,7 +100,7 @@
         wire:target="guardarHuevos"
         :disabled="$totalIngresado < 1"
     >
-        <span wire:loading.remove wire:target="guardarHuevos">Guardar</span>
+        <span wire:loading.remove wire:target="guardarHuevos">{{ $cargaEnvioError ? 'Reintentar' : 'Guardar' }}</span>
         <span wire:loading wire:target="guardarHuevos">Guardando…</span>
     </x-ui.button>
 </form>

@@ -9,6 +9,11 @@
             'subtitle' => 'Cambiá tu clave de acceso.',
             'label' => 'Cambiar contraseña',
         ],
+        'ayuda' => [
+            'title' => 'Ayuda',
+            'subtitle' => 'Contacto de soporte y canales para pedir asistencia.',
+            'label' => 'Ayuda',
+        ],
         default => [
             'title' => 'Mis datos',
             'subtitle' => 'Actualizá tu nombre y correo de contacto.',
