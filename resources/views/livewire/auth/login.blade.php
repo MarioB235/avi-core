@@ -7,33 +7,33 @@
 
         @if ($demoSetupPending ?? false)
             <x-ui.alert variant="warning" class="mb-5">
-                La demo aún no está lista. Si tenés credenciales de prueba, ingresá con documento y contraseña. Si no, contactá al equipo de AviCore.
+                {{ \App\Services\DemoLoginService::MESSAGE_DEMO_SEED_MISSING }}
             </x-ui.alert>
         @endif
 
         <form wire:submit="login" class="space-y-5">
-            <x-ui.input
-                label="Documento"
-                name="documento"
-                icon="id-card"
-                wire:model="documento"
-                autocomplete="username"
-                placeholder="Ingresá tu número de documento"
-                :disabled="$demoLoginEnabled"
-                :required="! $demoLoginEnabled"
-            />
+            @unless ($demoLoginEnabled)
+                <x-ui.input
+                    label="Documento"
+                    name="documento"
+                    icon="id-card"
+                    wire:model="documento"
+                    autocomplete="username"
+                    placeholder="Ingresá tu número de documento"
+                    required
+                />
 
-            <x-ui.input
-                label="Contraseña"
-                name="password"
-                icon="lock-keyhole"
-                toggle-password
-                wire:model="password"
-                autocomplete="current-password"
-                placeholder="Ingresá tu contraseña"
-                :disabled="$demoLoginEnabled"
-                :required="! $demoLoginEnabled"
-            />
+                <x-ui.input
+                    label="Contraseña"
+                    name="password"
+                    icon="lock-keyhole"
+                    toggle-password
+                    wire:model="password"
+                    autocomplete="current-password"
+                    placeholder="Ingresá tu contraseña"
+                    required
+                />
+            @endunless
 
             @if ($demoLoginEnabled)
                 <x-ui.select

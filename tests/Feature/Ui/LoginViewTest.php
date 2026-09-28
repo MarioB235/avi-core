@@ -71,9 +71,8 @@ class LoginViewTest extends TestCase
         $this->assertStringContainsString('avicore-select-trigger', $html);
         $this->assertStringContainsString('role="listbox"', $html);
         $this->assertStringContainsString('Operario', $html);
-        $this->assertMatchesRegularExpression('/id="documento"[^>]*disabled="disabled"/s', $html);
-        $this->assertMatchesRegularExpression('/id="password"[^>]*disabled="disabled"/s', $html);
-        $this->assertMatchesRegularExpression('/type="button"\s+disabled\b/s', $html);
+        $this->assertStringNotContainsString('name="documento"', $html);
+        $this->assertStringNotContainsString('name="password"', $html);
     }
 
     public function test_login_hides_demo_role_select_when_flag_disabled(): void
@@ -121,7 +120,9 @@ class LoginViewTest extends TestCase
             ->assertSet('demoSetupPending', true)
             ->html();
 
-        $this->assertStringContainsString('La demo aún no está lista', $html);
-        $this->assertStringNotContainsString('name="demoRole"', $html);
+        $this->assertStringContainsString('Faltan datos demo en la base', $html);
+        $this->assertStringContainsString('migrate --seed', $html);
+        $this->assertStringContainsString('name="demoRole"', $html);
+        $this->assertStringNotContainsString('name="documento"', $html);
     }
 }

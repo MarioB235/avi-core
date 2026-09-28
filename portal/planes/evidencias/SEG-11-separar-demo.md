@@ -21,7 +21,7 @@ Aislar el login demo de producción y de entornos con datos reales; evitar que e
 ## Guards verificados
 
 1. `APP_ENV=production` + flag `true` → selector oculto.
-2. Flag `true` sin empresa `DEMO` → selector oculto (staging con datos reales).
+2. Flag `true` sin seed demo completo → selector **visible**; aviso en `/login` y `MESSAGE_DEMO_SEED_MISSING` en `demoRole` al enviar (sin documento/contraseña en pantalla). *Actualización 2026-09-28 — fix seed readiness.*
 3. Usuario con documento demo pero empresa distinta de `DEMO` → rechazado en `resolveUser`.
 4. Login como Encargado no altera rol del Dueño (`000000000`).
 

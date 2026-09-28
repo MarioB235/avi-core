@@ -96,14 +96,25 @@ class DemoLoginTest extends TestCase
             ->assertHasErrors('demoRole');
     }
 
-    public function test_demo_login_is_disabled_when_seed_users_are_missing(): void
+    public function test_demo_login_shows_selector_when_seed_users_are_missing(): void
     {
         Empresa::factory()->create(['codigo' => 'DEMO']);
         $this->enableDemoLogin();
 
         Livewire::test(Login::class)
-            ->assertSet('demoLoginEnabled', false)
+            ->assertSet('demoLoginEnabled', true)
             ->assertSet('demoSetupPending', true);
+    }
+
+    public function test_demo_login_fails_on_submit_when_seed_users_are_missing(): void
+    {
+        Empresa::factory()->create(['codigo' => 'DEMO']);
+        $this->enableDemoLogin();
+
+        Livewire::test(Login::class)
+            ->set('demoRole', UserRole::Dueno->value)
+            ->call('login')
+            ->assertHasErrors('demoRole');
     }
 
     public function test_demo_login_requires_role(): void
@@ -204,24 +215,24 @@ class DemoLoginTest extends TestCase
         $this->assertSame(UserRole::Dueno, $dueno->rol);
     }
 
-    public function test_demo_login_is_disabled_when_demo_empresa_is_missing(): void
+    public function test_demo_login_shows_selector_when_demo_empresa_is_missing(): void
     {
         config(['avicore.demo_login.enabled_flag' => true]);
         $this->app['env'] = 'staging';
 
         Livewire::test(Login::class)
-            ->assertSet('demoLoginEnabled', false)
+            ->assertSet('demoLoginEnabled', true)
             ->assertSet('demoSetupPending', true);
     }
 
-    public function test_demo_login_is_disabled_when_partial_seed_users_exist(): void
+    public function test_demo_login_shows_selector_when_partial_seed_users_exist(): void
     {
         $this->seed(DatabaseSeeder::class);
         User::query()->where('documento', '11111111')->delete();
         $this->enableDemoLogin();
 
         Livewire::test(Login::class)
-            ->assertSet('demoLoginEnabled', false)
+            ->assertSet('demoLoginEnabled', true)
             ->assertSet('demoSetupPending', true);
     }
 

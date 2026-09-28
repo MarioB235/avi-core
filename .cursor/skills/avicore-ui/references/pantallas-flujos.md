@@ -24,9 +24,8 @@ Permitir el acceso seguro al sistema.
 
 ### Campos
 
-- Documento (con `AVICORE_DEMO_LOGIN=true`: visible, vacío y deshabilitado).
-- Contraseña (con `AVICORE_DEMO_LOGIN=true`: visible, vacía y deshabilitada).
-- Perfil (select; `AVICORE_DEMO_LOGIN=true`).
+- Documento y contraseña (solo con `AVICORE_DEMO_LOGIN=false` o en `production`).
+- Perfil (select; `AVICORE_DEMO_LOGIN=true` fuera de `production`).
 - Recordarme (opcional).
 
 ### Acciones
@@ -41,8 +40,8 @@ Permitir el acceso seguro al sistema.
 - **PWA:** banner inferior «Instalá AviCore» si no está instalada (`AVICORE_PWA_INSTALL_PROMPT=true`); Chrome/Android → botón Instalar; iOS → guía Compartir. Detalle: `avicore-pwa/references/pwa.md`.
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
-- **Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`): selector de perfil sin credenciales; cada rol entra con su usuario demo fijo (ver `demo.md` § 4). Solo si existe empresa `DEMO` **y** todos los usuarios de `role_documentos` están activos en BD; deshabilitado en `production`.
-- **Demo pendiente:** si el flag está activo pero falta empresa o usuarios demo, se muestra alerta warning («La demo aún no está lista») y el login normal (documento + contraseña) queda habilitado.
+- **Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`, no `production`): solo selector de perfil; cada rol entra con su usuario demo fijo (ver `demo.md` § 4). Documento y contraseña no se muestran.
+- **Demo pendiente:** si falta empresa `DEMO` o usuarios demo del seed, alerta warning y error en `demoRole` con el mismo texto (`DemoLoginService::MESSAGE_DEMO_SEED_MISSING`, incluye `migrate --seed`); el selector sigue visible.
 - Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre contacto de soporte (`x-ui.sheet`: bottom sheet en móvil, diálogo centrado en escritorio ≥1024px; WhatsApp y correo vía `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
 
 ### Validaciones

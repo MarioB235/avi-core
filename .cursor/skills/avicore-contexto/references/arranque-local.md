@@ -132,7 +132,7 @@ php artisan db:seed
 
 Re-ejecutar el seed es seguro (`AvicoreAuthSeeder` usa `firstOrCreate`).
 
-**Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`): elegí **Perfil** en el selector (sin documento ni contraseña). Cada perfil usa un usuario demo fijo; no se cambia el rol en BD. Requiere empresa `DEMO` y todos los usuarios demo del seed (`role_documentos` activos); si falta seed, verás aviso en `/login` y podés usar documento + contraseña. En `production` el selector no aparece.
+**Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`): elegí **Perfil** en el selector (sin documento ni contraseña en pantalla). Cada perfil usa un usuario demo fijo; no se cambia el rol en BD. Para que el ingreso funcione necesitás empresa `DEMO` y usuarios del seed; si falta, `/login` avisa y pedís correr `php artisan migrate --seed`. En `production` el selector no aparece.
 
 **Login normal** (`AVICORE_DEMO_LOGIN=false`): documento + `Avicore2026!` del usuario que quieras probar (ver `demo.md` § 4).
 
