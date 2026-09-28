@@ -4,6 +4,7 @@ namespace Tests\Feature\Ui;
 
 use App\Livewire\Auth\Login;
 use App\Models\Empresa;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -55,8 +56,8 @@ class LoginViewTest extends TestCase
 
     public function test_login_renders_demo_role_select_when_flag_enabled(): void
     {
+        $this->seed(DatabaseSeeder::class);
         $this->app['env'] = 'local';
-        Empresa::factory()->create(['codigo' => 'DEMO']);
         config(['avicore.demo_login.enabled_flag' => true]);
 
         $html = Livewire::test(Login::class)
@@ -97,5 +98,30 @@ class LoginViewTest extends TestCase
         $this->assertStringNotContainsString('name="demoRole"', $html);
         $this->assertDoesNotMatchRegularExpression('/id="documento"[^>]*disabled="disabled"/s', $html);
         $this->assertDoesNotMatchRegularExpression('/id="password"[^>]*disabled="disabled"/s', $html);
+    }
+
+    public function test_login_hides_demo_setup_pending_alert_when_flag_disabled(): void
+    {
+        config(['avicore.demo_login.enabled_flag' => false]);
+
+        $html = Livewire::test(Login::class)
+            ->assertSet('demoSetupPending', false)
+            ->html();
+
+        $this->assertStringNotContainsString('La demo aún no está lista', $html);
+    }
+
+    public function test_login_shows_demo_setup_pending_alert_when_seed_users_are_missing(): void
+    {
+        $this->app['env'] = 'staging';
+        Empresa::factory()->create(['codigo' => 'DEMO']);
+        config(['avicore.demo_login.enabled_flag' => true]);
+
+        $html = Livewire::test(Login::class)
+            ->assertSet('demoSetupPending', true)
+            ->html();
+
+        $this->assertStringContainsString('La demo aún no está lista', $html);
+        $this->assertStringNotContainsString('name="demoRole"', $html);
     }
 }

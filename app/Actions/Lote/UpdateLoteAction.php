@@ -2,15 +2,20 @@
 
 namespace App\Actions\Lote;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Models\Lote;
 use App\Models\User;
 use App\Support\EstructuraValidacion;
 use App\Support\LoteValidacion;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
 class UpdateLoteAction
 {
+    public function __construct(private RegistrarAuditoriaAction $auditoria) {}
+
     /**
      * @param  array{codigo_sma?: string|null, linea_raza?: string|null, observacion?: string|null}  $data
      */
@@ -34,11 +39,37 @@ class UpdateLoteAction
             'observacion' => ['nullable', 'string', 'max:1000'],
         ])->validate();
 
-        $lote->update([
-            'codigo_sma' => $codigoSma,
-            'linea_raza' => filled($validated['linea_raza'] ?? null) ? trim((string) $validated['linea_raza']) : null,
-            'observacion' => filled($validated['observacion'] ?? null) ? trim((string) $validated['observacion']) : null,
-        ]);
+        $antes = [
+            'codigo_sma' => $lote->codigo_sma,
+            'linea_raza' => $lote->linea_raza,
+            'observacion' => $lote->observacion,
+        ];
+
+        DB::transaction(function () use ($actor, $lote, $codigoSma, $validated, $antes): void {
+            $lote->update([
+                'codigo_sma' => $codigoSma,
+                'linea_raza' => filled($validated['linea_raza'] ?? null) ? trim((string) $validated['linea_raza']) : null,
+                'observacion' => filled($validated['observacion'] ?? null) ? trim((string) $validated['observacion']) : null,
+            ]);
+
+            $this->auditoria->execute(
+                $actor,
+                AuditoriaCategoria::Lote,
+                'actualizado',
+                Lote::class,
+                $lote->id,
+                $lote->empresa_id,
+                metadata: [
+                    'codigo' => $lote->codigo,
+                    'antes' => $antes,
+                    'despues' => [
+                        'codigo_sma' => $codigoSma,
+                        'linea_raza' => filled($validated['linea_raza'] ?? null) ? trim((string) $validated['linea_raza']) : null,
+                        'observacion' => filled($validated['observacion'] ?? null) ? trim((string) $validated['observacion']) : null,
+                    ],
+                ],
+            );
+        });
 
         return $lote->fresh();
     }

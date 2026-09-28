@@ -28,7 +28,7 @@ class AdminShellTest extends TestCase
             'name' => 'María Dueña',
         ]);
 
-        $this->assertSame(['Inicio', 'Resumen', 'Equipo', 'Comercial'], collect(AdminNav::tabs($dueno))->pluck('label')->all());
+        $this->assertSame(['Inicio', 'Resumen', 'Historial', 'Auditoría', 'Equipo', 'Comercial'], collect(AdminNav::tabs($dueno))->pluck('label')->all());
 
         $this->actingAs($dueno)
             ->get(route('dueno.home'))
@@ -40,6 +40,8 @@ class AdminShellTest extends TestCase
             ->assertSee('avicore-operario-home-sheet', false)
             ->assertSee('Inicio', false)
             ->assertSee('Resumen', false)
+            ->assertSee('Historial', false)
+            ->assertSee('Auditoría', false)
             ->assertSee('Equipo', false)
             ->assertSee('Comercial', false)
             ->assertDontSee('>Usuarios<', false)
@@ -81,7 +83,7 @@ class AdminShellTest extends TestCase
         $this->actingAs($dueno)
             ->get(route('dueno.home'))
             ->assertOk()
-            ->assertSee('--avicore-tab-cols: 4', false)
+            ->assertSee('--avicore-tab-cols: 6', false)
             ->assertSee('aria-label="Navegación panel"', false)
             ->assertSee('avicore-operario-tab-bar__inner', false)
             ->assertDontSee('avicore-operario-tab-bar__inner--cols-4', false);

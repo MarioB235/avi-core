@@ -241,15 +241,15 @@ Pruebas: Feature/Livewire para reglas y navegador/dispositivo para teclado, foco
 
 Base: Historial, Actions/policies de anulación. Auditoría transversal y corrección aún pendientes. Depende de SEG, CAP y D07.
 
-- [ ] **AUD-01 — Historial operario.** Paginación, fecha, detalle, usuario/galpón/estado, vacunación integrada. Éxito: orden estable y datos autorizados.
-- [ ] **AUD-02 — Anulación propia del día.** Motivo, retención y exclusión de totales. Éxito: repetir anulación no restaura aves dos veces.
-- [ ] **AUD-03 — Historial supervisor.** Empresa/granja/galpón/usuario/tipo/estado/período. Éxito: supervisión no depende de historial propio.
-- [ ] **AUD-04 — Corrección con D07.** Antes/después, razón, actor, fecha efectiva y original vinculado. Éxito: saldo/totales cambian una vez con historia preservada.
-- [ ] **AUD-05 — Auditoría crítica.** Usuarios/roles, empresas, soporte, lotes, movimientos, ajustes y correcciones. Éxito: quién/qué/cuándo/por qué sin claves en logs.
-- [ ] **AUD-06 — Atomicidad.** Fallo de auditoría requerida revierte mutación. Éxito: prueba de rollback sin saldo parcial.
-- [ ] **AUD-07 — Consulta autorizada.** Filtros y detalle, sin edición/borrado desde UI. Éxito: operario sin bitácora global y empresa aislada.
-- [ ] **AUD-08 — Retención/documentos.** Aplicar D07 y conservar versiones emitidas. Éxito: plazos acordados, sin inventar exigencias legales.
-- [ ] **AUD-09 — Tipos históricos.** Verificar existencia de `combinado`; definir anulación/restauración o migración. Éxito: tipo legado no rompe saldo por usar un camino diferente.
+- [x] **AUD-01 — Historial operario.** Paginación, fecha, detalle, usuario/galpón/estado, vacunación integrada. Éxito: orden estable y datos autorizados.
+- [x] **AUD-02 — Anulación propia del día.** Motivo, retención y exclusión de totales. Éxito: repetir anulación no restaura aves dos veces.
+- [x] **AUD-03 — Historial supervisor.** Empresa/granja/galpón/usuario/tipo/estado/período. Éxito: supervisión no depende de historial propio.
+- [x] **AUD-04 — Corrección con D07.** Antes/después, razón, actor, fecha efectiva y original vinculado. Éxito: saldo/totales cambian una vez con historia preservada.
+- [x] **AUD-05 — Auditoría crítica.** Usuarios/roles, empresas, soporte, lotes, movimientos, ajustes y correcciones. Éxito: quién/qué/cuándo/por qué sin claves en logs.
+- [x] **AUD-06 — Atomicidad.** Fallo de auditoría requerida revierte mutación. Éxito: prueba de rollback sin saldo parcial.
+- [x] **AUD-07 — Consulta autorizada.** Filtros y detalle, sin edición/borrado desde UI. Éxito: operario sin bitácora global y empresa aislada.
+- [x] **AUD-08 — Retención/documentos.** Aplicar D07 y conservar versiones emitidas. Éxito: plazos acordados, sin inventar exigencias legales.
+- [x] **AUD-09 — Tipos históricos.** Verificar existencia de `combinado`; definir anulación/restauración o migración. Éxito: tipo legado no rompe saldo por usar un camino diferente.
 
 ## 13. MOV — Aves, movimientos y ciclo productivo
 
@@ -257,9 +257,9 @@ Pendiente principal. Nuevas Actions/modelo/migraciones tras especificación; no 
 
 Invariantes: no saldo negativo; traslado conserva total; ajuste explícito; muerte/descarte afectan una vez; reversión inversa auditada; historia independiente de ubicación actual. Locks en orden estable para evitar deadlocks.
 
-- [ ] **MOV-01 — Modelo mínimo.** Origen/destino, lote si corresponde, cantidad/tipo, momento efectivo, actor/motivo/reversión. Éxito: ejemplos reales aprobados permiten reconstruir saldo.
-- [ ] **MOV-02 — Población por lote con D01.** Conciliar muertes del galpón antes de trasladar/cerrar parcialmente. Éxito: estimación no presentada como hecho.
-- [ ] **MOV-03 — Entrada y saldo inicial.** Vincular alta/corte sin duplicar incremento de RegistrarLoteAction. Éxito: reintento/importación no suma dos veces.
+- [x] **MOV-01 — Modelo mínimo.** Origen/destino, lote si corresponde, cantidad/tipo, momento efectivo, actor/motivo/reversión. Éxito: ejemplos reales aprobados permiten reconstruir saldo.
+- [x] **MOV-02 — Población por lote con D01.** Conciliar muertes del galpón antes de trasladar/cerrar parcialmente. Éxito: estimación no presentada como hecho.
+- [x] **MOV-03 — Entrada y saldo inicial.** Vincular alta/corte sin duplicar incremento de RegistrarLoteAction. Éxito: reintento/importación no suma dos veces.
 - [ ] **MOV-04 — Traslado.** Misma empresa, destino disponible, origen distinto, cantidad/saldo/lote. Éxito: éxito atómico; fallo conserva ambos saldos.
 - [ ] **MOV-05 — Ajuste de inventario.** Conteo vs sistema, diferencia/motivo/rol superior. Éxito: no reescribir mortalidad para cuadrar.
 - [ ] **MOV-06 — Cierre de lote.** Remanente, destino/salida, fecha y motivo con D07. Éxito: sin aves fantasma ni nuevas cargas incompatibles.

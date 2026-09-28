@@ -23,11 +23,14 @@ class Login extends Component
 
     public bool $demoLoginEnabled = false;
 
+    public bool $demoSetupPending = false;
+
     public string $demoRole = '';
 
     public function mount(DemoLoginService $demoLogin): void
     {
         $this->demoLoginEnabled = $demoLogin->isEnabled();
+        $this->demoSetupPending = $demoLogin->isRequestedButUnavailable();
 
         if ($this->demoLoginEnabled) {
             $this->demoRole = UserRole::Dueno->value;

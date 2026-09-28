@@ -58,8 +58,29 @@ return [
 
     'datos_personales' => [
         'documento_visible_digitos' => 3,
-        'retencion_usuarios' => 'vigencia de la relación contractual y backups acordados (OPS-06 / D06)',
-        'retencion_operativa' => 'historial operativo según D07 (AUD-08); anulación lógica, sin borrado físico en MVP',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Retención D07 (AUD-08)
+    |--------------------------------------------------------------------------
+    |
+    | Plazos operativos acordados para MVP. No constituyen obligación legal MGAP/SMA
+    | sin validación D05. Purga deshabilitada por defecto; ver retencion-d07.md.
+    |
+    */
+
+    'retencion' => [
+        'd07' => [
+            'nota' => 'Plazos operativos acordados MVP; no constituyen certificación legal sin validación D05.',
+            'operativa_meses' => (int) env('AVICORE_RETENCION_OPERATIVA_MESES', 60),
+            'auditoria_meses' => (int) env('AVICORE_RETENCION_AUDITORIA_MESES', 60),
+            'correcciones_meses' => (int) env('AVICORE_RETENCION_CORRECCIONES_MESES', 60),
+            'documentos_emitidos_meses' => (int) env('AVICORE_RETENCION_DOCUMENTOS_MESES', 60),
+            'usuarios_meses' => (int) env('AVICORE_RETENCION_USUARIOS_MESES', 60),
+            'documentos_disk' => env('AVICORE_RETENCION_DOCUMENTOS_DISK', 'local'),
+            'purge_habilitado' => (bool) env('AVICORE_RETENCION_PURGE', false),
+        ],
     ],
 
     'soporte' => [

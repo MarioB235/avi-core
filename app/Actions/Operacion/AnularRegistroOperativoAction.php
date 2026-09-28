@@ -2,17 +2,21 @@
 
 namespace App\Actions\Operacion;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Enums\RegistroOperativoEstado;
-use App\Enums\RegistroOperativoTipo;
 use App\Models\Galpon;
 use App\Models\RegistroOperativo;
 use App\Models\User;
+use App\Support\RegistroOperativoImpactoAves;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
 class AnularRegistroOperativoAction
 {
+    public function __construct(private RegistrarAuditoriaAction $auditoria) {}
+
     public function execute(User $user, RegistroOperativo $registro, string $motivo): RegistroOperativo
     {
         Gate::forUser($user)->authorize('anular', $registro);
@@ -44,21 +48,15 @@ class AnularRegistroOperativoAction
                 ]);
             }
 
-            if ($this->afectaAvesVivas($registroBloqueado)) {
+            $cantidad = RegistroOperativoImpactoAves::cantidadARestaurarEnAnulacion($registroBloqueado);
+
+            if ($cantidad > 0) {
                 $galpon = Galpon::query()
                     ->whereKey($registroBloqueado->galpon_id)
                     ->lockForUpdate()
                     ->firstOrFail();
 
-                $cantidad = match ($registroBloqueado->tipo) {
-                    RegistroOperativoTipo::Muertes => (int) $registroBloqueado->muertes,
-                    RegistroOperativoTipo::Descarte => (int) $registroBloqueado->descarte_aves,
-                    default => 0,
-                };
-
-                if ($cantidad > 0) {
-                    $galpon->increment('aves_actuales', $cantidad);
-                }
+                $galpon->increment('aves_actuales', $cantidad);
             }
 
             $registroBloqueado->forceFill([
@@ -68,15 +66,22 @@ class AnularRegistroOperativoAction
                 'motivo_anulacion' => $motivo,
             ])->save();
 
+            $this->auditoria->execute(
+                $user,
+                AuditoriaCategoria::Operacion,
+                'anulado',
+                RegistroOperativo::class,
+                $registroBloqueado->id,
+                $registroBloqueado->empresa_id,
+                $motivo,
+                [
+                    'tipo' => $registroBloqueado->tipo->value,
+                    'galpon_id' => $registroBloqueado->galpon_id,
+                    'registro_user_id' => $registroBloqueado->user_id,
+                ],
+            );
+
             return $registroBloqueado->fresh(['galpon']);
         });
-    }
-
-    private function afectaAvesVivas(RegistroOperativo $registro): bool
-    {
-        return match ($registro->tipo) {
-            RegistroOperativoTipo::Muertes, RegistroOperativoTipo::Descarte => true,
-            default => false,
-        };
     }
 }

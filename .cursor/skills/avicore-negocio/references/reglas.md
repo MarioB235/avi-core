@@ -29,7 +29,7 @@
 10. Usuario inactivo o empresa no activa impiden el acceso (Admin AviCore exceptuado de validación de empresa).
 11. Usuario no Admin AviCore sin `empresa_id` asignado no puede iniciar sesión.
 12. La recuperación de contraseña en MVP la realiza administrador o encargado autorizado (`ResetUserPasswordAction`): clave temporal en pantalla, `must_change_password=true`, invalidación de sesiones del usuario (`UserSessionService`). No se registra la clave en logs. En login y cambio obligatorio de contraseña, el enlace «¿Olvidaste tu contraseña?» abre un diálogo con contacto de soporte (WhatsApp y/o correo desde `config/avicore.php` / `.env`, URLs validadas en `SupportContactService`); no hay reset automático por correo.
-13. Login demo MVP (`AVICORE_DEMO_LOGIN=true`): selector de perfil sin credenciales; cada rol usa un usuario demo fijo (no se muta el rol en BD). Solo activo si existe empresa `DEMO`; en `production` queda deshabilitado siempre. Desactivar antes de go-live. Detalle: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4.
+13. Login demo MVP (`AVICORE_DEMO_LOGIN=true`): selector de perfil sin credenciales; cada rol usa un usuario demo fijo (no se muta el rol en BD). Solo activo si existe empresa `DEMO` **y** todos los usuarios activos de `role_documentos`; si falta seed, `/login` muestra aviso y el login normal sigue disponible. En `production` queda deshabilitado siempre. Desactivar antes de go-live. Detalle: [`demo.md`](../../avicore-datos-demo/references/demo.md) § 4; presentación: [`pantallas-flujos.md`](../../avicore-ui/references/pantallas-flujos.md) § Login.
 14. **Autogestión de perfil:** todo usuario autenticado puede editar su nombre y correo, y cambiar su contraseña voluntariamente (`/perfil` o `/operario/perfil`). No puede cambiar documento, rol ni empresa; eso lo hace un administrador.
 15. **Superficies técnicas:** rutas web con CSRF; datos de usuario escapados en vistas; logos solo bajo `empresas/logos/` (`EmpresaLogoPathGuard`); cookies seguras forzadas en `production`. Ver [`arquitectura.md`](../../avicore-contexto/references/arquitectura.md) § 5b.
 
@@ -244,6 +244,9 @@
 5. El operario solo anula registros propios del día (desde **Historial** → detalle → motivo obligatorio).
 6. Toda anulación requiere motivo obligatorio.
 7. Muertes y descarte de aves anulados **restauran** `aves_actuales` del galpón.
+8. **AUD-02:** segunda anulación del mismo registro se rechaza (policy + validación en Action); los totales del día en Inicio/Resumen usan solo registros `activos`.
+9. **AUD-01:** detalle de historial muestra galpón, registrado por, resumen y estado/motivo si está anulado.
+10. **AUD-03:** historial supervisor en `/{rol}/historial-operativo` lista cargas de todo el equipo con filtros granja/galpón/operario/tipo/estado/período; detalle solo lectura; no sustituye al historial móvil del operario.
 
 ---
 
@@ -253,6 +256,12 @@
 2. Debe guardarse valor anterior y valor nuevo.
 3. Encargado o superior puede corregir.
 4. Las correcciones deben auditarse.
+5. **AUD-04 (D07):** no se borra el registro original; `CorregirRegistroOperativoAction` persiste fila en `correcciones_registro_operativo` (antes/después, actor, fecha efectiva, `registro_operativo_id`) y actualiza el registro activo. Muertes/descarte ajustan `aves_actuales` solo por el delta (no duplican impacto). UI en historial supervisor: detalle → «Corregir registro». Tipos corregibles: huevos, muertes, descarte, alimento. Operario no corrige.
+6. **AUD-09:** tipo legado `combinado` — solo lectura/corrección vía anulación; `RegistroOperativoImpactoAves` unifica restauración de saldo al anular (muertes + `descarte_aves`). Sin capturas nuevas (`admiteCapturaNueva()`). Ver `tipos-historicos.md`.
+7. **AUD-05:** acciones críticas registran fila en `auditorias` vía `RegistrarAuditoriaAction` (actor, categoría, acción, entidad, motivo si aplica, `occurred_at`). Cubre usuarios/roles (`CreateUserAction`, `UpdateUserAction`, `ResetUserPasswordAction`), empresas (`UpdateEmpresaConfiguracionAction`, estado, soporte), lotes, anulaciones, correcciones y entrada externa de aves (`RegistrarEntradaAvesAction`). Metadata sanitizada: nunca contraseñas ni tokens en logs.
+8. **AUD-06:** mutación + auditoría van en la **misma** `DB::transaction` dentro de cada Action; si `RegistrarAuditoriaAction` falla (`AuditoriaCriticaException`), se revierte todo (sin saldo parcial ni estado inconsistente). Patrón verificado en `AuditoriaAtomicidadTest` (anulación, corrección, transición lote).
+9. **AUD-07:** consulta de bitácora en `/{rol}/auditoria` — solo lectura (filtros categoría, actor, acción, período; detalle sin editar/borrar). Filtros de fecha usan `AdminFiltroFechasOperativas` + `DiaOperativoEmpresa`. Gate `admin.viewAuditoria`: dueño, administrativo, encargado; soporte AviCore con sesión activa; operario sin acceso. Aislamiento estricto por `empresa_id`.
+10. **AUD-08 (D07 retención):** plazos operativos en `config/avicore.php` → `retencion.d07` (default 60 meses; sin afirmar plazos legales). Historial, correcciones, auditoría y `documentos_emitidos` usan `PreventsHardDelete`. `RegistrarDocumentoEmitidoAction` guarda copia inmutable de PDF/Excel para REP-11. Comando operativo `php artisan avicore:retencion-d07`. Purga automática deshabilitada en MVP. Ver `retencion-d07.md`.
 
 ---
 
@@ -260,6 +269,9 @@
 
 1. Se calculan principalmente por galpón.
 2. Se actualizan con muertes, salidas, traslados y ajustes.
+2b. **MOV-01:** movimientos persistidos en `movimientos_aves`; `MovimientoAvesEfecto` reconstruye saldo por galpón; `lote_id` identifica población cuando aplica (D01). Sin borrado físico; reversión enlazada. Ver `movimientos-aves.md`.
+2c. **MOV-02 (D01):** con varios lotes activos no se estima saldo por lote; traslado/cierre/faena exigen `lote_id` e imputación explícita de muertes/descarte del galpón (`metadata.muertes_imputadas_lote`). `MovimientoAvesConciliacionService` expone hechos vs declaración.
+2d. **MOV-03:** alta de lote incrementa `aves_actuales` solo en `RegistrarLoteAction` y registra movimiento `saldo_inicial_lote` sin segundo incremento; entradas externas vía `RegistrarEntradaAvesAction` con idempotencia. Ver `movimientos-aves.md` § MOV-03.
 3. El ajuste manual solo lo puede hacer encargado o superior.
 4. El ajuste impacta desde ese momento.
 5. El ajuste no modifica reportes históricos ya generados.

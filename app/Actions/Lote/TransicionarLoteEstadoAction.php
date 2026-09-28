@@ -2,6 +2,8 @@
 
 namespace App\Actions\Lote;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Enums\LoteEstado;
 use App\Models\Lote;
 use App\Models\User;
@@ -13,6 +15,8 @@ use Illuminate\Validation\ValidationException;
 
 class TransicionarLoteEstadoAction
 {
+    public function __construct(private RegistrarAuditoriaAction $auditoria) {}
+
     /**
      * @param  array{estado: string, motivo: string}  $data
      */
@@ -52,6 +56,21 @@ class TransicionarLoteEstadoAction
                 'estado' => $estadoNuevo,
                 'estado_historial' => $historial,
             ]);
+
+            $this->auditoria->execute(
+                $actor,
+                AuditoriaCategoria::Lote,
+                'estado_cambiado',
+                Lote::class,
+                $lote->id,
+                $lote->empresa_id,
+                $motivo,
+                [
+                    'codigo' => $lote->codigo,
+                    'estado_anterior' => $estadoAnterior->value,
+                    'estado_nuevo' => $estadoNuevo->value,
+                ],
+            );
 
             return $lote->fresh();
         });

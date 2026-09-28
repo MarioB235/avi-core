@@ -2,6 +2,8 @@
 
 namespace App\Actions\Empresa;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Models\Empresa;
 use App\Models\SoporteSesion;
 use App\Models\User;
@@ -12,7 +14,10 @@ use Illuminate\Validation\ValidationException;
 
 class StartSoporteEmpresaAction
 {
-    public function __construct(private SoporteEmpresaService $soporte) {}
+    public function __construct(
+        private SoporteEmpresaService $soporte,
+        private RegistrarAuditoriaAction $auditoria,
+    ) {}
 
     /**
      * @param  array{motivo: string}  $data
@@ -54,6 +59,20 @@ class StartSoporteEmpresaAction
                 'empresa_id' => $empresa->id,
                 'empresa_nombre' => $empresa->nombre,
             ]);
+
+            $this->auditoria->execute(
+                $actor,
+                AuditoriaCategoria::Soporte,
+                'inicio',
+                SoporteSesion::class,
+                $sesion->id,
+                $empresa->id,
+                trim($validated['motivo']),
+                [
+                    'empresa_codigo' => $empresa->codigo,
+                    'soporte_sesion_id' => $sesion->id,
+                ],
+            );
 
             return $sesion;
         });

@@ -2,10 +2,13 @@
 
 namespace App\Actions\User;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Enums\UserRole;
 use App\Models\User;
 use App\Services\Auth\UserSessionService;
 use App\Services\UserManagementGuard;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -15,6 +18,7 @@ class UpdateUserAction
     public function __construct(
         private UserManagementGuard $userManagement,
         private UserSessionService $sessions,
+        private RegistrarAuditoriaAction $auditoria,
     ) {}
 
     /**
@@ -84,18 +88,42 @@ class UpdateUserAction
         )->validate();
 
         $wasActive = $target->activo;
+        $antes = [
+            'rol' => $target->rol->value,
+            'activo' => $target->activo,
+            'documento' => $target->documento,
+        ];
 
-        $target->fill([
-            'name' => trim($data['name']),
-            'documento' => trim($data['documento']),
-            'email' => filled($data['email'] ?? null) ? trim((string) $data['email']) : null,
-            'rol' => $rol,
-            'activo' => $activo,
-        ])->save();
+        DB::transaction(function () use ($actor, $target, $data, $rol, $activo, $antes, $wasActive): void {
+            $target->fill([
+                'name' => trim($data['name']),
+                'documento' => trim($data['documento']),
+                'email' => filled($data['email'] ?? null) ? trim((string) $data['email']) : null,
+                'rol' => $rol,
+                'activo' => $activo,
+            ])->save();
 
-        if ($wasActive && ! $activo) {
-            $this->sessions->invalidateAllForUser($target);
-        }
+            $this->auditoria->execute(
+                $actor,
+                AuditoriaCategoria::Usuario,
+                'actualizado',
+                User::class,
+                $target->id,
+                $target->empresa_id,
+                metadata: [
+                    'antes' => $antes,
+                    'despues' => [
+                        'rol' => $rol->value,
+                        'activo' => $activo,
+                        'documento' => trim($data['documento']),
+                    ],
+                ],
+            );
+
+            if ($wasActive && ! $activo) {
+                $this->sessions->invalidateAllForUser($target);
+            }
+        });
 
         return $target->refresh();
     }

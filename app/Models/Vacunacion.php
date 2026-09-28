@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\RegistroOperativoEstado;
 use App\Enums\VacunaTipo;
 use App\Models\Concerns\BelongsToEmpresa;
+use App\Models\Concerns\PreventsHardDelete;
 use App\Support\DiaOperativoEmpresa;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,7 +29,7 @@ use Illuminate\Support\Carbon;
 ])]
 class Vacunacion extends Model
 {
-    use BelongsToEmpresa, HasFactory;
+    use BelongsToEmpresa, HasFactory, PreventsHardDelete;
 
     protected $table = 'vacunaciones';
 
@@ -105,9 +106,12 @@ class Vacunacion extends Model
             $loteEtiqueta .= ' (SMA '.$this->lote->codigo_sma.')';
         }
 
+        $this->loadMissing('user', 'galpon', 'lote');
+
         $lineas = [
             ['label' => 'Tipo', 'value' => 'Vacunación'],
             ['label' => 'Galpón', 'value' => $this->galpon?->displayName() ?? '—'],
+            ['label' => 'Registrado por', 'value' => $this->user?->name ?? '—'],
             ['label' => 'Lote', 'value' => $loteEtiqueta],
             ['label' => 'Vacuna', 'value' => $this->vacuna->label()],
             ['label' => 'Fecha y hora', 'value' => $this->created_at?->format('d/m/Y H:i') ?? '—'],
@@ -126,5 +130,10 @@ class Vacunacion extends Model
         }
 
         return $lineas;
+    }
+
+    protected static function hardDeleteRejectionMessage(): string
+    {
+        return 'No se puede eliminar: use anulación lógica para conservar la trazabilidad (D07).';
     }
 }

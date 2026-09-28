@@ -59,6 +59,16 @@ class Galpon extends Model
         return $this->hasMany(RegistroOperativo::class);
     }
 
+    public function movimientosOrigen(): HasMany
+    {
+        return $this->hasMany(MovimientoAves::class, 'galpon_origen_id');
+    }
+
+    public function movimientosDestino(): HasMany
+    {
+        return $this->hasMany(MovimientoAves::class, 'galpon_destino_id');
+    }
+
     public function scopeDisponiblesParaCarga(Builder $query): Builder
     {
         return $query

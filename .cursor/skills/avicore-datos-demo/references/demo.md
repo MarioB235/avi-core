@@ -61,9 +61,10 @@ Empresa: **Avícola Demo** (`DEMO`), excepto **Admin AviCore** (sin `empresa_id`
 
 ### Guards de seguridad (`DemoLoginService`)
 
-1. **`APP_ENV=production`:** selector deshabilitado siempre (aunque el flag diga `true`).
-2. **Sin empresa demo:** si no existe empresa con código `DEMO`, el selector no se activa (staging con datos reales).
-3. **Solo usuarios demo:** el login por selector rechaza usuarios fuera de Avícola Demo (o Admin AviCore demo sin empresa).
+1. **`APP_ENV=production`:** selector deshabilitado siempre (aunque el flag diga `true`). En producción usá documento + contraseña (`000000000` / `Avicore2026!` tras seed).
+2. **Sin empresa demo:** si no existe empresa con código `DEMO`, el selector no se activa y `/login` puede mostrar aviso de demo pendiente (staging con datos reales; login normal disponible).
+3. **Sin usuarios demo:** si la empresa existe pero falta algún usuario activo de `role_documentos` (todos los perfiles del selector), el selector no se activa y `/login` muestra aviso para el usuario de prueba (login normal con credenciales si las tiene).
+4. **Solo usuarios demo:** el login por selector rechaza usuarios fuera de Avícola Demo (o Admin AviCore demo sin empresa).
 
 **Primera vez / BD vacía:** `php artisan db:seed --force`. Re-ejecutar el seed es seguro (`firstOrCreate`).
 

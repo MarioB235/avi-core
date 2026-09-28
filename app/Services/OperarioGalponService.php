@@ -171,7 +171,7 @@ class OperarioGalponService
             ? collect()
             : RegistroOperativo::query()
                 ->whereIn('id', $registroIds)
-                ->with('galpon')
+                ->with(['galpon', 'user'])
                 ->get()
                 ->keyBy('id');
 
@@ -179,7 +179,7 @@ class OperarioGalponService
             ? collect()
             : Vacunacion::query()
                 ->whereIn('id', $vacunacionIds)
-                ->with(['lote', 'galpon'])
+                ->with(['lote', 'galpon', 'user'])
                 ->get()
                 ->keyBy('id');
 

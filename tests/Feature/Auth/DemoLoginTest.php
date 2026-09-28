@@ -96,15 +96,14 @@ class DemoLoginTest extends TestCase
             ->assertHasErrors('demoRole');
     }
 
-    public function test_demo_login_fails_when_seed_user_is_missing(): void
+    public function test_demo_login_is_disabled_when_seed_users_are_missing(): void
     {
         Empresa::factory()->create(['codigo' => 'DEMO']);
         $this->enableDemoLogin();
 
         Livewire::test(Login::class)
-            ->set('demoRole', UserRole::Dueno->value)
-            ->call('login')
-            ->assertHasErrors('demoRole');
+            ->assertSet('demoLoginEnabled', false)
+            ->assertSet('demoSetupPending', true);
     }
 
     public function test_demo_login_requires_role(): void
@@ -211,7 +210,19 @@ class DemoLoginTest extends TestCase
         $this->app['env'] = 'staging';
 
         Livewire::test(Login::class)
-            ->assertSet('demoLoginEnabled', false);
+            ->assertSet('demoLoginEnabled', false)
+            ->assertSet('demoSetupPending', true);
+    }
+
+    public function test_demo_login_is_disabled_when_partial_seed_users_exist(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        User::query()->where('documento', '11111111')->delete();
+        $this->enableDemoLogin();
+
+        Livewire::test(Login::class)
+            ->assertSet('demoLoginEnabled', false)
+            ->assertSet('demoSetupPending', true);
     }
 
     public function test_demo_login_is_disabled_when_flag_is_false(): void
@@ -222,6 +233,7 @@ class DemoLoginTest extends TestCase
 
         Livewire::test(Login::class)
             ->assertSet('demoLoginEnabled', false)
+            ->assertSet('demoSetupPending', false)
             ->set('documento', '000000000')
             ->set('password', 'Avicore2026!')
             ->call('login')

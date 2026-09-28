@@ -6,10 +6,12 @@ use App\Http\Middleware\EnsureOperarioAccess;
 use App\Http\Middleware\EnsurePasswordChanged;
 use App\Http\Middleware\EnsureRolePanelAccess;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Livewire\Admin\Auditoria\Index as AdminAuditoriaIndex;
 use App\Livewire\Admin\Comercial\Index as AdminComercialIndex;
 use App\Livewire\Admin\Empresas\Index as AdminEmpresasIndex;
 use App\Livewire\Admin\Equipo\Index as AdminEquipoIndex;
 use App\Livewire\Admin\Estructura\Index as AdminEstructuraIndex;
+use App\Livewire\Admin\HistorialOperativo\Index as AdminHistorialOperativoIndex;
 use App\Livewire\Admin\Resumen\Index as AdminResumenIndex;
 use App\Livewire\Admin\Usuarios\Index as AdminUsuariosIndex;
 use App\Livewire\Auth\ChangePassword;
@@ -85,6 +87,8 @@ Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
             ->group(function () {
                 Route::view('/', 'pages.admin.home')->name('home');
                 Route::livewire('/resumen', AdminResumenIndex::class)->name('resumen.index');
+                Route::livewire('/historial-operativo', AdminHistorialOperativoIndex::class)->name('historial-operativo.index');
+                Route::livewire('/auditoria', AdminAuditoriaIndex::class)->name('auditoria.index');
                 Route::livewire('/equipo', AdminEquipoIndex::class)->name('equipo.index');
                 Route::livewire('/comercial', AdminComercialIndex::class)->name('comercial.index');
                 Route::livewire('/usuarios', AdminUsuariosIndex::class)->name('usuarios.index');

@@ -21,15 +21,21 @@ erDiagram
     empresas ||--o{ lotes : tiene
     empresas ||--o{ registros_operativos : tiene
     empresas ||--o{ vacunaciones : tiene
+    empresas ||--o{ movimientos_aves : tiene
     empresas ||--o{ soporte_sesiones : auditada
     users ||--o{ soporte_sesiones : actor
     granjas ||--o{ galpones : contiene
     galpones ||--o{ lotes : aloja
     galpones ||--o{ registros_operativos : recibe
     galpones ||--o{ vacunaciones : recibe
+    galpones ||--o{ movimientos_aves : origen
+    galpones ||--o{ movimientos_aves : destino
     lotes ||--o{ vacunaciones : vacunado
+    lotes ||--o{ movimientos_aves : identifica
     users ||--o{ registros_operativos : registra
     users ||--o{ vacunaciones : registra
+    users ||--o{ movimientos_aves : registra
+    movimientos_aves ||--o| movimientos_aves : reversa
 ```
 
 ---
@@ -140,7 +146,7 @@ erDiagram
 | empresa_id | FK | No | |
 | galpon_id | FK | No | |
 | user_id | FK users | No | |
-| tipo | string | No | `huevos`, `muertes`, `descarte`, `alimento`, `combinado` |
+| tipo | string | No | `huevos`, `muertes`, `descarte`, `alimento`, `combinado` (legado AUD-09; sin altas nuevas) |
 | idempotencia_clave | string(64) | Sí | UUID por intención de carga (`IdempotenciaCaptura`, CAP-07); única por `empresa_id` |
 | cero_confirmado | boolean | No | Default `false`; `true` = operario confirmó explícitamente cero (CAP-10, huevos/muertes/descarte) |
 | huevos | integer | Sí | Aptos/comerciales (tipo `huevos` o parte de `combinado`) |
@@ -177,6 +183,95 @@ Registro operativo de vacunación por lote (tabla propia; no es fila en `registr
 
 **Relación:** `Lote::vacunaciones()` · resumen en UI: `Vacunacion::cantidadResumen()` («Vacuna {tipo} · lote {código}»).
 
+### `correcciones_registro_operativo`
+
+Trazabilidad D07 de correcciones sobre registros operativos activos (AUD-04). El registro original no se borra; se actualizan valores y se conserva antes/después.
+
+| Campo | Tipo | Null | Notas |
+|-------|------|------|-------|
+| id | bigint PK | No | |
+| empresa_id | FK | No | |
+| registro_operativo_id | FK registros_operativos | No | Original vinculado |
+| valores_anteriores | json | No | Snapshot de campos corregibles |
+| valores_nuevos | json | No | Valores aplicados |
+| motivo | text | No | Obligatorio |
+| corregido_por | FK users | No | Actor supervisor |
+| fecha_efectiva | timestamp | No | Momento efectivo (D07) |
+| created_at, updated_at | timestamp | No | |
+
+**Relación:** `RegistroOperativo::correcciones()` · acción `CorregirRegistroOperativoAction`.
+
+### `movimientos_aves`
+
+Ledger de movimientos de aves (MOV-01): entradas, traslados, ajustes, cierres y faena. Inmutable (`PreventsHardDelete`); reversión enlazada sin borrar historia.
+
+| Campo | Tipo | Null | Notas |
+|-------|------|------|-------|
+| id | bigint PK | No | |
+| empresa_id | FK | No | |
+| tipo | string | No | `MovimientoAvesTipo`: entrada, traslado, ajuste, cierre_lote, faena, reversion |
+| estado | string | No | `activo`, `reversado` — solo `activo` cuenta en saldo reconstruido |
+| galpon_origen_id | FK galpones | Sí | Origen o galpón único (ajuste/salida) |
+| galpon_destino_id | FK galpones | Sí | Destino (entrada/traslado) |
+| lote_id | FK lotes | Sí | Identificación D01 cuando aplica; no reparto silencioso |
+| cantidad | unsigned int | No | Siempre positiva salvo validación de ajuste vía `ajuste_delta` |
+| ajuste_delta | int | Sí | Solo tipo `ajuste`; diferencia firmada conteo vs sistema |
+| motivo | text | No | Obligatorio |
+| registrado_por | FK users | No | Actor |
+| fecha_efectiva | timestamp | No | Momento efectivo (D07) |
+| reversa_de_id | FK movimientos_aves | Sí | Reversión → movimiento original |
+| reversado_por_id | FK movimientos_aves | Sí | Original → fila de reversión |
+| metadata | json | Sí | `origen` (`saldo_inicial_lote`/`entrada_externa`), imputaciones D01, referencias SMA |
+| idempotencia_clave | string(64) | Sí | Única por `empresa_id`; saldo inicial usa `saldo-inicial-lote:{lote_id}` |
+| created_at, updated_at | timestamp | No | |
+
+**Saldo:** `MovimientoAvesEfecto::saldoNetoPorGalpon()` — reconstrucción por galpón; mortalidad operativa sigue en `registros_operativos`. Detalle: `movimientos-aves.md`.
+
+### `auditorias`
+
+Bitácora transversal de acciones críticas (AUD-05). Quién, qué, cuándo y por qué; metadata sanitizada (sin contraseñas ni tokens).
+
+| Campo | Tipo | Null | Notas |
+|-------|------|------|-------|
+| id | bigint PK | No | |
+| empresa_id | FK | Sí | Scope tenant; null solo si aplica acción de plataforma |
+| actor_id | FK users | No | Usuario que ejecutó la acción |
+| categoria | string | No | `AuditoriaCategoria`: usuario, empresa, soporte, lote, operacion, correccion, movimiento*, ajuste* |
+| accion | string | No | p. ej. `creado`, `estado_cambiado`, `anulado`, `corregido`, `inicio`, `fin` |
+| entidad_tipo | string | Sí | Clase o recurso auditado |
+| entidad_id | bigint | Sí | ID del recurso |
+| motivo | text | Sí | Obligatorio cuando la acción de negocio lo exige |
+| metadata | json | Sí | Antes/después y contexto; sanitizado por `AuditoriaMetadataSanitizer` |
+| occurred_at | timestamp | No | Momento efectivo del evento |
+| created_at, updated_at | timestamp | No | |
+
+\* `movimiento` y `ajuste` reservados para bloque MOV.
+
+**Registro:** `RegistrarAuditoriaAction` desde Actions críticas (usuarios, empresas, soporte, lotes, anulaciones, correcciones). Soporte mantiene además `soporte_sesiones.acciones`.
+
+### `documentos_emitidos`
+
+Copias inmutables de reportes PDF/Excel al emitir (AUD-08 / REP-11). Sin borrado desde la app.
+
+| Campo | Tipo | Null | Notas |
+|-------|------|------|-------|
+| id | bigint PK | No | |
+| empresa_id | FK | No | |
+| emitido_por | FK users | No | Actor que generó el archivo |
+| tipo | string | No | p. ej. `reporte_diario` |
+| formato | string | No | `DocumentoEmitidoFormato`: pdf, xlsx |
+| nombre_archivo | string | No | Nombre de descarga |
+| storage_disk | string | No | Disco privado (default `local`) |
+| storage_path | string | No | Ruta relativa única por disco |
+| checksum_sha256 | char(64) | No | Integridad del contenido |
+| filtros | json | Sí | Snapshot de filtros al emitir |
+| metadata | json | Sí | Versión, totales, etc. |
+| emitido_at | timestamp | No | Momento de emisión |
+| fecha_corte | timestamp | Sí | Corte de datos del reporte |
+| created_at, updated_at | timestamp | No | |
+
+**Registro:** `RegistrarDocumentoEmitidoAction` (bloque REP). Retención: `retencion-d07.md`.
+
 ---
 
 ## Índices recomendados
@@ -186,6 +281,10 @@ Registro operativo de vacunación por lote (tabla propia; no es fila en `registr
 | Varias | `empresa_id` |
 | registros_operativos | `galpon_id`, `created_at`, `tipo`, `(empresa_id, user_id, created_at)` historial operario; `(empresa_id, idempotencia_clave)` único |
 | vacunaciones | `empresa_id`, `(lote_id, created_at)`, `(galpon_id, created_at)`, `(empresa_id, user_id, created_at)` historial operario; `(empresa_id, idempotencia_clave)` único |
+| correcciones_registro_operativo | `(empresa_id, registro_operativo_id)` |
+| movimientos_aves | `(empresa_id, fecha_efectiva)`, `(galpon_origen_id, fecha_efectiva)`, `(galpon_destino_id, fecha_efectiva)`, `(lote_id, fecha_efectiva)`, `estado`, `tipo`, único `(empresa_id, idempotencia_clave)` |
+| auditorias | `(empresa_id, occurred_at)`, `(categoria, occurred_at)`, `(entidad_tipo, entidad_id)`, `actor_id` |
+| documentos_emitidos | `(empresa_id, emitido_at)`, `(empresa_id, tipo, emitido_at)`, único `(storage_disk, storage_path)` |
 | granjas | `(empresa_id, dicose)` único; `(empresa_id, codigo)` único |
 | galpones | `(granja_id, codigo)` único |
 | lotes | `estado`, `(empresa_id, codigo)` único |

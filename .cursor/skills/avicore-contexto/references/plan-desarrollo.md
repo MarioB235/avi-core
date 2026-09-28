@@ -200,8 +200,8 @@ Solo nombres de bloque; el DDL vive en `avicore-modelo-datos/references/esquema-
 
 | Bloque / fase | Tabla o carpeta | Notas |
 |---------------|-----------------|-------|
-| Movimientos de aves | `movimientos_aves` | Traslados, ajustes, cierres |
-| Anulación y auditoría (fase 16) | `auditorias` | Acciones críticas |
+| Movimientos de aves | `movimientos_aves` | **Hecho MOV-01** — modelo mínimo; Actions/UI en MOV-02+ |
+| Anulación y auditoría (fase 16) | `auditorias` | **Hecho MVP (AUD-05)** — `RegistrarAuditoriaAction`; UI consulta pendiente AUD-07 |
 | Dashboard (fase 17) | `alertas` | Supervisión |
 | Sanidad / vacunas (plan completo) | módulo `Sanidad/` o calendario sanitario | **Post-MVP** — stock, calendario y reportes sanitarios |
 | Vacunación operario (registro por lote) | `vacunaciones` | **Hecho MVP (2026-07-02)** — hub Cargar + `RegistrarVacunacionAction`; ver `esquema-bd.md` y `pantallas-flujos.md` §8.5 |

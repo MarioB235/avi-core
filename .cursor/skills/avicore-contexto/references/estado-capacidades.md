@@ -35,15 +35,17 @@
 | CRUD usuarios admin | Implementado | `/{rol}/usuarios` | SEG-08 OK (último admin, escalada, auto-desactivación) |
 | Estructura granjas/galpones/lotes | Parcial | `/admin/estructura` | EST-01–10; ciclo de lote incompleto |
 | Operario — capturas | Implementado | `/operario/cargar`, `/operario/carga/*` | CAP-01–14 |
-| Operario — historial y anulación | Parcial | `/operario/historial` | AUD-01–02; sin corrección general |
+| Operario — historial y anulación | Parcial | `/operario/historial` | AUD-01–03 ✓; corrección general pendiente |
+| Admin — historial operativo | Implementado | `/{rol}/historial-operativo` | AUD-03; supervisión equipo |
 | PWA instalable (online) | Implementado | `vite.config.js`, `pwa.md` | ACT-05–08; sin offline completo |
 | Admin — Inicio (pulso/KPIs) | Parcial | `/admin` | Datos reales + previews stock/demanda (RES-01) |
 | Admin — Resumen | Parcial | `/admin/resumen` | Métricas a reconciliar (RES-02–09) |
 | Admin — Equipo | Parcial | `/admin/equipo` | Solo lectura; datos demo posibles |
 | Admin — Comercial | **Preview** | `/admin/comercial` | **Etapa 2**; mapa y clientes ficticios |
 | Panel Reparto | **Preview** | `/reparto` | **Fuera v1**; rol sin enum completo (SEG-01) |
-| Movimientos / cierre de lote | Pendiente | — | MOV-01–13 |
-| Corrección y auditoría transversal | Pendiente | `Actions/Auditoria/.gitkeep` | AUD-04–06 |
+| Movimientos / cierre de lote | Parcial | `movimientos_aves`, Actions entrada/traslado, conciliación D01 | MOV-01 ✓ · MOV-02 ✓ · MOV-03 ✓; MOV-04–13 pendientes |
+| Corrección operativa (D07) | Parcial | `CorregirRegistroOperativoAction`, `correcciones_registro_operativo`, UI historial supervisor | AUD-04 ✓ |
+| Auditoría crítica transversal | Implementado (MVP) | `auditorias`, `documentos_emitidos`, `PoliticaRetencionD07`, UI `/{rol}/auditoria`, inmutabilidad D07, tipo legado `combinado` | AUD-01 ✓ … AUD-09 ✓; bloque MOV pendiente |
 | Reportes PDF / Excel | Pendiente | `Livewire/Reportes/.gitkeep` | REP-01–14 |
 | Empresas admin plataforma | Parcial | `/avicore/empresas`, Actions Empresa, unidades por empresa en UI | EMP-01–04 OK; export REP pendiente |
 | Tiempo real (Reverb / Echo) | Pendiente | `Events/.gitkeep` | ACT-02–04; `eventos.md` |

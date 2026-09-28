@@ -57,6 +57,11 @@ class Lote extends Model
         return $this->hasMany(Vacunacion::class);
     }
 
+    public function movimientosAves(): HasMany
+    {
+        return $this->hasMany(MovimientoAves::class);
+    }
+
     public function etiquetaVacunacion(): string
     {
         $resumen = $this->codigo.' · '.number_format($this->cantidad_inicial, 0, ',', '.').' aves';
