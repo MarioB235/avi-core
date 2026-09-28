@@ -7,36 +7,46 @@ Plan maestro: [PLAN-MAESTRO-ENTREGA-AVICORE.md](PLAN-MAESTRO-ENTREGA-AVICORE.md)
 
 | Campo | Valor |
 |---|---|
-| Revisión | 2026-09-26 |
-| Base git | cambios locales EST-05 → CAP-06 en `feature/emp-01-alta-empresa` |
-| Rama | `feature/emp-01-alta-empresa` |
-| Siguiente ID | **CAP-07** (recomendado) u **ORQ-05** |
+| Revisión | 2026-09-28 |
+| Base git | CAP-14 en `feature/cap-est-operacion-estructura` |
+| Rama | `feature/cap-est-operacion-estructura` |
+| Siguiente ID | **MSG-5** (commit/PR) |
 | En curso | Ninguno |
-| Tests | **746** total · **746** OK · 2554 aserciones (2026-09-26) |
+| Tests | **813** total · **813** OK · 2829 aserciones (2026-09-28, post-auditoría) |
 | Build | Pint OK |
 | `check:agent-docs` | OK |
 | Bloque SEG | **Cerrado** (SEG-01 → SEG-12) |
 | Bloque EMP | **Cerrado** (EMP-01 → EMP-08) |
 | Bloque EST | **Cerrado** (EST-01 → EST-10) |
-| Bloque CAP (parcial) | CAP-01 → CAP-06 verificadas |
+| Bloque CAP | **Cerrado** (CAP-01 → CAP-14) |
 | Alcance v1 | Operación avícola completa; comercial/reparto etapa 2 |
+
+## Cierre de sesión (P3 · 2026-09-28)
+
+Bloque **CAP** verificado en rama `feature/cap-est-operacion-estructura`. Evidencias CAP-01…CAP-14 en `portal/planes/evidencias/`. Sin commit en esta sesión.
+
+**Verificación final:** `php artisan test` **813/813** OK · 2829 aserciones · Pint OK · `check:agent-docs` OK.
+
+**Auditoría (msg 2–4):** correcciones msg 3 aplicadas; docs alineados (`reglas.md` §8.9 postura semanal, `pantallas-flujos.md`, `estandares-codigo.md`, evidencias CAP-09/10/11).
+
+**Siguiente paso humano:** mensaje **5** (commit/PR). Plantillas en `portal/contenido/desarrollo/mensajes-reutilizables.html`.
 
 ## Últimos cierres
 
 | ID | Estado | Fecha | Evidencia |
 |---|---|---|---|
-| CAP-06 | VERIFICADA | 2026-09-26 | [evidencias/CAP-06-vacunacion-basica.md](evidencias/CAP-06-vacunacion-basica.md) |
-| CAP-05 | VERIFICADA | 2026-09-26 | [evidencias/CAP-05-alimento-entregado.md](evidencias/CAP-05-alimento-entregado.md) |
-| CAP-04 | VERIFICADA | 2026-09-26 | [evidencias/CAP-04-descarte-aves.md](evidencias/CAP-04-descarte-aves.md) |
-| CAP-03 | VERIFICADA | 2026-09-26 | [evidencias/CAP-03-muertes-transaccionales.md](evidencias/CAP-03-muertes-transaccionales.md) |
-| CAP-02 | VERIFICADA | 2026-09-26 | [evidencias/CAP-02-huevos-punta-a-punta.md](evidencias/CAP-02-huevos-punta-a-punta.md) |
+| CAP-14 | VERIFICADA | 2026-09-28 | [evidencias/CAP-14-recorrido-movil.md](evidencias/CAP-14-recorrido-movil.md) |
+| CAP-13 | VERIFICADA | 2026-09-28 | [evidencias/CAP-13-formularios-obsoletos.md](evidencias/CAP-13-formularios-obsoletos.md) |
+| CAP-12 | VERIFICADA | 2026-09-27 | [evidencias/CAP-12-perfil-ayuda.md](evidencias/CAP-12-perfil-ayuda.md) |
+| CAP-11 | VERIFICADA | 2026-09-27 | [evidencias/CAP-11-hora-corte-dia-logico.md](evidencias/CAP-11-hora-corte-dia-logico.md) |
 
-## Mensaje para continuar
+## Mensajes para continuar
 
-```text
-/avicore-architect-direct
-Ejecutá portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md.
-Leé portal/planes/CHECKPOINT.md.
-Empezá por CAP-07 (idempotencia transversal) o ORQ-05 si priorizás tooling.
-No hagas commit, push, PR ni despliegue sin autorización explícita.
-```
+Plantillas **P1–P3** al final de `portal/contenido/desarrollo/plantillas-cursor.html`.  
+Agregá `/avicore-architect-direct` en la primera línea del chat (no va en los bloques).
+
+| Paso | Plantilla | Cuándo |
+|------|-----------|--------|
+| Inicio | **P1** | Primera vez o chat nuevo |
+| Repetir | **P2** | Cada siguiente tarea del plan |
+| Cierre bloque | **P3** | Antes de auditoría (msg 2→5) |

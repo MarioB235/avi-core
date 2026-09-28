@@ -4,8 +4,7 @@ namespace App\Livewire\Operario\Concerns;
 
 use App\Actions\Operacion\RegistrarCargaDescarteAction;
 use App\Services\OperarioGalponService;
-use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
+use App\Support\IdempotenciaCaptura;
 
 trait ManagesDescarteForm
 {
@@ -25,6 +24,7 @@ trait ManagesDescarteForm
 
         $this->resetFormularioDescarte();
         $this->dialogDescarteAbierto = true;
+        $this->registrarContextoCapturaAlAbrirDialogo();
     }
 
     public function updatedDialogDescarteAbierto(bool $abierto): void
@@ -56,33 +56,50 @@ trait ManagesDescarteForm
             return;
         }
 
-        try {
-            $registrarCargaDescarte->execute(
+        $this->ejecutarEnvioCarga(
+            fn () => $registrarCargaDescarte->execute(
                 auth()->user(),
                 $galpon,
                 (int) $validated['descarteAves'],
                 null,
                 $this->descarteIdempotenciaClave,
-            );
-        } catch (ValidationException $exception) {
-            foreach ($exception->errors() as $field => $messages) {
-                $this->addError($field, $messages[0]);
-            }
-
-            return;
-        }
-
-        $this->finalizarGuardadoCarga(
+            ),
             'dialogDescarteAbierto',
             fn () => $this->resetFormularioDescarte(),
             'Descarte de aves guardado.',
         );
     }
 
+    public function confirmarCeroDescarte(
+        RegistrarCargaDescarteAction $registrarCargaDescarte,
+        OperarioGalponService $operarioGalponService,
+    ): void {
+        $galpon = $this->resolveGalponParaGuardar($operarioGalponService, 'dialogDescarteAbierto');
+
+        if ($galpon === null) {
+            return;
+        }
+
+        $this->ejecutarEnvioCarga(
+            fn () => $registrarCargaDescarte->execute(
+                auth()->user(),
+                $galpon,
+                0,
+                null,
+                $this->descarteIdempotenciaClave,
+                true,
+            ),
+            'dialogDescarteAbierto',
+            fn () => $this->resetFormularioDescarte(),
+            'Cero confirmado.',
+        );
+    }
+
     private function resetFormularioDescarte(): void
     {
         $this->reset(['descarteAves']);
-        $this->descarteIdempotenciaClave = (string) Str::uuid();
+        $this->descarteIdempotenciaClave = IdempotenciaCaptura::generarClave();
+        $this->limpiarEstadoEnvioCarga();
         $this->resetValidation();
     }
 }

@@ -82,6 +82,8 @@
             </div>
         @endif
 
+        @include('livewire.operario.partials.carga-envio-feedback')
+
         <x-ui.button
             type="submit"
             class="w-full py-4 text-base"
@@ -89,7 +91,7 @@
             wire:target="guardarVacunacion"
             :disabled="! $formularioCompleto"
         >
-            <span wire:loading.remove wire:target="guardarVacunacion">Guardar vacunación</span>
+            <span wire:loading.remove wire:target="guardarVacunacion">{{ $cargaEnvioError ? 'Reintentar' : 'Guardar vacunación' }}</span>
             <span wire:loading wire:target="guardarVacunacion">Guardando…</span>
         </x-ui.button>
     @endif

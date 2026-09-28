@@ -226,14 +226,14 @@ Base: `app/Livewire/Operario/`, concerns, Actions Operacion, OperarioGalponServi
 - [x] **CAP-04 — Descarte de aves.** Integridad de saldo, etiqueta diferenciada y anulación. Éxito: no contabiliza muerte ni huevo descartado.
 - [x] **CAP-05 — Alimento entregado.** Precisión, coma decimal en UI, límites documentados y múltiples entregas. Éxito: días sin entrega no significan falta de alimentación.
 - [x] **CAP-06 — Vacunación básica.** Lote/empresa/galpón vigente, tipo y detalle útil; anulación. Éxito: historia sanitaria sin inventar calendario o prescripción.
-- [ ] **CAP-07 — Idempotencia.** Clave por intención/empresa y resultado persistido. Éxito: doble toque/timeout crea una operación; nueva intención de igual cantidad crea otra.
-- [ ] **CAP-08 — Estado actual bajo lock.** Revalidar disponibilidad y saldo dentro de mutación crítica. Éxito: inactivación/cierre concurrente no acepta carga prohibida.
-- [ ] **CAP-09 — Red y respuesta perdida.** Mantener formulario y distinguir pendiente/error/confirmado. Éxito: reintento usa misma clave, éxito solo después de persistir.
-- [ ] **CAP-10 — Cero y ausencia con D03.** Mecanismo mínimo acordado sin cierre diario obligatorio. Éxito: cero real distinguible de omisión.
-- [ ] **CAP-11 — Hora de corte.** Zona acordada, medianoche y fecha del registro. Éxito: historial/totales/anulación comparten día lógico.
-- [ ] **CAP-12 — Perfil/ayuda.** Datos propios permitidos, contraseña y contacto real. Éxito: no modificar rol/empresa/documento desde perfil.
-- [ ] **CAP-13 — Formularios obsoletos.** Cambios de galpón/rol con formulario abierto revalidados. Éxito: sin datos cruzados ni falsa confirmación.
-- [ ] **CAP-14 — Recorrido móvil.** Login → galpón → capturas → historial → anular con motivo. Éxito: teléfono representativo, sin asistencia técnica.
+- [x] **CAP-07 — Idempotencia.** Clave por intención/empresa y resultado persistido. Éxito: doble toque/timeout crea una operación; nueva intención de igual cantidad crea otra.
+- [x] **CAP-08 — Estado actual bajo lock.** Revalidar disponibilidad y saldo dentro de mutación crítica. Éxito: inactivación/cierre concurrente no acepta carga prohibida.
+- [x] **CAP-09 — Red y respuesta perdida.** Mantener formulario y distinguir pendiente/error/confirmado. Éxito: reintento usa misma clave, éxito solo después de persistir.
+- [x] **CAP-10 — Cero y ausencia con D03.** Mecanismo mínimo acordado sin cierre diario obligatorio. Éxito: cero real distinguible de omisión.
+- [x] **CAP-11 — Hora de corte.** Zona acordada, medianoche y fecha del registro. Éxito: historial/totales/anulación comparten día lógico.
+- [x] **CAP-12 — Perfil/ayuda.** Datos propios permitidos, contraseña y contacto real. Éxito: no modificar rol/empresa/documento desde perfil.
+- [x] **CAP-13 — Formularios obsoletos.** Cambios de galpón/rol con formulario abierto revalidados. Éxito: sin datos cruzados ni falsa confirmación.
+- [x] **CAP-14 — Recorrido móvil.** Login → galpón → capturas → historial → anular con motivo. Éxito: teléfono representativo, sin asistencia técnica.
 
 Pruebas: Feature/Livewire para reglas y navegador/dispositivo para teclado, foco y red. No introducir cola offline en este módulo.
 

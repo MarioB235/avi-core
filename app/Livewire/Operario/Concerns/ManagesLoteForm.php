@@ -5,6 +5,7 @@ namespace App\Livewire\Operario\Concerns;
 use App\Actions\Lote\RegistrarLoteAction;
 use App\Enums\TipoHuevo;
 use App\Models\Lote;
+use App\Services\OperarioGalponResumenService;
 use App\Services\OperarioGalponService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
@@ -34,6 +35,7 @@ trait ManagesLoteForm
 
         $this->resetFormularioLote($operarioGalponService);
         $this->dialogLoteAbierto = true;
+        $this->registrarContextoCapturaAlAbrirDialogo();
     }
 
     public function updatedDialogLoteAbierto(bool $abierto, OperarioGalponService $operarioGalponService): void
@@ -46,7 +48,12 @@ trait ManagesLoteForm
     public function guardarLote(
         RegistrarLoteAction $registrarLote,
         OperarioGalponService $operarioGalponService,
+        OperarioGalponResumenService $operarioGalponResumenService,
     ): void {
+        if ($this->abortarSiCapturaObsoleta($operarioGalponService, $operarioGalponResumenService)) {
+            return;
+        }
+
         $this->authorizeCreateLote();
 
         $rules = [

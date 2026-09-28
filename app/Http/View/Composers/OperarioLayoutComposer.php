@@ -41,8 +41,10 @@ class OperarioLayoutComposer
 
     private function perfilHeaderTitle(): string
     {
-        return Request::query('seccion') === 'password'
-            ? 'Contraseña'
-            : 'Mis datos';
+        return match (Request::query('seccion')) {
+            'password' => 'Contraseña',
+            'ayuda' => 'Ayuda',
+            default => 'Mis datos',
+        };
     }
 }

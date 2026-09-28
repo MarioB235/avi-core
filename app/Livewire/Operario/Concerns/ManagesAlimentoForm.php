@@ -5,7 +5,7 @@ namespace App\Livewire\Operario\Concerns;
 use App\Actions\Operacion\RegistrarCargaAlimentoAction;
 use App\Services\OperarioGalponService;
 use App\Support\AlimentoValidacion;
-use Illuminate\Support\Str;
+use App\Support\IdempotenciaCaptura;
 use Illuminate\Validation\ValidationException;
 
 trait ManagesAlimentoForm
@@ -26,6 +26,7 @@ trait ManagesAlimentoForm
 
         $this->resetFormularioAlimento();
         $this->dialogAlimentoAbierto = true;
+        $this->registrarContextoCapturaAlAbrirDialogo();
     }
 
     public function updatedDialogAlimentoAbierto(bool $abierto): void
@@ -55,9 +56,7 @@ trait ManagesAlimentoForm
         try {
             AlimentoValidacion::assertRango($kg);
         } catch (ValidationException $exception) {
-            foreach ($exception->errors() as $field => $messages) {
-                $this->addError($field, $messages[0]);
-            }
+            $this->mapearValidationExceptionDeCarga($exception);
 
             return;
         }
@@ -68,23 +67,14 @@ trait ManagesAlimentoForm
             return;
         }
 
-        try {
-            $registrarCargaAlimento->execute(
+        $this->ejecutarEnvioCarga(
+            fn () => $registrarCargaAlimento->execute(
                 auth()->user(),
                 $galpon,
                 $kg,
                 null,
                 $this->alimentoIdempotenciaClave,
-            );
-        } catch (ValidationException $exception) {
-            foreach ($exception->errors() as $field => $messages) {
-                $this->addError($field, $messages[0]);
-            }
-
-            return;
-        }
-
-        $this->finalizarGuardadoCarga(
+            ),
             'dialogAlimentoAbierto',
             fn () => $this->resetFormularioAlimento(),
             'Entrega de alimento guardada.',
@@ -94,7 +84,8 @@ trait ManagesAlimentoForm
     private function resetFormularioAlimento(): void
     {
         $this->reset(['alimentoKg']);
-        $this->alimentoIdempotenciaClave = (string) Str::uuid();
+        $this->alimentoIdempotenciaClave = IdempotenciaCaptura::generarClave();
+        $this->limpiarEstadoEnvioCarga();
         $this->resetValidation();
     }
 }

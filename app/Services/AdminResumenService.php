@@ -8,6 +8,7 @@ use App\Models\Granja;
 use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\User;
+use App\Support\DiaOperativoEmpresa;
 use Illuminate\Database\Eloquent\Collection;
 
 class AdminResumenService
@@ -44,7 +45,7 @@ class AdminResumenService
                 ->where('empresa_id', $empresaId)
                 ->where('tipo', RegistroOperativoTipo::Alimento)
                 ->whereIn('galpon_id', $galponIds)
-                ->delDia()
+                ->delDia($empresaId)
                 ->selectRaw('galpon_id, COALESCE(SUM(alimento_kg), 0) as total')
                 ->groupBy('galpon_id')
                 ->pluck('total', 'galpon_id')
@@ -138,7 +139,7 @@ class AdminResumenService
                 ->activos()
                 ->where('empresa_id', $empresaId)
                 ->whereIn('galpon_id', $galponIds)
-                ->delDia()
+                ->delDia($empresaId)
                 ->distinct()
                 ->pluck('galpon_id')
                 ->all();
@@ -173,7 +174,7 @@ class AdminResumenService
                 ->where('empresa_id', $empresaId)
                 ->where('tipo', RegistroOperativoTipo::Huevos)
                 ->whereIn('galpon_id', $galponIds)
-                ->whereDate('created_at', now()->subDay())
+                ->delDia($empresaId, DiaOperativoEmpresa::ayerParaEmpresa($empresaId)->fechaLogica)
                 ->sum('huevos');
 
         $deltaHuevos = $data->huevosHoy - $huevosAyer;
@@ -273,33 +274,30 @@ class AdminResumenService
         $galponIds = $this->galponesEnScope($user, $granjaId, $galponId)->modelKeys();
 
         if ($galponIds === []) {
-            return $this->posturaSemanalVacia();
+            return $this->posturaSemanalVacia($empresaId);
         }
 
-        $inicio = now()->subDays(6)->startOfDay();
-
-        /** @var array<string, int|string> $totalesPorFecha */
-        $totalesPorFecha = RegistroOperativo::query()
-            ->activos()
-            ->where('empresa_id', $empresaId)
-            ->where('tipo', RegistroOperativoTipo::Huevos)
-            ->whereIn('galpon_id', $galponIds)
-            ->where('created_at', '>=', $inicio)
-            ->selectRaw('DATE(created_at) as fecha, COALESCE(SUM(huevos), 0) as total')
-            ->groupBy('fecha')
-            ->pluck('total', 'fecha')
-            ->all();
-
+        $hoy = DiaOperativoEmpresa::hoyParaEmpresa($empresaId);
         $puntos = [];
 
-        for ($i = 0; $i < 7; $i++) {
-            $fecha = $inicio->copy()->addDays($i);
-            $clave = $fecha->toDateString();
+        for ($i = 6; $i >= 0; $i--) {
+            $dia = DiaOperativoEmpresa::forEmpresa(
+                $empresaId,
+                $hoy->fechaLogica->copy()->subDays($i),
+            );
+
+            $total = (int) RegistroOperativo::query()
+                ->activos()
+                ->where('empresa_id', $empresaId)
+                ->where('tipo', RegistroOperativoTipo::Huevos)
+                ->whereIn('galpon_id', $galponIds)
+                ->delDia($empresaId, $dia->fechaLogica)
+                ->sum('huevos');
 
             $puntos[] = [
-                'label' => $fecha->format('j/n'),
-                'value' => (int) ($totalesPorFecha[$clave] ?? 0),
-                'date' => $clave,
+                'label' => $dia->fechaLogica->format('j/n'),
+                'value' => $total,
+                'date' => $dia->fechaLogica->toDateString(),
             ];
         }
 
@@ -309,10 +307,27 @@ class AdminResumenService
     /**
      * @return list<array{label: string, value: int, date: string}>
      */
-    private function posturaSemanalVacia(): array
+    private function posturaSemanalVacia(?int $empresaId = null): array
     {
-        $inicio = now()->subDays(6)->startOfDay();
         $puntos = [];
+
+        if ($empresaId !== null) {
+            $hoy = DiaOperativoEmpresa::hoyParaEmpresa($empresaId);
+
+            for ($i = 6; $i >= 0; $i--) {
+                $fecha = $hoy->fechaLogica->copy()->subDays($i);
+
+                $puntos[] = [
+                    'label' => $fecha->format('j/n'),
+                    'value' => 0,
+                    'date' => $fecha->toDateString(),
+                ];
+            }
+
+            return $puntos;
+        }
+
+        $inicio = now()->subDays(6)->startOfDay();
 
         for ($i = 0; $i < 7; $i++) {
             $fecha = $inicio->copy()->addDays($i);

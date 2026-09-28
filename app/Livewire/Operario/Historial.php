@@ -8,6 +8,7 @@ use App\Livewire\Operario\Concerns\ManagesGalponSelector;
 use App\Models\RegistroOperativo;
 use App\Models\Vacunacion;
 use App\Services\OperarioGalponService;
+use App\Support\DiaOperativoEmpresa;
 use App\Support\OperarioHistorialItem;
 use Illuminate\Contracts\View\View;
 use Illuminate\Validation\ValidationException;
@@ -182,9 +183,20 @@ class Historial extends Component
             return;
         }
 
+        $user = auth()->user();
+        $fechaMaxima = $user?->empresa_id !== null
+            ? DiaOperativoEmpresa::fechaLogicaHoy((int) $user->empresa_id)
+            : now()->toDateString();
+
         $validator = validator(
             ['fecha' => $this->fecha],
-            ['fecha' => ['required', 'date', 'before_or_equal:today']],
+            [
+                'fecha' => [
+                    'required',
+                    'date',
+                    'before_or_equal:'.$fechaMaxima,
+                ],
+            ],
             [
                 'fecha.date' => 'La fecha seleccionada no es válida.',
                 'fecha.before_or_equal' => 'La fecha no puede ser futura.',

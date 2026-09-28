@@ -8,8 +8,10 @@ use App\Models\Galpon;
 use App\Models\RegistroOperativo;
 use App\Models\User;
 use App\Services\EmpresaRelationalGuard;
+use App\Support\CapturaCeroEstado;
 use App\Support\GalponValidacion;
-use Illuminate\Database\QueryException;
+use App\Support\IdempotenciaCaptura;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
@@ -24,6 +26,7 @@ class RegistrarCargaHuevosAction
         int $huevosDescarte = 0,
         ?string $observacion = null,
         ?string $idempotenciaClave = null,
+        bool $ceroConfirmado = false,
     ): RegistroOperativo {
         Gate::forUser($user)->authorize('view', $galpon);
 
@@ -32,77 +35,45 @@ class RegistrarCargaHuevosAction
         GalponValidacion::assertDisponibleParaCarga($galpon);
         GalponValidacion::assertLoteActivoParaCargaProductiva($galpon);
 
-        if ($huevosAptos < 0 || $huevosDescarte < 0) {
+        if ($ceroConfirmado) {
+            CapturaCeroEstado::assertTipoPermiteCeroConfirmado(RegistroOperativoTipo::Huevos);
+
+            if ($huevosAptos !== 0 || $huevosDescarte !== 0) {
+                throw ValidationException::withMessages([
+                    'huevos' => 'Para confirmar cero no ingreses cantidades.',
+                ]);
+            }
+        } elseif ($huevosAptos < 0 || $huevosDescarte < 0) {
             throw ValidationException::withMessages([
                 'huevos' => 'Las cantidades no pueden ser negativas.',
             ]);
-        }
-
-        if ($huevosAptos + $huevosDescarte < 1) {
+        } elseif ($huevosAptos + $huevosDescarte < 1) {
             throw ValidationException::withMessages([
                 'huevos' => 'Ingresá al menos un huevo apto o de descarte.',
             ]);
         }
 
-        $clave = $this->normalizarClaveIdempotencia($idempotenciaClave);
+        return IdempotenciaCaptura::resolverRegistroOperativo(
+            $user,
+            $idempotenciaClave,
+            RegistroOperativoTipo::Huevos,
+            fn (?string $clave) => DB::transaction(function () use ($user, $galpon, $huevosAptos, $huevosDescarte, $observacion, $clave, $ceroConfirmado): RegistroOperativo {
+                $galponBloqueado = GalponValidacion::bloquearParaMutacion($galpon->id);
+                GalponValidacion::revalidarParaCargaBajoLock($galponBloqueado, requiereLoteActivo: true);
 
-        if ($clave !== null) {
-            $existente = $this->buscarPorClaveIdempotencia($user, $clave);
-
-            if ($existente !== null) {
-                return $existente;
-            }
-        }
-
-        try {
-            return RegistroOperativo::query()->create([
-                'empresa_id' => $user->empresa_id,
-                'galpon_id' => $galpon->id,
-                'user_id' => $user->id,
-                'tipo' => RegistroOperativoTipo::Huevos,
-                'idempotencia_clave' => $clave,
-                'huevos' => $huevosAptos,
-                'huevos_descarte' => $huevosDescarte > 0 ? $huevosDescarte : null,
-                'observacion' => $observacion !== '' ? $observacion : null,
-                'estado' => RegistroOperativoEstado::Activo,
-            ]);
-        } catch (QueryException $exception) {
-            if ($clave !== null && $this->esViolacionUnicaIdempotencia($exception)) {
-                $existente = $this->buscarPorClaveIdempotencia($user, $clave);
-
-                if ($existente !== null) {
-                    return $existente;
-                }
-            }
-
-            throw $exception;
-        }
-    }
-
-    private function normalizarClaveIdempotencia(?string $clave): ?string
-    {
-        $clave = $clave !== null ? trim($clave) : '';
-
-        return $clave !== '' ? $clave : null;
-    }
-
-    private function buscarPorClaveIdempotencia(User $user, string $clave): ?RegistroOperativo
-    {
-        if ($user->empresa_id === null) {
-            return null;
-        }
-
-        return RegistroOperativo::query()
-            ->forEmpresa((int) $user->empresa_id)
-            ->where('idempotencia_clave', $clave)
-            ->where('tipo', RegistroOperativoTipo::Huevos)
-            ->first();
-    }
-
-    private function esViolacionUnicaIdempotencia(QueryException $exception): bool
-    {
-        $sqlState = $exception->errorInfo[0] ?? '';
-
-        return in_array($sqlState, ['23000', '23505'], true);
+                return RegistroOperativo::query()->create([
+                    'empresa_id' => $user->empresa_id,
+                    'galpon_id' => $galponBloqueado->id,
+                    'user_id' => $user->id,
+                    'tipo' => RegistroOperativoTipo::Huevos,
+                    'idempotencia_clave' => $clave,
+                    'cero_confirmado' => $ceroConfirmado,
+                    'huevos' => $ceroConfirmado ? 0 : $huevosAptos,
+                    'huevos_descarte' => $ceroConfirmado ? 0 : ($huevosDescarte > 0 ? $huevosDescarte : null),
+                    'observacion' => $observacion !== '' ? $observacion : null,
+                    'estado' => RegistroOperativoEstado::Activo,
+                ]);
+            }),
+        );
     }
 }

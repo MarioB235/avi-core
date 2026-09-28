@@ -23,6 +23,7 @@ trait ManagesGalponSelector
 
     public function seleccionarGalpon(int $galponId, OperarioGalponService $operarioGalponService): void
     {
+        $galponAnteriorId = $this->galponId;
         $user = auth()->user();
         $galpon = $operarioGalponService->galponDisponibleParaUsuario($user, $galponId);
 
@@ -37,6 +38,14 @@ trait ManagesGalponSelector
         $this->galponId = $galpon->id;
         $this->selectorGalponAbierto = false;
 
+        $this->afterSeleccionarGalpon($galponAnteriorId, $galpon->id, $operarioGalponService);
+    }
+
+    protected function afterSeleccionarGalpon(
+        ?int $galponAnteriorId,
+        int $galponNuevoId,
+        OperarioGalponService $operarioGalponService,
+    ): void {
         $this->dispatch('snackbar-show', message: 'Galpón actualizado.', variant: 'success');
     }
 

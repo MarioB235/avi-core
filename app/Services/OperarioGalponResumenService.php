@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Enums\LoteEstado;
+use App\Enums\RegistroOperativoTipo;
 use App\Models\Galpon;
 use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\Vacunacion;
+use App\Support\CapturaCeroEstado;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
@@ -72,6 +74,9 @@ class OperarioGalponResumenService
      *     descarte_aves_hoy: int,
      *     alimento_kg_hoy: float,
      *     vacunaciones_hoy: int,
+     *     huevos_estado_hoy: string,
+     *     muertes_estado_hoy: string,
+     *     descarte_estado_hoy: string,
      *     huevos_acumulados: int,
      *     huevos_descarte_acumulados: int,
      *     maples_acumulados: int,
@@ -89,9 +94,13 @@ class OperarioGalponResumenService
 
         $unidades = $this->unidadesPara($galpon);
 
+        $empresaId = (int) $galpon->empresa_id;
+
         $totalesHoy = $this->sumarTotales(
-            $this->registrosGalpon($galpon)->delDia(),
+            $this->registrosGalpon($galpon)->delDia($empresaId),
         );
+
+        $registrosHoy = $this->registrosGalpon($galpon)->delDia($empresaId)->get();
 
         $totalesAcumulados = $fechaInicio === null
             ? $this->totalesVacios()
@@ -108,6 +117,9 @@ class OperarioGalponResumenService
             'descarte_aves_hoy' => $totalesHoy['descarte_aves'],
             'alimento_kg_hoy' => $totalesHoy['alimento_kg'],
             'vacunaciones_hoy' => $this->contarVacunacionesHoy($galpon),
+            'huevos_estado_hoy' => $this->estadoCapturaHoy($registrosHoy, RegistroOperativoTipo::Huevos),
+            'muertes_estado_hoy' => $this->estadoCapturaHoy($registrosHoy, RegistroOperativoTipo::Muertes),
+            'descarte_estado_hoy' => $this->estadoCapturaHoy($registrosHoy, RegistroOperativoTipo::Descarte),
             'huevos_acumulados' => $totalesAcumulados['huevos'],
             'huevos_descarte_acumulados' => $totalesAcumulados['huevos_descarte'],
             'maples_acumulados' => $unidades->maplesDesdeHuevos($totalesAcumulados['huevos']),
@@ -173,8 +185,20 @@ class OperarioGalponResumenService
             ->forEmpresa((int) $galpon->empresa_id)
             ->where('galpon_id', $galpon->id)
             ->activos()
-            ->delDia()
+            ->delDia((int) $galpon->empresa_id)
             ->count();
+    }
+
+    /**
+     * @param  Collection<int, RegistroOperativo>  $registrosHoy
+     */
+    private function estadoCapturaHoy(Collection $registrosHoy, RegistroOperativoTipo $tipo): string
+    {
+        $delTipo = $registrosHoy->filter(
+            fn (RegistroOperativo $registro): bool => $registro->tipo === $tipo,
+        );
+
+        return CapturaCeroEstado::resolverEstadoDia($delTipo, $tipo);
     }
 
     private function unidadesPara(Galpon $galpon): EmpresaHuevosUnidad

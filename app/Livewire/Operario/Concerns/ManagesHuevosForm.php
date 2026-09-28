@@ -4,7 +4,7 @@ namespace App\Livewire\Operario\Concerns;
 
 use App\Actions\Operacion\RegistrarCargaHuevosAction;
 use App\Services\OperarioGalponService;
-use Illuminate\Support\Str;
+use App\Support\IdempotenciaCaptura;
 
 trait ManagesHuevosForm
 {
@@ -26,6 +26,7 @@ trait ManagesHuevosForm
 
         $this->resetFormularioHuevos();
         $this->dialogHuevosAbierto = true;
+        $this->registrarContextoCapturaAlAbrirDialogo();
     }
 
     public function updatedDialogHuevosAbierto(bool $abierto): void
@@ -69,19 +70,44 @@ trait ManagesHuevosForm
             return;
         }
 
-        $registrarCargaHuevos->execute(
-            auth()->user(),
-            $galpon,
-            $huevosAptos,
-            $huevosDescarte,
-            null,
-            $this->huevosIdempotenciaClave,
-        );
-
-        $this->finalizarGuardadoCarga(
+        $this->ejecutarEnvioCarga(
+            fn () => $registrarCargaHuevos->execute(
+                auth()->user(),
+                $galpon,
+                $huevosAptos,
+                $huevosDescarte,
+                null,
+                $this->huevosIdempotenciaClave,
+            ),
             'dialogHuevosAbierto',
             fn () => $this->resetFormularioHuevos(),
             'Huevos guardados.',
+        );
+    }
+
+    public function confirmarCeroHuevos(
+        RegistrarCargaHuevosAction $registrarCargaHuevos,
+        OperarioGalponService $operarioGalponService,
+    ): void {
+        $galpon = $this->resolveGalponParaGuardar($operarioGalponService, 'dialogHuevosAbierto');
+
+        if ($galpon === null) {
+            return;
+        }
+
+        $this->ejecutarEnvioCarga(
+            fn () => $registrarCargaHuevos->execute(
+                auth()->user(),
+                $galpon,
+                0,
+                0,
+                null,
+                $this->huevosIdempotenciaClave,
+                true,
+            ),
+            'dialogHuevosAbierto',
+            fn () => $this->resetFormularioHuevos(),
+            'Cero confirmado.',
         );
     }
 
@@ -89,7 +115,8 @@ trait ManagesHuevosForm
     {
         $this->reset(['huevos', 'huevosDescarte']);
         $this->huevosDescarte = '0';
-        $this->huevosIdempotenciaClave = (string) Str::uuid();
+        $this->huevosIdempotenciaClave = IdempotenciaCaptura::generarClave();
+        $this->limpiarEstadoEnvioCarga();
         $this->resetValidation();
     }
 }

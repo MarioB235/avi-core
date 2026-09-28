@@ -2,6 +2,7 @@
     $descarteIngresado = max(0, (int) $descarteAves);
     $avesEnGalpon = (int) ($galpon?->aves_actuales ?? 0);
     $descarteHoyGalpon = (int) ($resumenGalpon['descarte_aves_hoy'] ?? 0);
+    $descarteEstadoHoy = $resumenGalpon['descarte_estado_hoy'] ?? \App\Support\CapturaCeroEstado::OMISION;
     $saldoRestante = max(0, $avesEnGalpon - $descarteIngresado);
     $excedeSaldo = $descarteIngresado > $avesEnGalpon;
 @endphp
@@ -63,6 +64,16 @@
         </div>
     @endif
 
+    @include('livewire.operario.partials.carga-envio-feedback')
+
+    @include('livewire.operario.partials.carga-cero-confirmar', [
+        'estadoHoy' => $descarteEstadoHoy,
+        'totalesHoy' => $descarteHoyGalpon,
+        'tipoLabel' => 'descarte de aves',
+        'wireMethod' => 'confirmarCeroDescarte',
+        'wireTarget' => 'confirmarCeroDescarte',
+    ])
+
     <x-ui.button
         type="submit"
         class="w-full py-4 text-base"
@@ -70,7 +81,7 @@
         wire:target="guardarDescarte"
         :disabled="$descarteIngresado < 1 || $excedeSaldo"
     >
-        <span wire:loading.remove wire:target="guardarDescarte">Guardar descarte de aves</span>
+        <span wire:loading.remove wire:target="guardarDescarte">{{ $cargaEnvioError ? 'Reintentar' : 'Guardar descarte de aves' }}</span>
         <span wire:loading wire:target="guardarDescarte">Guardando…</span>
     </x-ui.button>
 </form>

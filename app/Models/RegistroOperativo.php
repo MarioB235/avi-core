@@ -5,11 +5,13 @@ namespace App\Models;
 use App\Enums\RegistroOperativoEstado;
 use App\Enums\RegistroOperativoTipo;
 use App\Models\Concerns\BelongsToEmpresa;
+use App\Support\DiaOperativoEmpresa;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 #[Fillable([
     'empresa_id',
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'user_id',
     'tipo',
     'idempotencia_clave',
+    'cero_confirmado',
     'huevos',
     'huevos_descarte',
     'muertes',
@@ -39,6 +42,7 @@ class RegistroOperativo extends Model
         return [
             'tipo' => RegistroOperativoTipo::class,
             'estado' => RegistroOperativoEstado::class,
+            'cero_confirmado' => 'boolean',
             'huevos' => 'integer',
             'huevos_descarte' => 'integer',
             'muertes' => 'integer',
@@ -73,18 +77,18 @@ class RegistroOperativo extends Model
         return $query->where('estado', RegistroOperativoEstado::Activo->value);
     }
 
-    public function scopeDelDia(Builder $query): Builder
+    public function scopeDelDia(Builder $query, int $empresaId, ?Carbon $referencia = null): Builder
     {
-        return $query->whereDate('created_at', today());
+        return DiaOperativoEmpresa::forEmpresa($empresaId, $referencia)->aplicarAlQuery($query);
     }
 
-    public function scopeEnFecha(Builder $query, ?string $fecha): Builder
+    public function scopeEnFecha(Builder $query, ?string $fecha, int $empresaId): Builder
     {
         if ($fecha === null || $fecha === '') {
             return $query;
         }
 
-        return $query->whereDate('created_at', $fecha);
+        return DiaOperativoEmpresa::enFechaParaEmpresa($empresaId, $fecha)->aplicarAlQuery($query);
     }
 
     public function cantidadResumen(): string
@@ -93,8 +97,12 @@ class RegistroOperativo extends Model
 
         return match ($this->tipo) {
             RegistroOperativoTipo::Huevos => $this->resumenHuevos($formatInt),
-            RegistroOperativoTipo::Muertes => $formatInt($this->muertes).' muertes',
-            RegistroOperativoTipo::Descarte => $formatInt($this->descarte_aves).' descarte de aves',
+            RegistroOperativoTipo::Muertes => $this->cero_confirmado
+                ? '0 muertes (confirmado)'
+                : $formatInt($this->muertes).' muertes',
+            RegistroOperativoTipo::Descarte => $this->cero_confirmado
+                ? '0 descarte de aves (confirmado)'
+                : $formatInt($this->descarte_aves).' descarte de aves',
             RegistroOperativoTipo::Alimento => number_format((float) $this->alimento_kg, 2, ',', '.').' kg entregados',
             RegistroOperativoTipo::Combinado => collect([
                 $this->huevos ? $formatInt($this->huevos).' huevos aptos' : null,
@@ -142,6 +150,10 @@ class RegistroOperativo extends Model
 
     private function resumenHuevos(callable $formatInt): string
     {
+        if ($this->cero_confirmado) {
+            return '0 huevos (confirmado)';
+        }
+
         $aptos = (int) $this->huevos;
         $descarte = (int) $this->huevos_descarte;
 

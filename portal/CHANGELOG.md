@@ -5,8 +5,23 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-09-28
+
+- **[negocio|admin]** Post-auditoría msg 3–4: `posturaSemanal` usa últimos 7 días lógicos de la empresa (`DiaOperativoEmpresa` + `delDia`); extiende CAP-11 al gráfico Resumen admin. — `AdminResumenService`, `reglas.md` §8.9, `pantallas-flujos.md` §3.4
+- **[test|auditoría]** Post-auditoría msg 3–4: unit `CapturaCeroEstadoTest`, `DiaOperativoEmpresaTest` ampliado; Cap09/10 y `SupportContactLinksComponentTest`; suite **813/813**. — `estandares-codigo.md`, evidencias CAP-09/10/11
+- **[ui|operario]** CAP-14: recorrido móvil E2E — login → galpón → capturas → historial → anular con motivo; shell móvil y teclado numérico verificados; tests `OperarioRecorridoMovilCap14Test`. — `reglas.md`, `pantallas-flujos.md`, `patrones-mobile-operario.md`
+
 ## 2026-09-27
 
+- **[ui|operario]** CAP-13: formularios obsoletos — `ManagesCapturaContexto` invalida diálogos al cambiar galpón/rol/disponibilidad; cierre + reset + snackbar warning; bloqueo antes de guardar; tests `OperarioFormulariosObsoletosCap13Test`. — `CargarHub`, `ManagesCapturaContexto`, `reglas.md`, `pantallas-flujos.md`
+- **[ui|operario]** CAP-12: perfil/ayuda — pestaña Ayuda con contacto soporte real; autogestión limitada a nombre/correo/contraseña; documento/rol/empresa solo lectura; tests `OperarioPerfilCap12Test`. — `Profile/Edit`, `UpdateProfileAction`, `x-support.contact-links`, `reglas.md`
+- **[negocio|operario]** CAP-11: día operativo por zona de empresa — `DiaOperativoEmpresa` unifica `delDia`/`enFecha`, anulación e historial; corte medianoche local; tests `OperarioDiaOperativoCap11Test`. — `DiaOperativoEmpresa.php`, `RegistroOperativo`, `Vacunacion`, `reglas.md`
+- **[negocio|operario]** CAP-10: cero confirmado vs omisión (D03) — campo `cero_confirmado`, `CapturaCeroEstado`, botón «Confirmar 0 hoy» en huevos/muertes/descarte; home con «Sin registro» / «0 confirmado»; alimento excluido; tests `OperarioCargaCeroConfirmadoCap10Test`. — `CapturaCeroEstado.php`, `Registrar*Action`, `OperarioGalponResumenService`, `reglas.md`, `esquema-bd.md`
+- **[ui|operario]** CAP-09: red y respuesta perdida — `ejecutarEnvioCarga` mantiene formulario ante fallo, banner de error, botón «Reintentar» con misma clave idempotente; confirmación solo tras persistir; tests `OperarioCargaEnvioRedCap09Test`. — `ManagesCargaGuardada`, `carga-envio-feedback`, `Manages*Form`, `reglas.md`
+- **[negocio|operario]** CAP-08: revalidación bajo lock — `bloquearParaMutacion` + `revalidarParaCargaBajoLock` en todas las capturas; saldo vivo y lote bajo lock; tests `OperarioCargaEstadoBajoLockCap08Test`. — `GalponValidacion.php`, `Registrar*Action`, `reglas.md`
+- **[negocio|operario]** CAP-07: idempotencia transversal — `IdempotenciaCaptura` centraliza clave UUID, resolución por empresa y recuperación ante carrera; Actions CAP-02–06 refactorizadas; tests `OperarioCargaIdempotenciaCap07Test`. — `IdempotenciaCaptura.php`, `Registrar*Action`, `Manages*Form`, `reglas.md`, `esquema-bd.md`
+- **[cursor|orq]** Plan de entrega fuera del flujo 1–5: plantillas **P1–P3** al final de `plantillas-cursor.html` (inicio, repetir, cierre antes de auditoría); slash fuera de bloques copiables. — `plantillas-cursor.html`, `CHECKPOINT.md`, `plan-entrega.html`, slash, `check-agent-docs-sync.cjs`
+- **[cursor|orq]** Mensaje 2 (auditoría): alcance por defecto = cambios pendientes en git; cierre explícito sin placeholder `@`; `@rutas` opcional al final. — `plantillas-cursor.html`, `avicore-auditoria/SKILL.md`, slash, `check-agent-docs-sync.cjs`
 - **[test|seg]** Post-auditoría msg 3 (sesión CAP/EST): opciones de transición de lote en Estructura filtradas por `empresa_id`; `EstructuraFichaService::lote` cuenta lotes activos con scope de empresa; tests `VacunacionValidacionTest`, multiempresa en ficha y anti-tampering de `editingLoteId` en transición. — `Admin/Estructura/Index.php`, `EstructuraFichaService`, `AdminEstructuraTest`, `estandares-codigo.md`, `arbol-proyecto.md`
 
 ## 2026-09-26

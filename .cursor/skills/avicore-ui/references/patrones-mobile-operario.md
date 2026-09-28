@@ -58,7 +58,7 @@ Shell: `components/layouts/operario-mobile.blade.php` · Header: `<x-operario.he
 - Dock: barra `primary` edge-to-edge (`__surface` + `safe-area-inset-bottom`); inactivos cápsula `rounded-2xl` `white/12` + label `white/85`; activo círculo blanco elevado con halo suave + icono verde.
 - Estilos del módulo: `resources/css/operario.css` (no mezclar en `app.css`).
 - Secciones Inicio/Cargar: entrada al scroll con `x-ui.reveal` (bloques, no filas); edge fade solo bajo nav superior; hoja hasta el dock.
-- Tests: `OperarioHomeResumenTest`, `OperarioBottomNavTest`, `ScrollRevealTest`, `RevealComponentTest`, `OperarioGalponServiceTest` (scoped ambos services).
+- Tests: `OperarioHomeResumenTest`, `OperarioBottomNavTest`, `ScrollRevealTest`, `RevealComponentTest`, `OperarioGalponServiceTest` (scoped ambos services); recorrido E2E CAP-14: `OperarioRecorridoMovilCap14Test`.
 
 ## Formularios de carga
 

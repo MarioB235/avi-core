@@ -131,12 +131,12 @@ for (const rel of removedPaths) {
 const desarrolloHtml = read('portal/contenido/desarrollo/plantillas-cursor.html');
 const PLANTILLA_NEEDLES = [
   'Aquí te detallo la tarea:',
-  'Archivos a analizar:',
+  'cambios pendientes que me figuran en git',
   'pnpm run check:docs-impact',
   '.cursor/skills/README.md',
   'portal/contenido/desarrollo/contexto.html',
   'portal/planes/CHECKPOINT.md',
-  '1b — Ejecutar plan maestro',
+  'P1 — Iniciar plan de entrega',
 ];
 for (const needle of PLANTILLA_NEEDLES) {
   if (!desarrolloHtml.includes(needle)) {

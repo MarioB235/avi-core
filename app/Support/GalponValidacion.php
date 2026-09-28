@@ -89,6 +89,27 @@ final class GalponValidacion
         }
     }
 
+    public static function bloquearParaMutacion(int $galponId): Galpon
+    {
+        return Galpon::query()
+            ->with('granja')
+            ->whereKey($galponId)
+            ->lockForUpdate()
+            ->firstOrFail();
+    }
+
+    public static function revalidarParaCargaBajoLock(
+        Galpon $galponBloqueado,
+        string $field = 'galpon_id',
+        bool $requiereLoteActivo = false,
+    ): void {
+        self::assertDisponibleParaCarga($galponBloqueado, $field);
+
+        if ($requiereLoteActivo) {
+            self::assertLoteActivoParaCargaProductiva($galponBloqueado, $field);
+        }
+    }
+
     public static function tieneLotesActivos(Galpon $galpon): bool
     {
         return $galpon->lotes()

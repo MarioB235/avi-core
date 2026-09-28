@@ -39,7 +39,7 @@ class Edit extends Component
         $this->name = $user->name;
         $this->email = $user->email ?? '';
 
-        if (! in_array($this->seccion, ['datos', 'password'], true)) {
+        if (! in_array($this->seccion, ['datos', 'password', 'ayuda'], true)) {
             $this->seccion = 'datos';
         }
     }

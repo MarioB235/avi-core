@@ -4,7 +4,7 @@
 <p class="lead">Plantillas cortas para <strong>/avicore-architect-direct</strong>. El protocolo largo vive en el slash y en <code>AGENTS.md</code> — acá solo lo que pegás al chat.</p>
 
 <div class="note">
-  <strong>Cierre 2→5:</strong> mensaje <strong>2</strong> (<code>@rutas</code> al final) → <strong>3</strong> → <strong>4</strong> → <strong>5</strong>.
+  <strong>Cierre 2→5:</strong> mensaje <strong>2</strong> (diff git por defecto; <code>@rutas</code> opcional al final) → <strong>3</strong> → <strong>4</strong> → <strong>5</strong>.
   <strong>Versión semver:</strong> manual en msg 4–5 (acordeón abajo) — no sube sola al mergear PR.
   Catálogo: <code>.cursor/skills/README.md</code> · mapa:
   <button type="button" class="portal-inline-link" data-portal-page="dev-contexto" data-portal-href="contenido/desarrollo/contexto.html" data-portal-label="Contexto del proyecto">Contexto del proyecto</button>.
@@ -41,32 +41,6 @@ Aquí te detallo la tarea:</code></pre>
 </details>
 
 <details>
-  <summary>1b — Ejecutar plan maestro · reanudar sesión</summary>
-  <div class="subsection">
-    <p class="copy-hint">Cola de trabajo v1 · checkpoint en <code>portal/planes/CHECKPOINT.md</code> · detalle en el slash (modo ejecutar plan)</p>
-    <pre><code>/avicore-architect-direct
-Continuá la ejecución del plan de entrega AviCore.
-
-▶ Modo ejecutar plan (comando slash). Leé en orden:
-1. portal/planes/CHECKPOINT.md
-2. portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md
-3. portal/planes/DIAGNOSTICO-Y-MEJORAS-AVICORE.md (solo si hace falta contexto)
-4. .cursor/skills/avicore-contexto/references/estado-capacidades.md
-
-Empezá por el «Siguiente ID» del checkpoint (o la primera tarea P1 desbloqueada).
-Por cada tarea: declará ID + prueba de cierre → implementá → verificá → evidencia → actualizá checkpoint y plan.
-No marques [x] sin prueba de cierre. Bloqueo humano (D01–D07): registrá y seguí tareas independientes.
-
-Reglas fijas:
-- Sin commit, push, PR ni despliegue sin mensaje 5 explícito.
-- Si cambió contrato: references/ del skill dueño + portal/CHANGELOG.md.
-- Preservá cambios locales; no stash/reset/pull a ciegas.
-
-Al cerrar sesión: actualizá CHECKPOINT.md y evidencia en portal/planes/evidencias/.</code></pre>
-  </div>
-</details>
-
-<details>
   <summary>2 — Auditoría técnica · solo lectura · inicio del cierre</summary>
   <div class="subsection">
     <p class="copy-hint">Skill: <code>avicore-auditoria</code> (revisar)</p>
@@ -78,9 +52,9 @@ Criterios: .cursor/skills/avicore-auditoria/references/estandares-codigo.md
 Dimensiones: Negocio, Permisos, Código, UI, Tests, Arquitectura.
 
 Alcance:
-- Archivos con @ al final de este mensaje (prioridad).
-- Si no hay @: archivos del mensaje 1 / sesión, o git diff --stat de la rama.
-- Lista vacía y sin diff → pedir archivos (única pregunta válida).
+- Por defecto: todos los archivos con seguimiento git y cambios pendientes en la rama (`git status`; diff vs base de la rama o de main).
+- Si pegás rutas con @ al final, limitá la auditoría a esas (prioridad).
+- Sin cambios pendientes → informar y pedir alcance (única pregunta válida).
 
 Devolvé solo:
 1. Resumen ejecutivo breve
@@ -91,7 +65,7 @@ Devolvé solo:
 
 Reglas: priorizar listados; no 100% si faltan tests testeables sin justificación; respuesta breve.
 
-Archivos a analizar:</code></pre>
+Los archivos a analizar son todos los que tienen seguimiento y cambios pendientes que me figuran en git en esta rama. Revisá `git status` y el diff antes de auditar.</code></pre>
   </div>
 </details>
 
@@ -243,6 +217,67 @@ php artisan test
 pnpm run build
 pnpm run check:agent-docs
 pnpm run check:docs-impact</code></pre>
+  </div>
+</details>
+</div>
+
+<h2 id="plan-entrega">Plan de entrega — mensajes P1–P3</h2>
+<p class="copy-hint">Fuera del flujo <strong>1–5</strong>. Cola v1 en <code>portal/planes/</code> · detalle en el slash (modo ejecutar plan).</p>
+<div class="note">
+  <strong>Flujo:</strong> <strong>P1</strong> (inicio o chat nuevo) → <strong>P2</strong> repetido (siguiente tarea) → <strong>P3</strong> (cierre del bloque) → mensajes <strong>2 → 3 → 4 → 5</strong> arriba.
+  Agregá <code>/avicore-architect-direct</code> en la <strong>primera línea</strong> del chat — no va en los bloques copiables.
+</div>
+<div class="plantilla-accordion" data-accordion>
+<details>
+  <summary>P1 — Iniciar plan de entrega · reanudar sesión</summary>
+  <div class="subsection">
+    <p class="copy-hint">Primera vez o chat nuevo · checkpoint en <code>portal/planes/CHECKPOINT.md</code></p>
+    <pre><code>Continuá la ejecución del plan de entrega AviCore.
+
+▶ Modo ejecutar plan (comando slash). Leé en orden:
+1. portal/planes/CHECKPOINT.md
+2. portal/planes/PLAN-MAESTRO-ENTREGA-AVICORE.md
+3. portal/planes/DIAGNOSTICO-Y-MEJORAS-AVICORE.md (solo si hace falta contexto)
+4. .cursor/skills/avicore-contexto/references/estado-capacidades.md
+
+Empezá por el «Siguiente ID» del checkpoint (o la primera tarea P1 desbloqueada).
+Por cada tarea: declará ID + prueba de cierre → implementá → verificá → evidencia → actualizá checkpoint y plan.
+No marques [x] sin prueba de cierre. Bloqueo humano (D01–D07): registrá y seguí tareas independientes.
+
+Reglas fijas:
+- Sin commit, push, PR ni despliegue sin mensaje 5 explícito.
+- Si cambió contrato: references/ del skill dueño + portal/CHANGELOG.md.
+- Preservá cambios locales; no stash/reset/pull a ciegas.
+
+Al cerrar sesión: actualizá CHECKPOINT.md y evidencia en portal/planes/evidencias/.</code></pre>
+  </div>
+</details>
+
+<details>
+  <summary>P2 — Continuar plan · siguiente tarea</summary>
+  <div class="subsection">
+    <p class="copy-hint">Pegalo 7–8 veces entre sesiones; el estado vive en <code>CHECKPOINT.md</code></p>
+    <pre><code>Continuá ejecutando el plan AviCore (modo ejecutar plan).
+Leé portal/planes/CHECKPOINT.md y ejecutá el «Siguiente ID» desbloqueado.
+Mismas reglas P1: verificar, evidencia, checkpoint; sin commit/push/PR.</code></pre>
+  </div>
+</details>
+
+<details>
+  <summary>P3 — Cerrar bloque del plan · antes de auditoría</summary>
+  <div class="subsection">
+    <p class="copy-hint">Cuando terminás un bloque de IDs y vas a pasar al mensaje <strong>2</strong> (auditoría)</p>
+    <pre><code>Cerrá el bloque de trabajo del plan en esta rama.
+
+▶ Modo ejecutar plan — cierre de sesión. Sin features nuevas salvo ajuste mínimo para dejar verde lo pendiente.
+
+Hacé:
+1. php artisan test (y vendor/bin/pint si hubo PHP).
+2. Confirmá portal/planes/CHECKPOINT.md y evidencias al día para lo verificado en este bloque.
+3. Resumí: rama, IDs cerrados, siguiente ID, diff principal (git diff --stat).
+4. Sin commit, push ni PR.
+
+Siguiente paso humano: mensaje 2 (auditoría) → 3 → 4 → 5 en esta página.</code></pre>
   </div>
 </details>
 </div>

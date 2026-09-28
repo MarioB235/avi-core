@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\Gate;
 class UpdateProfileAction
 {
     /**
-     * @param  array{name: string, email?: string|null}  $data
+     * @param  array{name?: string, email?: string|null, documento?: string, rol?: string, empresa_id?: int}  $data
      */
     public function execute(User $user, array $data): User
     {
         Gate::forUser($user)->authorize('updateProfile', $user);
 
-        validator(
+        $validated = validator(
             [
-                'name' => $data['name'],
+                'name' => $data['name'] ?? '',
                 'email' => $data['email'] ?? null,
             ],
             [
@@ -30,8 +30,8 @@ class UpdateProfileAction
         )->validate();
 
         $user->fill([
-            'name' => trim($data['name']),
-            'email' => filled($data['email'] ?? null) ? trim((string) $data['email']) : null,
+            'name' => trim($validated['name']),
+            'email' => filled($validated['email'] ?? null) ? trim((string) $validated['email']) : null,
         ])->save();
 
         return $user->refresh();

@@ -2,6 +2,7 @@
     $muertesIngresadas = max(0, (int) $muertes);
     $avesEnGalpon = (int) ($galpon?->aves_actuales ?? 0);
     $muertesHoyGalpon = (int) ($resumenGalpon['muertes_hoy'] ?? 0);
+    $muertesEstadoHoy = $resumenGalpon['muertes_estado_hoy'] ?? \App\Support\CapturaCeroEstado::OMISION;
     $saldoRestante = max(0, $avesEnGalpon - $muertesIngresadas);
     $excedeSaldo = $muertesIngresadas > $avesEnGalpon;
 @endphp
@@ -59,6 +60,16 @@
         </div>
     @endif
 
+    @include('livewire.operario.partials.carga-envio-feedback')
+
+    @include('livewire.operario.partials.carga-cero-confirmar', [
+        'estadoHoy' => $muertesEstadoHoy,
+        'totalesHoy' => $muertesHoyGalpon,
+        'tipoLabel' => 'muertes',
+        'wireMethod' => 'confirmarCeroMuertes',
+        'wireTarget' => 'confirmarCeroMuertes',
+    ])
+
     <x-ui.button
         type="submit"
         class="w-full py-4 text-base"
@@ -66,7 +77,7 @@
         wire:target="guardarMuertes"
         :disabled="$muertesIngresadas < 1 || $excedeSaldo"
     >
-        <span wire:loading.remove wire:target="guardarMuertes">Guardar</span>
+        <span wire:loading.remove wire:target="guardarMuertes">{{ $cargaEnvioError ? 'Reintentar' : 'Guardar' }}</span>
         <span wire:loading wire:target="guardarMuertes">Guardando…</span>
     </x-ui.button>
 </form>
