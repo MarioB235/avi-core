@@ -229,7 +229,7 @@ class OperarioPerfilTest extends TestCase
             ->assertSee('avicore-home-nav', false)
             ->assertSee('avicore-operario-perfil-hero', false)
             ->assertSee('avicore-operario-home-sheet', false)
-            ->assertSee('--avicore-tab-cols: 4', false)
+            ->assertSee('--avicore-tab-cols: 6', false)
             ->assertDontSee('avicore-operario-header__badge', false);
     }
 }

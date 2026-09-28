@@ -10,8 +10,13 @@ trait PreventsHardDelete
     {
         static::deleting(function (): void {
             throw ValidationException::withMessages([
-                'id' => 'No se puede eliminar: inactivá el registro para conservar la trazabilidad.',
+                'id' => static::hardDeleteRejectionMessage(),
             ]);
         });
+    }
+
+    protected static function hardDeleteRejectionMessage(): string
+    {
+        return 'No se puede eliminar: inactivá el registro para conservar la trazabilidad.';
     }
 }

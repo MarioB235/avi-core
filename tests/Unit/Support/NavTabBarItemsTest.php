@@ -42,9 +42,9 @@ class NavTabBarItemsTest extends TestCase
 
         $items = AdminNav::tabBarItems();
 
-        $this->assertCount(4, $items);
-        $this->assertSame(['Inicio', 'Resumen', 'Estructura', 'Usuarios'], array_column($items, 'label'));
-        $this->assertSame(['home', 'chart', 'layers', 'users'], array_column($items, 'icon'));
+        $this->assertCount(6, $items);
+        $this->assertSame(['Inicio', 'Resumen', 'Historial', 'Auditoría', 'Estructura', 'Usuarios'], array_column($items, 'label'));
+        $this->assertSame(['home', 'chart', 'calendar', 'shield', 'layers', 'users'], array_column($items, 'icon'));
         $this->assertSame(route('administrativo.home'), $items[0]['href']);
     }
 }

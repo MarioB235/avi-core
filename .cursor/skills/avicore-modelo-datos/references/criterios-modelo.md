@@ -30,8 +30,8 @@ Detalle de columnas en [`esquema-bd.md`](esquema-bd.md).
 | **granjas / galpones / lotes** | Jerarquía empresa → granja → galpón → lote; carga por galpón |
 | **registros_operativos** | Fecha/hora = `created_at`; anulación lógica con motivo |
 | **vacunaciones** | Registro por lote y tipo de vacuna; tabla separada de `registros_operativos`; historial operario las fusiona con cargas |
-| **movimientos_aves** | *Planificado* — traslados, ajustes, cierres; ver `avicore-contexto/references/plan-desarrollo.md` |
-| **auditorias** | *Planificado* — acciones críticas; ver `avicore-contexto/references/plan-desarrollo.md` |
+| **movimientos_aves** | Ledger MOV-01: tipos entrada/traslado/ajuste/cierre/faena/reversión; `MovimientoAvesEfecto` para saldo; ver `movimientos-aves.md` |
+| **auditorias** | Acciones críticas centralizadas (AUD-05); `RegistrarAuditoriaAction`; metadata sin secretos |
 | **alertas** | *Planificado* — dashboard y supervisión; ver `avicore-contexto/references/plan-desarrollo.md` |
 | **configuraciones_empresa** | *Planificado* — maple/cajón, logos, módulos; ver `avicore-contexto/references/plan-desarrollo.md` |
 

@@ -2,17 +2,23 @@
 
 namespace App\Actions\User;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Enums\UserRole;
 use App\Models\Empresa;
 use App\Models\User;
 use App\Services\TemporaryPasswordGenerator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class CreateUserAction
 {
-    public function __construct(private TemporaryPasswordGenerator $passwords) {}
+    public function __construct(
+        private TemporaryPasswordGenerator $passwords,
+        private RegistrarAuditoriaAction $auditoria,
+    ) {}
 
     /**
      * @param  array{name: string, documento: string, email?: string|null, rol: string, empresa_id?: int|null}  $data
@@ -48,16 +54,34 @@ class CreateUserAction
 
         $plainPassword = $this->passwords->generate();
 
-        $user = User::query()->create([
-            'empresa_id' => $empresaId,
-            'name' => trim($data['name']),
-            'documento' => trim($data['documento']),
-            'email' => filled($data['email'] ?? null) ? trim((string) $data['email']) : null,
-            'password' => $plainPassword,
-            'rol' => $rol,
-            'activo' => true,
-            'must_change_password' => true,
-        ]);
+        $user = DB::transaction(function () use ($actor, $data, $empresaId, $rol, $plainPassword): User {
+            $user = User::query()->create([
+                'empresa_id' => $empresaId,
+                'name' => trim($data['name']),
+                'documento' => trim($data['documento']),
+                'email' => filled($data['email'] ?? null) ? trim((string) $data['email']) : null,
+                'password' => $plainPassword,
+                'rol' => $rol,
+                'activo' => true,
+                'must_change_password' => true,
+            ]);
+
+            $this->auditoria->execute(
+                $actor,
+                AuditoriaCategoria::Usuario,
+                'creado',
+                User::class,
+                $user->id,
+                $empresaId,
+                metadata: [
+                    'documento' => $user->documento,
+                    'rol' => $rol->value,
+                    'password' => $plainPassword,
+                ],
+            );
+
+            return $user;
+        });
 
         return [
             'user' => $user,

@@ -132,6 +132,11 @@ enum UserRole: string
         };
     }
 
+    public function canViewAuditoria(): bool
+    {
+        return $this->canViewResumen();
+    }
+
     /**
      * Vista de solo lectura del equipo (sin CRUD de usuarios).
      */

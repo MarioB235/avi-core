@@ -2,9 +2,12 @@
 
 namespace App\Actions\User;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Models\User;
 use App\Services\Auth\UserSessionService;
 use App\Services\TemporaryPasswordGenerator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class ResetUserPasswordAction
@@ -12,6 +15,7 @@ class ResetUserPasswordAction
     public function __construct(
         private TemporaryPasswordGenerator $passwords,
         private UserSessionService $sessions,
+        private RegistrarAuditoriaAction $auditoria,
     ) {}
 
     /**
@@ -23,12 +27,27 @@ class ResetUserPasswordAction
 
         $plainPassword = $this->passwords->generate();
 
-        $target->forceFill([
-            'password' => $plainPassword,
-            'must_change_password' => true,
-        ])->save();
+        DB::transaction(function () use ($actor, $target, $plainPassword): void {
+            $target->forceFill([
+                'password' => $plainPassword,
+                'must_change_password' => true,
+            ])->save();
 
-        $this->sessions->invalidateAllForUser($target);
+            $this->auditoria->execute(
+                $actor,
+                AuditoriaCategoria::Usuario,
+                'password_reseteado',
+                User::class,
+                $target->id,
+                $target->empresa_id,
+                metadata: [
+                    'documento' => $target->documento,
+                    'plainPassword' => $plainPassword,
+                ],
+            );
+
+            $this->sessions->invalidateAllForUser($target);
+        });
 
         return [
             'user' => $target->refresh(),

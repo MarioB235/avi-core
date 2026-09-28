@@ -2,6 +2,8 @@
 
 namespace App\Actions\Empresa;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Enums\EmpresaEstado;
 use App\Models\Empresa;
 use App\Models\User;
@@ -13,7 +15,10 @@ use Illuminate\Validation\ValidationException;
 
 class UpdateEmpresaEstadoAction
 {
-    public function __construct(private UserSessionService $sessions) {}
+    public function __construct(
+        private UserSessionService $sessions,
+        private RegistrarAuditoriaAction $auditoria,
+    ) {}
 
     /**
      * @param  array{estado: string, motivo: string}  $data
@@ -70,6 +75,20 @@ class UpdateEmpresaEstadoAction
             if (! $nuevoEstado->permiteLogin()) {
                 $this->sessions->invalidateAllForEmpresa($empresa->id);
             }
+
+            $this->auditoria->execute(
+                $actor,
+                AuditoriaCategoria::Empresa,
+                'estado_cambiado',
+                Empresa::class,
+                $empresa->id,
+                $empresa->id,
+                $motivo,
+                [
+                    'estado_anterior' => $estadoAnterior->value,
+                    'estado_nuevo' => $nuevoEstado->value,
+                ],
+            );
 
             return $empresa->fresh();
         });

@@ -2,14 +2,19 @@
 
 namespace App\Services;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Models\SoporteSesion;
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 class SoporteEmpresaService
 {
     private const SESSION_KEY = 'avicore.soporte_sesion_id';
+
+    public function __construct(private RegistrarAuditoriaAction $auditoria) {}
 
     public function sessionId(): ?int
     {
@@ -35,6 +40,15 @@ class SoporteEmpresaService
         }
 
         return $user->empresa_id !== null && $user->rol->canViewResumen();
+    }
+
+    public function canViewAuditoria(User $user): bool
+    {
+        if ($user->isAdminAvicore()) {
+            return $this->isActive();
+        }
+
+        return $user->empresa_id !== null && $user->rol->canViewAuditoria();
     }
 
     public function blocksProductionMutations(User $user): bool
@@ -128,15 +142,35 @@ class SoporteEmpresaService
             return;
         }
 
-        $this->recordAccion($sesion, 'fin', [
-            'reason' => $reason,
-            'empresa_id' => $sesion->empresa_id,
-        ]);
+        DB::transaction(function () use ($sesion, $reason): void {
+            $this->recordAccion($sesion, 'fin', [
+                'reason' => $reason,
+                'empresa_id' => $sesion->empresa_id,
+            ]);
 
-        $sesion->update([
-            'ended_at' => now(),
-            'end_reason' => $reason,
-        ]);
+            $sesion->update([
+                'ended_at' => now(),
+                'end_reason' => $reason,
+            ]);
+
+            $actor = User::query()->find($sesion->actor_id);
+
+            if ($actor !== null) {
+                $this->auditoria->execute(
+                    $actor,
+                    AuditoriaCategoria::Soporte,
+                    'fin',
+                    SoporteSesion::class,
+                    $sesion->id,
+                    $sesion->empresa_id,
+                    $reason,
+                    [
+                        'soporte_sesion_id' => $sesion->id,
+                        'end_reason' => $reason,
+                    ],
+                );
+            }
+        });
 
         if ($this->sessionId() === $sesion->id) {
             $this->clearSession();

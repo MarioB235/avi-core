@@ -19,6 +19,7 @@
 | Suspender empresa | Sí | No | No | No | No |
 | Acceso modo soporte | Sí (`enterSupport`) | No | No | No | No |
 | Ver Resumen operativo | Solo con sesión soporte activa | Sí | Sí/Opcional | Sí | No |
+| Ver Historial operativo (equipo) | Solo con sesión soporte activa | Sí | Sí | Sí | No |
 | Mutar lotes/cargas en soporte | No (solo lectura) | Sí* | Sí | Sí | Sí |
 | Crear granja | No | No | Sí | No | No |
 | Crear galpón | No | No | Sí | No | No |
@@ -200,8 +201,9 @@ No puede:
 | `Granja` | `GranjaPolicy` | `viewAny` si `canViewEstructura()`; `create`/`update` si `canManageEstructura()`. CRUD en `/{rol}/estructura` (administrativo y encargado; dueño sin tab Estructura — ver §10). |
 | `Lote` | `LotePolicy` | `create`/`update`/`transition` si `canManageLotes()`; `transition` en lote cerrado solo si `canReabrirLote()` (Dueño/Administrativo); lote trasladado sin transiciones. Metadatos: `UpdateLoteAction`; estado: `TransicionarLoteEstadoAction` con motivo. UI Estructura: opciones de «Cambiar estado» y guardado usan scope `empresa_id` (lote ajeno → sin opciones / 404). |
 | `User` | `UserPolicy` | `viewAny` / `view` / `create` / `update` / `resetPassword` / `toggleActive` según `UserRole::canViewUsers|canManageUsers|canResetUserPassword` y scope multiempresa (Admin AviCore ve todos). `updateProfile`: solo el propio usuario activo (`$actor->is($target) && $actor->activo`); usado por `UpdateProfileAction` y `ChangePasswordAction`. Encargado: ver listado + `resetPassword`; sin `create`/`update`/`toggleActive`. Roles asignables vía `UserRole::assignableRoles()`. CRUD en `/{rol}/usuarios`. |
-| `RegistroOperativo` | `RegistroOperativoPolicy` | `anular`: mismo `empresa_id`; solo registros del **día** (`created_at` hoy); propio → operario y roles superiores; ajeno → dueño, administrativo, encargado (no operario). Lógica compartida en `Policies/Concerns/AuthorizesOperarioAnulacion`. UI Historial: solo registros propios del usuario. |
+| `RegistroOperativo` | `RegistroOperativoPolicy` | `anular`: mismo `empresa_id`; solo registros del **día** (`created_at` hoy); propio → operario y roles superiores; ajeno → dueño, administrativo, encargado (no operario). Lógica compartida en `Policies/Concerns/AuthorizesOperarioAnulacion`. `corregir`: dueño, administrativo, encargado; registro activo de la misma empresa; sin límite de día; trait `AuthorizesOperarioCorreccion`. UI corrección: historial supervisor (`/{rol}/historial-operativo`). UI Historial operario: solo registros propios del usuario. |
 | `Vacunacion` | `VacunacionPolicy` | `anular`: mismas reglas que `RegistroOperativoPolicy::anular` (trait compartido). Vacunación anulada vía `AnularVacunacionAction`. |
+| `MovimientoAves` | `MovimientoAvesPolicy` | `create`: `canManageLotes()` (dueño, administrativo, encargado); bloqueado en soporte AviCore (`blocksProductionMutations`). `view`: mismo `empresa_id`. Entrada externa vía `RegistrarEntradaAvesAction` + `Gate::authorize('create')`. Tests: `MovimientoAvesPolicyTest`, `MovimientoAvesEntradaSaldoInicialTest` (403 operario, galpón ajeno, soporte). |
 
 ---
 

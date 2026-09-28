@@ -27,6 +27,8 @@ class AdminModulePolicyTest extends TestCase
         $user = $this->userWithRole(UserRole::Dueno);
 
         $this->assertTrue($this->policy->viewResumen($user));
+        $this->assertTrue($this->policy->viewHistorialOperativo($user));
+        $this->assertTrue($this->policy->viewAuditoria($user));
         $this->assertTrue($this->policy->viewEquipo($user));
         $this->assertTrue($this->policy->viewComercial($user));
     }
@@ -36,6 +38,8 @@ class AdminModulePolicyTest extends TestCase
         $user = $this->userWithRole(UserRole::Administrativo);
 
         $this->assertTrue($this->policy->viewResumen($user));
+        $this->assertTrue($this->policy->viewHistorialOperativo($user));
+        $this->assertTrue($this->policy->viewAuditoria($user));
         $this->assertFalse($this->policy->viewEquipo($user));
         $this->assertFalse($this->policy->viewComercial($user));
     }
@@ -45,6 +49,8 @@ class AdminModulePolicyTest extends TestCase
         $user = $this->userWithRole(UserRole::Operario);
 
         $this->assertFalse($this->policy->viewResumen($user));
+        $this->assertFalse($this->policy->viewHistorialOperativo($user));
+        $this->assertFalse($this->policy->viewAuditoria($user));
         $this->assertFalse($this->policy->viewEquipo($user));
         $this->assertFalse($this->policy->viewComercial($user));
     }

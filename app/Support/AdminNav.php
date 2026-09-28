@@ -51,6 +51,22 @@ class AdminNav
                 'icon' => 'chart',
                 'headerTitle' => 'Resumen',
             ];
+
+            $tabs[] = [
+                'route' => $route('historial-operativo.index'),
+                'patterns' => ["{$prefix}.historial-operativo.*"],
+                'label' => 'Historial',
+                'icon' => 'calendar',
+                'headerTitle' => 'Historial operativo',
+            ];
+
+            $tabs[] = [
+                'route' => $route('auditoria.index'),
+                'patterns' => ["{$prefix}.auditoria.*"],
+                'label' => 'Auditoría',
+                'icon' => 'shield',
+                'headerTitle' => 'Auditoría',
+            ];
         }
 
         if ($user->rol->canViewEquipo()) {
@@ -149,6 +165,8 @@ class AdminNav
 
         return str_ends_with($name, '.home')
             || str_contains($name, '.resumen.')
+            || str_contains($name, '.historial-operativo.')
+            || str_contains($name, '.auditoria.')
             || str_contains($name, '.equipo.')
             || str_contains($name, '.comercial.')
             || str_contains($name, '.usuarios.')

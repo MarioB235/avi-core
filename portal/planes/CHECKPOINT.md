@@ -8,37 +8,37 @@ Plan maestro: [PLAN-MAESTRO-ENTREGA-AVICORE.md](PLAN-MAESTRO-ENTREGA-AVICORE.md)
 | Campo | Valor |
 |---|---|
 | Revisión | 2026-09-28 |
-| Base git | CAP-14 en `feature/cap-est-operacion-estructura` |
-| Rama | `feature/cap-est-operacion-estructura` |
-| Siguiente ID | **MSG-5** (commit/PR) |
+| Base git | MOV-03 en `feature/aud-historial-operario` |
+| Rama | `feature/aud-historial-operario` |
+| Siguiente ID | **MOV-04** |
 | En curso | Ninguno |
-| Tests | **813** total · **813** OK · 2829 aserciones (2026-09-28, post-auditoría) |
+| Tests | **867** total · **867** OK · 3021 aserciones (2026-09-28, post-MOV-03) |
 | Build | Pint OK |
 | `check:agent-docs` | OK |
 | Bloque SEG | **Cerrado** (SEG-01 → SEG-12) |
 | Bloque EMP | **Cerrado** (EMP-01 → EMP-08) |
 | Bloque EST | **Cerrado** (EST-01 → EST-10) |
 | Bloque CAP | **Cerrado** (CAP-01 → CAP-14) |
+| Bloque AUD | **Cerrado** (AUD-01 → AUD-09) |
+| Bloque MOV | **En curso** (MOV-01 ✓ · MOV-02 ✓ · MOV-03 ✓; MOV-04 siguiente) |
 | Alcance v1 | Operación avícola completa; comercial/reparto etapa 2 |
 
 ## Cierre de sesión (P3 · 2026-09-28)
 
-Bloque **CAP** verificado en rama `feature/cap-est-operacion-estructura`. Evidencias CAP-01…CAP-14 en `portal/planes/evidencias/`. Sin commit en esta sesión.
+**MOV-03** verificado: saldo inicial enlazado al alta de lote sin doble incremento; entradas externas idempotentes. Evidencia en `portal/planes/evidencias/MOV-03-entrada-saldo-inicial.md`.
 
-**Verificación final:** `php artisan test` **813/813** OK · 2829 aserciones · Pint OK · `check:agent-docs` OK.
+**Verificación:** `php artisan test` **867/867** OK · Pint OK · `check:agent-docs` OK.
 
-**Auditoría (msg 2–4):** correcciones msg 3 aplicadas; docs alineados (`reglas.md` §8.9 postura semanal, `pantallas-flujos.md`, `estandares-codigo.md`, evidencias CAP-09/10/11).
-
-**Siguiente paso humano:** mensaje **5** (commit/PR). Plantillas en `portal/contenido/desarrollo/mensajes-reutilizables.html`.
+**Pendiente humano (rama CAP):** mensaje **5** para `feature/cap-est-operacion-estructura` si aún no se hizo commit/PR del bloque CAP.
 
 ## Últimos cierres
 
 | ID | Estado | Fecha | Evidencia |
 |---|---|---|---|
-| CAP-14 | VERIFICADA | 2026-09-28 | [evidencias/CAP-14-recorrido-movil.md](evidencias/CAP-14-recorrido-movil.md) |
-| CAP-13 | VERIFICADA | 2026-09-28 | [evidencias/CAP-13-formularios-obsoletos.md](evidencias/CAP-13-formularios-obsoletos.md) |
-| CAP-12 | VERIFICADA | 2026-09-27 | [evidencias/CAP-12-perfil-ayuda.md](evidencias/CAP-12-perfil-ayuda.md) |
-| CAP-11 | VERIFICADA | 2026-09-27 | [evidencias/CAP-11-hora-corte-dia-logico.md](evidencias/CAP-11-hora-corte-dia-logico.md) |
+| MOV-03 | VERIFICADA | 2026-09-28 | [evidencias/MOV-03-entrada-saldo-inicial.md](evidencias/MOV-03-entrada-saldo-inicial.md) |
+| MOV-02 | VERIFICADA | 2026-09-28 | [evidencias/MOV-02-poblacion-lote-d01.md](evidencias/MOV-02-poblacion-lote-d01.md) |
+| MOV-01 | VERIFICADA | 2026-09-28 | [evidencias/MOV-01-modelo-minimo.md](evidencias/MOV-01-modelo-minimo.md) |
+| AUD-09 | VERIFICADA | 2026-09-28 | [evidencias/AUD-09-tipos-historicos-combinado.md](evidencias/AUD-09-tipos-historicos-combinado.md) |
 
 ## Mensajes para continuar
 

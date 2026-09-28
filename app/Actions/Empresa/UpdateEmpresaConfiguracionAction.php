@@ -2,17 +2,23 @@
 
 namespace App\Actions\Empresa;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Models\Empresa;
 use App\Models\User;
 use App\Services\EmpresaLogoStorageService;
 use App\Support\EmpresaConfiguracion;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class UpdateEmpresaConfiguracionAction
 {
-    public function __construct(private EmpresaLogoStorageService $logoStorage) {}
+    public function __construct(
+        private EmpresaLogoStorageService $logoStorage,
+        private RegistrarAuditoriaAction $auditoria,
+    ) {}
 
     /**
      * @param  array{
@@ -42,6 +48,13 @@ class UpdateEmpresaConfiguracionAction
         ])->validate();
 
         $configuracion = $empresa->configuracion ?? [];
+        $antes = [
+            'nombre' => $empresa->nombre,
+            'zona_horaria' => $configuracion['zona_horaria'] ?? null,
+            'huevos_por_maple' => $configuracion['huevos_por_maple'] ?? null,
+            'maples_por_cajon' => $configuracion['maples_por_cajon'] ?? null,
+            'logo_path' => $empresa->logo_path,
+        ];
         $operativa = new EmpresaConfiguracion(
             zonaHoraria: $validated['zona_horaria'],
             huevosPorMaple: (int) $validated['huevos_por_maple'],
@@ -62,11 +75,32 @@ class UpdateEmpresaConfiguracionAction
             $logoPath = $this->logoStorage->store($empresa, $data['logo']);
         }
 
-        $empresa->update([
-            'nombre' => trim($validated['nombre']),
-            'logo_path' => $logoPath,
-            'configuracion' => $configuracion,
-        ]);
+        DB::transaction(function () use ($actor, $empresa, $validated, $configuracion, $logoPath, $antes): void {
+            $empresa->update([
+                'nombre' => trim($validated['nombre']),
+                'logo_path' => $logoPath,
+                'configuracion' => $configuracion,
+            ]);
+
+            $this->auditoria->execute(
+                $actor,
+                AuditoriaCategoria::Empresa,
+                'configuracion_actualizada',
+                Empresa::class,
+                $empresa->id,
+                $empresa->id,
+                metadata: [
+                    'antes' => $antes,
+                    'despues' => [
+                        'nombre' => trim($validated['nombre']),
+                        'zona_horaria' => $validated['zona_horaria'],
+                        'huevos_por_maple' => (int) $validated['huevos_por_maple'],
+                        'maples_por_cajon' => (int) $validated['maples_por_cajon'],
+                        'logo_path' => $logoPath,
+                    ],
+                ],
+            );
+        });
 
         return $empresa->fresh();
     }

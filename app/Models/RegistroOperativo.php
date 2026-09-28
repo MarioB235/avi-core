@@ -5,12 +5,14 @@ namespace App\Models;
 use App\Enums\RegistroOperativoEstado;
 use App\Enums\RegistroOperativoTipo;
 use App\Models\Concerns\BelongsToEmpresa;
+use App\Models\Concerns\PreventsHardDelete;
 use App\Support\DiaOperativoEmpresa;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 #[Fillable([
@@ -33,7 +35,7 @@ use Illuminate\Support\Carbon;
 ])]
 class RegistroOperativo extends Model
 {
-    use BelongsToEmpresa, HasFactory;
+    use BelongsToEmpresa, HasFactory, PreventsHardDelete;
 
     protected $table = 'registros_operativos';
 
@@ -70,6 +72,12 @@ class RegistroOperativo extends Model
     public function anuladoPor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'anulado_por');
+    }
+
+    public function correcciones(): HasMany
+    {
+        return $this->hasMany(CorreccionRegistroOperativo::class, 'registro_operativo_id')
+            ->orderByDesc('fecha_efectiva');
     }
 
     public function scopeActivos(Builder $query): Builder
@@ -116,7 +124,7 @@ class RegistroOperativo extends Model
     {
         return match ($this->tipo) {
             RegistroOperativoTipo::Muertes, RegistroOperativoTipo::Descarte => true,
-            RegistroOperativoTipo::Combinado => (int) $this->muertes > 0,
+            RegistroOperativoTipo::Combinado => (int) $this->muertes > 0 || (int) $this->descarte_aves > 0,
             default => false,
         };
     }
@@ -126,9 +134,12 @@ class RegistroOperativo extends Model
      */
     public function lineasDetalle(): array
     {
+        $this->loadMissing('user', 'galpon');
+
         $lineas = [
             ['label' => 'Tipo', 'value' => $this->tipo->label()],
             ['label' => 'Galpón', 'value' => $this->galpon?->displayName() ?? '—'],
+            ['label' => 'Registrado por', 'value' => $this->user?->name ?? '—'],
             ['label' => 'Fecha y hora', 'value' => $this->created_at?->format('d/m/Y H:i') ?? '—'],
             ['label' => 'Resumen', 'value' => $this->cantidadResumen()],
         ];
@@ -162,5 +173,10 @@ class RegistroOperativo extends Model
         }
 
         return $formatInt($aptos).' huevos aptos';
+    }
+
+    protected static function hardDeleteRejectionMessage(): string
+    {
+        return 'No se puede eliminar: use anulación lógica para conservar la trazabilidad (D07).';
     }
 }

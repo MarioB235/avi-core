@@ -121,7 +121,7 @@ Landing post-login para roles con panel administrativo (Dueño, Administrativo, 
 
 ### Elementos
 
-- Layout: `components/layouts/admin.blade.php` reutiliza clases `avicore-operario-*`; nav `AdminNav` según rol (Dueño: Inicio · Resumen · Equipo · Comercial); menú cuenta `x-ui.user-menu`; PWA (`x-ui.pwa-meta` + banner instalar si `AVICORE_PWA_INSTALL_PROMPT=true`).
+- Layout: `components/layouts/admin.blade.php` reutiliza clases `avicore-operario-*`; nav `AdminNav` según rol (Dueño: Inicio · Resumen · Historial · Equipo · Comercial); menú cuenta `x-ui.user-menu`; PWA (`x-ui.pwa-meta` + banner instalar si `AVICORE_PWA_INSTALL_PROMPT=true`).
 - Hero: saludo horario + subtítulo `{empresa · rol}.`
 - **Primeros pasos (onboarding):** checklist `x-ui.setup-checklist` mientras falte algún paso operativo (granja, galpón, lote, operario, etc.); oculta al completar. Ver `EmpresaOnboardingService`.
 - **Tu empresa:** panorama estructural — granjas y galpones activos (2 KPIs).
@@ -327,6 +327,68 @@ Vista operativa para Dueño, Administrativo y Encargado: seguir producción del 
 - Sin galpones activos: empty state con enlace implícito a Estructura.
 - Postura semanal agrupa con `DiaOperativoEmpresa` + `delDia` (misma ventana que KPIs y pulso).
 - Operario redirigido fuera de `/admin/*`.
+
+---
+
+## 3.5 Pantalla: Historial operativo (supervisor)
+
+**Estado MVP (2026-09-28):** implementado en `/{rol}/historial-operativo` — listado de cargas de **todo el equipo**; filtros granja, galpón, operario, tipo, estado y período; detalle con corrección supervisor (AUD-04).
+
+### Objetivo
+
+Supervisar cargas de campo sin depender del historial móvil propio del operario.
+
+### Usuarios
+
+- Dueño, Administrativo, Encargado (`admin.viewHistorialOperativo`, mismo alcance que Resumen).
+- Admin AviCore solo con sesión de soporte activa.
+
+### Elementos
+
+- Hero `x-admin.page-hero`.
+- Filtros: `x-ui.select` (granja, galpón, operario, tipo, estado) + `x-ui.date-picker` (desde/hasta; tope = día operativo vía `AdminFiltroFechasOperativas`).
+- Lista unificada `registros_operativos` + `vacunaciones` (`AdminHistorialOperativoService`, paginación 25).
+- Cada ítem: resumen, tipo, galpón, operario, fecha/hora; anulados con badge.
+- Diálogo detalle (`SupervisorHistorialItem` + `lineasDetalle` del modelo).
+- Si `puedeCorregir`: botón **Corregir registro** → formulario con valores nuevos, fecha efectiva y motivo; historial de correcciones en el diálogo.
+- Vacunaciones y registros anulados: solo lectura.
+
+### Comportamiento
+
+- Aislamiento por `empresa_id`; operario no accede a esta ruta.
+- Corrección vía `CorregirRegistroOperativoAction` (encargado+); totales y saldo usan valores corregidos una sola vez.
+- Pestaña **Historial** en `AdminNav` junto a Resumen.
+- Tests: `AdminHistorialOperativoTest`, `AdminHistorialOperativoCorreccionTest`.
+
+---
+
+## 3.6 Pantalla: Auditoría (consulta)
+
+**Estado MVP (2026-09-28):** implementado en `/{rol}/auditoria` — bitácora de acciones críticas; solo consulta.
+
+### Objetivo
+
+Revisar quién hizo qué y cuándo en la empresa, sin poder alterar el registro.
+
+### Usuarios
+
+- Dueño, Administrativo, Encargado (`admin.viewAuditoria`).
+- Admin AviCore solo con sesión de soporte activa.
+- Operario: sin acceso.
+
+### Elementos
+
+- Hero `x-admin.page-hero`.
+- Filtros: categoría, actor, acción (texto), fechas desde/hasta (`AdminFiltroFechasOperativas` + `DiaOperativoEmpresa`).
+- Lista paginada (`AdminAuditoriaConsultaService`, 25 ítems).
+- Empty state `x-ui.empty-state` («Sin eventos») con copy distinto si hay filtros activos.
+- Diálogo detalle readonly (`AuditoriaPresentacion::detalleLineas`).
+- Pestaña **Auditoría** en `AdminNav` (icono shield).
+
+### Comportamiento
+
+- Aislamiento por `empresa_id`; sin edición ni borrado desde UI.
+- Tests: `AdminAuditoriaConsultaTest` (detalle, multiempresa, filtros, estado vacío, fecha máxima TZ).
 
 ---
 

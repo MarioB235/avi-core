@@ -2,6 +2,9 @@
 
 namespace App\Actions\Lote;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Actions\Movimiento\RegistrarSaldoInicialLoteAction;
+use App\Enums\AuditoriaCategoria;
 use App\Enums\LoteEstado;
 use App\Enums\TipoHuevo;
 use App\Models\Galpon;
@@ -17,7 +20,11 @@ use Illuminate\Support\Facades\Gate;
 
 class RegistrarLoteAction
 {
-    public function __construct(private EmpresaRelationalGuard $relations) {}
+    public function __construct(
+        private EmpresaRelationalGuard $relations,
+        private RegistrarAuditoriaAction $auditoria,
+        private RegistrarSaldoInicialLoteAction $saldoInicialMovimiento,
+    ) {}
 
     /**
      * @param  array<string, int>  $cantidadesPorTipo  claves: valor de `TipoHuevo`
@@ -79,7 +86,23 @@ class RegistrarLoteAction
                 ]);
 
                 $galponBloqueado->increment('aves_actuales', $cantidad);
+                $this->saldoInicialMovimiento->execute($user, $lote, $galponBloqueado, $cantidad);
                 $lotesCreados->push($lote);
+
+                $this->auditoria->execute(
+                    $user,
+                    AuditoriaCategoria::Lote,
+                    'creado',
+                    Lote::class,
+                    $lote->id,
+                    $lote->empresa_id,
+                    metadata: [
+                        'codigo' => $lote->codigo,
+                        'galpon_id' => $lote->galpon_id,
+                        'cantidad_inicial' => $cantidad,
+                        'tipo_huevo' => $tipo->value,
+                    ],
+                );
             }
 
             return $lotesCreados;

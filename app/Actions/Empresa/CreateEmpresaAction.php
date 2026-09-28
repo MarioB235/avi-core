@@ -2,6 +2,8 @@
 
 namespace App\Actions\Empresa;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Enums\EmpresaEstado;
 use App\Enums\UserRole;
 use App\Models\Empresa;
@@ -14,7 +16,10 @@ use Illuminate\Validation\ValidationException;
 
 class CreateEmpresaAction
 {
-    public function __construct(private TemporaryPasswordGenerator $passwords) {}
+    public function __construct(
+        private TemporaryPasswordGenerator $passwords,
+        private RegistrarAuditoriaAction $auditoria,
+    ) {}
 
     /**
      * @param  array{
@@ -50,7 +55,7 @@ class CreateEmpresaAction
 
         $plainPassword = $this->passwords->generate();
 
-        return DB::transaction(function () use ($validated, $codigo, $estado, $plainPassword): array {
+        return DB::transaction(function () use ($actor, $validated, $codigo, $estado, $plainPassword): array {
             $empresa = Empresa::query()->create([
                 'nombre' => trim($validated['nombre']),
                 'codigo' => $codigo,
@@ -82,6 +87,22 @@ class CreateEmpresaAction
                 'activo' => true,
                 'must_change_password' => true,
             ]);
+
+            $this->auditoria->execute(
+                $actor,
+                AuditoriaCategoria::Empresa,
+                'creada',
+                Empresa::class,
+                $empresa->id,
+                $empresa->id,
+                metadata: [
+                    'codigo' => $empresa->codigo,
+                    'estado' => $estado->value,
+                    'admin_user_id' => $admin->id,
+                    'admin_documento' => $admin->documento,
+                    'password' => $plainPassword,
+                ],
+            );
 
             return [
                 'empresa' => $empresa,

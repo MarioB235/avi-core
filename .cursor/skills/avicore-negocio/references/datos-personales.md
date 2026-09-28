@@ -25,12 +25,16 @@ Exportaciones PDF/Excel (REP): deben reutilizar `DatosPersonales::documentoParaV
 
 Implementación: `App\Support\DatosPersonales` + `config/avicore.php` → `datos_personales.documento_visible_digitos` (default 3).
 
-## 3. Retención (acordada, pendiente OPS/AUD)
+## 3. Retención (acordada — AUD-08)
+
+Detalle: [`retencion-d07.md`](retencion-d07.md) · config `avicore.retencion.d07`.
 
 | Dato | Criterio MVP |
 |------|----------------|
-| Usuarios activos/inactivos | Mientras dure la relación contractual; backups según OPS-06 / D06 |
-| Historial operativo y anulaciones | Sin borrado físico; retención y corrección según D07 (AUD-08) |
+| Usuarios activos/inactivos | 60 meses por defecto; relación contractual + backups OPS-06 |
+| Historial operativo y anulaciones | Sin borrado físico; 60 meses; anulación lógica |
+| Auditoría y correcciones | Inmutables; 60 meses |
+| Documentos emitidos (PDF/Excel) | Copia inmutable al emitir; 60 meses; ver `documentos_emitidos` |
 | Sesiones de soporte | Registro en `soporte_sesiones` + `acciones`; sin PII adicional en logs de aplicación |
 
 ## 4. Minimización en UI

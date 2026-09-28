@@ -2,6 +2,8 @@
 
 namespace App\Actions\Operacion;
 
+use App\Actions\Auditoria\RegistrarAuditoriaAction;
+use App\Enums\AuditoriaCategoria;
 use App\Enums\RegistroOperativoEstado;
 use App\Models\User;
 use App\Models\Vacunacion;
@@ -11,6 +13,8 @@ use Illuminate\Validation\ValidationException;
 
 class AnularVacunacionAction
 {
+    public function __construct(private RegistrarAuditoriaAction $auditoria) {}
+
     public function execute(User $user, Vacunacion $vacunacion, string $motivo): Vacunacion
     {
         Gate::forUser($user)->authorize('anular', $vacunacion);
@@ -48,6 +52,21 @@ class AnularVacunacionAction
                 'anulado_por' => $user->id,
                 'motivo_anulacion' => $motivo,
             ])->save();
+
+            $this->auditoria->execute(
+                $user,
+                AuditoriaCategoria::Operacion,
+                'anulado',
+                Vacunacion::class,
+                $vacunacionBloqueada->id,
+                $vacunacionBloqueada->empresa_id,
+                $motivo,
+                [
+                    'vacuna' => $vacunacionBloqueada->vacuna->value,
+                    'lote_id' => $vacunacionBloqueada->lote_id,
+                    'galpon_id' => $vacunacionBloqueada->galpon_id,
+                ],
+            );
 
             return $vacunacionBloqueada->fresh(['galpon', 'lote']);
         });

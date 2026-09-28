@@ -17,7 +17,17 @@ enum RegistroOperativoTipo: string
             self::Muertes => 'Muertes',
             self::Descarte => 'Descarte',
             self::Alimento => 'Alimento',
-            self::Combinado => 'Combinado',
+            self::Combinado => 'Combinado (legado)',
         };
+    }
+
+    public function esLegado(): bool
+    {
+        return $this === self::Combinado;
+    }
+
+    public function admiteCapturaNueva(): bool
+    {
+        return ! $this->esLegado();
     }
 }

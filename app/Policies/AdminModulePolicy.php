@@ -23,4 +23,14 @@ class AdminModulePolicy
     {
         return $user->empresa_id !== null && $user->rol->canViewComercial();
     }
+
+    public function viewHistorialOperativo(User $user): bool
+    {
+        return $this->soporte->canViewResumenOperativo($user);
+    }
+
+    public function viewAuditoria(User $user): bool
+    {
+        return $this->soporte->canViewAuditoria($user);
+    }
 }

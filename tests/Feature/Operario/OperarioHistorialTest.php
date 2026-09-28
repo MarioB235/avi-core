@@ -11,6 +11,7 @@ use App\Enums\RegistroOperativoTipo;
 use App\Enums\UserRole;
 use App\Enums\VacunaTipo;
 use App\Livewire\Operario\Historial;
+use App\Livewire\Operario\Home;
 use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
@@ -509,6 +510,80 @@ class OperarioHistorialTest extends TestCase
             ->test(Historial::class)
             ->assertSee('avicore-operario-historial-notice', false)
             ->assertSee('no cuentan en los totales del galpón', false);
+    }
+
+    public function test_historial_detalle_muestra_galpon_usuario_y_estado_anulado(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon();
+        $operario->forceFill(['name' => 'Juan Operario'])->save();
+
+        $registro = RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 420,
+                'estado' => RegistroOperativoEstado::Anulado,
+                'motivo_anulacion' => 'Carga duplicada',
+                'anulado_at' => $this->instanteDiaOperativoHoy($operario, 9, 0),
+                'anulado_por' => $operario->id,
+            ]);
+
+        Livewire::actingAs($operario)
+            ->test(Historial::class)
+            ->call('abrirDetalle', 'registro-'.$registro->id)
+            ->assertSee('Galpón', false)
+            ->assertSee($galpon->displayName(), false)
+            ->assertSee('Registrado por', false)
+            ->assertSee('Juan Operario', false)
+            ->assertSee('Estado', false)
+            ->assertSee('Anulado', false)
+            ->assertSee('Carga duplicada', false);
+    }
+
+    public function test_historial_anulacion_excluye_totales_y_rechaza_segunda_anulacion(): void
+    {
+        [$operario, $galpon] = $this->createOperarioConGalpon(['aves_actuales' => 500]);
+        $operario->forceFill(['ultimo_galpon_id' => $galpon->id])->save();
+
+        $registro = RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $operario)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Muertes,
+                'huevos' => null,
+                'muertes' => 5,
+                'created_at' => $this->instanteDiaOperativoHoy($operario, 10, 0),
+            ]);
+
+        $galpon->update(['aves_actuales' => 495]);
+
+        Livewire::actingAs($operario)
+            ->test(Home::class)
+            ->assertSee('5', false);
+
+        Livewire::actingAs($operario)
+            ->test(Historial::class)
+            ->call('abrirDetalle', 'registro-'.$registro->id)
+            ->call('mostrarAnulacion')
+            ->set('motivoAnulacion', 'Error de conteo')
+            ->call('anularRegistro')
+            ->assertDispatched('snackbar-show');
+
+        $registro->refresh();
+        $galpon->refresh();
+
+        $this->assertSame(RegistroOperativoEstado::Anulado, $registro->estado);
+        $this->assertSame(500, $galpon->aves_actuales);
+
+        Livewire::actingAs($operario)
+            ->test(Home::class)
+            ->assertDontSee('5 muertes', false);
+
+        $this->expectException(AuthorizationException::class);
+
+        app(AnularRegistroOperativoAction::class)->execute($operario, $registro, 'Intento duplicado');
+
+        $galpon->refresh();
+        $this->assertSame(500, $galpon->aves_actuales);
     }
 
     public function test_historial_keeps_records_when_galpon_enters_mantenimiento(): void
