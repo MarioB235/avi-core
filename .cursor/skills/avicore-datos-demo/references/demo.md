@@ -66,7 +66,7 @@ Empresa: **Avícola Demo** (`DEMO`), excepto **Admin AviCore** (sin `empresa_id`
 3. **Sin usuarios demo (o seed parcial):** igual que (2): selector visible, aviso en pantalla y mensaje en `demoRole` al intentar ingresar hasta que todos los `role_documentos` estén activos en BD.
 4. **Solo usuarios demo:** el login por selector rechaza usuarios fuera de Avícola Demo (o Admin AviCore demo sin empresa).
 
-**Primera vez / BD vacía:** `php artisan migrate --seed` (local) o `db:seed --force` en Cloud. Re-ejecutar el seed es seguro (`firstOrCreate`). Si falta seed con flag demo activo, alerta y campo `demoRole` usan `DemoLoginService::MESSAGE_DEMO_SEED_MISSING`.
+**Primera vez / BD vacía:** `php artisan migrate --seed` (local) o `db:seed --force` en Cloud. Re-ejecutar el seed es seguro (`firstOrCreate`). Si falta seed con flag demo activo, `/login` muestra `MESSAGE_DEMO_SEED_MISSING` (texto para usuario final) y en `local` también `MESSAGE_DEMO_SEED_MISSING_DEV_HINT`; el mismo texto en `demoRole` si intentan enviar sin datos.
 
 **Antes de go-live real:** `AVICORE_DEMO_LOGIN=false` y redeploy.
 

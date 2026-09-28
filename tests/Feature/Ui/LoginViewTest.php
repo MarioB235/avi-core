@@ -2,8 +2,10 @@
 
 namespace Tests\Feature\Ui;
 
+use App\Enums\UserRole;
 use App\Livewire\Auth\Login;
 use App\Models\Empresa;
+use App\Services\DemoLoginService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -107,7 +109,7 @@ class LoginViewTest extends TestCase
             ->assertSet('demoSetupPending', false)
             ->html();
 
-        $this->assertStringNotContainsString('La demo aún no está lista', $html);
+        $this->assertStringNotContainsString('Todavía no podés entrar', $html);
     }
 
     public function test_login_shows_demo_setup_pending_alert_when_seed_users_are_missing(): void
@@ -120,9 +122,47 @@ class LoginViewTest extends TestCase
             ->assertSet('demoSetupPending', true)
             ->html();
 
-        $this->assertStringContainsString('Faltan datos demo en la base', $html);
-        $this->assertStringContainsString('migrate --seed', $html);
+        $this->assertStringContainsString('Todavía no podés entrar', $html);
+        $this->assertStringContainsString('usuarios de demostración', $html);
+        $this->assertStringNotContainsString('migrate --seed', $html);
         $this->assertStringContainsString('name="demoRole"', $html);
         $this->assertStringNotContainsString('name="documento"', $html);
+    }
+
+    public function test_login_shows_developer_seed_hint_in_local_when_demo_setup_pending(): void
+    {
+        $this->app['env'] = 'local';
+        Empresa::factory()->create(['codigo' => 'DEMO']);
+        config(['avicore.demo_login.enabled_flag' => true]);
+
+        $html = Livewire::test(Login::class)
+            ->assertSet('demoSetupPending', true)
+            ->html();
+
+        $this->assertStringContainsString('migrate --seed', $html);
+    }
+
+    public function test_login_disables_submit_and_blocks_login_when_demo_setup_pending(): void
+    {
+        $this->app['env'] = 'staging';
+        Empresa::factory()->create(['codigo' => 'DEMO']);
+        config(['avicore.demo_login.enabled_flag' => true]);
+
+        $component = Livewire::test(Login::class)->assertSet('demoSetupPending', true);
+
+        $html = $component->html();
+        $this->assertMatchesRegularExpression('/type="submit"[^>]*\sdisabled(?:="[^"]*")?/s', $html);
+
+        $component
+            ->set('demoRole', UserRole::Dueno->value)
+            ->call('login')
+            ->assertHasErrors('demoRole');
+
+        $this->assertGuest();
+
+        $this->assertSame(
+            DemoLoginService::MESSAGE_DEMO_SEED_MISSING,
+            $component->errors()->first('demoRole')
+        );
     }
 }

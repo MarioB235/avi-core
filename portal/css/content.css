@@ -464,3 +464,101 @@
   border: 0;
   background: #fff;
 }
+
+/* INVERA — documento maestro (lectura web + impresión igual que pantalla) */
+
+.doc-invera {
+  margin-top: 0.5rem;
+}
+
+.doc-invera__hero {
+  margin: 0 0 1.5rem;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, var(--surface) 0%, var(--bg) 100%);
+}
+
+.doc-invera__logo-wrap {
+  display: inline-block;
+  padding: 0.45rem 0.65rem;
+  background: #000;
+  border-radius: 6px;
+  line-height: 0;
+}
+
+.doc-invera__logo {
+  display: block;
+  width: auto;
+  max-width: min(100%, 280px);
+  height: auto;
+  max-height: 72px;
+}
+
+.doc-invera__hero-title {
+  margin: 1rem 0 0.35rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--heading);
+}
+
+.doc-invera__hero-note {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.doc-invera__toolbar {
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.doc-invera__print-btn {
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+}
+
+.doc-invera__print-btn:hover {
+  filter: brightness(1.05);
+}
+
+.doc-invera__print-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.doc-invera__toolbar-hint {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.doc-invera__body {
+  min-height: 12rem;
+}
+
+.doc-invera__section + .doc-invera__section {
+  margin-top: 0.25rem;
+}
+
+.doc-invera__callout {
+  margin: 1rem 0;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  font-size: 0.95rem;
+}
+
+.doc-invera__callout p {
+  margin: 0;
+}
+
+/* Impresión INVERA: ver css/invera-print.css (body.has-doc-invera) */

@@ -1,0 +1,43 @@
+/* Overrides — documento maestro INVERA */
+
+/* Logo horizontal (fondo negro del PNG integrado en la portada) */
+.informe--ejecutivo-invera .invera-portada__logo-container {
+  padding: 0.28cm 0.45cm;
+  background: #000;
+  border-radius: 4px;
+}
+
+.informe--ejecutivo-invera .invera-portada__logo-full {
+  display: block;
+  width: auto;
+  max-width: 7.2cm;
+  height: auto;
+  max-height: 1.85cm;
+}
+
+.informe--ejecutivo-invera .section-block h5,
+.informe--ejecutivo-invera .section-block h6 {
+  margin: 0.75rem 0 0.3rem;
+  font-size: var(--ap-text-h4);
+  font-weight: 700;
+  line-height: var(--ap-line-compact);
+  color: var(--ap-verde);
+}
+
+.informe--ejecutivo-invera .formal-table th:nth-child(1) {
+  width: 28%;
+}
+
+.informe--ejecutivo-invera .formal-table th:nth-child(2) {
+  width: 14%;
+}
+
+.informe--ejecutivo-invera .formal-table th:nth-child(3) {
+  width: 58%;
+}
+
+.informe--ejecutivo-invera .section-block hr {
+  margin: 1.25rem 0;
+  border: 0;
+  border-top: 1px dashed rgba(10, 37, 64, 0.15);
+}

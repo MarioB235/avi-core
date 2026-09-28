@@ -73,8 +73,8 @@
 <h2 id="acceso-mvp">Acceso en desarrollo (<code>/login</code>)</h2>
 <p>
   Con <code>AVICORE_DEMO_LOGIN=true</code> fuera de <code>production</code>: solo selector <strong>Perfil</strong> (sin documento ni contraseña en pantalla).
-  El ingreso usa usuarios demo del seed; si falta empresa <code>DEMO</code> o algún usuario de <code>role_documentos</code>, <code>/login</code> muestra aviso y el envío falla en <code>demoRole</code> con el mismo texto (<code>DemoLoginService::MESSAGE_DEMO_SEED_MISSING</code>).
-  Primera vez: <code>php artisan migrate --seed</code>. Con flag en <code>false</code> o en producción: login normal documento + contraseña.
+  El ingreso usa usuarios demo del seed; si falta empresa <code>DEMO</code> o algún usuario de <code>role_documentos</code>, <code>/login</code> muestra aviso (título «Todavía no podés entrar»), deshabilita el botón de ingreso y, si intentan enviar, el mismo texto en <code>demoRole</code> (<code>MESSAGE_DEMO_SEED_MISSING</code>, lenguaje para quien usa la app, sin comandos de terminal). En entorno <code>local</code> la alerta añade la pista <code>migrate --seed</code> para desarrolladores.
+  Primera vez en tu PC: <code>php artisan migrate --seed</code>. Con flag en <code>false</code> o en producción: login normal documento + contraseña.
 </p>
 <p>
   Contrato agente: <code>avicore-datos-demo/references/demo.md</code> § 4 ·
@@ -85,6 +85,7 @@
 <h2 id="comandos">Comandos locales</h2>
 <p>Ver <code>avicore-contexto/references/arranque-local.md</code>. Atajo: <code>composer dev</code> → <strong>http://localhost:8000</strong></p>
 <p>Portal documental: <code>pnpm run portal:dev</code> → <strong>http://127.0.0.1:5500/</strong></p>
+<p>Documento maestro INVERA (portal): fuente <code>portal/contenido/fuentes/invera-documento-maestro.md</code> · regenerar <code>pnpm run build:portal-invera</code> · verificar antes de PR <code>pnpm run check:portal-invera</code></p>
 
 <h2 id="prohibiciones">Prohibiciones</h2>
 <p>No implementar sin leer references del skill · lógica crítica en Blade · saltar multiempresa · delete físico en operativos · UI fuera de guía · ignorar vista operario.</p>
@@ -95,7 +96,7 @@
   <li><strong>Config:</strong> <code>.cursor/README.md</code></li>
   <li><strong>Gobernanza:</strong> <code>avicore-evolucion-tooling/references/GOBERNANZA.md</code></li>
   <li><strong>MCP:</strong> Context7 (<code>user-context7</code>) para API/stack; GitHub (<code>user-github</code>) solo mensaje 5</li>
-  <li><strong>Anti-drift:</strong> <code>pnpm run check:agent-docs</code> · <code>pnpm run check:docs-impact</code> · <code>pnpm run check:cloud-readiness</code></li>
+  <li><strong>Anti-drift:</strong> <code>pnpm run check:agent-docs</code> · <code>pnpm run check:docs-impact</code> · <code>pnpm run check:cloud-readiness</code> · <code>pnpm run check:portal-invera</code> (artefactos INVERA)</li>
   <li><strong>Plan v1:</strong> <button type="button" class="portal-inline-link" data-portal-page="dev-plan-entrega" data-portal-href="contenido/desarrollo/plan-entrega.html" data-portal-label="Plan de entrega v1">plan de entrega</button> · checkpoint <code>portal/planes/CHECKPOINT.md</code> · plantilla <strong>1b</strong> en plantillas Cursor</li>
 </ul>
 
@@ -115,7 +116,8 @@
     <tr><td>Tabla, campo, FK</td><td><code>avicore-modelo-datos/references/esquema-bd.md</code></td></tr>
     <tr><td>Regla de negocio</td><td><code>avicore-negocio/references/reglas.md</code></td></tr>
     <tr><td>Pantalla o flujo</td><td><code>avicore-ui/references/pantallas-flujos.md</code></td></tr>
-    <tr><td>Login demo / datos seed</td><td><code>avicore-datos-demo/references/demo.md</code> (+ § Login en <code>pantallas-flujos.md</code>, §13 en <code>reglas.md</code>)</td></tr>
+    <tr><td>Login demo / datos seed</td><td><code>avicore-datos-demo/references/demo.md</code> (+ § Login en <code>pantallas-flujos.md</code>, §13 en <code>reglas.md</code>; resumen humano § acceso MVP arriba)</td></tr>
+    <tr><td>Documento INVERA (portal)</td><td><code>portal/imprimibles/README.md</code> · fuente <code>portal/contenido/fuentes/invera-documento-maestro.md</code> · lectura <code>contenido/documentos/documento-maestro-invera.html</code></td></tr>
     <tr><td>Permiso por rol</td><td><code>avicore-negocio/references/permisos.md</code></td></tr>
     <tr><td>Token / componente UI</td><td><code>avicore-design-system/references/</code></td></tr>
     <tr><td>PWA</td><td><code>avicore-pwa/references/pwa.md</code></td></tr>

@@ -9,7 +9,16 @@ use Illuminate\Validation\ValidationException;
 
 class DemoLoginService
 {
-    public const MESSAGE_DEMO_SEED_MISSING = 'Faltan datos demo en la base. Ejecutá php artisan migrate --seed e intentá de nuevo con el perfil elegido.';
+    /** Mensaje para quien usa la app (sin comandos de terminal). */
+    public const MESSAGE_DEMO_SEED_MISSING = 'Todavía no están cargados los usuarios de demostración. Quien instaló o administra AviCore debe completar la instalación (datos de prueba). Si necesitás ayuda, usá el enlace «¿Olvidaste tu contraseña?» para contactar soporte.';
+
+    /** Solo entorno local: pista para desarrolladores. */
+    public const MESSAGE_DEMO_SEED_MISSING_DEV_HINT = 'Desarrollo en tu PC: en la carpeta del proyecto ejecutá php artisan migrate --seed y recargá esta página.';
+
+    public static function shouldShowDeveloperSeedHint(): bool
+    {
+        return app()->environment('local');
+    }
 
     /**
      * Modo selector demo solicitado (flag activo y no production). No implica que el seed esté completo.

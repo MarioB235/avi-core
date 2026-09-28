@@ -202,21 +202,77 @@ function replayFadeIn() {
   visor.classList.add("fade-in");
 }
 
-function enhancePage() {
+function setInveraDocumentMode(active) {
+  document.body.classList.toggle("has-doc-invera", Boolean(active));
+}
+
+function syncInveraPrintMeta(article) {
+  const meta = article.querySelector(".doc-invera__meta");
+  const line = article.querySelector("[data-invera-print-meta-line]");
+  if (!meta || !line) return;
+
+  const version = meta.querySelector("[data-version]")?.getAttribute("data-version");
+  const fecha = meta.querySelector("time")?.textContent?.trim();
+  const parts = [];
+  if (version) parts.push(`Versión ${version}`);
+  if (fecha) parts.push(fecha);
+  line.textContent = parts.join(" · ");
+}
+
+function attachInveraPrint(article) {
+  article.querySelector("[data-invera-print]")?.addEventListener("click", () => {
+    window.print();
+  });
+}
+
+async function loadInveraFragment(article) {
+  const host = article.querySelector("[data-invera-fragment]");
+  if (!host) return false;
+
+  const src = host.getAttribute("data-invera-fragment");
+  if (!src) return false;
+
+  host.innerHTML = "<p>Cargando documento…</p>";
+
+  try {
+    const res = await fetch(src);
+    if (!res.ok) throw new Error(String(res.status));
+    host.innerHTML = await res.text();
+  } catch {
+    host.innerHTML =
+      `<p class="error">No se pudo cargar <code>${src}</code>. Ejecutá <code>pnpm run build:portal-invera</code> y recargá.</p>`;
+    return true;
+  }
+
+  return true;
+}
+
+async function enhancePage() {
   if (!visor) return;
 
   const article = document.createElement("article");
   article.className = "doc-page";
   article.innerHTML = visor.innerHTML;
 
-  PortalToc.assignHeadingIds([...article.querySelectorAll("h2")], "h2");
-  PortalToc.assignHeadingIds([...article.querySelectorAll("h3")], "section");
+  const hasInvera = await loadInveraFragment(article);
+
+  const tocRoot = hasInvera
+    ? article.querySelector(".doc-invera__body") || article
+    : article;
+
+  PortalToc.assignHeadingIds([...tocRoot.querySelectorAll("h2")], "h2");
+  PortalToc.assignHeadingIds([...tocRoot.querySelectorAll("h3")], "section");
 
   injectPlantillaSubnav(article);
   attachTemplateCopyButtons(article);
   attachAccordionToolbar(article);
   attachPortalGoto(article);
   attachCodeCopyButtons(article);
+  attachInveraPrint(article);
+  setInveraDocumentMode(hasInvera);
+  if (hasInvera) {
+    syncInveraPrintMeta(article);
+  }
 
   visor.innerHTML = "";
   visor.appendChild(article);
@@ -309,6 +365,7 @@ async function loadPage(id, href, label) {
   if (!visor || !id || !href) return;
 
   PortalToc.clearToc(contentArea, tocSidebar, tocList);
+  setInveraDocumentMode(false);
   setActiveNav(id);
   visor.classList.add("is-loading");
   visor.textContent = "Cargando…";
@@ -318,7 +375,7 @@ async function loadPage(id, href, label) {
     const res = await fetch(href);
     if (!res.ok) throw new Error(String(res.status));
     visor.innerHTML = await res.text();
-    enhancePage();
+    await enhancePage();
     visor.classList.remove("is-loading");
 
     const h1 = visor.querySelector("h1");
