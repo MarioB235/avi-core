@@ -70,8 +70,9 @@ flowchart TD
 pnpm run check:agent-docs
 pnpm run check:docs-impact
 pnpm run check:cloud-readiness
+pnpm run check:portal-invera
 ```
 
-`check:agent-docs` = sync + enlaces. `check:docs-impact` = sugerencias de `references/` según el diff (mensaje 4). `check:cloud-readiness` = requisitos Laravel Cloud (local pre-deploy y paso en CI).
+`check:agent-docs` = sync + enlaces. `check:docs-impact` = sugerencias de `references/` según el diff (mensaje 4). `check:cloud-readiness` = requisitos Laravel Cloud (local pre-deploy y paso en CI). `check:portal-invera` = artefactos INVERA presentes y fragmento HTML al día con el Markdown.
 
 Gobernanza: [`skills/avicore-evolucion-tooling/references/GOBERNANZA.md`](skills/avicore-evolucion-tooling/references/GOBERNANZA.md)

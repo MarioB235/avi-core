@@ -41,7 +41,7 @@ Permitir el acceso seguro al sistema.
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
 - **Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`, no `production`): solo selector de perfil; cada rol entra con su usuario demo fijo (ver `demo.md` § 4). Documento y contraseña no se muestran.
-- **Demo pendiente:** si falta empresa `DEMO` o usuarios demo del seed, alerta warning y error en `demoRole` con el mismo texto (`DemoLoginService::MESSAGE_DEMO_SEED_MISSING`, incluye `migrate --seed`); el selector sigue visible.
+- **Demo pendiente:** si falta empresa `DEMO` o usuarios demo del seed, alerta warning (título «Todavía no podés entrar»), botón deshabilitado y error en `demoRole` con `MESSAGE_DEMO_SEED_MISSING` (lenguaje para usuario final, sin terminal); en `local` la alerta añade `MESSAGE_DEMO_SEED_MISSING_DEV_HINT` (`migrate --seed`); el selector sigue visible.
 - Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre contacto de soporte (`x-ui.sheet`: bottom sheet en móvil, diálogo centrado en escritorio ≥1024px; WhatsApp y correo vía `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
 
 ### Validaciones

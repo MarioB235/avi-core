@@ -7,12 +7,14 @@ Documentos A4 con portada. Se abren en pestaña nueva desde el menú **Documento
 `informes/` — un documento por carpeta (`index.html` + `documento.css` opcional):
 
 - `sintesis-mercado-uruguay/` — síntesis estratégica mercado avícola Uruguay
+- Documento maestro INVERA: lectura e impresión en **Documentos** del portal (`contenido/documentos/documento-maestro-invera.html`); fuente Markdown en `contenido/fuentes/invera-documento-maestro.md`; regenerar con `pnpm run build:portal-invera` desde la raíz del repo; verificar con `pnpm run check:portal-invera` antes de PR
 
 ## Estilos
 
 **Plantilla ejecutiva (recomendada):** un solo archivo autocontenido:
 
-- `../imprimibles/_plantillas-ejecutivas/documento-ejecutivo-avicore.css` — portada + interiores + `@page` impresión
+- `../imprimibles/_plantillas-ejecutivas/documento-ejecutivo-avicore.css` — portada + interiores + `@page` impresión (AviCore)
+- `../imprimibles/_plantillas-ejecutivas/documento-ejecutivo-invera.css` — misma estructura, tokens azul/cian INVERA
 
 **Legacy DNGR** (solo si el documento no usa la plantilla ejecutiva):
 

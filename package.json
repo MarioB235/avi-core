@@ -12,12 +12,15 @@
         "check:security": "composer audit --locked && php artisan test --compact tests/Feature/Security tests/Unit/Services/EmpresaLogoPathGuardTest.php tests/Unit/Support",
         "check:operario": "php artisan test tests/Feature/Operario tests/Feature/Ui/OperarioCargarHubViewTest.php tests/Feature/Ui/OperarioBottomNavTest.php tests/Feature/Ui/OperarioUserMenuTest.php",
         "probe:operario": "php scripts/probe-login-operario.php",
-        "portal:dev": "node scripts/serve-portal.cjs"
+        "portal:dev": "node scripts/serve-portal.cjs",
+        "build:portal-invera": "node scripts/build-invera-documento-maestro.cjs",
+        "check:portal-invera": "node scripts/check-portal-invera.cjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
         "concurrently": "^9.0.1",
         "laravel-vite-plugin": "^3.1",
+        "marked": "^18.0.14",
         "tailwindcss": "^4.0.0",
         "vite": "^8.0.0",
         "vite-plugin-pwa": "^1.3.0",

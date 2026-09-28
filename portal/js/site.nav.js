@@ -49,6 +49,12 @@ const NAV_SECTIONS = [
         href: "contenido/documentos/sintesis-mercado.html",
         printable: true,
       },
+      {
+        id: "doc-maestro-invera",
+        label: "Documento maestro INVERA",
+        href: "contenido/documentos/documento-maestro-invera.html",
+        printable: true,
+      },
     ],
   },
   {

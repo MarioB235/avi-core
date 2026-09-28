@@ -6,8 +6,13 @@
         </header>
 
         @if ($demoSetupPending ?? false)
-            <x-ui.alert variant="warning" class="mb-5">
-                {{ \App\Services\DemoLoginService::MESSAGE_DEMO_SEED_MISSING }}
+            <x-ui.alert variant="warning" class="mb-5" title="Todavía no podés entrar">
+                <p>{{ \App\Services\DemoLoginService::MESSAGE_DEMO_SEED_MISSING }}</p>
+                @if (\App\Services\DemoLoginService::shouldShowDeveloperSeedHint())
+                    <p class="mt-2 text-xs text-amber-900/80">
+                        {{ \App\Services\DemoLoginService::MESSAGE_DEMO_SEED_MISSING_DEV_HINT }}
+                    </p>
+                @endif
             </x-ui.alert>
         @endif
 
@@ -55,7 +60,7 @@
                 Recordarme
             </label>
 
-            <x-ui.button type="submit" class="w-full" wire:loading.attr="disabled">
+            <x-ui.button type="submit" class="w-full" wire:loading.attr="disabled" :disabled="$demoSetupPending">
                 <span wire:loading.remove wire:target="login">Iniciar sesión</span>
                 <span wire:loading wire:target="login">Ingresando…</span>
             </x-ui.button>

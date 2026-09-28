@@ -1,0 +1,247 @@
+/* INVERA — lectura en portal + diseño de impresión / PDF */
+
+:root {
+  --invera-navy: #0a2540;
+  --invera-blue: #0e6ba8;
+  --invera-cyan: #2ec4d6;
+  --invera-paper: #ffffff;
+  --invera-ink: #1e293b;
+  --invera-ink-muted: #64748b;
+}
+
+body.has-doc-invera .doc-invera__print-btn {
+  border-color: var(--invera-navy);
+  background: linear-gradient(180deg, var(--invera-blue) 0%, var(--invera-navy) 100%);
+}
+
+body.has-doc-invera .doc-invera__hero {
+  border-color: color-mix(in srgb, var(--invera-cyan) 25%, var(--border));
+}
+
+body.has-doc-invera .doc-page .doc-invera__body h2 {
+  border-bottom-color: color-mix(in srgb, var(--invera-cyan) 45%, var(--border));
+  color: var(--heading);
+}
+
+body.has-doc-invera .doc-invera__callout {
+  border-left-color: var(--invera-cyan);
+  background: color-mix(in srgb, var(--invera-cyan) 10%, transparent);
+}
+
+.doc-invera__cover-print {
+  display: none;
+}
+
+.doc-invera__print-meta-line {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.doc-invera__print-footer {
+  display: none;
+}
+
+@media print {
+  @page invera-documento {
+    size: A4 portrait;
+    margin: 16mm 14mm 20mm 14mm;
+
+    @top-left {
+      content: "INVERA";
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--invera-navy);
+    }
+
+    @top-right {
+      content: "Documento maestro";
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 8pt;
+      color: var(--invera-ink-muted);
+    }
+
+    @bottom-left {
+      content: "Tecnología para crecer · Uso interno";
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 7.5pt;
+      color: var(--invera-ink-muted);
+    }
+
+    @bottom-right {
+      content: "Página " counter(page);
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 8pt;
+      font-variant-numeric: tabular-nums;
+      color: var(--invera-ink-muted);
+    }
+  }
+
+  @page invera-portada {
+    margin: 0;
+  }
+
+  html,
+  body.has-doc-invera {
+    background: var(--invera-paper) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body.has-doc-invera .content-area,
+  body.has-doc-invera #visor,
+  body.has-doc-invera .doc-page,
+  body.has-doc-invera .doc-invera__body {
+    background: var(--invera-paper) !important;
+    color: var(--invera-ink) !important;
+  }
+
+  body.has-doc-invera .doc-page {
+    max-width: none;
+    page: invera-documento;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  body.has-doc-invera .doc-page .doc-invera__body {
+    page: invera-documento;
+  }
+
+  body.has-doc-invera .doc-page h2,
+  body.has-doc-invera .doc-page .doc-invera__body h2 {
+    margin-top: 1.35rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 2px solid var(--invera-cyan) !important;
+    font-size: 13.5pt !important;
+    font-weight: 800 !important;
+    color: var(--invera-navy) !important;
+    break-after: avoid-page;
+  }
+
+  body.has-doc-invera .doc-page h3,
+  body.has-doc-invera .doc-page .doc-invera__body h3 {
+    margin-top: 1rem;
+    font-size: 11pt !important;
+    color: var(--invera-blue) !important;
+    break-after: avoid-page;
+  }
+
+  body.has-doc-invera .doc-page h4,
+  body.has-doc-invera .doc-page h5,
+  body.has-doc-invera .doc-page h6 {
+    font-size: 10.5pt !important;
+    color: var(--invera-navy) !important;
+  }
+
+  body.has-doc-invera .doc-page p,
+  body.has-doc-invera .doc-page li,
+  body.has-doc-invera .doc-page td {
+    color: var(--invera-ink) !important;
+  }
+
+  body.has-doc-invera .doc-page strong {
+    color: var(--invera-navy) !important;
+  }
+
+  body.has-doc-invera .doc-page table {
+    break-inside: auto;
+    font-size: 9.5pt;
+  }
+
+  body.has-doc-invera .doc-page thead {
+    display: table-header-group;
+  }
+
+  body.has-doc-invera .doc-page tr {
+    break-inside: avoid;
+  }
+
+  body.has-doc-invera .doc-page th {
+    background: var(--invera-navy) !important;
+    color: #fff !important;
+    border-color: var(--invera-navy) !important;
+  }
+
+  body.has-doc-invera .doc-page td {
+    border-color: #e2e8f0 !important;
+  }
+
+  body.has-doc-invera .doc-page pre,
+  body.has-doc-invera .doc-page code {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #e2e8f0;
+  }
+
+  body.has-doc-invera .doc-invera__toolbar,
+  body.has-doc-invera .doc-invera__hero-note,
+  body.has-doc-invera .doc-page > .page-meta,
+  body.has-doc-invera .doc-page > h1,
+  body.has-doc-invera .doc-page > .lead {
+    display: none !important;
+  }
+
+  body.has-doc-invera .doc-invera__hero {
+    page: invera-portada;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 277mm;
+    margin: 0;
+    padding: 2.5cm 2cm;
+    border: none;
+    border-radius: 0;
+    text-align: center;
+    background: var(--invera-paper) !important;
+    break-after: page;
+  }
+
+  body.has-doc-invera .doc-invera__cover-print {
+    display: block;
+    margin-top: 1.25rem;
+  }
+
+  body.has-doc-invera .doc-invera__cover-eyebrow {
+    margin: 0 0 0.35rem;
+    font-size: 10pt;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--invera-blue);
+  }
+
+  body.has-doc-invera .doc-invera__cover-sub {
+    margin: 0;
+    font-size: 11pt;
+    color: var(--invera-ink-muted);
+  }
+
+  body.has-doc-invera .doc-invera__hero-title {
+    margin-top: 1.5rem;
+    font-size: 18pt;
+    font-weight: 800;
+    color: var(--invera-navy) !important;
+  }
+
+  body.has-doc-invera .doc-invera__logo {
+    max-width: 320px;
+    max-height: 88px;
+  }
+
+  body.has-doc-invera .doc-invera__section {
+    break-inside: auto;
+  }
+
+  body.has-doc-invera .doc-invera__callout {
+    break-inside: avoid-page;
+    border-left-color: var(--invera-cyan) !important;
+    background: #f0f9ff !important;
+  }
+
+  body.has-doc-invera .doc-invera__print-meta-line {
+    color: var(--invera-ink-muted) !important;
+  }
+}

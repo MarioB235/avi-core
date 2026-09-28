@@ -250,6 +250,12 @@ Si ves `Cannot GET /portal/index.html`, la URL es incorrecta o el puerto 5500 ti
 
 Detalle: [`portal/README.md`](../../../../portal/README.md). Los `.md` en `.cursor/skills/` siguen siendo fuente del agente Cursor.
 
+**Documento maestro INVERA** (menú Documentos del portal):
+
+1. Editar Markdown: `portal/contenido/fuentes/invera-documento-maestro.md`
+2. Regenerar fragmento web: `pnpm run build:portal-invera`
+3. Antes de una PR que toque INVERA: `pnpm run check:portal-invera` (archivos requeridos + HTML generado al día)
+
 ---
 
 ## Secretos

@@ -11,7 +11,7 @@ Principios y stack: `arquitectura.md`.
 avi-core/
 ├── app/                      # Laravel — Actions, Services, Livewire, Policies
 ├── resources/views/          # layouts (público, admin, operario), components/ui
-├── scripts/                  # dev.php, write-build-meta.cjs, serve-portal.cjs, check-agent-docs-sync, check-docs-impact, check-cloud-readiness, check-skill-references, …
+├── scripts/                  # dev.php, write-build-meta.cjs, serve-portal.cjs, build-invera-documento-maestro.cjs, check-portal-invera.cjs, check-agent-docs-sync, check-docs-impact, check-cloud-readiness, check-skill-references, …
 ├── tests/Feature/            # Auth/, Admin/, Operario/, Services/, Support/, Ui/
 ├── tests/Unit/Services/      # AppBuildServiceTest (metadata build)
 ├── portal/                   # Portal HTML documental (contenido, imprimibles, CHANGELOG, js/site.nav.js + site.theme.js + site.toc.js + site.js)

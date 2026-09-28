@@ -39,6 +39,12 @@ class Login extends Component
 
     public function login(AttemptLoginAction $attemptLogin): void
     {
+        if ($this->demoLoginEnabled && $this->demoSetupPending) {
+            $this->addError('demoRole', DemoLoginService::MESSAGE_DEMO_SEED_MISSING);
+
+            return;
+        }
+
         if ($this->demoLoginEnabled) {
             $this->validate([
                 'demoRole' => ['required', Rule::enum(UserRole::class)],

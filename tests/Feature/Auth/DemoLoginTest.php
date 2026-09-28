@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Livewire\Auth\Login;
 use App\Models\Empresa;
 use App\Models\User;
+use App\Services\DemoLoginService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
@@ -109,12 +110,18 @@ class DemoLoginTest extends TestCase
     public function test_demo_login_fails_on_submit_when_seed_users_are_missing(): void
     {
         Empresa::factory()->create(['codigo' => 'DEMO']);
-        $this->enableDemoLogin();
+        $this->enableDemoLogin('staging');
 
-        Livewire::test(Login::class)
+        $component = Livewire::test(Login::class)
             ->set('demoRole', UserRole::Dueno->value)
             ->call('login')
             ->assertHasErrors('demoRole');
+
+        $this->assertGuest();
+
+        $message = $component->errors()->first('demoRole') ?? '';
+        $this->assertSame(DemoLoginService::MESSAGE_DEMO_SEED_MISSING, $message);
+        $this->assertStringNotContainsString('migrate --seed', $message);
     }
 
     public function test_demo_login_requires_role(): void

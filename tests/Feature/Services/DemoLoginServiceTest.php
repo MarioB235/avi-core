@@ -24,6 +24,18 @@ class DemoLoginServiceTest extends TestCase
         $this->assertTrue(app(DemoLoginService::class)->isEnabled());
     }
 
+    public function test_should_show_developer_seed_hint_only_in_local(): void
+    {
+        $this->app['env'] = 'local';
+        $this->assertTrue(DemoLoginService::shouldShowDeveloperSeedHint());
+
+        $this->app['env'] = 'staging';
+        $this->assertFalse(DemoLoginService::shouldShowDeveloperSeedHint());
+
+        $this->app['env'] = 'production';
+        $this->assertFalse(DemoLoginService::shouldShowDeveloperSeedHint());
+    }
+
     public function test_is_disabled_when_flag_is_false(): void
     {
         $this->seed(DatabaseSeeder::class);
@@ -115,8 +127,8 @@ class DemoLoginServiceTest extends TestCase
             $this->fail('Expected ValidationException');
         } catch (ValidationException $exception) {
             $this->assertArrayHasKey('demoRole', $exception->errors());
-            $this->assertStringContainsString('faltan datos demo', strtolower($exception->errors()['demoRole'][0]));
-            $this->assertStringContainsString('migrate --seed', $exception->errors()['demoRole'][0]);
+            $this->assertStringContainsString('usuarios de demostración', strtolower($exception->errors()['demoRole'][0]));
+            $this->assertStringNotContainsString('migrate --seed', $exception->errors()['demoRole'][0]);
         }
     }
 
