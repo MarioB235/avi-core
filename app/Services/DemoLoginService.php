@@ -19,7 +19,20 @@ class DemoLoginService
             return false;
         }
 
-        return $this->demoEmpresaExists();
+        return $this->demoLoginReady();
+    }
+
+    public function isRequestedButUnavailable(): bool
+    {
+        if (app()->environment('production')) {
+            return false;
+        }
+
+        if (! (bool) config('avicore.demo_login.enabled_flag', false)) {
+            return false;
+        }
+
+        return ! $this->demoLoginReady();
     }
 
     public function resolveUser(string $roleValue): User
@@ -48,13 +61,18 @@ class DemoLoginService
 
         if ($user === null) {
             throw ValidationException::withMessages([
-                'demoRole' => 'Usuario demo no encontrado. Ejecutá php artisan db:seed.',
+                'demoRole' => 'No pudimos ingresar con ese perfil. La demo aún no está lista; contactá al equipo de AviCore.',
             ]);
         }
 
         $this->assertDemoUser($user, $role);
 
         return $user;
+    }
+
+    private function demoLoginReady(): bool
+    {
+        return $this->demoEmpresaExists() && $this->demoUsersReady();
     }
 
     private function demoEmpresaExists(): bool
@@ -66,6 +84,30 @@ class DemoLoginService
         }
 
         return Empresa::query()->where('codigo', $codigo)->exists();
+    }
+
+    private function demoUsersReady(): bool
+    {
+        $documentos = config('avicore.demo_login.role_documentos', []);
+
+        if (! is_array($documentos) || $documentos === []) {
+            return false;
+        }
+
+        foreach ($documentos as $documento) {
+            if (! is_string($documento) || trim($documento) === '') {
+                return false;
+            }
+
+            if (! User::query()
+                ->where('documento', trim($documento))
+                ->where('activo', true)
+                ->exists()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function documentoForRole(UserRole $role): string

@@ -41,7 +41,8 @@ Permitir el acceso seguro al sistema.
 - **PWA:** banner inferior «Instalá AviCore» si no está instalada (`AVICORE_PWA_INSTALL_PROMPT=true`); Chrome/Android → botón Instalar; iOS → guía Compartir. Detalle: `avicore-pwa/references/pwa.md`.
 - Inputs con icono Lucide (`id-card`, `lock-keyhole`) y **toggle** para mostrar/ocultar contraseña (un solo control visible).
 - Checkbox «Recordarme» con foco visible.
-- **Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`): selector de perfil sin credenciales; cada rol entra con su usuario demo fijo (ver `demo.md` § 4). Solo si existe empresa `DEMO`; deshabilitado en `production`.
+- **Modo demo MVP** (`AVICORE_DEMO_LOGIN=true`): selector de perfil sin credenciales; cada rol entra con su usuario demo fijo (ver `demo.md` § 4). Solo si existe empresa `DEMO` **y** todos los usuarios de `role_documentos` están activos en BD; deshabilitado en `production`.
+- **Demo pendiente:** si el flag está activo pero falta empresa o usuarios demo, se muestra alerta warning («La demo aún no está lista») y el login normal (documento + contraseña) queda habilitado.
 - Recuperación de contraseña: enlace **«¿Olvidaste tu contraseña?»** abre contacto de soporte (`x-ui.sheet`: bottom sheet en móvil, diálogo centrado en escritorio ≥1024px; WhatsApp y correo vía `config/avicore.php` / `.env`); sin flujo automático de reset en MVP (ver regla de negocio en `05`).
 
 ### Validaciones

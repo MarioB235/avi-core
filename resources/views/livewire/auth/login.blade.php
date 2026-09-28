@@ -5,6 +5,12 @@
             <p class="avicore-auth-card__subtitle">Iniciá sesión para continuar</p>
         </header>
 
+        @if ($demoSetupPending ?? false)
+            <x-ui.alert variant="warning" class="mb-5">
+                La demo aún no está lista. Si tenés credenciales de prueba, ingresá con documento y contraseña. Si no, contactá al equipo de AviCore.
+            </x-ui.alert>
+        @endif
+
         <form wire:submit="login" class="space-y-5">
             <x-ui.input
                 label="Documento"
