@@ -28,7 +28,7 @@ Referencia de producto alineada con `App\Support\ResumenMetricasCatalog` y tests
 | `huevos_ayer` | huevos | ayer operativo | pulso |
 | `delta_huevos` | huevos / % | hoy vs ayer | pulso |
 | `galpones_sin_carga` | lista | hoy | galpones con omisión D03 en huevos, muertes o descarte (alimento no cuenta) |
-| `postura_semanal` | huevos/día | 7 días lógicos | solo tipo huevos |
+| `postura_semanal` / `graficos_semanales` | huevos/día (+ descarte, muertes, kg) | 7 días lógicos | RES-08: omisión ≠ 0; tabla + 4 series |
 
 Detalle campo a campo (exclusiones, ausencia, implementación): `ResumenMetricasCatalog::definiciones()`.
 
@@ -45,23 +45,35 @@ Detalle campo a campo (exclusiones, ausencia, implementación): `ResumenMetricas
 | Pulso OK con D03 completo | `test_pulso_for_ok_when_d03_complete` |
 | Conciliación Inicio/Resumen/Historial | `AdminResumenTotalesConciliacionTest` |
 | Servicio canónico RES-04 aislado | `TotalesCapturaDiaServiceTest` |
-| Comparación ayer | `test_pulso_for_compares_huevos_with_yesterday` |
+| Comparación ayer (D03 completo) | `test_pulso_for_compares_huevos_with_yesterday` |
+| Sin % con D03 incompleto | `test_pulso_for_no_pct_when_d03_incomplete_res07` |
+| Sin % sin base ayer | `test_pulso_for_null_pct_when_yesterday_zero_res07` |
+| Semana sin carga ≠ cero | `test_graficos_semanales_dia_sin_carga_no_es_cero_res08` |
+| Cero confirmado en tabla | `test_graficos_semanales_cero_confirmado_visible_res08` |
 | Gráfico 7 días | `test_postura_semanal_sums_huevos_by_day_for_scope` |
 | Aves actuales = saldo galpón | `AdminResumenMetricasContractTest::test_aves_actuales_usa_saldo_galpon` |
 | Anulados excluidos | `AdminResumenMetricasContractTest::test_registros_anulados_no_suman_en_huevos_hoy` |
 
 Mapa máquina: `ResumenMetricasCatalog::casosVerificables()`.
 
+## Alimento entregado vs consumo (RES-11)
+
+- `alimento_kg_hoy` y gráfico semanal: **kg del remito** al registrar la entrega; días sin carga ≠ sin alimentación.
+- v1 **no** calcula conversión alimenticia, eficiencia ni g/ave/día a partir de esos kg.
+- Copy UI: `AlimentoEntregaSemantica` / `ResumenMetricasCatalog::referenciaAlimentoEntregado()`.
+- Tests: `AlimentoEntregaSemanticaTest`, `AdminResumenTest::test_resumen_alimento_entrega_no_consumo_res11`.
+
 ## Fuera de alcance (v1)
 
 - Stock/demanda comercial (RES-01).
+- Conversión alimenticia y eficiencia desde kg entregados (RES-11 ✓ — explícitamente fuera).
 - Tasa de mortalidad **por lote** cuando hay varios activos (D01 — solo galpón o lote único en ficha).
-- Comparaciones honestas pulso (RES-07).
+- Comparaciones honestas pulso (RES-07 ✓): `ComparacionHonestaPulso`, motivo `delta_huevos_pct_motivo`, reglas §23.
 
 ## Verificación
 
 ```bash
-php artisan test tests/Unit/Support/ResumenMetricasCatalogTest.php tests/Unit/Support/CompletitudDiariaD03Test.php tests/Feature/Services/AdminResumenMetricasContractTest.php tests/Feature/Services/AdminResumenServiceTest.php tests/Feature/Services/TotalesCapturaDiaServiceTest.php tests/Feature/Services/AdminResumenTotalesConciliacionTest.php
+php artisan test tests/Unit/Support/ResumenMetricasCatalogTest.php tests/Unit/Support/CompletitudDiariaD03Test.php tests/Unit/Support/ComparacionHonestaPulsoTest.php tests/Feature/Services/AdminResumenMetricasContractTest.php tests/Feature/Services/AdminResumenServiceTest.php tests/Feature/Services/TotalesCapturaDiaServiceTest.php tests/Feature/Services/AdminResumenTotalesConciliacionTest.php
 ```
 
 ## Completitud diaria D03 (RES-03)

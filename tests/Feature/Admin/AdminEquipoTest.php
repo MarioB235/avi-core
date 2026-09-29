@@ -104,4 +104,34 @@ class AdminEquipoTest extends TestCase
             ->assertSee('Operario Empresa A')
             ->assertDontSee('Operario Empresa B');
     }
+
+    public function test_equipo_solo_lectura_sin_email_y_con_estado_acceso(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+
+        $dueno = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Dueno,
+            'activo' => true,
+            'must_change_password' => false,
+            'name' => 'Dueño Demo',
+        ]);
+
+        User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Operario,
+            'activo' => true,
+            'must_change_password' => true,
+            'name' => 'Operario Pendiente',
+            'email' => 'pendiente.equipo@avicore.test',
+        ]);
+
+        $this->actingAs($dueno)
+            ->get(route('dueno.equipo.index'))
+            ->assertOk()
+            ->assertSee('Solo lectura')
+            ->assertSee('Pendiente cambio de clave')
+            ->assertSee('Operario Pendiente')
+            ->assertDontSee('pendiente.equipo@avicore.test');
+    }
 }

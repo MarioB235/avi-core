@@ -13,6 +13,7 @@ use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\User;
 use App\Services\AdminResumenService;
+use App\Support\ComparacionHonestaPulso;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -124,7 +125,48 @@ class AdminResumenServiceTest extends TestCase
         $puntos = app(AdminResumenService::class)->posturaSemanal($dueno);
 
         $this->assertCount(7, $puntos);
-        $this->assertSame(750, collect($puntos)->sum('value'));
+        $this->assertSame(750, collect($puntos)->sum(fn (array $punto): int => (int) ($punto['value'] ?? 0)));
+    }
+
+    public function test_graficos_semanales_dia_sin_carga_no_es_cero_res08(): void
+    {
+        [$dueno, $galpon] = $this->duenoConGalponYLote();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 400,
+                'created_at' => now(),
+            ]);
+
+        $graficos = app(AdminResumenService::class)->graficosSemanales($dueno);
+        $ayer = collect($graficos['tabla'])->firstWhere('date', now()->subDay()->toDateString());
+
+        $this->assertNotNull($ayer);
+        $this->assertNull($ayer['huevos_aptos']['value']);
+        $this->assertSame('—', $ayer['huevos_aptos']['display']);
+    }
+
+    public function test_graficos_semanales_cero_confirmado_visible_res08(): void
+    {
+        [$dueno, $galpon] = $this->duenoConGalponYLote();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 0,
+                'cero_confirmado' => true,
+                'created_at' => now()->subDay(),
+            ]);
+
+        $graficos = app(AdminResumenService::class)->graficosSemanales($dueno);
+        $fila = collect($graficos['tabla'])->firstWhere('date', now()->subDay()->toDateString());
+
+        $this->assertNotNull($fila);
+        $this->assertSame(0, $fila['huevos_aptos']['value']);
+        $this->assertSame('0 (confirmado)', $fila['huevos_aptos']['display']);
     }
 
     public function test_postura_semanal_uses_logical_day_in_empresa_timezone(): void
@@ -381,12 +423,78 @@ class AdminResumenServiceTest extends TestCase
                 'huevos' => 250,
             ]);
 
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Muertes,
+                'muertes' => 0,
+                'cero_confirmado' => true,
+            ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Descarte,
+                'descarte_aves' => 0,
+                'cero_confirmado' => true,
+            ]);
+
         $pulso = app(AdminResumenService::class)->pulsoFor($dueno);
 
         $this->assertSame(250, $pulso['huevos_hoy']);
         $this->assertSame(200, $pulso['huevos_ayer']);
         $this->assertSame(50, $pulso['delta_huevos']);
         $this->assertSame(25.0, $pulso['delta_huevos_pct']);
+        $this->assertNull($pulso['delta_huevos_pct_motivo']);
+    }
+
+    public function test_pulso_for_no_pct_when_d03_incomplete_res07(): void
+    {
+        [$dueno, $galpon] = $this->duenoConGalponYLote();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 200,
+                'created_at' => now()->subDay(),
+            ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 250,
+            ]);
+
+        $pulso = app(AdminResumenService::class)->pulsoFor($dueno);
+
+        $this->assertNull($pulso['delta_huevos_pct']);
+        $this->assertSame(
+            ComparacionHonestaPulso::MOTIVO_DIA_EN_CURSO,
+            $pulso['delta_huevos_pct_motivo'],
+        );
+        $this->assertSame(50, $pulso['delta_huevos']);
+    }
+
+    public function test_pulso_for_null_pct_when_yesterday_zero_res07(): void
+    {
+        [$dueno, $galpon] = $this->duenoConGalponYLote();
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Huevos,
+                'huevos' => 80,
+            ]);
+
+        $pulso = app(AdminResumenService::class)->pulsoFor($dueno);
+
+        $this->assertNull($pulso['delta_huevos_pct']);
+        $this->assertSame(
+            ComparacionHonestaPulso::MOTIVO_SIN_BASE_AYER,
+            $pulso['delta_huevos_pct_motivo'],
+        );
     }
 
     public function test_pulso_for_marks_revision_when_mortality_alert(): void

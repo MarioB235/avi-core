@@ -39,14 +39,16 @@
 | Admin — historial operativo | Implementado | `/{rol}/historial-operativo` | AUD-03; supervisión equipo |
 | PWA instalable (online) | Implementado | `vite.config.js`, `pwa.md` | ACT-05–08; sin offline completo |
 | Admin — Inicio (pulso/KPIs) | Parcial | `/admin` | Pulso real; completitud D03 en lista pendientes (RES-03 ✓); sin preview stock (RES-01 ✓) |
-| Admin — Resumen | Parcial | `/admin/resumen` | Métricas RES-02 ✓; totales RES-04 ✓; mortalidad RES-05 ✓; umbrales referencia RES-06 ✓; RES-07–09 pendiente |
+| Admin — Inicio (pulso) | Parcial | `/admin` | Pulso RES-03/07 ✓; excepciones accionables RES-09 ✓ |
+| Admin — Equipo (Dueño) | Parcial | `/dueno/equipo` | Solo lectura RES-10 ✓ (rol, estado acceso, sin email/productividad) |
+| Admin — Resumen | Parcial | `/admin/resumen` | Métricas RES-02 ✓ … RES-11 ✓ (alimento = entrega) |
 | Admin — Equipo | Parcial | `/admin/equipo` | Solo lectura; datos demo posibles |
 | Admin — Comercial | **Etapa 2** | ruta existe; gate off v1 | RES-01 ✓ — sin KPIs/mapa demo en producto |
 | Panel Reparto | **Preview** | `/reparto` | **Fuera v1**; rol sin enum completo (SEG-01) |
 | Movimientos / cierre de lote | Implementado (MVP ledger) | `movimientos_aves`, Actions MOV-01–13, conciliación/ubicación/concurrencia, UI supervisor `/{rol}/movimientos` | MOV-01 ✓ … MOV-13 ✓; bloque RES pendiente |
 | Corrección operativa (D07) | Parcial | `CorregirRegistroOperativoAction`, `correcciones_registro_operativo`, UI historial supervisor | AUD-04 ✓ |
 | Auditoría crítica transversal | Implementado (MVP) | `auditorias`, `documentos_emitidos`, `PoliticaRetencionD07`, UI `/{rol}/auditoria`, inmutabilidad D07, tipo legado `combinado` | AUD-01 ✓ … AUD-09 ✓; bloque MOV pendiente |
-| Reportes PDF / Excel | Pendiente | `Livewire/Reportes/.gitkeep` | REP-01–14 |
+| Reportes PDF / Excel | Parcial | Catálogo v1 + guard + contenido seguro | REP-01–09 ✓; REP-10+ |
 | Empresas admin plataforma | Parcial | `/avicore/empresas`, Actions Empresa, unidades por empresa en UI | EMP-01–04 OK; export REP pendiente |
 | Tiempo real (Reverb / Echo) | Pendiente | `Events/.gitkeep` | ACT-02–04; `eventos.md` |
 | Portal documental y plan de entrega | Implementado | `portal/`, `plan-entrega.html` | ORQ |

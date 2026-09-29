@@ -67,7 +67,7 @@ class Index extends Component
 
         $galponId = $this->filtroGalponId !== '' ? (int) $this->filtroGalponId : null;
         $resumen = $adminResumen->for($user, $granjaId, $galponId);
-        $posturaSemanal = $adminResumen->posturaSemanal($user, $granjaId, $galponId);
+        $graficosSemanales = $adminResumen->graficosSemanales($user, $granjaId, $galponId);
 
         $user->loadMissing('empresa');
         $unidades = HuevosUnidad::para($user->empresa);
@@ -88,11 +88,12 @@ class Index extends Component
 
         return view('livewire.admin.resumen.index', [
             'resumen' => $resumen,
-            'posturaSemanal' => $posturaSemanal,
+            'graficosSemanales' => $graficosSemanales,
             'granjasOptions' => $granjasOptions,
             'galponesOptions' => $galponesOptions,
             'galponesFiltro' => $galponesFiltro,
             'referenciaMortalidad' => ResumenMetricasCatalog::referenciaMortalidad(),
+            'alimentoEntregado' => ResumenMetricasCatalog::referenciaAlimentoEntregado(),
             'huevosHoyUnidades' => $unidades->etiquetaSoloCajasMaples($resumen->huevosHoy),
             'maplesHoy' => $unidades->maplesDesdeHuevos($resumen->huevosHoy),
             'huevosHoyDesglose' => $unidades->desgloseDesdeHuevos($resumen->huevosHoy),

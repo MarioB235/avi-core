@@ -29,4 +29,18 @@ class LineChartComponentTest extends TestCase
         $this->assertStringContainsString('Sin producción', $html);
         $this->assertStringNotContainsString('avicore-line-chart__svg', $html);
     }
+
+    public function test_line_chart_skips_null_values_without_plotting_zero(): void
+    {
+        $html = Blade::render(<<<'BLADE'
+            <x-ui.line-chart :points="[
+                ['label' => '1/8', 'value' => null, 'display' => '—'],
+                ['label' => '2/8', 'value' => 120, 'display' => '120'],
+            ]" />
+        BLADE);
+
+        $this->assertStringContainsString('avicore-line-chart__svg', $html);
+        $this->assertStringContainsString('—', $html);
+        $this->assertStringContainsString('120', $html);
+    }
 }

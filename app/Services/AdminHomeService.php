@@ -6,7 +6,10 @@ use App\Enums\UserRole;
 use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\User;
+use App\Support\ComparacionHonestaPulso;
+use App\Support\EquipoLectura;
 use App\Support\HuevosUnidad;
+use App\Support\InicioExcepcionesPulso;
 use Illuminate\Database\Eloquent\Collection;
 
 class AdminHomeService
@@ -80,6 +83,7 @@ class AdminHomeService
      *     galpones_activos: int,
      *     galpones_sin_carga: list<array{id: int, nombre: string, granja: string}>,
      *     alertas: list<array{galpon_id: int, nombre: string, granja: string, mortalidad_pct: float}>,
+     *     excepciones: list<array{tipo: string, prioridad: int, titulo: string, detalle: string, accion_label: string, accion_url: string, galpon_id: int}>,
      *     resumen_route: ?string
      * }
      */
@@ -97,6 +101,7 @@ class AdminHomeService
 
         $user->loadMissing('empresa');
         $unidades = HuevosUnidad::para($user->empresa);
+        $resumenRoute = $user->rol->panelRouteName('resumen.index');
 
         return [
             'show' => $pulso['galpones_activos'] > 0,
@@ -104,7 +109,12 @@ class AdminHomeService
             'delta_label' => $this->formatDeltaHuevos($pulso),
             'unidades_hoy' => $unidades->etiquetaCompacta($pulso['huevos_hoy']),
             'unidades_cajas_maples' => $unidades->etiquetaSoloCajasMaples($pulso['huevos_hoy']),
-            'resumen_route' => $user->rol->panelRouteName('resumen.index'),
+            'excepciones' => InicioExcepcionesPulso::construir(
+                $pulso['alertas'],
+                $pulso['galpones_sin_carga'],
+                $resumenRoute,
+            ),
+            'resumen_route' => $resumenRoute,
         ];
     }
 
@@ -153,16 +163,17 @@ class AdminHomeService
     {
         $delta = $pulso['delta_huevos'];
         $ayer = $pulso['huevos_ayer'];
+        $motivo = $pulso['delta_huevos_pct_motivo'] ?? null;
 
-        if ($ayer < 1 && $pulso['huevos_hoy'] < 1) {
+        if ($motivo === ComparacionHonestaPulso::MOTIVO_SIN_HUEVOS_AMBOS) {
             return 'Sin cargas de huevos hoy ni ayer';
         }
 
-        if ($ayer < 1) {
+        if ($motivo === ComparacionHonestaPulso::MOTIVO_SIN_BASE_AYER) {
             return 'Primera carga del día en campo';
         }
 
-        if ($delta === 0) {
+        if ($delta === 0 && $motivo === null) {
             return 'Igual que ayer ('.number_format($ayer, 0, ',', '.').' huevos)';
         }
 
@@ -171,6 +182,8 @@ class AdminHomeService
 
         if ($pulso['delta_huevos_pct'] !== null) {
             $etiqueta .= ' ('.$signo.number_format($pulso['delta_huevos_pct'], 1, ',', '.').'%)';
+        } elseif ($motivo === ComparacionHonestaPulso::MOTIVO_DIA_EN_CURSO) {
+            $etiqueta .= ' (día en curso; % al cerrar capturas)';
         }
 
         return $etiqueta;
@@ -208,6 +221,7 @@ class AdminHomeService
             'huevos_ayer' => 0,
             'delta_huevos' => 0,
             'delta_huevos_pct' => null,
+            'delta_huevos_pct_motivo' => ComparacionHonestaPulso::MOTIVO_SIN_HUEVOS_AMBOS,
             'delta_label' => 'Sin cargas de huevos hoy ni ayer',
             'unidades_hoy' => '0 huevos',
             'unidades_cajas_maples' => '0 maples',
@@ -216,6 +230,7 @@ class AdminHomeService
             'galpones_activos' => 0,
             'galpones_sin_carga' => [],
             'alertas' => [],
+            'excepciones' => [],
             'resumen_route' => null,
         ];
     }
@@ -308,13 +323,13 @@ class AdminHomeService
             [
                 'label' => 'Usuarios activos',
                 'value' => number_format($activos, 0, ',', '.'),
-                'hint' => 'Personas con acceso a AviCore en tu empresa',
+                'hint' => 'Cuentas habilitadas (sin métricas de rendimiento)',
                 'icon' => 'users',
             ],
             [
                 'label' => 'Operarios en campo',
                 'value' => number_format($operarios, 0, ',', '.'),
-                'hint' => 'Cuentas para carga en galpón',
+                'hint' => 'Rol operario en campo',
                 'icon' => 'smartphone',
             ],
             [
@@ -332,7 +347,8 @@ class AdminHomeService
      * @return array{
      *     summary: array{total: int, campo: int, supervision: int, oficina: int},
      *     filters: list<array{key: string, label: string, count: int}>,
-     *     items: list<array{user: User, segment: string}>
+     *     items: list<array{id: int, nombre: string, rol_label: string, segment: string, segment_label: string, documento: string, estado_acceso: string, estado_label: string}>,
+     *     aviso: string
      * }
      */
     public function teamList(User $user): array
@@ -349,17 +365,19 @@ class AdminHomeService
                 'summary' => $emptySummary,
                 'filters' => [],
                 'items' => [],
+                'aviso' => EquipoLectura::AVISO_SIN_PRODUCTIVIDAD,
             ];
         }
 
         $members = $this->teamMembers($user);
 
-        /** @var list<array{user: User, segment: string}> $items */
+        /** @var list<array{id: int, nombre: string, rol_label: string, segment: string, segment_label: string, documento: string, estado_acceso: string, estado_label: string}> $items */
         $items = $members
-            ->map(fn (User $member): array => [
-                'user' => $member,
-                'segment' => $this->teamSegmentFor($member->rol),
-            ])
+            ->map(fn (User $member): array => EquipoLectura::fila(
+                $user,
+                $member,
+                $this->teamSegmentFor($member->rol),
+            ))
             ->values()
             ->all();
 
@@ -390,6 +408,7 @@ class AdminHomeService
             'summary' => $summary,
             'filters' => $filters,
             'items' => $items,
+            'aviso' => EquipoLectura::AVISO_SIN_PRODUCTIVIDAD,
         ];
     }
 
@@ -473,7 +492,7 @@ class AdminHomeService
             ->where('empresa_id', $user->empresa_id)
             ->where('activo', true)
             ->orderBy('name')
-            ->get(['id', 'name', 'documento', 'email', 'rol']);
+            ->get(['id', 'name', 'documento', 'rol', 'must_change_password']);
     }
 
     /**

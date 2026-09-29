@@ -2,7 +2,22 @@
     <x-admin.page-hero
         title="Movimientos de aves"
         subtitle="Solo supervisión — vista previa del efecto y motivo obligatorio (D07). El operario no registra movimientos desde aquí."
-    />
+    >
+        <x-slot:actions>
+            <a
+                href="{{ route(auth()->user()->rol->routePrefix().'.reportes.movimientos-existencias') }}"
+                class="avicore-btn avicore-btn--secondary avicore-btn--sm"
+            >
+                Exportar Excel
+            </a>
+            <a
+                href="{{ route(auth()->user()->rol->routePrefix().'.reportes.movimientos-existencias-pdf') }}"
+                class="avicore-btn avicore-btn--secondary avicore-btn--sm"
+            >
+                Exportar PDF
+            </a>
+        </x-slot:actions>
+    </x-admin.page-hero>
 
     @if (session('status') === 'movimiento-registrado')
         <x-ui.alert variant="success" class="mb-4" title="Movimiento registrado">

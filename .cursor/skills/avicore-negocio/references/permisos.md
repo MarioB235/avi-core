@@ -192,6 +192,18 @@ No puede:
 - Ver auditoría general.
 - Exportar reportes.
 
+### Reportes v1 (REP-01 — catálogo; export REP-08)
+
+| Reporte (`ReportesCatalogoV1`) | Dueño | Administrativo | Encargado | Operario |
+|--------------------------------|-------|----------------|-----------|----------|
+| Producción diaria | Sí | Sí | Sí | No |
+| Movimientos / existencias | Sí | Sí | Sí | No |
+| Historia de lote | Sí | Sí | Sí | No |
+| Sanidad básica | Sí | Sí | Sí | No |
+| Auditoría operativa | Sí | Sí | No | No |
+
+Ability propuesta al implementar: `admin.exportReportes` (revisar en REP-08).
+
 ---
 
 ## 9. Policies implementadas (MVP operario)

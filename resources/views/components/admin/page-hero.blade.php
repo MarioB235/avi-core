@@ -14,6 +14,11 @@
             <p class="avicore-operario-home-hero__subtitle">
                 {{ $subtitle }}
             </p>
+            @isset($actions)
+                <div class="mt-3 flex flex-wrap gap-2">
+                    {{ $actions }}
+                </div>
+            @endisset
         </div>
     </div>
 </section>

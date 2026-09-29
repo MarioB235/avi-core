@@ -2,7 +2,16 @@
     <x-admin.page-hero
         title="Estructura"
         subtitle="Granjas, galpones y lotes de tu empresa."
-    />
+    >
+        <x-slot:actions>
+            <a
+                href="{{ route(auth()->user()->rol->routePrefix().'.reportes.sanidad-basica') }}"
+                class="avicore-btn avicore-btn--secondary avicore-btn--sm"
+            >
+                Exportar sanidad (Excel)
+            </a>
+        </x-slot:actions>
+    </x-admin.page-hero>
 
     <div class="avicore-operario-home-sheet space-y-6">
         <div class="flex flex-wrap gap-2" role="tablist" aria-label="Secciones de estructura">

@@ -3,10 +3,14 @@
 namespace Tests\Feature\Services;
 
 use App\Enums\EmpresaEstado;
+use App\Enums\LoteEstado;
+use App\Enums\RegistroOperativoTipo;
 use App\Enums\UserRole;
 use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
+use App\Models\Lote;
+use App\Models\RegistroOperativo;
 use App\Models\User;
 use App\Services\AdminHomeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -140,6 +144,42 @@ class AdminHomeServiceTest extends TestCase
         $this->assertArrayHasKey('show', $home->stockPreview);
     }
 
+    public function test_pulso_panel_excepciones_con_enlace_a_resumen_res09(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galpon = Galpon::factory()->forGranja($granja)->create(['aves_actuales' => 492]);
+
+        Lote::factory()
+            ->forGalpon($galpon)
+            ->create([
+                'cantidad_inicial' => 500,
+                'estado' => LoteEstado::EnProduccion,
+                'fecha_ingreso' => now()->subDays(20)->toDateString(),
+            ]);
+
+        $dueno = User::factory()->create([
+            'empresa_id' => $empresa->id,
+            'rol' => UserRole::Dueno,
+            'must_change_password' => false,
+        ]);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Muertes,
+                'muertes' => 8,
+            ]);
+
+        $pulso = app(AdminHomeService::class)->pulsoPanel($dueno);
+
+        $this->assertNotEmpty($pulso['excepciones']);
+        $mortalidad = collect($pulso['excepciones'])->firstWhere('tipo', 'mortalidad_referencia');
+        $this->assertNotNull($mortalidad);
+        $this->assertStringContainsString('galpon='.$galpon->id, $mortalidad['accion_url']);
+        $this->assertSame('Ver galpón en Resumen', $mortalidad['accion_label']);
+    }
+
     public function test_pulso_panel_shows_when_galpones_exist(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
@@ -235,8 +275,8 @@ class AdminHomeServiceTest extends TestCase
             ->assertSee('personas activas')
             ->assertSee('Campo')
             ->assertSee('avicore-team-list', false)
-            ->assertSee('avicore-team-list__item', false)
-            ->assertDontSee('avicore-table', false);
+            ->assertSee('avicore-table', false)
+            ->assertSee('productividad laboral', false);
     }
 
     public function test_team_list_returns_flat_items_with_segments(): void
@@ -273,10 +313,12 @@ class AdminHomeServiceTest extends TestCase
         $this->assertCount(4, $list['filters']);
         $this->assertCount(3, $list['items']);
 
-        $operario = collect($list['items'])->firstWhere(fn (array $item) => $item['user']->name === 'Operario Campo');
+        $operario = collect($list['items'])->firstWhere(fn (array $item) => $item['nombre'] === 'Operario Campo');
 
         $this->assertNotNull($operario);
         $this->assertSame('campo', $operario['segment']);
+        $this->assertSame('activo', $operario['estado_acceso']);
+        $this->assertStringContainsString('productividad', $list['aviso']);
     }
 
     public function test_team_members_returns_active_company_users(): void

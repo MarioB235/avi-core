@@ -735,6 +735,10 @@
         @apply text-sm text-avicore-muted;
     }
 
+    .avicore-pulse-exceptions .avicore-pulse-list__item {
+        @apply flex-row items-start justify-between gap-3 sm:items-center;
+    }
+
     .avicore-team-list {
         @apply divide-y divide-avicore-border/80 overflow-hidden rounded-2xl border border-avicore-border/80 bg-avicore-card;
     }

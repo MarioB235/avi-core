@@ -48,7 +48,7 @@
             <p class="avicore-operario-kpi-panel__value">
                 {{ number_format($fila['alimento_kg_hoy'], 0, ',', '.') }}
             </p>
-            <p class="avicore-operario-kpi-panel__label">Alimento kg</p>
+            <p class="avicore-operario-kpi-panel__label">Kg entregados</p>
         </div>
         <div class="avicore-operario-kpi-panel__metric avicore-operario-kpi-panel__metric--alive">
             <p class="avicore-operario-kpi-panel__value">

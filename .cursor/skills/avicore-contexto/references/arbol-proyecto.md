@@ -12,7 +12,7 @@ avi-core/
 ├── app/                      # Laravel — Actions, Services, Livewire, Policies
 ├── resources/views/          # layouts (público, admin, operario), components/ui
 ├── scripts/                  # dev.php, write-build-meta.cjs, serve-portal.cjs, build-invera-documento-maestro.cjs, check-portal-invera.cjs, check-agent-docs-sync, check-docs-impact, check-cloud-readiness, check-skill-references, …
-├── tests/Feature/            # Auth/, Admin/, Operario/, Services/, Support/, Ui/
+├── tests/Feature/            # Auth/, Admin/, Operario/, Reportes/, Movimientos/, Services/, Support/, Ui/
 ├── tests/Unit/Services/      # AppBuildServiceTest (metadata build)
 ├── portal/                   # Portal HTML documental (contenido, imprimibles, CHANGELOG, js/site.nav.js + site.theme.js + site.toc.js + site.js)
 ├── .cursor/                  # Reglas, skills, comando del arquitecto
@@ -31,7 +31,7 @@ avi-core/
 
 **Tests auth (Bloque 2):** `tests/Feature/Auth/LoginFlowTest.php`, `DemoLoginTest.php` (roles demo, empresa inactiva, rate-limit `demoRole`, operario→`/operario`); `tests/Feature/Services/DemoLoginServiceTest.php` (flag, rol único, Admin AviCore sin empresa, empresa DEMO ausente); `tests/Feature/Ui/LoginViewTest.php` (render login, select perfil demo + campos vacíos/disabled); `tests/Feature/Ui/InputComponentTest.php` (toggle password disabled); `tests/Feature/Ui/PublicLayoutTest.php` (shell login móvil + panel marca desktop, logo `entrance`); `tests/Feature/Ui/LogoComponentTest.php` (variantes logo, órbita `entrance`); `tests/Feature/Ui/SelectComponentTest.php` (contrato `x-ui.select`, posicionamiento flip); `tests/Feature/Ui/PwaInstallPromptTest.php` (manifest + banner en login/operario/admin, split `enabled`/`install_prompt` en guest y autenticado, `shouldShowBanner`, `apple-touch-icon` + `pwa-180`).
 
-**Tests admin:** `tests/Feature/Admin/AdminEmpresasTest.php` (alta empresa + dueño, estado, config, logo); `tests/Feature/Admin/AdminSoporteEmpresaTest.php` (entrada/salida soporte, banner, scope, anti-fuga, solo lectura `LotePolicy`/Gate); `tests/Feature/Services/EmpresaOnboardingServiceTest.php` (checklist onboarding EMP-05); `tests/Feature/Services/EmpresaUnidadesConsistenciaTest.php` (unidades por empresa EMP-04); `tests/Feature/Admin/AdminUsuariosTest.php` (CRUD multiempresa, permisos por rol); `tests/Feature/Admin/AdminEstructuraTest.php` (granja/galpón/lote CRUD, DICOSE único, filtros URL, transición con motivo, fichas readonly, permisos encargado/administrativo, multiempresa, anti-tampering transición); `tests/Feature/Actions/TransicionarLoteEstadoActionTest.php` (separación edición/transición, reapertura); `tests/Feature/Admin/AdminResumenTest.php` (KPIs, filtros granja/galpón, toggle galpón, redirect operario); `tests/Feature/Admin/AdminEquipoTest.php` (filtro segmento, 403 encargado, multiempresa HTTP, máscara documento); `tests/Feature/Admin/AdminComercialTest.php` (dueño HTTP, 403 encargado); `tests/Feature/Admin/AdminHistorialOperativoTest.php`, `AdminHistorialOperativoCorreccionTest.php` (supervisor AUD-03/04); `tests/Feature/Admin/AdminAuditoriaConsultaTest.php` (consulta AUD-07); `tests/Feature/Admin/AdminMovimientosSupervisorTest.php` (MOV-12 Livewire: traslado, entrada, ajuste, cierre/faena parcial, 403 operario); `tests/Feature/Auditoria/` (crítica, atomicidad, retención D07, tipos legados); `tests/Feature/Movimientos/` (MOV-01–13); `tests/Feature/Services/AdminHomeServiceTest.php` (KPI usuarios, Equipo/Comercial preview, pulso/stock); `tests/Feature/Services/AdminResumenServiceTest.php`, `AdminResumenMetricasContractTest.php`, `AdminResumenMortalidadVentanaTest.php`, `AdminResumenTotalesConciliacionTest.php`, `TotalesCapturaDiaServiceTest.php` (RES-02–06); `tests/Unit/Support/ResumenMetricasCatalogTest.php`, `CompletitudDiariaD03Test.php`; `tests/Feature/Auth/RolePanelRoutesTest.php` (prefijos por rol, middleware panel); `tests/Feature/Ui/AdminHomeViewTest.php` (Inicio gestión, pulso con seed demo); `tests/Feature/Ui/AdminShellTest.php` (shell, tabs por rol incl. Equipo/Comercial dueño); `tests/Feature/Ui/AdminUserMenuTest.php` (`x-ui.user-menu`); `tests/Feature/Ui/DocumentoLabelComponentTest.php` (`x-ui.documento-label`, EMP-08); `tests/Feature/Ui/LineChartComponentTest.php`, `ClientMapComponentTest.php`, `PulsePanelComponentTest.php`; `tests/Unit/Support/HuevosUnidadTest.php`; `tests/Unit/Support/RolePanelModulesTest.php`, `NavTabBarItemsTest.php` (tabs `AdminNav`); `tests/Unit/Policies/LotePolicyTest.php`, `MovimientoAvesPolicyTest.php` (soporte solo lectura / permisos movimiento); `tests/Unit/Services/MovimientoAvesVistaPreviaServiceTest.php`.
+**Tests admin:** `tests/Feature/Admin/AdminEmpresasTest.php` (alta empresa + dueño, estado, config, logo); `tests/Feature/Admin/AdminSoporteEmpresaTest.php` (entrada/salida soporte, banner, scope, anti-fuga, solo lectura `LotePolicy`/Gate); `tests/Feature/Services/EmpresaOnboardingServiceTest.php` (checklist onboarding EMP-05); `tests/Feature/Services/EmpresaUnidadesConsistenciaTest.php` (unidades por empresa EMP-04); `tests/Feature/Admin/AdminUsuariosTest.php` (CRUD multiempresa, permisos por rol); `tests/Feature/Admin/AdminEstructuraTest.php` (granja/galpón/lote CRUD, DICOSE único, filtros URL, transición con motivo, fichas readonly, permisos encargado/administrativo, multiempresa, anti-tampering transición); `tests/Feature/Actions/TransicionarLoteEstadoActionTest.php` (separación edición/transición, reapertura); `tests/Feature/Admin/AdminResumenTest.php` (KPIs, filtros granja/galpón, semana operativa, toggle galpón, redirect operario); `tests/Feature/Admin/AdminEquipoTest.php` (filtro segmento, 403 encargado, multiempresa HTTP, máscara documento); `tests/Feature/Admin/AdminComercialTest.php` (dueño HTTP, 403 encargado); `tests/Feature/Admin/AdminHistorialOperativoTest.php`, `AdminHistorialOperativoCorreccionTest.php` (supervisor AUD-03/04); `tests/Feature/Admin/AdminAuditoriaConsultaTest.php` (consulta AUD-07); `tests/Feature/Admin/AdminMovimientosSupervisorTest.php` (MOV-12 Livewire: traslado, entrada, ajuste, cierre/faena parcial, 403 operario); `tests/Feature/Auditoria/` (crítica, atomicidad, retención D07, tipos legados); `tests/Feature/Movimientos/` (MOV-01–13); `tests/Feature/Reportes/` (REP-01–09: consulta, Excel/PDF, autorización, vacíos, contenido seguro); `tests/Feature/Services/AdminHomeServiceTest.php` (KPI usuarios, Equipo/Comercial preview, pulso/excepciones RES-09); `tests/Feature/Services/AdminResumenServiceTest.php`, `ResumenGraficosSemanalesServiceTest.php`, `AdminResumenMetricasContractTest.php`, `AdminResumenMortalidadVentanaTest.php`, `AdminResumenTotalesConciliacionTest.php`, `TotalesCapturaDiaServiceTest.php`, `ReporteConsultaServiceTest.php` (RES-02–08, REP-02); `tests/Unit/Support/ResumenMetricasCatalogTest.php`, `CompletitudDiariaD03Test.php`, `ComparacionHonestaPulsoTest.php`, `InicioExcepcionesPulsoTest.php`, `ResumenSemanaOperativaTest.php`, `ReportesCatalogoV1Test.php`, `ReporteExportGuardTest.php`, `ExcelExportSeguroTest.php`, `PdfTextoTest.php`, `AlimentoEntregaSemanticaTest.php`; `tests/Feature/Auth/RolePanelRoutesTest.php` (prefijos por rol, middleware panel); `tests/Feature/Ui/AdminHomeViewTest.php` (Inicio gestión, pulso con seed demo); `tests/Feature/Ui/AdminShellTest.php` (shell, tabs por rol incl. Equipo/Comercial dueño); `tests/Feature/Ui/AdminUserMenuTest.php` (`x-ui.user-menu`); `tests/Feature/Ui/DocumentoLabelComponentTest.php` (`x-ui.documento-label`, EMP-08); `tests/Feature/Ui/LineChartComponentTest.php`, `PulseExceptionsComponentTest.php`, `ClientMapComponentTest.php`, `PulsePanelComponentTest.php`; `tests/Unit/Support/HuevosUnidadTest.php`; `tests/Unit/Support/RolePanelModulesTest.php`, `NavTabBarItemsTest.php` (tabs `AdminNav`); `tests/Unit/Policies/LotePolicyTest.php`, `MovimientoAvesPolicyTest.php` (soporte solo lectura / permisos movimiento); `tests/Unit/Services/MovimientoAvesVistaPreviaServiceTest.php`.
 
 **Tests operario:** `tests/Feature/Operario/OperarioGalponSelectorTest.php` (CAP-01: restore galpón, mantenimiento, guardar tras cambio); `tests/Feature/Operario/OperarioCargaHuevosCap02Test.php`, `OperarioCargaMuertesCap03Test.php`, `OperarioCargaDescarteCap04Test.php`, `OperarioCargaAlimentoCap05Test.php`, `OperarioCargaVacunacionCap06Test.php` (idempotencia, confirmación, acumulados); `OperarioCargaIdempotenciaCap07Test.php` (idempotencia transversal `IdempotenciaCaptura`), `OperarioCargaEstadoBajoLockCap08Test.php` (revalidación bajo lock), `OperarioCargaEnvioRedCap09Test.php` (red y reintento); `tests/Feature/Operario/OperarioCargaHuevosTest.php` (flujo E2E, multiempresa, galpón no disponible, redirect sin galpón y apertura automática del selector, Action rechaza mantenimiento), `tests/Feature/Operario/OperarioCargaMuertesTest.php` (flujo E2E muertes, descuento `aves_actuales`, rechazo si supera stock, Action multiempresa y mantenimiento, redirect `CargaMuertes` y `guardarMuertes` sin galpón disponible, query `form=muertes`), `tests/Feature/Operario/OperarioCargaVacunacionTest.php` (flujo E2E vacunación, validación lote/vacuna, Action multiempresa/galpón/lote, hub rechaza lote ajeno, redirect `CargaVacunacion` y `guardarVacunacion` sin galpón, query `form=vacunacion`), `tests/Feature/Operario/OperarioCargaLoteTest.php` (alta lote, codigo/secuencia, multi-tipo, gating operario, administrativo HTTP+registro, Action/policy, validación Livewire fecha/galpón, deep link `form=lote`), `tests/Feature/Operario/OperarioCargaAlimentoTest.php` (multiempresa en Action), `tests/Feature/Operario/OperarioCargaDescarteTest.php` (multiempresa en Action), `tests/Feature/Operario/OperarioPerfilTest.php` (perfil compartido, pestañas `wire:navigate`, hero por sección, shell, `updateProfile` usuario inactivo), `tests/Feature/Operario/OperarioHomeTest.php` (`seleccionarGalpon` rechaza galpón ajeno, en mantenimiento o inactivo), `tests/Feature/Operario/OperarioHomeResumenTest.php` (KPIs galpón, lotes, acumulado, muertes, maples, edad vía service; `resumen` fresco tras nuevo registro; memo `lotesActivos`), `tests/Feature/Operario/OperarioHistorialTest.php` (tipos, vacunaciones mezcladas, filtro fecha validado con mensaje visible y sin acumulación, paginación, multiempresa, date-picker, detalle, anulación muertes/descarte/vacunación, ya anulado, encargado ajeno), `tests/Feature/Services/OperarioGalponServiceTest.php` (`galponDisponibleParaUsuario`, `historialCargasQuery`, `historialPaginado` con vacunaciones, multiempresa, selección, scoped ambos services operario), `tests/Feature/Support/OperarioNavTest.php` (pestaña activa y `headerTitle` por ruta, incl. `operario.historial` e icono `calendar`), `tests/Feature/Ui/OperarioBottomNavTest.php` (dock, transiciones ~150 ms, heroes Inicio/Cargar/Historial, tab activa y `aria-current`, icono `calendar` en Historial, date-picker en historial HTTP, ilustración `operario-reloj`, empty/populated historial HTTP, diálogos huevos/muertes/vacunación/lote vía deep link, hub sin deep link sin `avicore-dialog`, chip galpón vacío/activo, KPI maples), `tests/Feature/Ui/IllustrationComponentTest.php` (`operario-ave`, `operario-huevo`, `operario-reloj`, `operario-vacuna`), `tests/Feature/Ui/SelectComponentTest.php` (`x-ui.select` listbox), `tests/Feature/Ui/DatePickerComponentTest.php` (contrato `x-ui.date-picker`), `tests/Feature/Ui/OperarioUserMenuTest.php` (menú cuenta portal/clamp en home/cargar/historial, ARIA, perfil, logout, Versión), `tests/Feature/Ui/DialogComponentTest.php`, `tests/Feature/Ui/SheetComponentTest.php` (diálogo huevos en `CargarHub`), `tests/Feature/Ui/SnackbarHostTest.php` (host en layout, evento `snackbar-show`, flash `status`, `syncProgressDuration`, pause/Escape/`runAction`, contrato desktop `right-6`/`bottom-6`, contrato `pwa.js`: `immediate: false`, `onNeedRefresh`, `pwa-update`, `__avicorePwaUpdate`), `tests/Feature/Ui/RevealComponentTest.php` (`x-ui.reveal`, `data-reveal-delay`, sin inline), `tests/Feature/Ui/ScrollRevealTest.php` (wiring `scroll-reveal.js`, markers HTTP Inicio/Cargar, edge fade shell).
 
@@ -59,7 +59,10 @@ app/
 │   ├── Operacion/            # RegistrarCargaHuevosAction, RegistrarCargaMuertesAction, …
 │   └── User/                 # CreateUserAction, UpdateUserAction, UpdateProfileAction, ResetUserPasswordAction
 ├── Enums/                    # EmpresaEstado, UserRole, GalponEstado, LoteEstado, TipoHuevo, VacunaTipo, RegistroOperativo*
+├── Exceptions/               # ReporteConsultaNoDisponibleException (REP-07)
 ├── Http/
+│   ├── Controllers/
+│   │   └── Admin/            # DescargarReporte* (Excel/PDF) + Concerns/GeneraDescargaReporte
 │   ├── Middleware/           # EnsureAccountVigente, EnsurePasswordChanged, EnsureRolePanelAccess, EnsureOperarioAccess, RedirectIfAuthenticated
 │   └── View/
 │       └── Composers/        # AdminHomeComposer, AdminLayoutComposer, OperarioLayoutComposer
@@ -72,6 +75,7 @@ app/
 │   │   ├── Equipo/           # Index (solo lectura, dueño)
 │   │   ├── Estructura/       # Index (granjas, galpones, lotes)
 │   │   ├── HistorialOperativo/ # Index (supervisor AUD-03)
+│   │   ├── Movimientos/        # Index (supervisor MOV-12)
 │   │   ├── Resumen/          # Index (KPIs por galpón)
 │   │   └── Usuarios/         # Index (CRUD listado/alta/edición/reset)
 │   ├── Auth/                 # Login, ChangePassword
@@ -123,6 +127,10 @@ app/
 │   ├── OperarioGalponService.php
 │   ├── OperarioGalponResumenService.php
 │   ├── EstructuraFichaService.php   # Ficha readonly galpón/lote (EST-10)
+│   ├── ResumenGraficosSemanalesService.php  # Tabla/series 7 días (RES-08)
+│   ├── ReporteConsultaService.php
+│   ├── ReporteAutorizacionFiltrosService.php
+│   ├── ReporteProduccionDiaria*Exporter.php, ReporteMovimientosExistencias*Exporter.php, ReporteHistoriaLoteExcelExporter.php, ReporteSanidadBasicaExcelExporter.php
 │   ├── SupportContactService.php
 │   └── TemporaryPasswordGenerator.php
 └── Support/
@@ -134,6 +142,10 @@ app/
     ├── ResumenMetricasCatalog.php
     ├── CompletitudDiariaD03.php
     ├── MortalidadVentanaGalpon.php
+    ├── ComparacionHonestaPulso.php, InicioExcepcionesPulso.php, AlimentoEntregaSemantica.php
+    ├── ResumenSemanaOperativa.php, EquipoLectura.php
+    ├── ReportesCatalogoV1.php, ReporteEstadoConsulta.php, ReporteExportGuard.php, ReporteFiltroProduccion.php, ReporteFiltroLote.php
+    ├── ExcelExportSeguro.php, PdfTexto.php, AvicoreReporteFpdf.php, fpdf_magic_quotes_polyfill.php (autoload files)
     ├── IdempotenciaMovimiento.php
     ├── IdempotenciaCaptura.php  # Clave UUID y resolución idempotente (CAP-07)
     ├── LoteValidacion.php
@@ -174,7 +186,7 @@ resources/
 │   ├── livewire/
 │   │   ├── _redirect-placeholder.blade.php
 │   │   ├── auth/             # login, change-password
-│   │   ├── admin/            # comercial, empresas, equipo, estructura (+ partials), resumen (+ partials), usuarios
+│   │   ├── admin/            # comercial, empresas, equipo, estructura (+ partials), movimientos, resumen (+ partials), usuarios
 │   │   └── operario/         # home (+ partials/galpon-chip-selector, carga-*-form, historial-detalle-dialog), cargar-hub, historial
 │   └── pages/
 │       ├── admin/home.blade.php
@@ -209,7 +221,8 @@ resources/
 | Login / contraseña | `Livewire/Auth/` | `empresas`, `users` |
 | Inicio admin | `pages/admin/home` + `AdminHomeService` | `users`, `granjas`, `galpones` |
 | Resumen admin | `Livewire/Admin/Resumen/` + `AdminResumenService` | `granjas`, `galpones`, `lotes`, `registros_operativos` |
-| Equipo admin (dueño) | `Livewire/Admin/Equipo/` + `AdminHomeService::teamPreviewItems` | `users` |
+| Equipo admin (dueño) | `Livewire/Admin/Equipo/` + `AdminHomeService::teamList` / `EquipoLectura` | `users` |
+| Reportes admin (v1) | `Http/Controllers/Admin/DescargarReporte*` + `ReporteConsultaService` + exporters | `registros_operativos`, `movimientos_aves`, `vacunaciones`, `lotes` |
 | Comercial admin (preview) | `Livewire/Admin/Comercial/` + `AdminHomeService::comercialPreviewItems` | — (datos demo) |
 | Movimientos supervisor | `Livewire/Admin/Movimientos/` + `MovimientoAvesVistaPreviaService` + Actions Movimiento | `movimientos_aves`, `galpones`, `lotes` |
 | Estructura admin | `Livewire/Admin/Estructura/` + `Actions/Galpon`, `Granja`, `Lote` + Policies | `granjas`, `galpones`, `lotes` |
@@ -218,7 +231,7 @@ resources/
 | Carga operario | `Livewire/Operario/` | `granjas`, `galpones`, `lotes`, `registros_operativos`, `vacunaciones` |
 | Reparto (stub) | `pages/reparto/home` | — |
 
-Módulos pendientes (Reportes, Comercial real, auditoría exportable, etc.): ver `plan-desarrollo.md` § 13.
+Módulos pendientes (Comercial real, REP-10 volumen/cola, auditoría exportable masiva, etc.): ver `plan-desarrollo.md` § 13.
 
 ---
 

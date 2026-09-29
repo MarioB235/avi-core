@@ -45,8 +45,28 @@ class AdminResumenTest extends TestCase
 
         Livewire::actingAs($dueno)
             ->test(ResumenIndex::class)
-            ->assertSee('Postura de la semana')
+            ->assertSee('Semana operativa')
+            ->assertSee('sin registro ese día', false)
+            ->assertSee('Huevos aptos', false)
+            ->assertSee('Kg entregados', false)
+            ->assertSee('no es consumo diario', false)
             ->assertSee('avicore-line-chart', false);
+    }
+
+    public function test_resumen_alimento_entrega_no_consumo_res11(): void
+    {
+        [$dueno] = $this->duenoConGalponYLote();
+
+        $this->actingAs($dueno)
+            ->get(route('dueno.resumen.index'))
+            ->assertOk()
+            ->assertSee('Alimento entregado hoy', false)
+            ->assertSee('no calcula consumo', false)
+            ->assertSee('Kg entregados', false)
+            ->assertSee('conversión alimenticia', false)
+            ->assertDontSee('conversión alimenticia calculada', false)
+            ->assertDontSee('eficiencia alimentaria', false)
+            ->assertDontSee('FCR', false);
     }
 
     public function test_resumen_muestra_referencia_mortalidad_sin_diagnostico(): void
