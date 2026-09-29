@@ -26,8 +26,6 @@ class Index extends Component
 
         return view('livewire.admin.comercial.index', [
             'contextLabel' => $adminHome->contextLabel($user),
-            'items' => $adminHome->comercialPreviewItems(),
-            'clients' => $adminHome->comercialClientMap()['clients'],
         ]);
     }
 }

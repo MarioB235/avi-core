@@ -23,7 +23,24 @@ class AdminHistorialOperativoService
     public function __construct(
         private EmpresaContextService $empresaContext,
         private SoporteEmpresaService $soporte,
+        private TotalesCapturaDiaService $totalesCapturaDia,
     ) {}
+
+    /**
+     * Totales del día operativo actual (solo registros activos, mismo scope que Resumen/Inicio).
+     *
+     * @return array{
+     *     huevos: int,
+     *     huevos_descarte: int,
+     *     muertes: int,
+     *     descarte_aves: int,
+     *     alimento_kg: float,
+     * }
+     */
+    public function totalesCapturaDiaActiva(User $user, ?int $granjaId = null, ?int $galponId = null): array
+    {
+        return $this->totalesCapturaDia->paraUsuario($user, $granjaId, $galponId);
+    }
 
     public function canView(User $user): bool
     {

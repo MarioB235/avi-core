@@ -12,6 +12,7 @@ use App\Livewire\Admin\Empresas\Index as AdminEmpresasIndex;
 use App\Livewire\Admin\Equipo\Index as AdminEquipoIndex;
 use App\Livewire\Admin\Estructura\Index as AdminEstructuraIndex;
 use App\Livewire\Admin\HistorialOperativo\Index as AdminHistorialOperativoIndex;
+use App\Livewire\Admin\Movimientos\Index as AdminMovimientosIndex;
 use App\Livewire\Admin\Resumen\Index as AdminResumenIndex;
 use App\Livewire\Admin\Usuarios\Index as AdminUsuariosIndex;
 use App\Livewire\Auth\ChangePassword;
@@ -88,6 +89,7 @@ Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
                 Route::view('/', 'pages.admin.home')->name('home');
                 Route::livewire('/resumen', AdminResumenIndex::class)->name('resumen.index');
                 Route::livewire('/historial-operativo', AdminHistorialOperativoIndex::class)->name('historial-operativo.index');
+                Route::livewire('/movimientos', AdminMovimientosIndex::class)->name('movimientos.index');
                 Route::livewire('/auditoria', AdminAuditoriaIndex::class)->name('auditoria.index');
                 Route::livewire('/equipo', AdminEquipoIndex::class)->name('equipo.index');
                 Route::livewire('/comercial', AdminComercialIndex::class)->name('comercial.index');

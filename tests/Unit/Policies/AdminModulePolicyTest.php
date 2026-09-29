@@ -22,7 +22,7 @@ class AdminModulePolicyTest extends TestCase
         $this->policy = app(AdminModulePolicy::class);
     }
 
-    public function test_dueno_can_view_resumen_equipo_and_comercial(): void
+    public function test_dueno_can_view_resumen_and_equipo_not_comercial_in_v1(): void
     {
         $user = $this->userWithRole(UserRole::Dueno);
 
@@ -30,7 +30,7 @@ class AdminModulePolicyTest extends TestCase
         $this->assertTrue($this->policy->viewHistorialOperativo($user));
         $this->assertTrue($this->policy->viewAuditoria($user));
         $this->assertTrue($this->policy->viewEquipo($user));
-        $this->assertTrue($this->policy->viewComercial($user));
+        $this->assertFalse($this->policy->viewComercial($user));
     }
 
     public function test_administrativo_can_view_resumen_but_not_equipo_or_comercial(): void

@@ -13,7 +13,7 @@ class AdminComercialTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_dueno_can_view_comercial_module(): void
+    public function test_dueno_cannot_view_comercial_module_in_v1(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
 
@@ -25,10 +25,7 @@ class AdminComercialTest extends TestCase
 
         $this->actingAs($dueno)
             ->get(route('dueno.comercial.index'))
-            ->assertOk()
-            ->assertSee('Clientes y entregas')
-            ->assertSee('Vista previa')
-            ->assertSee('data-avicore-client-map', false);
+            ->assertForbidden();
     }
 
     public function test_encargado_cannot_access_comercial_module(): void

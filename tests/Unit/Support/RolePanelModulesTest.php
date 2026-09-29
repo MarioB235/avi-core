@@ -35,17 +35,17 @@ class RolePanelModulesTest extends TestCase
         $adminAvicore = User::factory()->adminAvicore()->create();
 
         $this->assertSame(
-            ['Inicio', 'Resumen', 'Historial', 'Auditoría', 'Equipo', 'Comercial'],
+            ['Inicio', 'Resumen', 'Historial', 'Auditoría', 'Movimientos', 'Equipo'],
             collect(AdminNav::tabs($dueno))->pluck('label')->all(),
         );
 
         $this->assertSame(
-            ['Inicio', 'Resumen', 'Historial', 'Auditoría', 'Estructura', 'Usuarios'],
+            ['Inicio', 'Resumen', 'Historial', 'Auditoría', 'Movimientos', 'Estructura', 'Usuarios'],
             collect(AdminNav::tabs($administrativo))->pluck('label')->all(),
         );
 
         $this->assertSame(
-            ['Inicio', 'Resumen', 'Historial', 'Auditoría', 'Estructura', 'Usuarios'],
+            ['Inicio', 'Resumen', 'Historial', 'Auditoría', 'Movimientos', 'Estructura', 'Usuarios'],
             collect(AdminNav::tabs($encargado))->pluck('label')->all(),
         );
 

@@ -146,11 +146,11 @@ enum UserRole: string
     }
 
     /**
-     * Módulo comercial (clientes, ventas, pedidos) — preview post-MVP.
+     * Módulo comercial (clientes, ventas, pedidos) — etapa 2; fuera de v1 productiva (RES-01).
      */
     public function canViewComercial(): bool
     {
-        return $this === self::Dueno;
+        return false;
     }
 
     /**

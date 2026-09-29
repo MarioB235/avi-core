@@ -50,7 +50,8 @@
 | Faceta | Dueño | Administrativo |
 |--------|-------|----------------|
 | Supervisión (Resumen) | Sí | Sí |
-| Equipo / Comercial | Sí (lectura / preview) | No |
+| Equipo | Sí (lectura) | No |
+| Comercial | No (v1 RES-01) | No |
 | Estructura / Usuarios | No | Sí (CRUD oficina) |
 | Móvil `/operario` | Sí (lote + cargas) | Sí (lote + cargas) |
 | Asignar rol Dueño | No (solo Admin Avicore crea Dueño inicial) | No |
@@ -92,7 +93,7 @@ Puede:
 - Dashboard y Resumen operativo.
 - Reportes (post-MVP).
 - Alta de lote vía vista móvil `/operario` (no panel Estructura).
-- Equipo (solo lectura) y Comercial (preview).
+- Equipo (solo lectura); Comercial deshabilitado en v1 (RES-01).
 
 No gestiona granjas/galpones en panel Estructura (Administrativo).
 
@@ -149,7 +150,7 @@ Middleware `EnsureRolePanelAccess`: solo el rol dueño del prefijo accede a ese 
 
 `EnsurePasswordChanged`, `EnsureOperarioAccess` y `EnsureRolePanelAccess` también están registrados como **middleware persistente de Livewire** (`AppServiceProvider`): las acciones de componente con snapshot previo respetan el rol y el cambio de clave obligatorio.
 
-**Autorización por acción Livewire (SEG-04):** Resumen/Equipo/Comercial usan `AdminModulePolicy` vía Gates `admin.viewResumen|Equipo|Comercial` y trait `RequiresAdminModuleAccess` (`mount` + `hydrate`); Usuarios/Estructura usan `$this->authorize(...)` con policies de modelo; operario rechaza `guardarLote` / `abrirFormularioLote` vía `Gate` + `LotePolicy::create` (403), no fallo silencioso.
+**Autorización por acción Livewire (SEG-04):** Resumen/Equipo/Comercial/Historial/Auditoría/Movimientos usan `AdminModulePolicy` vía Gates `admin.viewResumen|Equipo|Comercial|HistorialOperativo|Auditoria|Movimientos` y trait `RequiresAdminModuleAccess` (`mount` + `hydrate`); Usuarios/Estructura usan `$this->authorize(...)` con policies de modelo; operario rechaza `guardarLote` / `abrirFormularioLote` vía `Gate` + `LotePolicy::create` (403), no fallo silencioso. Pantalla **Movimientos** (MOV-12): solo roles con `canManageLotes` y gate `admin.viewMovimientos`; operario 403 en Livewire y en Actions de ledger.
 
 **Aislamiento multiempresa (SEG-05):** `EmpresaScopeService` centraliza `constrainQuery` / `findForActor` para Livewire admin; policies + `forEmpresa()` en Actions/servicios; suite `EmpresaIsolationTest` cubre filtro, alta, edición, anulación y estructura.
 
@@ -199,11 +200,11 @@ No puede:
 |--------|--------|--------|
 | `Galpon` | `GalponPolicy` | `viewAny`/`view` si `empresa_id` coincide; `create`/`update` si `canManageEstructura()` (administrativo). Carga operario: galpón disponible en `OperarioGalponService`. |
 | `Granja` | `GranjaPolicy` | `viewAny` si `canViewEstructura()`; `create`/`update` si `canManageEstructura()`. CRUD en `/{rol}/estructura` (administrativo y encargado; dueño sin tab Estructura — ver §10). |
-| `Lote` | `LotePolicy` | `create`/`update`/`transition` si `canManageLotes()`; `transition` en lote cerrado solo si `canReabrirLote()` (Dueño/Administrativo); lote trasladado sin transiciones. Metadatos: `UpdateLoteAction`; estado: `TransicionarLoteEstadoAction` con motivo. UI Estructura: opciones de «Cambiar estado» y guardado usan scope `empresa_id` (lote ajeno → sin opciones / 404). |
+| `Lote` | `LotePolicy` | `create`/`update`/`transition` si `canManageLotes()`; `transition` en lote cerrado solo si `canReabrirLote()` (Dueño/Administrativo); lote trasladado sin transiciones. Reapertura operativa: `ReabrirLoteExcepcionalAction` (MOV-07). Metadatos: `UpdateLoteAction`; estado: `TransicionarLoteEstadoAction` con motivo. UI Estructura: opciones de «Cambiar estado» y guardado usan scope `empresa_id` (lote ajeno → sin opciones / 404). Tests reapertura: `MovimientoAvesReaperturaLoteTest`. |
 | `User` | `UserPolicy` | `viewAny` / `view` / `create` / `update` / `resetPassword` / `toggleActive` según `UserRole::canViewUsers|canManageUsers|canResetUserPassword` y scope multiempresa (Admin AviCore ve todos). `updateProfile`: solo el propio usuario activo (`$actor->is($target) && $actor->activo`); usado por `UpdateProfileAction` y `ChangePasswordAction`. Encargado: ver listado + `resetPassword`; sin `create`/`update`/`toggleActive`. Roles asignables vía `UserRole::assignableRoles()`. CRUD en `/{rol}/usuarios`. |
 | `RegistroOperativo` | `RegistroOperativoPolicy` | `anular`: mismo `empresa_id`; solo registros del **día** (`created_at` hoy); propio → operario y roles superiores; ajeno → dueño, administrativo, encargado (no operario). Lógica compartida en `Policies/Concerns/AuthorizesOperarioAnulacion`. `corregir`: dueño, administrativo, encargado; registro activo de la misma empresa; sin límite de día; trait `AuthorizesOperarioCorreccion`. UI corrección: historial supervisor (`/{rol}/historial-operativo`). UI Historial operario: solo registros propios del usuario. |
 | `Vacunacion` | `VacunacionPolicy` | `anular`: mismas reglas que `RegistroOperativoPolicy::anular` (trait compartido). Vacunación anulada vía `AnularVacunacionAction`. |
-| `MovimientoAves` | `MovimientoAvesPolicy` | `create`: `canManageLotes()` (dueño, administrativo, encargado); bloqueado en soporte AviCore (`blocksProductionMutations`). `view`: mismo `empresa_id`. Entrada externa vía `RegistrarEntradaAvesAction` + `Gate::authorize('create')`. Tests: `MovimientoAvesPolicyTest`, `MovimientoAvesEntradaSaldoInicialTest` (403 operario, galpón ajeno, soporte). |
+| `MovimientoAves` | `MovimientoAvesPolicy` | `create`: `canManageLotes()` (dueño, administrativo, encargado); bloqueado en soporte AviCore (`blocksProductionMutations`). `view`: mismo `empresa_id`. Entrada externa vía `RegistrarEntradaAvesAction`, traslado vía `RegistrarTrasladoAvesAction`, ajuste vía `RegistrarAjusteInventarioAvesAction`, cierre vía `RegistrarCierreLoteAction` y reversión vía `RevertirMovimientoAvesAction` + `Gate::authorize('create')` y `view` del movimiento (cierre de ciclo también `transition` en `Lote`). Tests: `MovimientoAvesPolicyTest`, `MovimientoAvesEntradaSaldoInicialTest`, `MovimientoAvesTrasladoTest`, `MovimientoAvesAjusteInventarioTest`, `MovimientoAvesCierreLoteTest`, `MovimientoAvesReversionTest` (403 operario, galpón ajeno, soporte). |
 
 ---
 
@@ -213,7 +214,7 @@ No puede:
 
 | Rol | MVP hoy | Próximo paso (post-MVP) |
 |-----|---------|-------------------------|
-| **Dueño** | Inicio (solo KPIs), Resumen, **Equipo**, **Comercial** (preview); sin Estructura ni Usuarios | Reportes, auditoría, Comercial con datos reales |
+| **Dueño** | Inicio, Resumen, Historial, Auditoría, Movimientos, **Equipo**; sin Comercial/Estructura/Usuarios en v1 | Comercial etapa 2, reportes |
 | **Administrativo** | Inicio, Resumen, **Estructura**, **Usuarios** (CRUD) | Sin asignar rol Dueño; sin ajustes sensibles de empresa |
 | **Encargado** | Inicio, Resumen, Estructura (ver + lotes), Usuarios (ver + reset contraseña) | Pantallas propias en `/encargado` |
 | **Admin AviCore** | Inicio, Usuarios (multiempresa) | Sin cambio |
@@ -235,7 +236,7 @@ Tabs en `AdminNav` (bottom nav / sidebar). Ruta = `/{prefijo-rol}/…`.
 | Inicio | Sí | Sí | Sí | Sí |
 | Resumen | Sí | Sí | Sí | No |
 | Equipo | Sí (solo lectura) | No (tab Usuarios) | No (tab Usuarios) | No |
-| Comercial | Sí (preview) | No | No | No |
+| Comercial | No (v1) | No | No | No |
 | Estructura | No | Sí (CRUD completo) | Sí (ver + lotes) | No |
 | Usuarios | No | Sí (CRUD) | Sí (ver + reset) | Sí (CRUD multiempresa) |
 | Reparto (stub) | No | No | No | No |

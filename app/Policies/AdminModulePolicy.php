@@ -33,4 +33,13 @@ class AdminModulePolicy
     {
         return $this->soporte->canViewAuditoria($user);
     }
+
+    public function viewMovimientos(User $user): bool
+    {
+        if ($this->soporte->blocksProductionMutations($user)) {
+            return false;
+        }
+
+        return $user->empresa_id !== null && $user->rol->canManageLotes();
+    }
 }

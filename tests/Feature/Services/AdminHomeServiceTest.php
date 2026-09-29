@@ -174,7 +174,7 @@ class AdminHomeServiceTest extends TestCase
         $this->assertFalse($preview['show']);
     }
 
-    public function test_stock_preview_shows_when_galpones_exist(): void
+    public function test_stock_preview_hidden_in_v1_productiva(): void
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
@@ -188,11 +188,9 @@ class AdminHomeServiceTest extends TestCase
 
         $preview = app(AdminHomeService::class)->stockPreviewFor($dueno);
 
-        $this->assertTrue($preview['show']);
-        $this->assertTrue($preview['preview']);
-        $this->assertCount(4, $preview['items']);
-        $this->assertSame('En reserva (cámara)', $preview['items'][0]['label']);
-        $this->assertSame('12 cajas', $preview['items'][0]['value']);
+        $this->assertFalse($preview['show']);
+        $this->assertFalse($preview['preview']);
+        $this->assertSame([], $preview['items']);
     }
 
     public function test_team_preview_items_for_dueno_equipo_module(): void
@@ -359,7 +357,7 @@ class AdminHomeServiceTest extends TestCase
         $this->assertSame(1, $panel['galpones']);
     }
 
-    public function test_comercial_module_for_dueno(): void
+    public function test_comercial_module_forbidden_for_dueno_in_v1(): void
     {
         $empresa = Empresa::factory()->create([
             'estado' => EmpresaEstado::Activa,
@@ -373,50 +371,15 @@ class AdminHomeServiceTest extends TestCase
 
         $this->actingAs($dueno)
             ->get(route('dueno.comercial.index'))
-            ->assertOk()
-            ->assertSee('Clientes y entregas')
-            ->assertSee('Tus clientes en el mapa')
-            ->assertSee('Tocá un pin en el mapa')
-            ->assertSee('avicore-client-map-detail', false)
-            ->assertSee('data-avicore-client-map-canvas', false)
-            ->assertDontSee('avicore-comercial-client-list', false)
-            ->assertSee('Próximamente');
+            ->assertForbidden();
     }
 
-    public function test_comercial_client_map_includes_last_purchase_summary(): void
+    public function test_comercial_placeholders_empty_in_v1(): void
     {
         $map = app(AdminHomeService::class)->comercialClientMap();
-
-        $this->assertCount(6, $map['clients']);
-        $this->assertSame('21 ago 2026 · 600 huevos', $map['clients'][0]['ultima_compra_resumen']);
-        $this->assertSame('Almacén El Progreso', $map['clients'][0]['name']);
-    }
-
-    public function test_comercial_preview_items_use_plain_language(): void
-    {
         $items = app(AdminHomeService::class)->comercialPreviewItems();
 
-        $labels = array_column($items, 'label');
-
-        $this->assertSame(
-            ['Clientes', 'Última venta', 'Pedido de mañana', 'Huevos reservados'],
-            $labels
-        );
-
-        $this->assertSame('6', $items[0]['value']);
-        $this->assertSame('$ 48.500', $items[1]['value']);
-        $this->assertSame('1.200 huevos', $items[2]['value']);
-        $this->assertSame('operario-huevo', $items[2]['illustration']);
-
-        foreach ($items as $item) {
-            $this->assertArrayHasKey('value', $item);
-            $this->assertArrayHasKey('hint', $item);
-            $this->assertNotSame('', $item['value']);
-            $this->assertNotSame('', $item['hint']);
-            $this->assertTrue(
-                isset($item['icon']) || isset($item['illustration']),
-                'Each commercial item needs icon or illustration'
-            );
-        }
+        $this->assertSame([], $map['clients']);
+        $this->assertSame([], $items);
     }
 }

@@ -272,6 +272,16 @@
 2b. **MOV-01:** movimientos persistidos en `movimientos_aves`; `MovimientoAvesEfecto` reconstruye saldo por galpón; `lote_id` identifica población cuando aplica (D01). Sin borrado físico; reversión enlazada. Ver `movimientos-aves.md`.
 2c. **MOV-02 (D01):** con varios lotes activos no se estima saldo por lote; traslado/cierre/faena exigen `lote_id` e imputación explícita de muertes/descarte del galpón (`metadata.muertes_imputadas_lote`). `MovimientoAvesConciliacionService` expone hechos vs declaración.
 2d. **MOV-03:** alta de lote incrementa `aves_actuales` solo en `RegistrarLoteAction` y registra movimiento `saldo_inicial_lote` sin segundo incremento; entradas externas vía `RegistrarEntradaAvesAction` con idempotencia. Ver `movimientos-aves.md` § MOV-03.
+2e. **MOV-04:** traslados vía `RegistrarTrasladoAvesAction` — misma empresa, destino operativo, cantidad validada contra saldo/conciliación D01; mutación atómica de ambos galpones con locks ordenados; fallo no altera saldos. Ver `movimientos-aves.md` § MOV-04.
+2f. **MOV-05:** ajuste de inventario vía `RegistrarAjusteInventarioAvesAction` — conteo físico vs saldo sistema, motivo obligatorio, sin reescribir mortalidad operativa; encargado o superior. Ver `movimientos-aves.md` § MOV-05.
+2g. **MOV-06:** cierre de lote vía `RegistrarCierreLoteAction` — remanente, destino de salida opcional, fecha/motivo D07; cierre de ciclo exige remanente completo y pasa el lote a `cerrado` (sin carga productiva). Ver `movimientos-aves.md` § MOV-06.
+2h. **MOV-07:** reapertura excepcional vía `ReabrirLoteExcepcionalAction` — Dueño/Administrativo, motivo en historial; restaura aves con `reapertura_lote` sin duplicar saldo inicial; bloquea conflicto con otro ciclo activo. Ver `movimientos-aves.md` § MOV-07.
+2i. **MOV-08:** reversión vía `RevertirMovimientoAvesAction` — motivo D07, movimiento enlazado, invierte saldo vivo si aplica; rechaza posteriores operativos, segunda reversión e impacto negativo. Ver `movimientos-aves.md` § MOV-08.
+2j. **MOV-09:** conciliación acumulada por galpón — `conciliacionAcumulada()` expone inicial, entradas, salidas, muertes, descartes, ajustes y `diferencia` frente a `aves_actuales`; sin doble contar saldo inicial de lote. Ver `movimientos-aves.md` § MOV-09.
+2k. **MOV-10:** ubicación histórica del lote — `LoteUbicacionHistoricaService` reconstruye galpón al momento del hecho; producción y registros operativos conservan `galpon_id` de captura; traslado total del remanente reasigna expediente sin mover hechos pasados. Ver `movimientos-aves.md` § MOV-10.
+2l. **MOV-11:** concurrencia real en PostgreSQL — locks ordenados en galpones; pruebas con dos sesiones (workers + `pgsql_concurrent`) verifican que traslados/cierres/muertes concurrentes no duplican efecto ni dejan saldos negativos. Ver `movimientos-aves.md` § MOV-11.
+2m. **MOV-12:** movimientos de supervisor en `/{rol}/movimientos` — vista previa del efecto (`MovimientoAvesVistaPreviaService`), motivo obligatorio y confirmación antes de ejecutar traslado/entrada/ajuste/cierre/faena; gate `admin.viewMovimientos` (encargado+); operario no accede a la pantalla ni ejecuta esas Actions. Ver `movimientos-aves.md` § MOV-12.
+2n. **MOV-13:** salida a faena vía `RegistrarFaenaAction` — destino de planta obligatorio, referencias internas opcionales, trazabilidad en ledger sin envío SMA automático (D05 fuera de MVP); cierre de ciclo opcional con mismas reglas D01 que cierre de lote. Ver `movimientos-aves.md` § MOV-13.
 3. El ajuste manual solo lo puede hacer encargado o superior.
 4. El ajuste impacta desde ese momento.
 5. El ajuste no modifica reportes históricos ya generados.
@@ -337,9 +347,46 @@ Referencia: [`mercado-uruguay.md`](../../avicore-contexto/references/mercado-uru
 
 ---
 
-## 17. Panel Dueño — vistas previa (pre-módulo comercial/stock)
+## 17. Panel Dueño — v1 productiva sin previews ficticios (RES-01)
 
-1. **Inicio — Stock y demanda** y **Comercial** pueden mostrar KPIs y mapa con **datos de ejemplo** hasta existir módulo de ventas/stock persistido.
-2. La UI debe indicar **«Vista previa»** (eyebrow o subtítulo); no presentar cifras ficticias como producción real.
-3. Constantes demo en `AdminHomeService` llevan `avicore-defer:`; reemplazar al implementar comercial/stock.
-4. **Pulso** y **Resumen** usan datos operativos reales (`RegistroOperativo`, galpones activos); no mezclar con preview comercial.
+1. **Inicio** no muestra bloque «Stock y demanda» con cifras inventadas; `stockPreviewFor()` permanece oculto hasta módulo stock/comercial real.
+2. **Comercial** (`canViewComercial`) deshabilitado en v1 — sin pestaña en nav ni KPIs/mapa demo; ruta protegida con 403.
+3. **Pulso**, **Resumen**, **Historial** y **Equipo** usan solo datos operativos o de usuarios reales de la empresa.
+4. Al habilitar comercial en etapa 2, reactivar permiso y persistencia antes de mostrar montos o mapa de clientes.
+
+## 18. Métricas Inicio y Resumen (RES-02)
+
+1. Catálogo canónico en `metricas-resumen.md` y `ResumenMetricasCatalog` — fuente, unidad, período, población, exclusiones y valor en ausencia por métrica.
+2. Implementación de referencia: `AdminResumenService` + `OperarioGalponResumenService`; umbral mortalidad UI = `UMBRAL_MORTALIDAD_REFERENCIA_PCT` (1,1 %, no diagnóstico automático).
+3. `aves_actuales` usa saldo vivo del galpón; producción del día viene de `registros_operativos` activos y día operativo empresa.
+4. Casos verificables enlazados en tests (`ResumenMetricasCatalog::casosVerificables()`).
+
+## 19. Completitud diaria D03 en Inicio (RES-03)
+
+1. El pulso de **Inicio** lista `galpones_sin_carga` cuando falta **omisión** en huevos, muertes o descarte del día operativo (`CompletitudDiariaD03`).
+2. **Registrado** o **cero confirmado** en los tres tipos cierran el día productivo del galpón; alimento u otras cargas no sustituyen tipos faltantes.
+3. Mensajes del pulso y la lista en Inicio hablan de «capturas productivas pendientes», no de «cualquier carga».
+4. Tests: `CompletitudDiariaD03Test`, `AdminResumenServiceTest` (omisión parcial, solo alimento, D03 completo).
+
+## 20. Conciliación Inicio, Resumen e Historial (RES-04)
+
+1. Los totales del **día operativo** (huevos, huevos descarte, muertes, descarte aves, alimento kg) usan una sola agregación: `TotalesCapturaDiaService`.
+2. Población: galpones `disponiblesParaCarga` del actor (mismos filtros granja/galpón que Resumen); solo registros **activos** del día lógico empresa.
+3. Inicio (pulso/teaser), Resumen (KPIs) e Historial (`totalesCapturaDiaActiva`) deben coincidir en fixtures conocidos; anulados excluidos; correcciones reflejadas en el registro vigente.
+4. La lista de Historial puede mostrar anulados con filtro, pero los totales conciliados siguen la regla de activos del día.
+5. Tests: `AdminResumenTotalesConciliacionTest`.
+
+## 21. Mortalidad acumulada y ventana (RES-05)
+
+1. `%` de mortalidad en Resumen/Inicio usa `MortalidadVentanaGalpon`: muertes operativas activas desde `fecha_ingreso` mínima del ciclo; denominador = suma `cantidad_inicial` de lotes en ese ciclo.
+2. Con lotes **activos/en producción**, el ciclo son solo esos; con **varios activos** la tasa es **por galpón** (no por lote) — UI lo indica.
+3. Tras **cierre** sin lotes activos, el último ciclo **cerrado** (mismo día de cierre) sigue aportando población inicial y las muertes del período **no se borran** del %.
+4. Movimientos de saldo (traslado/cierre/faena) no sustituyen ni ocultan registros de mortalidad operativa.
+5. Tests: `AdminResumenMortalidadVentanaTest`.
+
+## 22. Umbrales de referencia en UI (RES-06)
+
+1. Umbral único en código: `ResumenMetricasCatalog::UMBRAL_MORTALIDAD_REFERENCIA_PCT` (1,1 % orientativo, encuestas sector).
+2. Comparación vía `superaReferenciaMortalidad()`; copy en `referenciaMortalidad()` — **no** diagnóstico automático ni norma universal.
+3. Resumen e Inicio usan etiquetas «Galpones sobre referencia» / «Sobre referencia» y disclaimer al responsable de la empresa.
+4. Tests: `ResumenMetricasCatalogTest`, `AdminResumenTest::test_resumen_muestra_referencia_mortalidad_sin_diagnostico`.

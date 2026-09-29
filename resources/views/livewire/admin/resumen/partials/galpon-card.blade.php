@@ -16,8 +16,11 @@
             </p>
         </div>
         @if ($alerta)
-            <span class="shrink-0 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-800">
-                Alerta
+            <span
+                class="shrink-0 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-800"
+                title="{{ $referenciaMortalidad['etiqueta_umbral'] }}"
+            >
+                {{ $referenciaMortalidad['etiqueta_badge'] }}
             </span>
         @endif
     </header>
@@ -58,6 +61,11 @@
                 {{ number_format($fila['mortalidad_pct'], 2, ',', '.') }}%
             </p>
             <p class="avicore-operario-kpi-panel__label">Mortalidad acum.</p>
+            @if ($fila['mortalidad_solo_galpon'] ?? false)
+                <p class="mt-0.5 text-[11px] leading-tight text-avicore-muted">Referencia por galpón (varios lotes).</p>
+            @elseif ($fila['mortalidad_incluye_cerrados'] ?? false)
+                <p class="mt-0.5 text-[11px] leading-tight text-avicore-muted">Ciclo cerrado; población inicial del cierre.</p>
+            @endif
         </div>
     </div>
 </article>

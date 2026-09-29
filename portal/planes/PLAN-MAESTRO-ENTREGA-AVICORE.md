@@ -260,27 +260,27 @@ Invariantes: no saldo negativo; traslado conserva total; ajuste explícito; muer
 - [x] **MOV-01 — Modelo mínimo.** Origen/destino, lote si corresponde, cantidad/tipo, momento efectivo, actor/motivo/reversión. Éxito: ejemplos reales aprobados permiten reconstruir saldo.
 - [x] **MOV-02 — Población por lote con D01.** Conciliar muertes del galpón antes de trasladar/cerrar parcialmente. Éxito: estimación no presentada como hecho.
 - [x] **MOV-03 — Entrada y saldo inicial.** Vincular alta/corte sin duplicar incremento de RegistrarLoteAction. Éxito: reintento/importación no suma dos veces.
-- [ ] **MOV-04 — Traslado.** Misma empresa, destino disponible, origen distinto, cantidad/saldo/lote. Éxito: éxito atómico; fallo conserva ambos saldos.
-- [ ] **MOV-05 — Ajuste de inventario.** Conteo vs sistema, diferencia/motivo/rol superior. Éxito: no reescribir mortalidad para cuadrar.
-- [ ] **MOV-06 — Cierre de lote.** Remanente, destino/salida, fecha y motivo con D07. Éxito: sin aves fantasma ni nuevas cargas incompatibles.
-- [ ] **MOV-07 — Reapertura excepcional.** Permiso/motivo y conflictos con nuevo ciclo. Éxito: no sumar población inicial otra vez.
-- [ ] **MOV-08 — Reversión.** Validar movimientos posteriores y saldo; inversa enlazada. Éxito: segunda reversión rechazada sin negativos.
-- [ ] **MOV-09 — Conciliación.** Inicial + entradas − salidas − muertes − descartes + ajustes/reversiones = final. Éxito: diferencias visibles por galpón/período.
-- [ ] **MOV-10 — Ubicación histórica.** Consultar ubicación al momento del hecho. Éxito: trasladar no reasigna producción pasada al destino nuevo.
-- [ ] **MOV-11 — Concurrencia real.** Dos conexiones PostgreSQL: traslados opuestos, doble cierre, muerte vs traslado. Éxito: invariantes y recuperación; dos llamadas secuenciales no bastan.
-- [ ] **MOV-12 — UI de supervisor.** Vista previa del efecto y motivo obligatorio. Éxito: operario no ejecuta acciones superiores.
-- [ ] **MOV-13 — Faena como salida operativa.** Destino/motivo/referencias si caso real; documentos oficiales sujetos a D05. Éxito: trazabilidad interna sin prometer envío SMA automático.
+- [x] **MOV-04 — Traslado.** Misma empresa, destino disponible, origen distinto, cantidad/saldo/lote. Éxito: éxito atómico; fallo conserva ambos saldos.
+- [x] **MOV-05 — Ajuste de inventario.** Conteo vs sistema, diferencia/motivo/rol superior. Éxito: no reescribir mortalidad para cuadrar.
+- [x] **MOV-06 — Cierre de lote.** Remanente, destino/salida, fecha y motivo con D07. Éxito: sin aves fantasma ni nuevas cargas incompatibles.
+- [x] **MOV-07 — Reapertura excepcional.** Permiso/motivo y conflictos con nuevo ciclo. Éxito: no sumar población inicial otra vez.
+- [x] **MOV-08 — Reversión.** Validar movimientos posteriores y saldo; inversa enlazada. Éxito: segunda reversión rechazada sin negativos.
+- [x] **MOV-09 — Conciliación.** Inicial + entradas − salidas − muertes − descartes + ajustes/reversiones = final. Éxito: diferencias visibles por galpón/período.
+- [x] **MOV-10 — Ubicación histórica.** Consultar ubicación al momento del hecho. Éxito: trasladar no reasigna producción pasada al destino nuevo.
+- [x] **MOV-11 — Concurrencia real.** Dos conexiones PostgreSQL: traslados opuestos, doble cierre, muerte vs traslado. Éxito: invariantes y recuperación; dos llamadas secuenciales no bastan.
+- [x] **MOV-12 — UI de supervisor.** Vista previa del efecto y motivo obligatorio. Éxito: operario no ejecuta acciones superiores.
+- [x] **MOV-13 — Faena como salida operativa.** Destino/motivo/referencias si caso real; documentos oficiales sujetos a D05. Éxito: trazabilidad interna sin prometer envío SMA automático.
 
 ## 14. RES — Resumen y supervisión
 
 Base: AdminResumenService, OperarioGalponResumenService, AdminHomeService y páginas Inicio/Resumen. Depende de CAP/MOV para métricas finales.
 
-- [ ] **RES-01 — Quitar previews de v1 productiva.** Stock/demanda/mapa/Comercial fuera de experiencia real. Éxito: ninguna cifra ficticia mezclada con producción del cliente.
-- [ ] **RES-02 — Definir métricas.** Fuente/unidad/período/población/exclusiones/ausencia. Éxito: referencia canónica con casos verificables.
-- [ ] **RES-03 — Completitud diaria.** D03: registro por tipo, cero y omisión. Éxito: alimento solo no dispara «todas las cargas al día».
-- [ ] **RES-04 — Conciliar totales.** Inicio/Resumen/Historial iguales en mismo scope; anulaciones/correcciones. Éxito: datos de prueba conocidos coinciden.
-- [ ] **RES-05 — Mortalidad y ventana.** Movimientos/coexistencia/cierres; no inferir tasa exacta por lote. Éxito: cerrar lote no borra historia ni cambia denominador sin explicación.
-- [ ] **RES-06 — Umbrales.** Validar 1,1% y período con responsable. Éxito: referencia etiquetada, sin diagnóstico automático ni norma universal inventada.
+- [x] **RES-01 — Quitar previews de v1 productiva.** Stock/demanda/mapa/Comercial fuera de experiencia real. Éxito: ninguna cifra ficticia mezclada con producción del cliente.
+- [x] **RES-02 — Definir métricas.** Fuente/unidad/período/población/exclusiones/ausencia. Éxito: referencia canónica con casos verificables.
+- [x] **RES-03 — Completitud diaria.** D03: registro por tipo, cero y omisión. Éxito: alimento solo no dispara «todas las cargas al día».
+- [x] **RES-04 — Conciliar totales.** Inicio/Resumen/Historial iguales en mismo scope; anulaciones/correcciones. Éxito: datos de prueba conocidos coinciden.
+- [x] **RES-05 — Mortalidad y ventana.** Movimientos/coexistencia/cierres; no inferir tasa exacta por lote. Éxito: cerrar lote no borra historia ni cambia denominador sin explicación.
+- [x] **RES-06 — Umbrales.** Validar 1,1% y período con responsable. Éxito: referencia etiquetada, sin diagnóstico automático ni norma universal inventada.
 - [ ] **RES-07 — Comparaciones honestas.** Hoy parcial, ayer completo y denominador cero. Éxito: porcentajes contextualizados o no calculables explícitos.
 - [ ] **RES-08 — Gráficos útiles.** Aptos/descarte/muertes/kg entregados y tabla accesible. Éxito: fecha sin carga no equivale automáticamente a cero confirmado.
 - [ ] **RES-09 — Excepciones primero.** Alerta accionable con acceso al galpón. Éxito: dueño identifica qué revisar sin interpretar tarjetas técnicas.
