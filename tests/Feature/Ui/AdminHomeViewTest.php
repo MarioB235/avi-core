@@ -185,7 +185,7 @@ class AdminHomeViewTest extends TestCase
             ->assertRedirect(route('operario.home'));
     }
 
-    public function test_dueno_with_demo_seed_sees_pulso_and_stock_preview(): void
+    public function test_dueno_with_demo_seed_sees_pulso_without_stock_preview(): void
     {
         $this->seed([
             AvicoreAuthSeeder::class,
@@ -202,9 +202,9 @@ class AdminHomeViewTest extends TestCase
             ->assertOk()
             ->assertSee('Tu empresa hoy')
             ->assertSee('Huevos juntados hoy')
-            ->assertSee('Stock y demanda')
-            ->assertSee('En reserva (cámara)')
-            ->assertSee('12 cajas')
+            ->assertDontSee('Stock y demanda')
+            ->assertDontSee('En reserva (cámara)')
+            ->assertDontSee('vista previa', false)
             ->assertSee('avicore-pulse-status', false)
             ->assertSee('Ver análisis completo en Resumen');
     }

@@ -121,12 +121,12 @@ Landing post-login para roles con panel administrativo (Dueño, Administrativo, 
 
 ### Elementos
 
-- Layout: `components/layouts/admin.blade.php` reutiliza clases `avicore-operario-*`; nav `AdminNav` según rol (Dueño: Inicio · Resumen · Historial · Equipo · Comercial); menú cuenta `x-ui.user-menu`; PWA (`x-ui.pwa-meta` + banner instalar si `AVICORE_PWA_INSTALL_PROMPT=true`).
+- Layout: `components/layouts/admin.blade.php` reutiliza clases `avicore-operario-*`; nav `AdminNav` según rol (Dueño: Inicio · Resumen · Historial · Auditoría · Movimientos · Equipo — sin Comercial en v1); menú cuenta `x-ui.user-menu`; PWA (`x-ui.pwa-meta` + banner instalar si `AVICORE_PWA_INSTALL_PROMPT=true`).
 - Hero: saludo horario + subtítulo `{empresa · rol}.`
 - **Primeros pasos (onboarding):** checklist `x-ui.setup-checklist` mientras falte algún paso operativo (granja, galpón, lote, operario, etc.); oculta al completar. Ver `EmpresaOnboardingService`.
 - **Tu empresa:** panorama estructural — granjas y galpones activos (2 KPIs).
 - **Tu empresa hoy (pulso):** estado del día (huevos vs ayer, alertas mortalidad, galpones sin carga), KPIs huevos/muertes hoy con maples/cajas, enlace a Resumen.
-- **Stock y demanda (vista previa):** reserva en cámara, demanda, salida hoy y disponible estimado — **datos ficticios** hasta módulo comercial/stock.
+- **Sin** bloque «Stock y demanda» ficticio en v1 (RES-01).
 - Empty state si no hay granjas ni galpones cargados.
 - **No incluye** paneles/tiles de carga operario (`kpi-panel`, `carga-tile`, chip de galpón) ni accesos a Cargar/Historial.
 
@@ -134,7 +134,7 @@ Landing post-login para roles con panel administrativo (Dueño, Administrativo, 
 
 Cada rol con panel usa su prefijo; las vistas Livewire se comparten hasta tener pantallas propias por rol.
 
-- **Dueño:** `/dueno`, `/dueno/resumen`, `/dueno/equipo`, `/dueno/comercial` (sin Estructura ni Usuarios)
+- **Dueño:** `/dueno`, `/dueno/resumen`, `/dueno/equipo`, `/dueno/movimientos` (sin Comercial, Estructura ni Usuarios en v1)
 - **Administrativo:** `/administrativo` (+ resumen, estructura, usuarios)
 - **Encargado:** `/encargado` (+ resumen, estructura, usuarios limitado)
 - **Admin AviCore:** `/avicore` (+ empresas, usuarios; tab Resumen solo con sesión de soporte activa)
@@ -162,19 +162,17 @@ Tras login exitoso (sin cambio de contraseña pendiente), cada rol llega a su pr
 
 ---
 
-## 3.1.2 Pantalla: Comercial (Dueño, preview)
+## 3.1.2 Pantalla: Comercial (etapa 2)
 
-**Estado MVP (2026-08-22):** `/dueno/comercial` — vista previa con KPIs de ejemplo + **mapa interactivo** (Leaflet/OSM) y lista de clientes demo con **última compra** (fecha y cantidad de huevos). Módulo real post-MVP (`producto.md` excluye ventas en MVP).
+**Estado v1 (RES-01):** módulo **fuera** de la experiencia productiva — `canViewComercial` en false, sin pestaña en nav; ruta `/{rol}/comercial` responde 403. Componente Livewire conservado con empty state para reactivación futura.
 
-### Elementos
+### Elementos (cuando se habilite etapa 2)
 
-- KPIs orientativos: clientes, última venta, pedido de mañana, huevos reservados.
-- Mapa con pins verdes; al tocar un pin, card de detalle debajo (sin lista ni tooltip flotante).
-- Card: nombre, zona, última compra (fecha) y cantidad de huevos.
+- KPIs y mapa solo con datos persistidos (clientes, pedidos, stock); sin mezclar con producción de galpón.
 
-### Usuarios autorizados
+### Usuarios autorizados (futuro)
 
-- Dueño (`canViewComercial`).
+- A definir con módulo comercial real (`permisos.md`).
 
 ---
 
@@ -326,6 +324,8 @@ Vista operativa para Dueño, Administrativo y Encargado: seguir producción del 
 
 - Sin galpones activos: empty state con enlace implícito a Estructura.
 - Postura semanal agrupa con `DiaOperativoEmpresa` + `delDia` (misma ventana que KPIs y pulso).
+- Definición de cada KPI: `avicore-negocio/references/metricas-resumen.md` (RES-02).
+- Badges y tooltips de mortalidad en tabla/cards usan `referenciaMortalidad` pasado desde Livewire (partials sin lógica de catálogo en Blade).
 - Operario redirigido fuera de `/admin/*`.
 
 ---
@@ -389,6 +389,39 @@ Revisar quién hizo qué y cuándo en la empresa, sin poder alterar el registro.
 
 - Aislamiento por `empresa_id`; sin edición ni borrado desde UI.
 - Tests: `AdminAuditoriaConsultaTest` (detalle, multiempresa, filtros, estado vacío, fecha máxima TZ).
+
+---
+
+## 3.7 Pantalla: Movimientos de aves (supervisor)
+
+**Estado MVP (2026-09-28):** implementado en `/{rol}/movimientos` — traslado, entrada externa, ajuste de inventario y cierre de lote con vista previa y confirmación.
+
+### Objetivo
+
+Ejecutar movimientos de ledger que afectan saldos vivos con transparencia antes de confirmar (sin depender del flujo móvil del operario).
+
+### Usuarios
+
+- Dueño, Administrativo, Encargado (`admin.viewMovimientos`, `canManageLotes`).
+- Operario: sin acceso (403 en Livewire).
+- Soporte AviCore: bloqueado si la sesión no permite mutaciones de producción.
+
+### Elementos
+
+- Hero `x-admin.page-hero`.
+- Selector de tipo de movimiento; campos según tipo (galpones, lote, cantidad, conteo en ajuste, etc.).
+- Bloque **Vista previa del efecto** (`MovimientoAvesVistaPreviaService`): saldos, delta y mensajes de validación.
+- Campo **Motivo** obligatorio (mín. 10 caracteres).
+- Diálogo de confirmación antes de ejecutar; éxito con toast y formulario reiniciado.
+- Pestaña **Movimientos** en `AdminNav` (icono truck).
+
+### Comportamiento
+
+- Mutaciones vía Actions existentes (`RegistrarTrasladoAvesAction`, `RegistrarEntradaAvesAction`, `RegistrarAjusteInventarioAvesAction`, `RegistrarCierreLoteAction`, `RegistrarFaenaAction`) con autorización `MovimientoAvesPolicy`.
+- Vista previa en pantalla solo cuando el formulario tiene datos (evita recalcular en render vacío).
+- Faena: destino de planta obligatorio, referencia interna opcional; vista previa aclara que no hay envío SMA automático.
+- Reapertura y reversión no están en esta pantalla MVP.
+- Tests: `AdminMovimientosSupervisorTest` (Livewire: traslado, entrada, ajuste, cierre/faena parcial), `MovimientoAvesVistaPreviaServiceTest`.
 
 ---
 

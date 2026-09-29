@@ -63,7 +63,7 @@
                                         role="listitem"
                                     >
                                         <span class="avicore-pulse-list__name">
-                                            {{ $alerta['nombre'] }} — mortalidad alta
+                                            {{ $alerta['nombre'] }} — mortalidad acum. sobre referencia
                                         </span>
                                         <span class="avicore-pulse-list__meta">
                                             {{ $alerta['granja'] }} · {{ number_format($alerta['mortalidad_pct'], 1, ',', '.') }}% acumulado
@@ -74,7 +74,7 @@
                                 @foreach ($pulso['galpones_sin_carga'] as $galpon)
                                     <div class="avicore-pulse-list__item" role="listitem">
                                         <span class="avicore-pulse-list__name">
-                                            {{ $galpon['nombre'] }} — sin carga hoy
+                                            {{ $galpon['nombre'] }} — capturas productivas pendientes
                                         </span>
                                         <span class="avicore-pulse-list__meta">{{ $galpon['granja'] }}</span>
                                     </div>

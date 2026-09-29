@@ -28,7 +28,7 @@ class AdminShellTest extends TestCase
             'name' => 'María Dueña',
         ]);
 
-        $this->assertSame(['Inicio', 'Resumen', 'Historial', 'Auditoría', 'Equipo', 'Comercial'], collect(AdminNav::tabs($dueno))->pluck('label')->all());
+        $this->assertSame(['Inicio', 'Resumen', 'Historial', 'Auditoría', 'Movimientos', 'Equipo'], collect(AdminNav::tabs($dueno))->pluck('label')->all());
 
         $this->actingAs($dueno)
             ->get(route('dueno.home'))
@@ -43,7 +43,7 @@ class AdminShellTest extends TestCase
             ->assertSee('Historial', false)
             ->assertSee('Auditoría', false)
             ->assertSee('Equipo', false)
-            ->assertSee('Comercial', false)
+            ->assertDontSee('Comercial', false)
             ->assertDontSee('>Usuarios<', false)
             ->assertDontSee('>Estructura<', false)
             ->assertDontSee('¿Qué querés gestionar?')

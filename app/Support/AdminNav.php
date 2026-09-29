@@ -67,6 +67,16 @@ class AdminNav
                 'icon' => 'shield',
                 'headerTitle' => 'Auditoría',
             ];
+
+            if ($user->rol->canManageLotes()) {
+                $tabs[] = [
+                    'route' => $route('movimientos.index'),
+                    'patterns' => ["{$prefix}.movimientos.*"],
+                    'label' => 'Movimientos',
+                    'icon' => 'truck',
+                    'headerTitle' => 'Movimientos de aves',
+                ];
+            }
         }
 
         if ($user->rol->canViewEquipo()) {
@@ -167,6 +177,7 @@ class AdminNav
             || str_contains($name, '.resumen.')
             || str_contains($name, '.historial-operativo.')
             || str_contains($name, '.auditoria.')
+            || str_contains($name, '.movimientos.')
             || str_contains($name, '.equipo.')
             || str_contains($name, '.comercial.')
             || str_contains($name, '.usuarios.')

@@ -13,11 +13,32 @@ final class IdempotenciaMovimiento
         return 'saldo-inicial-lote:'.$loteId;
     }
 
+    public static function claveReaperturaLote(int $loteId): string
+    {
+        return 'reapertura-lote:'.$loteId;
+    }
+
+    public static function claveReversionMovimiento(int $movimientoId): string
+    {
+        return 'reversion-movimiento:'.$movimientoId;
+    }
+
     public static function normalizarClave(?string $clave): ?string
     {
         $clave = $clave !== null ? trim($clave) : '';
 
         return $clave !== '' ? $clave : null;
+    }
+
+    public static function buscarExistente(User $user, ?string $idempotenciaClave): ?MovimientoAves
+    {
+        $clave = self::normalizarClave($idempotenciaClave);
+
+        if ($clave === null) {
+            return null;
+        }
+
+        return self::buscar($user, $clave);
     }
 
     /**

@@ -72,12 +72,17 @@
                 />
 
                 <x-ui.stat-panel
-                    label="Alertas mortalidad"
+                    :label="$referenciaMortalidad['etiqueta_kpi']"
                     :value="number_format($resumen->alertasCount, 0, ',', '.')"
-                    :hint="'Sobre '.number_format($mortalidadReferencia, 1, ',', '.').'% acumulado'"
+                    :hint="$referenciaMortalidad['etiqueta_umbral']"
                     icon="bell"
                 />
             </div>
+
+            <p class="mt-3 text-xs leading-relaxed text-avicore-muted">
+                {{ $referenciaMortalidad['periodo'] }}
+                {{ $referenciaMortalidad['disclaimer'] }}
+            </p>
         </x-ui.reveal>
 
         <x-ui.reveal as="section" class="mt-8" aria-label="Postura semanal">
@@ -106,11 +111,17 @@
                     description="Creá galpones en Estructura para ver indicadores aquí."
                 />
             @else
-                @include('livewire.admin.resumen.partials.galpones-table', ['filas' => $resumen->galponesResumen])
+                @include('livewire.admin.resumen.partials.galpones-table', [
+                    'filas' => $resumen->galponesResumen,
+                    'referenciaMortalidad' => $referenciaMortalidad,
+                ])
 
                 <div class="avicore-operario-kpi-grid avicore-operario-kpi-grid--duo mt-4 md:hidden">
                     @foreach ($resumen->galponesResumen as $fila)
-                        @include('livewire.admin.resumen.partials.galpon-card', ['fila' => $fila])
+                        @include('livewire.admin.resumen.partials.galpon-card', [
+                            'fila' => $fila,
+                            'referenciaMortalidad' => $referenciaMortalidad,
+                        ])
                     @endforeach
                 </div>
             @endif

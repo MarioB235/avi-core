@@ -5,21 +5,24 @@ namespace App\Services;
 use App\Enums\RegistroOperativoTipo;
 use App\Models\Galpon;
 use App\Models\Granja;
-use App\Models\Lote;
 use App\Models\RegistroOperativo;
 use App\Models\User;
+use App\Support\CompletitudDiariaD03;
 use App\Support\DiaOperativoEmpresa;
+use App\Support\MortalidadVentanaGalpon;
+use App\Support\ResumenMetricasCatalog;
 use Illuminate\Database\Eloquent\Collection;
 
 class AdminResumenService
 {
-    public const MORTALIDAD_REFERENCIA_PCT = 1.1;
+    public const MORTALIDAD_REFERENCIA_PCT = ResumenMetricasCatalog::UMBRAL_MORTALIDAD_REFERENCIA_PCT;
 
     public function __construct(
         private OperarioGalponResumenService $galponResumen,
-        private EmpresaScopeService $empresaScope,
         private EmpresaContextService $empresaContext,
         private SoporteEmpresaService $soporte,
+        private TotalesCapturaDiaService $totalesCapturaDia,
+        private MortalidadVentanaGalpon $mortalidadVentana,
     ) {}
 
     public function for(User $user, ?int $granjaId = null, ?int $galponId = null): AdminResumenViewData
@@ -34,8 +37,10 @@ class AdminResumenService
             return $this->resumenVacio();
         }
 
-        $galpones = $this->galponesEnScope($user, $granjaId, $galponId);
+        $galpones = $this->totalesCapturaDia->galponesEnScope($user, $granjaId, $galponId);
         $galponIds = $galpones->modelKeys();
+
+        $totalesDia = $this->totalesCapturaDia->paraUsuario($user, $granjaId, $galponId);
 
         /** @var array<int, float> $alimentoPorGalpon */
         $alimentoPorGalpon = $galponIds === []
@@ -52,31 +57,28 @@ class AdminResumenService
                 ->map(fn ($total): float => (float) $total)
                 ->all();
 
-        $huevosHoy = 0;
-        $huevosDescarteHoy = 0;
-        $muertesHoy = 0;
+        $huevosHoy = $totalesDia['huevos'];
+        $huevosDescarteHoy = $totalesDia['huevos_descarte'];
+        $muertesHoy = $totalesDia['muertes'];
         $avesActuales = 0;
         $alertasCount = 0;
-        $alimentoKgHoy = 0.0;
+        $alimentoKgHoy = $totalesDia['alimento_kg'];
 
-        /** @var list<array{galpon: Galpon, resumen: array<string, mixed>, mortalidad_pct: float, alerta_mortalidad: bool, alimento_kg_hoy: float}> $filas */
+        /** @var list<array{galpon: Galpon, resumen: array<string, mixed>, mortalidad_pct: float, alerta_mortalidad: bool, alimento_kg_hoy: float, mortalidad_solo_galpon: bool, mortalidad_incluye_cerrados: bool}> $filas */
         $filas = [];
 
         foreach ($galpones as $galpon) {
             $resumen = $this->galponResumen->resumen($galpon);
-            $mortalidadPct = $this->mortalidadAcumuladaPct($resumen);
-            $alerta = $mortalidadPct > self::MORTALIDAD_REFERENCIA_PCT;
+            $mortalidad = $this->mortalidadVentana->metricaParaGalpon($galpon);
+            $mortalidadPct = $mortalidad['mortalidad_pct'];
+            $alerta = ResumenMetricasCatalog::superaReferenciaMortalidad($mortalidadPct);
             $alimentoGalpon = $alimentoPorGalpon[$galpon->id] ?? 0.0;
 
             if ($alerta) {
                 $alertasCount++;
             }
 
-            $huevosHoy += $resumen['huevos_hoy'];
-            $huevosDescarteHoy += $resumen['huevos_descarte_hoy'];
-            $muertesHoy += $resumen['muertes_hoy'];
             $avesActuales += $resumen['aves_actuales'];
-            $alimentoKgHoy += $alimentoGalpon;
 
             $filas[] = [
                 'galpon' => $galpon,
@@ -84,6 +86,8 @@ class AdminResumenService
                 'mortalidad_pct' => $mortalidadPct,
                 'alerta_mortalidad' => $alerta,
                 'alimento_kg_hoy' => $alimentoGalpon,
+                'mortalidad_solo_galpon' => $mortalidad['solo_galpon'],
+                'mortalidad_incluye_cerrados' => $mortalidad['incluye_cerrados'],
             ];
         }
 
@@ -133,20 +137,9 @@ class AdminResumenService
         $galpones = collect($data->galponesResumen);
         $galponIds = $galpones->pluck('galpon.id')->all();
 
-        $galponIdsConCargaHoy = $galponIds === []
-            ? []
-            : RegistroOperativo::query()
-                ->activos()
-                ->where('empresa_id', $empresaId)
-                ->whereIn('galpon_id', $galponIds)
-                ->delDia($empresaId)
-                ->distinct()
-                ->pluck('galpon_id')
-                ->all();
-
         /** @var list<array{id: int, nombre: string, granja: string}> $galponesSinCarga */
         $galponesSinCarga = $galpones
-            ->filter(fn (array $fila): bool => ! in_array($fila['galpon']->id, $galponIdsConCargaHoy, true))
+            ->filter(fn (array $fila): bool => CompletitudDiariaD03::tieneOmisionProductiva($fila['resumen']))
             ->map(fn (array $fila): array => [
                 'id' => $fila['galpon']->id,
                 'nombre' => $fila['galpon']->nombre,
@@ -192,9 +185,9 @@ class AdminResumenService
                 default => 'Todo en orden',
             },
             'estado_hint' => match ($estado) {
-                'revision' => 'Hay alertas de mortalidad o galpones sin carga de hoy.',
-                'atencion' => 'Algunos galpones aún no tienen carga registrada hoy.',
-                default => 'Sin alertas de mortalidad y todas las cargas al día.',
+                'revision' => 'Hay galpones sobre la referencia de mortalidad acumulada o capturas productivas pendientes.',
+                'atencion' => 'Faltan huevos, muertes o descarte hoy (dato o cero confirmado). Solo alimento no alcanza.',
+                default => 'Huevos, muertes y descarte resueltos hoy; sin alertas de mortalidad.',
             },
             'huevos_hoy' => $data->huevosHoy,
             'huevos_ayer' => $huevosAyer,
@@ -255,7 +248,7 @@ class AdminResumenService
      */
     public function galponesParaFiltro(User $user, ?int $granjaId = null): Collection
     {
-        return $this->galponesEnScope($user, $granjaId, null);
+        return $this->totalesCapturaDia->galponesEnScope($user, $granjaId, null);
     }
 
     /**
@@ -271,7 +264,7 @@ class AdminResumenService
             return $this->posturaSemanalVacia();
         }
 
-        $galponIds = $this->galponesEnScope($user, $granjaId, $galponId)->modelKeys();
+        $galponIds = $this->totalesCapturaDia->galponesEnScope($user, $granjaId, $galponId)->modelKeys();
 
         if ($galponIds === []) {
             return $this->posturaSemanalVacia($empresaId);
@@ -354,46 +347,6 @@ class AdminResumenService
             galponesResumen: [],
             galponesActivos: 0,
         );
-    }
-
-    private function galponesEnScope(User $user, ?int $granjaId, ?int $galponId): Collection
-    {
-        if ($this->empresaContext->empresaIdFor($user) === null) {
-            return new Collection;
-        }
-
-        $query = Galpon::query()
-            ->with('granja')
-            ->disponiblesParaCarga()
-            ->orderBy('nombre');
-
-        $query = $this->empresaScope->constrainQuery($query, $user);
-
-        if ($granjaId !== null) {
-            $query->where('granja_id', $granjaId);
-        }
-
-        if ($galponId !== null) {
-            $query->where('id', $galponId);
-        }
-
-        return $query->get();
-    }
-
-    /**
-     * @param  array<string, mixed>  $resumen
-     */
-    private function mortalidadAcumuladaPct(array $resumen): float
-    {
-        /** @var Collection<int, Lote> $lotes */
-        $lotes = $resumen['lotes'];
-        $poblacionInicial = (int) $lotes->sum('cantidad_inicial');
-
-        if ($poblacionInicial < 1) {
-            return 0.0;
-        }
-
-        return round(((int) $resumen['muertes_acumuladas'] / $poblacionInicial) * 100, 2);
     }
 
     /**

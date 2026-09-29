@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\AdminResumenService;
 use App\Services\SoporteEmpresaService;
 use App\Support\HuevosUnidad;
+use App\Support\ResumenMetricasCatalog;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -91,7 +92,7 @@ class Index extends Component
             'granjasOptions' => $granjasOptions,
             'galponesOptions' => $galponesOptions,
             'galponesFiltro' => $galponesFiltro,
-            'mortalidadReferencia' => AdminResumenService::MORTALIDAD_REFERENCIA_PCT,
+            'referenciaMortalidad' => ResumenMetricasCatalog::referenciaMortalidad(),
             'huevosHoyUnidades' => $unidades->etiquetaSoloCajasMaples($resumen->huevosHoy),
             'maplesHoy' => $unidades->maplesDesdeHuevos($resumen->huevosHoy),
             'huevosHoyDesglose' => $unidades->desgloseDesdeHuevos($resumen->huevosHoy),

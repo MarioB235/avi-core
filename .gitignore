@@ -43,6 +43,9 @@ Thumbs.db
 /dist/
 /.vite/
 
+# Borradores locales de PR (no versionar)
+/pr-body*.md
+
 # Referencias TALL locales (no versionar clones)
 /docs/awesome-tall-stack/
 /docs/dashboard/

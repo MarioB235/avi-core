@@ -58,7 +58,7 @@ final class RoleCapabilitiesMatrix
                 'canViewEstructura' => false,
                 'canViewResumen' => true,
                 'canViewEquipo' => true,
-                'canViewComercial' => true,
+                'canViewComercial' => false,
                 'canManageEstructura' => false,
                 'canManageLotes' => true,
             ],
@@ -127,7 +127,7 @@ final class RoleCapabilitiesMatrix
         return [
             'resumen' => ['dueno' => true, 'administrativo' => true],
             'equipo' => ['dueno' => true, 'administrativo' => false],
-            'comercial' => ['dueno' => true, 'administrativo' => false],
+            'comercial' => ['dueno' => false, 'administrativo' => false],
             'estructura' => ['dueno' => false, 'administrativo' => true],
             'usuarios' => ['dueno' => false, 'administrativo' => true],
         ];

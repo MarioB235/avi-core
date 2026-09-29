@@ -8,45 +8,50 @@ Plan maestro: [PLAN-MAESTRO-ENTREGA-AVICORE.md](PLAN-MAESTRO-ENTREGA-AVICORE.md)
 | Campo | Valor |
 |---|---|
 | Revisión | 2026-09-28 |
-| Base git | MOV-03 en `feature/aud-historial-operario` |
-| Rama | `feature/aud-historial-operario` |
-| Siguiente ID | **MOV-04** |
-| En curso | Ninguno |
-| Tests | **867** total · **867** OK · 3021 aserciones (2026-09-28, post-MOV-03) |
+| Rama | `fix/demo-login-seed-readiness` |
+| Siguiente ID | **RES-07** |
+| En curso | Ninguno (sesión cerrada P3) |
+| Tests | **973** total · **973** OK · 3517 aserciones (2026-09-28, cierre bloque RES) |
 | Build | Pint OK |
 | `check:agent-docs` | OK |
-| Bloque SEG | **Cerrado** (SEG-01 → SEG-12) |
-| Bloque EMP | **Cerrado** (EMP-01 → EMP-08) |
-| Bloque EST | **Cerrado** (EST-01 → EST-10) |
-| Bloque CAP | **Cerrado** (CAP-01 → CAP-14) |
-| Bloque AUD | **Cerrado** (AUD-01 → AUD-09) |
-| Bloque MOV | **En curso** (MOV-01 ✓ · MOV-02 ✓ · MOV-03 ✓; MOV-04 siguiente) |
+| Bloque MOV | **Cerrado** (MOV-01 ✓ … MOV-13 ✓) |
+| Bloque RES | **En curso** — tramo **RES-01 ✓ … RES-06 ✓** en esta rama; **RES-07** siguiente |
 | Alcance v1 | Operación avícola completa; comercial/reparto etapa 2 |
 
 ## Cierre de sesión (P3 · 2026-09-28)
 
-**MOV-03** verificado: saldo inicial enlazado al alta de lote sin doble incremento; entradas externas idempotentes. Evidencia en `portal/planes/evidencias/MOV-03-entrada-saldo-inicial.md`.
+**Bloque verificado en rama** (sin commit): RES-01 → RES-06 con evidencias en `portal/planes/evidencias/RES-0*.md` y casilleros `[x]` en plan maestro §14.
 
-**Verificación:** `php artisan test` **867/867** OK · Pint OK · `check:agent-docs` OK.
+| ID | Tema breve |
+|----|------------|
+| RES-01 | Sin previews ficticios / Comercial off v1 |
+| RES-02 | Catálogo métricas Inicio/Resumen |
+| RES-03 | Completitud diaria D03 en pulso |
+| RES-04 | `TotalesCapturaDiaService` — conciliación pantallas |
+| RES-05 | `MortalidadVentanaGalpon` — cierre de lote |
+| RES-06 | Umbrales referencia 1,1 % sin diagnóstico |
 
-**Pendiente humano (rama CAP):** mensaje **5** para `feature/cap-est-operacion-estructura` si aún no se hizo commit/PR del bloque CAP.
+**Verificación final:** `php artisan test` 973/973 · `vendor/bin/pint --dirty` OK · `pnpm run check:agent-docs` OK.
 
-## Últimos cierres
+**Sin commit / push / PR** — siguiente paso humano: mensaje **2** (auditoría) → 3 → 4 → 5.
 
-| ID | Estado | Fecha | Evidencia |
-|---|---|---|---|
-| MOV-03 | VERIFICADA | 2026-09-28 | [evidencias/MOV-03-entrada-saldo-inicial.md](evidencias/MOV-03-entrada-saldo-inicial.md) |
-| MOV-02 | VERIFICADA | 2026-09-28 | [evidencias/MOV-02-poblacion-lote-d01.md](evidencias/MOV-02-poblacion-lote-d01.md) |
-| MOV-01 | VERIFICADA | 2026-09-28 | [evidencias/MOV-01-modelo-minimo.md](evidencias/MOV-01-modelo-minimo.md) |
-| AUD-09 | VERIFICADA | 2026-09-28 | [evidencias/AUD-09-tipos-historicos-combinado.md](evidencias/AUD-09-tipos-historicos-combinado.md) |
+## Últimos cierres (tramo RES)
 
-## Mensajes para continuar
+| ID | Estado | Evidencia |
+|---|---|---|
+| RES-06 | VERIFICADA | [evidencias/RES-06-umbrales-referencia.md](evidencias/RES-06-umbrales-referencia.md) |
+| RES-05 | VERIFICADA | [evidencias/RES-05-mortalidad-ventana.md](evidencias/RES-05-mortalidad-ventana.md) |
+| RES-04 | VERIFICADA | [evidencias/RES-04-conciliar-totales.md](evidencias/RES-04-conciliar-totales.md) |
+| RES-03 | VERIFICADA | [evidencias/RES-03-completitud-diaria.md](evidencias/RES-03-completitud-diaria.md) |
+| RES-02 | VERIFICADA | [evidencias/RES-02-metricas-resumen.md](evidencias/RES-02-metricas-resumen.md) |
+| RES-01 | VERIFICADA | [evidencias/RES-01-sin-previews-v1.md](evidencias/RES-01-sin-previews-v1.md) |
 
-Plantillas **P1–P3** al final de `portal/contenido/desarrollo/plantillas-cursor.html`.  
-Agregá `/avicore-architect-direct` en la primera línea del chat (no va en los bloques).
+## Reanudar (plan)
 
-| Paso | Plantilla | Cuándo |
-|------|-----------|--------|
-| Inicio | **P1** | Primera vez o chat nuevo |
-| Repetir | **P2** | Cada siguiente tarea del plan |
-| Cierre bloque | **P3** | Antes de auditoría (msg 2→5) |
+```
+/avicore-architect-direct Continuá ejecutando el plan AviCore (modo ejecutar plan).
+Leé portal/planes/CHECKPOINT.md y ejecutá el «Siguiente ID» desbloqueado.
+Mismas reglas P1: verificar, evidencia, checkpoint; sin commit/push/PR.
+```
+
+**O** tras auditoría en esta rama: plantilla mensaje **2** en `portal/contenido/desarrollo/mensajes-reutilizables.html`.

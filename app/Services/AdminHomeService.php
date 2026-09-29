@@ -3,12 +3,10 @@
 namespace App\Services;
 
 use App\Enums\UserRole;
-use App\Models\Empresa;
 use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\User;
 use App\Support\HuevosUnidad;
-use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 
 class AdminHomeService
@@ -111,7 +109,7 @@ class AdminHomeService
     }
 
     /**
-     * Vista previa de stock en cámara y demanda (datos ficticios hasta módulo comercial/stock).
+     * Stock en cámara y demanda — deshabilitado en v1 productiva (RES-01); etapa comercial/stock.
      *
      * @return array{
      *     show: bool,
@@ -121,77 +119,10 @@ class AdminHomeService
      */
     public function stockPreviewFor(User $user): array
     {
-        if (! $this->soporte->canViewResumenOperativo($user)) {
-            return [
-                'show' => false,
-                'preview' => false,
-                'items' => [],
-            ];
-        }
-
-        $empresaId = $this->empresaContext->empresaIdFor($user);
-
-        if ($empresaId === null) {
-            return [
-                'show' => false,
-                'preview' => false,
-                'items' => [],
-            ];
-        }
-
-        $pulso = $this->pulsoForUser($user);
-
-        if ($pulso === null || $pulso['galpones_activos'] < 1) {
-            return [
-                'show' => false,
-                'preview' => false,
-                'items' => [],
-            ];
-        }
-
-        $salidaHoy = $pulso['huevos_hoy'];
-        $empresa = Empresa::query()->findOrFail($empresaId);
-        $unidades = HuevosUnidad::para($empresa);
-        // avicore-defer: módulo stock/comercial real — reemplazar al persistir reserva y demanda
-        $reservaHuevos = 4_320;
-        $demandaHuevos = 1_800;
-
         return [
-            'show' => true,
-            'preview' => true,
-            'items' => [
-                [
-                    'label' => 'En reserva (cámara)',
-                    'value' => $unidades->etiquetaSoloCajasMaples($reservaHuevos),
-                    'hint' => $unidades->etiquetaCompacta($reservaHuevos).' almacenados',
-                    'icon' => 'warehouse',
-                    'tone' => 'huevos',
-                ],
-                [
-                    'label' => 'En demanda',
-                    'value' => $unidades->etiquetaSoloCajasMaples($demandaHuevos),
-                    'hint' => 'Comprometidos con clientes esta semana',
-                    'icon' => 'truck',
-                    'tone' => 'huevos',
-                ],
-                [
-                    'label' => 'Salida hoy',
-                    'value' => $salidaHoy > 0
-                        ? $unidades->etiquetaSoloCajasMaples($salidaHoy)
-                        : 'Sin carga aún',
-                    'hint' => $salidaHoy > 0
-                        ? $unidades->etiquetaCompacta($salidaHoy).' juntados en galpón'
-                        : 'Cuando operarios carguen huevos, verás el total acá',
-                    'icon' => 'egg',
-                    'tone' => 'huevos',
-                ],
-                [
-                    'label' => 'Disponible estimado',
-                    'value' => $unidades->etiquetaSoloCajasMaples(max(0, $reservaHuevos + $salidaHoy - $demandaHuevos)),
-                    'hint' => 'Reserva + producción de hoy − demanda (vista previa)',
-                    'icon' => 'layers',
-                ],
-            ],
+            'show' => false,
+            'preview' => false,
+            'items' => [],
         ];
     }
 
@@ -546,184 +477,23 @@ class AdminHomeService
     }
 
     /**
-     * Datos orientativos del módulo comercial (post-MVP).
+     * KPIs comerciales — vacío en v1 productiva (RES-01).
      *
      * @return list<array{label: string, value: string, hint: string, icon?: string, illustration?: string, tone?: string}>
      */
     public function comercialPreviewItems(): array
     {
-        // avicore-defer: módulo comercial real — KPIs y montos desde ventas/pedidos persistidos
-        return [
-            [
-                'label' => 'Clientes',
-                'value' => (string) count($this->comercialClientMap()['clients']),
-                'hint' => 'Negocios que te compran seguido (vista previa)',
-                'icon' => 'users',
-            ],
-            [
-                'label' => 'Última venta',
-                'value' => '$ 48.500',
-                'hint' => 'Monto del último despacho (vista previa)',
-                'icon' => 'truck',
-            ],
-            [
-                'label' => 'Pedido de mañana',
-                'value' => '1.200 huevos',
-                'hint' => 'Entrega programada a las 08:00 (vista previa)',
-                'illustration' => 'operario-huevo',
-                'tone' => 'huevos',
-            ],
-            [
-                'label' => 'Huevos reservados',
-                'value' => '3.600 huevos',
-                'hint' => 'Comprometidos con clientes esta semana (vista previa)',
-                'illustration' => 'operario-huevo',
-                'tone' => 'huevos',
-            ],
-        ];
+        return [];
     }
 
     /**
-     * Clientes demo con ubicación y última compra para el mapa comercial (post-MVP).
+     * Mapa de clientes — vacío en v1 productiva (RES-01).
      *
-     * @return array{
-     *     clients: list<array{
-     *         id: string,
-     *         name: string,
-     *         zona: string,
-     *         lat: float,
-     *         lng: float,
-     *         ultima_compra_fecha: string,
-     *         ultima_compra_cantidad: int,
-     *         ultima_compra_fecha_label: string,
-     *         ultima_compra_cantidad_label: string,
-     *         ultima_compra_resumen: string
-     *     }>
-     * }
+     * @return array{clients: list<array<string, mixed>>}
      */
     public function comercialClientMap(): array
     {
-        $clients = [
-            [
-                'id' => 'demo-pando',
-                'name' => 'Almacén El Progreso',
-                'zona' => 'Pando',
-                'lat' => -34.717,
-                'lng' => -55.958,
-                'ultima_compra_fecha' => '2026-08-21',
-                'ultima_compra_cantidad' => 600,
-            ],
-            [
-                'id' => 'demo-las-piedras',
-                'name' => 'Carnicería San José',
-                'zona' => 'Las Piedras',
-                'lat' => -34.730,
-                'lng' => -56.220,
-                'ultima_compra_fecha' => '2026-08-19',
-                'ultima_compra_cantidad' => 360,
-            ],
-            [
-                'id' => 'demo-costa',
-                'name' => 'Mini market Rivera',
-                'zona' => 'Ciudad de la Costa',
-                'lat' => -34.823,
-                'lng' => -55.992,
-                'ultima_compra_fecha' => '2026-08-22',
-                'ultima_compra_cantidad' => 480,
-            ],
-            [
-                'id' => 'demo-paso-carrasco',
-                'name' => 'Distribuidora Norte',
-                'zona' => 'Paso Carrasco',
-                'lat' => -34.838,
-                'lng' => -56.052,
-                'ultima_compra_fecha' => '2026-08-18',
-                'ultima_compra_cantidad' => 900,
-            ],
-            [
-                'id' => 'demo-centro',
-                'name' => 'Restaurante La Granja',
-                'zona' => 'Montevideo Centro',
-                'lat' => -34.906,
-                'lng' => -56.191,
-                'ultima_compra_fecha' => '2026-08-20',
-                'ultima_compra_cantidad' => 240,
-            ],
-            [
-                'id' => 'demo-malvin',
-                'name' => 'Panadería del Este',
-                'zona' => 'Malvín',
-                'lat' => -34.890,
-                'lng' => -56.105,
-                'ultima_compra_fecha' => '2026-08-17',
-                'ultima_compra_cantidad' => 720,
-            ],
-        ];
-
-        return [
-            'clients' => array_map(
-                fn (array $client): array => $this->normalizeComercialClient($client),
-                $clients,
-            ),
-        ];
-    }
-
-    /**
-     * @param  array{
-     *     id: string,
-     *     name: string,
-     *     zona: string,
-     *     lat: float,
-     *     lng: float,
-     *     ultima_compra_fecha: string,
-     *     ultima_compra_cantidad: int
-     * }  $client
-     * @return array{
-     *     id: string,
-     *     name: string,
-     *     zona: string,
-     *     lat: float,
-     *     lng: float,
-     *     ultima_compra_fecha: string,
-     *     ultima_compra_cantidad: int,
-     *     ultima_compra_fecha_label: string,
-     *     ultima_compra_cantidad_label: string,
-     *     ultima_compra_resumen: string
-     * }
-     */
-    private function normalizeComercialClient(array $client): array
-    {
-        $fechaLabel = $this->formatComercialFecha($client['ultima_compra_fecha']);
-        $cantidadLabel = number_format($client['ultima_compra_cantidad'], 0, ',', '.').' huevos';
-
-        return [
-            ...$client,
-            'ultima_compra_fecha_label' => $fechaLabel,
-            'ultima_compra_cantidad_label' => $cantidadLabel,
-            'ultima_compra_resumen' => "{$fechaLabel} · {$cantidadLabel}",
-        ];
-    }
-
-    private function formatComercialFecha(string $fecha): string
-    {
-        $meses = [
-            1 => 'ene',
-            2 => 'feb',
-            3 => 'mar',
-            4 => 'abr',
-            5 => 'may',
-            6 => 'jun',
-            7 => 'jul',
-            8 => 'ago',
-            9 => 'sep',
-            10 => 'oct',
-            11 => 'nov',
-            12 => 'dic',
-        ];
-
-        $date = CarbonImmutable::parse($fecha);
-
-        return $date->format('j').' '.$meses[(int) $date->format('n')].' '.$date->format('Y');
+        return ['clients' => []];
     }
 }
 

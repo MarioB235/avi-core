@@ -59,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('admin.viewComercial', [AdminModulePolicy::class, 'viewComercial']);
         Gate::define('admin.viewHistorialOperativo', [AdminModulePolicy::class, 'viewHistorialOperativo']);
         Gate::define('admin.viewAuditoria', [AdminModulePolicy::class, 'viewAuditoria']);
+        Gate::define('admin.viewMovimientos', [AdminModulePolicy::class, 'viewMovimientos']);
 
         Gate::policy(Empresa::class, EmpresaPolicy::class);
         Gate::policy(Granja::class, GranjaPolicy::class);

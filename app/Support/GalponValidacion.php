@@ -98,6 +98,27 @@ final class GalponValidacion
             ->firstOrFail();
     }
 
+    /**
+     * Bloquea dos galpones en orden estable de id (MOV-04 / deadlocks).
+     *
+     * @return array{0: Galpon, 1: Galpon} Mismo orden que los ids pasados.
+     */
+    public static function bloquearParOrdenado(int $galponIdA, int $galponIdB): array
+    {
+        if ($galponIdA === $galponIdB) {
+            throw ValidationException::withMessages([
+                'galpon_destino_id' => 'El traslado no puede tener el mismo origen y destino.',
+            ]);
+        }
+
+        [$menorId, $mayorId] = $galponIdA < $galponIdB ? [$galponIdA, $galponIdB] : [$galponIdB, $galponIdA];
+
+        $menor = self::bloquearParaMutacion($menorId);
+        $mayor = self::bloquearParaMutacion($mayorId);
+
+        return $galponIdA < $galponIdB ? [$menor, $mayor] : [$mayor, $menor];
+    }
+
     public static function revalidarParaCargaBajoLock(
         Galpon $galponBloqueado,
         string $field = 'galpon_id',

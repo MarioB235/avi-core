@@ -48,7 +48,12 @@
                     </td>
                     <td class="text-center">
                         @if ($alerta)
-                            <x-ui.badge variant="warning">Alerta</x-ui.badge>
+                            <x-ui.badge
+                                variant="warning"
+                                :title="$referenciaMortalidad['etiqueta_umbral']"
+                            >
+                                {{ $referenciaMortalidad['etiqueta_badge'] }}
+                            </x-ui.badge>
                         @else
                             <x-ui.badge variant="success">OK</x-ui.badge>
                         @endif

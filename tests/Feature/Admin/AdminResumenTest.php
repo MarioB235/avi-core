@@ -49,6 +49,27 @@ class AdminResumenTest extends TestCase
             ->assertSee('avicore-line-chart', false);
     }
 
+    public function test_resumen_muestra_referencia_mortalidad_sin_diagnostico(): void
+    {
+        [$dueno, $galpon] = $this->duenoConGalponYLote(cantidadInicial: 1000);
+
+        RegistroOperativo::factory()
+            ->forGalponAndUser($galpon, $dueno)
+            ->create([
+                'tipo' => RegistroOperativoTipo::Muertes,
+                'muertes' => 15,
+                'created_at' => now()->subDays(2),
+            ]);
+
+        $this->actingAs($dueno)
+            ->get(route('dueno.resumen.index'))
+            ->assertOk()
+            ->assertSee('Galpones sobre referencia', false)
+            ->assertSee('no norma universal', false)
+            ->assertSee('Sobre referencia', false)
+            ->assertSee('define el responsable', false);
+    }
+
     public function test_resumen_shows_galpon_comparison_table_on_desktop(): void
     {
         [$dueno, $galpon] = $this->duenoConGalponYLote();
@@ -174,7 +195,7 @@ class AdminResumenTest extends TestCase
     /**
      * @return array{0: User, 1: Galpon}
      */
-    private function duenoConGalponYLote(): array
+    private function duenoConGalponYLote(int $cantidadInicial = 5000): array
     {
         $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
         $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
@@ -183,8 +204,9 @@ class AdminResumenTest extends TestCase
         Lote::factory()
             ->forGalpon($galpon)
             ->create([
-                'cantidad_inicial' => 5000,
+                'cantidad_inicial' => $cantidadInicial,
                 'estado' => LoteEstado::EnProduccion,
+                'fecha_ingreso' => now()->subDays(20)->toDateString(),
             ]);
 
         $dueno = User::factory()->create([

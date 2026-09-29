@@ -38,12 +38,12 @@
 | Operario — historial y anulación | Parcial | `/operario/historial` | AUD-01–03 ✓; corrección general pendiente |
 | Admin — historial operativo | Implementado | `/{rol}/historial-operativo` | AUD-03; supervisión equipo |
 | PWA instalable (online) | Implementado | `vite.config.js`, `pwa.md` | ACT-05–08; sin offline completo |
-| Admin — Inicio (pulso/KPIs) | Parcial | `/admin` | Datos reales + previews stock/demanda (RES-01) |
-| Admin — Resumen | Parcial | `/admin/resumen` | Métricas a reconciliar (RES-02–09) |
+| Admin — Inicio (pulso/KPIs) | Parcial | `/admin` | Pulso real; completitud D03 en lista pendientes (RES-03 ✓); sin preview stock (RES-01 ✓) |
+| Admin — Resumen | Parcial | `/admin/resumen` | Métricas RES-02 ✓; totales RES-04 ✓; mortalidad RES-05 ✓; umbrales referencia RES-06 ✓; RES-07–09 pendiente |
 | Admin — Equipo | Parcial | `/admin/equipo` | Solo lectura; datos demo posibles |
-| Admin — Comercial | **Preview** | `/admin/comercial` | **Etapa 2**; mapa y clientes ficticios |
+| Admin — Comercial | **Etapa 2** | ruta existe; gate off v1 | RES-01 ✓ — sin KPIs/mapa demo en producto |
 | Panel Reparto | **Preview** | `/reparto` | **Fuera v1**; rol sin enum completo (SEG-01) |
-| Movimientos / cierre de lote | Parcial | `movimientos_aves`, Actions entrada/traslado, conciliación D01 | MOV-01 ✓ · MOV-02 ✓ · MOV-03 ✓; MOV-04–13 pendientes |
+| Movimientos / cierre de lote | Implementado (MVP ledger) | `movimientos_aves`, Actions MOV-01–13, conciliación/ubicación/concurrencia, UI supervisor `/{rol}/movimientos` | MOV-01 ✓ … MOV-13 ✓; bloque RES pendiente |
 | Corrección operativa (D07) | Parcial | `CorregirRegistroOperativoAction`, `correcciones_registro_operativo`, UI historial supervisor | AUD-04 ✓ |
 | Auditoría crítica transversal | Implementado (MVP) | `auditorias`, `documentos_emitidos`, `PoliticaRetencionD07`, UI `/{rol}/auditoria`, inmutabilidad D07, tipo legado `combinado` | AUD-01 ✓ … AUD-09 ✓; bloque MOV pendiente |
 | Reportes PDF / Excel | Pendiente | `Livewire/Reportes/.gitkeep` | REP-01–14 |

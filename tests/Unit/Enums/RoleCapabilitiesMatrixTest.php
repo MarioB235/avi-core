@@ -59,7 +59,7 @@ class RoleCapabilitiesMatrixTest extends TestCase
         $this->assertTrue($dueno['canViewEquipo']);
         $this->assertFalse($admin['canViewEquipo']);
 
-        $this->assertTrue($dueno['canViewComercial']);
+        $this->assertFalse($dueno['canViewComercial']);
         $this->assertFalse($admin['canViewComercial']);
 
         $this->assertFalse($dueno['canManageEstructura']);

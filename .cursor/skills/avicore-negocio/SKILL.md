@@ -10,6 +10,7 @@ description: Reglas de negocio y permisos AviCore — multiempresa, operaciones 
 | Necesidad | Referencia |
 |-----------|------------|
 | Reglas operativas | [`references/reglas.md`](references/reglas.md) |
+| Métricas Inicio/Resumen (RES-02) | [`references/metricas-resumen.md`](references/metricas-resumen.md) |
 | Roles y matriz de permisos | [`references/permisos.md`](references/permisos.md) |
 | Datos personales (EMP-08) | [`references/datos-personales.md`](references/datos-personales.md) |
 

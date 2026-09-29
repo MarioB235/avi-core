@@ -123,4 +123,24 @@ class GalponValidacionTest extends TestCase
         $this->assertTrue($validator->fails());
         $this->assertArrayHasKey('nombre', $validator->errors()->toArray());
     }
+
+    public function test_bloquear_par_ordenado_rechaza_mismo_galpon(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        GalponValidacion::bloquearParOrdenado(10, 10);
+    }
+
+    public function test_bloquear_par_ordenado_preserva_orden_de_ids_solicitados(): void
+    {
+        $empresa = Empresa::factory()->create(['estado' => EmpresaEstado::Activa]);
+        $granja = Granja::factory()->create(['empresa_id' => $empresa->id]);
+        $galponA = Galpon::factory()->forGranja($granja)->create();
+        $galponB = Galpon::factory()->forGranja($granja)->create();
+
+        [$primero, $segundo] = GalponValidacion::bloquearParOrdenado($galponB->id, $galponA->id);
+
+        $this->assertSame($galponB->id, $primero->id);
+        $this->assertSame($galponA->id, $segundo->id);
+    }
 }
