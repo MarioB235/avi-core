@@ -33,8 +33,10 @@
                         <x-ui.section-head
                             eyebrow="Hoy"
                             title="Tu empresa hoy"
-                            subtitle="Pulso del día en campo — producción y alertas."
+                            subtitle="Excepciones primero; después el pulso y los totales del día."
                         />
+
+                        <x-ui.pulse-exceptions :excepciones="$pulso['excepciones']" />
 
                         <x-ui.pulse-panel class="mt-4" :pulso="$pulso" />
 
@@ -54,33 +56,6 @@
                                 icon="bird"
                             />
                         </div>
-
-                        @if ($pulso['galpones_sin_carga'] !== [] || $pulso['alertas'] !== [])
-                            <div class="avicore-pulse-list mt-4" role="list">
-                                @foreach ($pulso['alertas'] as $alerta)
-                                    <div
-                                        class="avicore-pulse-list__item avicore-pulse-list__item--alert"
-                                        role="listitem"
-                                    >
-                                        <span class="avicore-pulse-list__name">
-                                            {{ $alerta['nombre'] }} — mortalidad acum. sobre referencia
-                                        </span>
-                                        <span class="avicore-pulse-list__meta">
-                                            {{ $alerta['granja'] }} · {{ number_format($alerta['mortalidad_pct'], 1, ',', '.') }}% acumulado
-                                        </span>
-                                    </div>
-                                @endforeach
-
-                                @foreach ($pulso['galpones_sin_carga'] as $galpon)
-                                    <div class="avicore-pulse-list__item" role="listitem">
-                                        <span class="avicore-pulse-list__name">
-                                            {{ $galpon['nombre'] }} — capturas productivas pendientes
-                                        </span>
-                                        <span class="avicore-pulse-list__meta">{{ $galpon['granja'] }}</span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
 
                         @if ($pulso['resumen_route'])
                             <p class="mt-4">

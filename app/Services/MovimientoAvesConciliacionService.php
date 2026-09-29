@@ -203,6 +203,57 @@ class MovimientoAvesConciliacionService
         ];
     }
 
+    /**
+     * Ledger del galpón en el período (REP-05) — reversiones marcadas, sin duplicar lógica de buckets.
+     *
+     * @return list<array{
+     *     id: int,
+     *     fecha: string,
+     *     tipo: string,
+     *     es_reversion: bool,
+     *     reversa_de_id: ?int,
+     *     cantidad: int,
+     *     ajuste_delta: ?int,
+     *     origen: ?string,
+     *     destino: ?string,
+     *     lote: ?string,
+     *     efecto_resumen: string,
+     * }>
+     */
+    public function ledgerFilasParaReporte(Galpon $galpon, Carbon $desde, Carbon $hasta): array
+    {
+        $desde = $desde->copy()->startOfDay();
+        $hasta = $hasta->copy()->endOfDay();
+
+        $movimientos = $this->movimientosActivosDelGalponEnPeriodo($galpon, $desde, $hasta)
+            ->sortBy([
+                ['fecha_efectiva', 'asc'],
+                ['id', 'asc'],
+            ]);
+
+        $filas = [];
+
+        foreach ($movimientos as $movimiento) {
+            $movimiento->loadMissing(['galponOrigen', 'galponDestino', 'lote']);
+
+            $filas[] = [
+                'id' => (int) $movimiento->id,
+                'fecha' => $movimiento->fecha_efectiva?->format('Y-m-d H:i') ?? '',
+                'tipo' => $movimiento->tipo->label(),
+                'es_reversion' => $movimiento->tipo === MovimientoAvesTipo::Reversion,
+                'reversa_de_id' => $movimiento->reversa_de_id !== null ? (int) $movimiento->reversa_de_id : null,
+                'cantidad' => (int) $movimiento->cantidad,
+                'ajuste_delta' => $movimiento->ajuste_delta !== null ? (int) $movimiento->ajuste_delta : null,
+                'origen' => $movimiento->galponOrigen?->nombre,
+                'destino' => $movimiento->galponDestino?->nombre,
+                'lote' => $movimiento->lote?->codigo,
+                'efecto_resumen' => $this->efectoResumenLedgerEnGalpon($movimiento, (int) $galpon->id),
+            ];
+        }
+
+        return $filas;
+    }
+
     public function assertLoteActivoEnGalpon(Galpon $galpon, int $loteId): Lote
     {
         $lote = Lote::query()
@@ -247,7 +298,35 @@ class MovimientoAvesConciliacionService
             $query->where('fecha_efectiva', '>=', $desde);
         }
 
-        return $query->get();
+        return $query
+            ->with(['galponOrigen', 'galponDestino', 'lote'])
+            ->orderBy('fecha_efectiva')
+            ->orderBy('id')
+            ->get();
+    }
+
+    private function efectoResumenLedgerEnGalpon(MovimientoAves $movimiento, int $galponId): string
+    {
+        if ($movimiento->tipo === MovimientoAvesTipo::Reversion) {
+            $ref = $movimiento->reversa_de_id;
+
+            return $ref !== null
+                ? "Reversión (ref. mov. #{$ref})"
+                : 'Reversión';
+        }
+
+        $partes = [];
+
+        foreach ($this->bucketsMovimientoEnGalpon($movimiento, $galponId) as $clave => $valor) {
+            match ($clave) {
+                'entradas' => $partes[] = "+{$valor} aves",
+                'salidas' => $partes[] = "-{$valor} aves",
+                'ajustes' => $partes[] = ($valor >= 0 ? '+' : '').$valor.' ajuste',
+                default => null,
+            };
+        }
+
+        return $partes !== [] ? implode('; ', $partes) : '—';
     }
 
     /**

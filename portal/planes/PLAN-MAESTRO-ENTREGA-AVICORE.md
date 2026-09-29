@@ -281,11 +281,11 @@ Base: AdminResumenService, OperarioGalponResumenService, AdminHomeService y pág
 - [x] **RES-04 — Conciliar totales.** Inicio/Resumen/Historial iguales en mismo scope; anulaciones/correcciones. Éxito: datos de prueba conocidos coinciden.
 - [x] **RES-05 — Mortalidad y ventana.** Movimientos/coexistencia/cierres; no inferir tasa exacta por lote. Éxito: cerrar lote no borra historia ni cambia denominador sin explicación.
 - [x] **RES-06 — Umbrales.** Validar 1,1% y período con responsable. Éxito: referencia etiquetada, sin diagnóstico automático ni norma universal inventada.
-- [ ] **RES-07 — Comparaciones honestas.** Hoy parcial, ayer completo y denominador cero. Éxito: porcentajes contextualizados o no calculables explícitos.
-- [ ] **RES-08 — Gráficos útiles.** Aptos/descarte/muertes/kg entregados y tabla accesible. Éxito: fecha sin carga no equivale automáticamente a cero confirmado.
-- [ ] **RES-09 — Excepciones primero.** Alerta accionable con acceso al galpón. Éxito: dueño identifica qué revisar sin interpretar tarjetas técnicas.
-- [ ] **RES-10 — Equipo real de solo lectura.** Roles/estado; minimizar datos personales. Éxito: actividad no etiquetada como productividad laboral sin fundamento.
-- [ ] **RES-11 — Entrega no es consumo.** No calcular conversión con kg entregados. Éxito: textos/gráficos/export no afirman eficiencia no medida.
+- [x] **RES-07 — Comparaciones honestas.** Hoy parcial, ayer completo y denominador cero. Éxito: porcentajes contextualizados o no calculables explícitos.
+- [x] **RES-08 — Gráficos útiles.** Aptos/descarte/muertes/kg entregados y tabla accesible. Éxito: fecha sin carga no equivale automáticamente a cero confirmado.
+- [x] **RES-09 — Excepciones primero.** Alerta accionable con acceso al galpón. Éxito: dueño identifica qué revisar sin interpretar tarjetas técnicas.
+- [x] **RES-10 — Equipo real de solo lectura.** Roles/estado; minimizar datos personales. Éxito: actividad no etiquetada como productividad laboral sin fundamento.
+- [x] **RES-11 — Entrega no es consumo.** No calcular conversión con kg entregados. Éxito: textos/gráficos/export no afirman eficiencia no medida.
 
 ## 15. REP — Reportes y exportaciones
 
@@ -299,15 +299,15 @@ Base documental: skill `avicore-reportes`; módulo aún por crear. Depende de AU
 | Sanidad básica | Vacunaciones y anulaciones autorizadas | Lote/galpón/período; sin diagnóstico/tratamiento |
 | Auditoría operativa | Cambios y razones | Actor/tipo/fechas; permiso restringido |
 
-- [ ] **REP-01 — Confirmar catálogo.** Validar destinatario y utilidad de cada reporte con cliente/D05. Éxito: cada salida responde una necesidad concreta.
-- [ ] **REP-02 — Consulta compartida.** Vista/Excel/PDF usan mismas reglas y agregados. Éxito: filas/totales iguales sin fórmulas duplicadas.
-- [ ] **REP-03 — Excel productivo.** Fechas/números nativos, títulos/unidades/filtros/totales. Éxito: abre sin reparación y se analiza sin limpiar texto.
-- [ ] **REP-04 — PDF operativo.** Logo cliente/AviCore, empresa/DICOSE cuando aplica, período/generación/páginas. Éxito: A4 legible, cabeceras repetidas, sin cortes ni observaciones operarias en principal.
-- [ ] **REP-05 — Movimientos/conciliación.** Inicial/final y reversiones identificadas. Éxito: resultado aritmético exacto sobre fixtures conocidos.
-- [ ] **REP-06 — Lote/sanidad.** Atribución real tras traslados. Éxito: no asignar a cada lote todos los huevos del galpón.
-- [ ] **REP-07 — Vacíos/extremos.** Sin registros/logo, textos largos, múltiples páginas, decimales y períodos grandes. Éxito: vacío explícito; fallo de consulta no produce export vacío «exitoso».
-- [ ] **REP-08 — Generación/descarga autorizadas.** Revisar permiso/empresa al pedir y descargar, incluida pérdida posterior de acceso. Éxito: URL ajena/caducada no abre archivo.
-- [ ] **REP-09 — Contenido seguro.** Neutralizar fórmulas en celdas de texto y escapar PDF. Éxito: nombres/observaciones no ejecutan fórmulas al abrir Excel.
+- [x] **REP-01 — Confirmar catálogo.** Validar destinatario y utilidad de cada reporte con cliente/D05. Éxito: cada salida responde una necesidad concreta.
+- [x] **REP-02 — Consulta compartida.** Vista/Excel/PDF usan mismas reglas y agregados. Éxito: filas/totales iguales sin fórmulas duplicadas.
+- [x] **REP-03 — Excel productivo.** Fechas/números nativos, títulos/unidades/filtros/totales. Éxito: abre sin reparación y se analiza sin limpiar texto.
+- [x] **REP-04 — PDF operativo.** Logo cliente/AviCore, empresa/DICOSE cuando aplica, período/generación/páginas. Éxito: A4 legible, cabeceras repetidas, sin cortes ni observaciones operarias en principal.
+- [x] **REP-05 — Movimientos/conciliación.** Inicial/final y reversiones identificadas. Éxito: resultado aritmético exacto sobre fixtures conocidos.
+- [x] **REP-06 — Lote/sanidad.** Atribución real tras traslados. Éxito: no asignar a cada lote todos los huevos del galpón.
+- [x] **REP-07 — Vacíos/extremos.** Sin registros/logo, textos largos, múltiples páginas, decimales y períodos grandes. Éxito: vacío explícito; fallo de consulta no produce export vacío «exitoso».
+- [x] **REP-08 — Generación/descarga autorizadas.** Revisar permiso/empresa al pedir y descargar, incluida pérdida posterior de acceso. Éxito: URL ajena/caducada no abre archivo.
+- [x] **REP-09 — Contenido seguro.** Neutralizar fórmulas en celdas de texto y escapar PDF. Éxito: nombres/observaciones no ejecutan fórmulas al abrir Excel.
 - [ ] **REP-10 — Volumen.** Medir; cola solo si necesaria con progreso/error/reintento/caducidad. Éxito: no bloquear servidor ni duplicar trabajo.
 - [ ] **REP-11 — Documento emitido estable.** Metadatos/filtros/fecha de corte y reemisión tras correcciones. Éxito: copia emitida no cambia silenciosamente.
 - [ ] **REP-12 — Investigar formato normativo.** Fuente exacta de ponedoras, campos/período/responsable/layout. Éxito: D05 documentada; fuente faltante sigue bloqueada.

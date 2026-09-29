@@ -7,7 +7,7 @@
                 <th scope="col" class="text-right">Huevos hoy</th>
                 <th scope="col" class="text-right">Descarte</th>
                 <th scope="col" class="text-right">Muertes hoy</th>
-                <th scope="col" class="text-right hidden lg:table-cell">Alimento kg</th>
+                <th scope="col" class="text-right hidden lg:table-cell">Kg entregados</th>
                 <th scope="col" class="text-right">Aves</th>
                 <th scope="col" class="text-right">Mortalidad acum.</th>
                 <th scope="col" class="text-center">Estado</th>

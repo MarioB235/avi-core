@@ -5,6 +5,24 @@ Formato: `YYYY-MM-DD — [área] descripción breve — archivos tocados`
 
 ---
 
+## 2026-09-29
+
+- **[test|auditoría]** Post-auditoría msg 3–4 (REP/RES en rama): tests `PulseExceptionsComponentTest`, `ReporteExportGuardTest`, `ResumenGraficosSemanalesServiceTest`; asserts semana operativa en `AdminResumenTest`; defer documentado en polyfill FPDF; suite **1050/1050**. — `estandares-codigo.md`, `arbol-proyecto.md`, `tokens-componentes.md`, `reportes.md` (REP-07 tests)
+- **[reportes]** REP-09: contenido seguro en export — `ExcelExportSeguro` ampliado + `PdfTexto::usuario` en PDF; tests de celda prefijada. — `reportes.md`, `reglas.md` §12
+- **[reportes]** REP-08: autorización en descarga — validación empresa en filtros HTTP, 422 si ajeno. — `reportes.md`, `reglas.md` §12
+- **[reportes]** REP-07: vacíos/extremos en export — estados de consulta, guard 422, período 93 días y PDF multipágina. — `reportes.md`, `reglas.md` §12
+- **[reportes]** REP-06: historia de lote y sanidad básica — consulta con atribución honesta + Excel. — `reportes.md`, `reglas.md` §12
+- **[reportes]** REP-05: export movimientos/existencias — consulta compartida, Excel/PDF, reversiones en ledger. — `reportes.md`, `reglas.md` §12
+- **[reportes]** REP-04: PDF producción diaria — FPDF, cabecera/pie A4, ruta `.pdf` y enlace Resumen. — `reportes.md`, `reglas.md` §12, `composer.json`
+- **[reportes]** REP-03: Excel producción diaria — OpenSpout, ruta `.xlsx`, enlace Resumen; `ExcelExportSeguro`. — `reportes.md`, `reglas.md` §12, `composer.json`
+- **[reportes]** REP-02: consulta compartida producción — `ReporteConsultaService` + `ReporteFiltroProduccion` sobre `TotalesCapturaDiaService`. — `reportes.md`, `reglas.md` §12
+- **[reportes]** REP-01: catálogo v1 confirmado — 5 reportes operativos + exclusiones D05/MGAP; `ReportesCatalogoV1`. — `reportes.md`, `reglas.md` §12, `permisos.md`
+- **[negocio|resumen]** RES-11: alimento = kg entregados — sin conversión/eficiencia en v1; `AlimentoEntregaSemantica`, copy Resumen y contrato export. — `reglas.md` §27, `metricas-resumen.md`, `pantallas-flujos.md`, `reportes.md`
+- **[ui|admin]** RES-10: Equipo Dueño solo lectura — `EquipoLectura`, estado de acceso, sin correo ni copy de productividad; tabla + lista móvil. — `reglas.md` §26, `pantallas-flujos.md` §3.1.1, `estado-capacidades.md`
+- **[ui|admin]** RES-09: excepciones primero en Inicio — `x-ui.pulse-exceptions`, enlaces a Resumen por galpón; `InicioExcepcionesPulso`. — `reglas.md` §25, `pantallas-flujos.md`
+- **[negocio|resumen]** RES-08: semana operativa en Resumen — tabla accesible + gráficos aptos/descarte/muertes/kg; omisión «—» vs cero confirmado; `ResumenGraficosSemanalesService`. — `reglas.md` §24, `pantallas-flujos.md`, `metricas-resumen.md`
+- **[negocio|resumen]** RES-07: comparaciones honestas en pulso Inicio — `ComparacionHonestaPulso`, % solo con D03 completo y base de ayer; copy «día en curso». — `reglas.md` §23, `metricas-resumen.md`
+
 ## 2026-09-28
 
 - **[test|auditoría]** Post-auditoría msg 3 (MOV/RES): Livewire movimientos (entrada, ajuste, cierre parcial, faena parcial), `TotalesCapturaDiaServiceTest`, unit `GalponValidacion::bloquearParOrdenado`, preview lazy en render sin datos, partials Resumen reciben `referenciaMortalidad` desde Livewire; `.gitignore` excluye `pr-body*.md`; suite **983/983**. — `estandares-codigo.md`, `arbol-proyecto.md`, `metricas-resumen.md`, `movimientos-aves.md`

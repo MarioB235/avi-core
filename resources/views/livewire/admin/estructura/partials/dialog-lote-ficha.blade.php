@@ -110,7 +110,13 @@
                 </div>
             @endif
 
-            <div class="flex justify-end">
+            <div class="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <a
+                    href="{{ route(auth()->user()->rol->routePrefix().'.reportes.historia-lote', ['lote' => $lote->id]) }}"
+                    class="avicore-btn avicore-btn--secondary avicore-btn--sm"
+                >
+                    Exportar historia (Excel)
+                </a>
                 <x-ui.button type="button" variant="secondary" wire:click="cerrarFichaLote">Cerrar</x-ui.button>
             </div>
         </div>

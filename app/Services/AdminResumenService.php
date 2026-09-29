@@ -7,6 +7,7 @@ use App\Models\Galpon;
 use App\Models\Granja;
 use App\Models\RegistroOperativo;
 use App\Models\User;
+use App\Support\ComparacionHonestaPulso;
 use App\Support\CompletitudDiariaD03;
 use App\Support\DiaOperativoEmpresa;
 use App\Support\MortalidadVentanaGalpon;
@@ -23,6 +24,7 @@ class AdminResumenService
         private SoporteEmpresaService $soporte,
         private TotalesCapturaDiaService $totalesCapturaDia,
         private MortalidadVentanaGalpon $mortalidadVentana,
+        private ResumenGraficosSemanalesService $graficosSemanalesService,
     ) {}
 
     public function for(User $user, ?int $granjaId = null, ?int $galponId = null): AdminResumenViewData
@@ -114,6 +116,7 @@ class AdminResumenService
      *     huevos_ayer: int,
      *     delta_huevos: int,
      *     delta_huevos_pct: ?float,
+     *     delta_huevos_pct_motivo: ?string,
      *     muertes_hoy: int,
      *     alertas_count: int,
      *     galpones_activos: int,
@@ -171,9 +174,17 @@ class AdminResumenService
                 ->sum('huevos');
 
         $deltaHuevos = $data->huevosHoy - $huevosAyer;
-        $deltaHuevosPct = $huevosAyer > 0
-            ? round(($deltaHuevos / $huevosAyer) * 100, 1)
-            : null;
+        $capturasD03CompletasHoy = $galponesSinCarga === [];
+        $deltaHuevosPct = ComparacionHonestaPulso::deltaHuevosPct(
+            $data->huevosHoy,
+            $huevosAyer,
+            $capturasD03CompletasHoy,
+        );
+        $deltaHuevosPctMotivo = ComparacionHonestaPulso::motivoPctNoCalculable(
+            $data->huevosHoy,
+            $huevosAyer,
+            $capturasD03CompletasHoy,
+        );
 
         $estado = $this->resolverEstadoPulso(count($alertas), count($galponesSinCarga));
 
@@ -193,6 +204,7 @@ class AdminResumenService
             'huevos_ayer' => $huevosAyer,
             'delta_huevos' => $deltaHuevos,
             'delta_huevos_pct' => $deltaHuevosPct,
+            'delta_huevos_pct_motivo' => $deltaHuevosPctMotivo,
             'muertes_hoy' => $data->muertesHoy,
             'alertas_count' => $data->alertasCount,
             'galpones_activos' => $data->galponesActivos,
@@ -252,87 +264,26 @@ class AdminResumenService
     }
 
     /**
-     * Huevos aptos por día (últimos 7 días, incluido hoy) para el scope de filtros.
+     * Gráficos y tabla semanal (RES-08).
      *
-     * @return list<array{label: string, value: int, date: string}>
+     * @return array{
+     *     tabla: list<array<string, mixed>>,
+     *     series: array<string, list<array<string, mixed>>>
+     * }
      */
-    public function posturaSemanal(User $user, ?int $granjaId = null, ?int $galponId = null): array
+    public function graficosSemanales(User $user, ?int $granjaId = null, ?int $galponId = null): array
     {
-        $empresaId = $this->empresaContext->empresaIdFor($user);
-
-        if ($empresaId === null) {
-            return $this->posturaSemanalVacia();
-        }
-
-        $galponIds = $this->totalesCapturaDia->galponesEnScope($user, $granjaId, $galponId)->modelKeys();
-
-        if ($galponIds === []) {
-            return $this->posturaSemanalVacia($empresaId);
-        }
-
-        $hoy = DiaOperativoEmpresa::hoyParaEmpresa($empresaId);
-        $puntos = [];
-
-        for ($i = 6; $i >= 0; $i--) {
-            $dia = DiaOperativoEmpresa::forEmpresa(
-                $empresaId,
-                $hoy->fechaLogica->copy()->subDays($i),
-            );
-
-            $total = (int) RegistroOperativo::query()
-                ->activos()
-                ->where('empresa_id', $empresaId)
-                ->where('tipo', RegistroOperativoTipo::Huevos)
-                ->whereIn('galpon_id', $galponIds)
-                ->delDia($empresaId, $dia->fechaLogica)
-                ->sum('huevos');
-
-            $puntos[] = [
-                'label' => $dia->fechaLogica->format('j/n'),
-                'value' => $total,
-                'date' => $dia->fechaLogica->toDateString(),
-            ];
-        }
-
-        return $puntos;
+        return $this->graficosSemanalesService->for($user, $granjaId, $galponId);
     }
 
     /**
-     * @return list<array{label: string, value: int, date: string}>
+     * Huevos aptos por día (últimos 7 días lógicos) — serie principal de postura.
+     *
+     * @return list<array{label: string, value: int|null, date: string, display?: string, estado?: string}>
      */
-    private function posturaSemanalVacia(?int $empresaId = null): array
+    public function posturaSemanal(User $user, ?int $granjaId = null, ?int $galponId = null): array
     {
-        $puntos = [];
-
-        if ($empresaId !== null) {
-            $hoy = DiaOperativoEmpresa::hoyParaEmpresa($empresaId);
-
-            for ($i = 6; $i >= 0; $i--) {
-                $fecha = $hoy->fechaLogica->copy()->subDays($i);
-
-                $puntos[] = [
-                    'label' => $fecha->format('j/n'),
-                    'value' => 0,
-                    'date' => $fecha->toDateString(),
-                ];
-            }
-
-            return $puntos;
-        }
-
-        $inicio = now()->subDays(6)->startOfDay();
-
-        for ($i = 0; $i < 7; $i++) {
-            $fecha = $inicio->copy()->addDays($i);
-
-            $puntos[] = [
-                'label' => $fecha->format('j/n'),
-                'value' => 0,
-                'date' => $fecha->toDateString(),
-            ];
-        }
-
-        return $puntos;
+        return $this->graficosSemanales($user, $granjaId, $galponId)['series']['huevos_aptos'];
     }
 
     private function resumenVacio(): AdminResumenViewData
@@ -358,6 +309,7 @@ class AdminResumenService
      *     huevos_ayer: int,
      *     delta_huevos: int,
      *     delta_huevos_pct: ?float,
+     *     delta_huevos_pct_motivo: ?string,
      *     muertes_hoy: int,
      *     alertas_count: int,
      *     galpones_activos: int,
@@ -375,6 +327,7 @@ class AdminResumenService
             'huevos_ayer' => 0,
             'delta_huevos' => 0,
             'delta_huevos_pct' => null,
+            'delta_huevos_pct_motivo' => ComparacionHonestaPulso::MOTIVO_SIN_HUEVOS_AMBOS,
             'muertes_hoy' => 0,
             'alertas_count' => 0,
             'galpones_activos' => 0,

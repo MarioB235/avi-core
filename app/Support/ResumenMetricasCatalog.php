@@ -28,6 +28,11 @@ final class ResumenMetricasCatalog
      *     disclaimer: string,
      * }
      */
+    public static function referenciaAlimentoEntregado(): array
+    {
+        return AlimentoEntregaSemantica::presentacionResumen();
+    }
+
     public static function referenciaMortalidad(): array
     {
         $umbral = self::UMBRAL_MORTALIDAD_REFERENCIA_PCT;
@@ -88,14 +93,14 @@ final class ResumenMetricasCatalog
                 'implementacion' => 'OperarioGalponResumenService → suma en AdminResumenService',
             ],
             'alimento_kg_hoy' => [
-                'pantalla' => 'Resumen',
+                'pantalla' => 'Resumen, gráficos semanales',
                 'fuente' => 'registros_operativos.tipo=alimento, SUM(alimento_kg)',
-                'unidad' => 'kg (float)',
-                'periodo' => 'día operativo actual',
+                'unidad' => 'kg entregados (remito/camión); no consumo diario',
+                'periodo' => 'día operativo actual (fecha de la carga, no reparto en el día)',
                 'poblacion' => 'mismo scope',
-                'exclusiones' => 'anulados',
-                'ausencia' => '0.0',
-                'implementacion' => 'AdminResumenService::for (query agregada por galpón)',
+                'exclusiones' => 'anulados; sin conversión alimenticia ni eficiencia huevos/kg (RES-11)',
+                'ausencia' => '0.0 si no hubo entrega ese día; omisión en serie semanal = «—»',
+                'implementacion' => 'AdminResumenService::for, ResumenGraficosSemanalesService',
             ],
             'aves_actuales' => [
                 'pantalla' => 'Resumen',
@@ -140,12 +145,12 @@ final class ResumenMetricasCatalog
             'delta_huevos' => [
                 'pantalla' => 'Inicio (pulso)',
                 'fuente' => 'huevos_hoy − huevos_ayer',
-                'unidad' => 'huevos; delta_huevos_pct si ayer > 0',
+                'unidad' => 'huevos; delta_huevos_pct si ayer > 0 y D03 completo hoy (RES-07)',
                 'periodo' => 'hoy vs ayer operativo',
                 'poblacion' => 'empresa',
                 'exclusiones' => '—',
-                'ausencia' => 'pct null si ayer = 0',
-                'implementacion' => 'AdminResumenService::pulsoFor',
+                'ausencia' => 'pct null si ayer = 0 o capturas productivas pendientes',
+                'implementacion' => 'ComparacionHonestaPulso + AdminResumenService::pulsoFor',
             ],
             'galpones_sin_carga' => [
                 'pantalla' => 'Inicio (pulso)',
@@ -159,13 +164,23 @@ final class ResumenMetricasCatalog
             ],
             'postura_semanal' => [
                 'pantalla' => 'Resumen (gráfico)',
-                'fuente' => 'SUM(huevos) por día operativo',
+                'fuente' => 'ResumenGraficosSemanalesService — huevos aptos por día',
                 'unidad' => 'huevos por punto',
                 'periodo' => '7 días lógicos incluyendo hoy',
                 'poblacion' => 'scope filtros granja/galpón',
-                'exclusiones' => 'anulados; solo tipo huevos',
-                'ausencia' => 'puntos en 0',
+                'exclusiones' => 'anulados; omisión ≠ cero (RES-08)',
+                'ausencia' => 'value null / display —',
                 'implementacion' => 'AdminResumenService::posturaSemanal',
+            ],
+            'graficos_semanales' => [
+                'pantalla' => 'Resumen (tabla + gráficos)',
+                'fuente' => 'ResumenSemanaOperativa + registros activos por día',
+                'unidad' => 'aptos, huevos descarte, muertes, kg',
+                'periodo' => '7 días lógicos',
+                'poblacion' => 'scope filtros',
+                'exclusiones' => 'anulados',
+                'ausencia' => '— por métrica y día',
+                'implementacion' => 'ResumenGraficosSemanalesService::for',
             ],
         ];
     }
@@ -191,11 +206,18 @@ final class ResumenMetricasCatalog
             'mortalidad_post_cierre' => 'Tests\\Feature\\Services\\AdminResumenMortalidadVentanaTest::test_cierre_lote_no_resetea_mortalidad_ni_denominador',
             'mortalidad_solo_galpon' => 'Tests\\Feature\\Services\\AdminResumenMortalidadVentanaTest::test_varios_lotes_activos_marca_solo_galpon_sin_tasa_por_lote',
             'pulso_ayer' => 'Tests\\Feature\\Services\\AdminResumenServiceTest::test_pulso_for_compares_huevos_with_yesterday',
+            'comparacion_honesta_d03' => 'Tests\\Feature\\Services\\AdminResumenServiceTest::test_pulso_for_no_pct_when_d03_incomplete_res07',
+            'comparacion_honesta_base' => 'Tests\\Feature\\Services\\AdminResumenServiceTest::test_pulso_for_null_pct_when_yesterday_zero_res07',
+            'comparacion_honesta_unidad' => 'Tests\\Unit\\Support\\ComparacionHonestaPulsoTest::test_delta_huevos_pct_res07',
             'postura_7_dias' => 'Tests\\Feature\\Services\\AdminResumenServiceTest::test_postura_semanal_sums_huevos_by_day_for_scope',
+            'graficos_omision' => 'Tests\\Feature\\Services\\AdminResumenServiceTest::test_graficos_semanales_dia_sin_carga_no_es_cero_res08',
+            'graficos_cero_confirmado' => 'Tests\\Feature\\Services\\AdminResumenServiceTest::test_graficos_semanales_cero_confirmado_visible_res08',
             'aves_actuales_galpon' => 'Tests\\Feature\\Services\\AdminResumenMetricasContractTest::test_aves_actuales_usa_saldo_galpon',
             'anulados_excluidos' => 'Tests\\Feature\\Services\\AdminResumenMetricasContractTest::test_registros_anulados_no_suman_en_huevos_hoy',
             'referencia_mortalidad_ui' => 'Tests\\Feature\\Admin\\AdminResumenTest::test_resumen_muestra_referencia_mortalidad_sin_diagnostico',
             'umbral_mortalidad_catalogo' => 'Tests\\Unit\\Support\\ResumenMetricasCatalogTest::test_referencia_mortalidad_y_umbral_res06',
+            'alimento_entrega_no_consumo' => 'Tests\\Feature\\Admin\\AdminResumenTest::test_resumen_alimento_entrega_no_consumo_res11',
+            'alimento_semantica_v1' => 'Tests\\Unit\\Support\\AlimentoEntregaSemanticaTest::test_conversion_prohibida_en_v1',
         ];
     }
 }

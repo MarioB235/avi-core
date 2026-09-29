@@ -206,6 +206,7 @@ class AdminHomeViewTest extends TestCase
             ->assertDontSee('En reserva (cámara)')
             ->assertDontSee('vista previa', false)
             ->assertSee('avicore-pulse-status', false)
-            ->assertSee('Ver análisis completo en Resumen');
+            ->assertSee('Ver análisis completo en Resumen')
+            ->assertSee('Qué revisar primero', false);
     }
 }

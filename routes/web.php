@@ -2,6 +2,12 @@
 
 use App\Actions\Empresa\EndSoporteEmpresaAction;
 use App\Enums\UserRole;
+use App\Http\Controllers\Admin\DescargarReporteHistoriaLoteController;
+use App\Http\Controllers\Admin\DescargarReporteMovimientosExistenciasController;
+use App\Http\Controllers\Admin\DescargarReporteMovimientosExistenciasPdfController;
+use App\Http\Controllers\Admin\DescargarReporteProduccionDiariaController;
+use App\Http\Controllers\Admin\DescargarReporteProduccionDiariaPdfController;
+use App\Http\Controllers\Admin\DescargarReporteSanidadBasicaController;
 use App\Http\Middleware\EnsureOperarioAccess;
 use App\Http\Middleware\EnsurePasswordChanged;
 use App\Http\Middleware\EnsureRolePanelAccess;
@@ -88,6 +94,18 @@ Route::middleware(['auth', EnsurePasswordChanged::class])->group(function () {
             ->group(function () {
                 Route::view('/', 'pages.admin.home')->name('home');
                 Route::livewire('/resumen', AdminResumenIndex::class)->name('resumen.index');
+                Route::get('/reportes/produccion-diaria.xlsx', DescargarReporteProduccionDiariaController::class)
+                    ->name('reportes.produccion-diaria');
+                Route::get('/reportes/produccion-diaria.pdf', DescargarReporteProduccionDiariaPdfController::class)
+                    ->name('reportes.produccion-diaria-pdf');
+                Route::get('/reportes/movimientos-existencias.xlsx', DescargarReporteMovimientosExistenciasController::class)
+                    ->name('reportes.movimientos-existencias');
+                Route::get('/reportes/movimientos-existencias.pdf', DescargarReporteMovimientosExistenciasPdfController::class)
+                    ->name('reportes.movimientos-existencias-pdf');
+                Route::get('/reportes/historia-lote.xlsx', DescargarReporteHistoriaLoteController::class)
+                    ->name('reportes.historia-lote');
+                Route::get('/reportes/sanidad-basica.xlsx', DescargarReporteSanidadBasicaController::class)
+                    ->name('reportes.sanidad-basica');
                 Route::livewire('/historial-operativo', AdminHistorialOperativoIndex::class)->name('historial-operativo.index');
                 Route::livewire('/movimientos', AdminMovimientosIndex::class)->name('movimientos.index');
                 Route::livewire('/auditoria', AdminAuditoriaIndex::class)->name('auditoria.index');

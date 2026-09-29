@@ -2,7 +2,28 @@
     <x-admin.page-hero
         title="Resumen"
         subtitle="Indicadores del día por granja y galpón."
-    />
+    >
+        <x-slot:actions>
+            <a
+                href="{{ route(auth()->user()->rol->routePrefix().'.reportes.produccion-diaria', array_filter([
+                    'granja' => $filtroGranjaId !== '' ? $filtroGranjaId : null,
+                    'galpon' => $filtroGalponId !== '' ? $filtroGalponId : null,
+                ])) }}"
+                class="avicore-btn avicore-btn--secondary avicore-btn--sm"
+            >
+                Exportar Excel (hoy)
+            </a>
+            <a
+                href="{{ route(auth()->user()->rol->routePrefix().'.reportes.produccion-diaria-pdf', array_filter([
+                    'granja' => $filtroGranjaId !== '' ? $filtroGranjaId : null,
+                    'galpon' => $filtroGalponId !== '' ? $filtroGalponId : null,
+                ])) }}"
+                class="avicore-btn avicore-btn--secondary avicore-btn--sm"
+            >
+                Exportar PDF (hoy)
+            </a>
+        </x-slot:actions>
+    </x-admin.page-hero>
 
     <div class="avicore-operario-home-sheet">
         <x-ui.reveal as="section" aria-label="Filtros">
@@ -57,9 +78,9 @@
                 />
 
                 <x-ui.stat-panel
-                    label="Alimento hoy"
+                    :label="$alimentoEntregado['etiqueta_kpi']"
                     :value="number_format($resumen->alimentoKgHoy, 0, ',', '.').' kg'"
-                    hint="Kg entregados hoy en campo"
+                    :hint="$alimentoEntregado['hint_kpi']"
                     icon="truck"
                 />
 
@@ -80,21 +101,25 @@
             </div>
 
             <p class="mt-3 text-xs leading-relaxed text-avicore-muted">
+                {{ $alimentoEntregado['disclaimer'] }}
+            </p>
+
+            <p class="mt-2 text-xs leading-relaxed text-avicore-muted">
                 {{ $referenciaMortalidad['periodo'] }}
                 {{ $referenciaMortalidad['disclaimer'] }}
             </p>
         </x-ui.reveal>
 
-        <x-ui.reveal as="section" class="mt-8" aria-label="Postura semanal">
+        <x-ui.reveal as="section" class="mt-8" aria-label="Semana operativa">
             <x-ui.section-head
                 eyebrow="Tendencia"
-                title="Postura de la semana"
-                subtitle="Huevos aptos por día en los galpones filtrados."
+                title="Semana operativa"
+                subtitle="Últimos 7 días lógicos: aptos, descarte, muertes y kg entregados."
             />
 
-            <x-ui.card class="mt-4">
-                <x-ui.line-chart :points="$posturaSemanal" />
-            </x-ui.card>
+            @include('livewire.admin.resumen.partials.semana-operativa', [
+                'graficosSemanales' => $graficosSemanales,
+            ])
         </x-ui.reveal>
 
         <x-ui.reveal as="section" class="mt-8" aria-label="Detalle por galpón">

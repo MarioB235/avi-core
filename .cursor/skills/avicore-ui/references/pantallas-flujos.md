@@ -125,7 +125,7 @@ Landing post-login para roles con panel administrativo (Dueño, Administrativo, 
 - Hero: saludo horario + subtítulo `{empresa · rol}.`
 - **Primeros pasos (onboarding):** checklist `x-ui.setup-checklist` mientras falte algún paso operativo (granja, galpón, lote, operario, etc.); oculta al completar. Ver `EmpresaOnboardingService`.
 - **Tu empresa:** panorama estructural — granjas y galpones activos (2 KPIs).
-- **Tu empresa hoy (pulso):** estado del día (huevos vs ayer, alertas mortalidad, galpones sin carga), KPIs huevos/muertes hoy con maples/cajas, enlace a Resumen.
+- **Tu empresa hoy (pulso):** bloque RES-09 «Qué revisar primero» (enlaces a Resumen por galpón) → semáforo y comparación vs ayer → KPIs huevos/muertes; enlace a Resumen completo.
 - **Sin** bloque «Stock y demanda» ficticio en v1 (RES-01).
 - Empty state si no hay granjas ni galpones cargados.
 - **No incluye** paneles/tiles de carga operario (`kpi-panel`, `carga-tile`, chip de galpón) ni accesos a Cargar/Historial.
@@ -148,13 +148,14 @@ Tras login exitoso (sin cambio de contraseña pendiente), cada rol llega a su pr
 
 ## 3.1.1 Pantalla: Equipo (Dueño)
 
-**Estado MVP (2026-08-22):** `/dueno/equipo` — lista plana con chips de filtro (Todos, Campo, Supervisión, Oficina); **solo lectura** (sin CRUD).
+**Estado MVP (2026-09-29, RES-10):** `/dueno/equipo` — **solo lectura** (sin CRUD); chips de filtro (Todos, Campo, Supervisión, Oficina); aviso sin métricas de productividad laboral.
 
 ### Elementos
 
+- Subtítulo y aviso: roles/estado de acceso; sin ranking ni productividad.
 - Resumen en una línea: total de personas activas.
 - Chips de filtro con contador (`avicore-operario-filter-chip`).
-- Lista continua (`avicore-team-list`): nombre, documento enmascarado (`x-ui.documento-label`), correo y badge de rol; **sin avatar** (EMP-08).
+- Tabla accesible en escritorio; lista móvil (`avicore-team-list`): nombre, rol, área, documento enmascarado (`DatosPersonales`), estado (`Activo` / `Pendiente cambio de clave`); **sin correo** ni avatar (EMP-08).
 
 ### Usuarios autorizados
 
@@ -315,9 +316,9 @@ Vista operativa para Dueño, Administrativo y Encargado: seguir producción del 
 
 - Hero `x-admin.page-hero`.
 - Filtro granja y galpón (`x-ui.select`; al cambiar granja se limpia galpón).
-- KPIs globales: huevos hoy, **descarte hoy**, muertes hoy, **alimento kg hoy**, aves actuales, alertas mortalidad.
-- Gráfico de línea «Postura de la semana» (`x-ui.line-chart`, huevos aptos últimos **7 días lógicos** de la empresa — CAP-11, no calendario UTC del servidor).
-- Comparación por galpón: **tabla compacta** en `md+` (huevos, descarte, muertes, alimento kg, aves, mortalidad); **cards** en móvil (`< md`).
+- KPIs globales: huevos hoy, **descarte hoy**, muertes hoy, **alimento entregado hoy** (kg remito, RES-11), aves actuales, alertas mortalidad; aviso sin conversión alimenticia.
+- Bloque «Semana operativa» (RES-08): tabla accesible + cuatro gráficos (`x-ui.line-chart`) — aptos, descarte, muertes y **kg entregados**; «—» si no hubo carga; **7 días lógicos** empresa (CAP-11).
+- Comparación por galpón: **tabla compacta** en `md+` (huevos, descarte, muertes, kg entregados, aves, mortalidad); **cards** en móvil (`< md`).
 - Servicio `AdminResumenService` (reutiliza `OperarioGalponResumenService`).
 
 ### Comportamiento

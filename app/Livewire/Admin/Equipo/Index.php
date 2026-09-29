@@ -45,6 +45,7 @@ class Index extends Component
             'summary' => $list['summary'],
             'filters' => $list['filters'],
             'items' => $items->values()->all(),
+            'aviso' => $list['aviso'],
         ]);
     }
 }

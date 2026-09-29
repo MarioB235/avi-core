@@ -141,6 +141,7 @@
 7. Puede haber varios días sin registro entre entregas; la omisión **no** implica falta de alimentación.
 8. Varias entregas el mismo día suman en `alimento_kg_hoy` del resumen operario.
 9. Cada apertura del diálogo genera `idempotencia_clave` (UUID); reintento con la misma clave no duplica (CAP-05).
+10. **RES-11:** los kg en Resumen/gráficos/export son **entregas**; v1 **no** calcula consumo diario, conversión alimenticia ni eficiencia huevos/kg (`AlimentoEntregaSemantica`).
 
 ---
 
@@ -296,6 +297,15 @@
 3. Excel debe ser limpio para análisis.
 4. Observaciones del operario no van en PDF principal.
 5. Observaciones quedan en detalle operativo.
+6. **REP-01:** catálogo v1 operativo en `ReportesCatalogoV1` (5 salidas); planillas MGAP oficiales fuera hasta REP-12/13 (D05).
+7. **REP-02:** exportaciones usan `ReporteConsultaService`; agregados solo vía `TotalesCapturaDiaService` (sin SUM duplicado en PDF/Excel).
+8. **REP-03:** Excel producción diaria vía `ReporteProduccionDiariaExcelExporter` (OpenSpout); descarga en `/{rol}/reportes/produccion-diaria.xlsx`.
+9. **REP-04:** PDF producción diaria vía `ReporteProduccionDiariaPdfExporter` (FPDF); logo empresa + marca AviCore; `/{rol}/reportes/produccion-diaria.pdf`.
+10. **REP-05:** Movimientos/existencias — `ReporteConsultaService::movimientosExistencias` (conciliación acumulada + ledger); `/{rol}/reportes/movimientos-existencias.{xlsx|pdf}`; permiso `admin.viewMovimientos`.
+11. **REP-06:** Historia de lote y sanidad — `historiaLote` / `sanidadBasica`; producción por lote solo si atribuible (un lote activo); rutas `historia-lote.xlsx` y `sanidad-basica.xlsx`.
+12. **REP-07:** Vacíos/extremos — `estado_consulta` distingue sin datos vs no disponible; export rechaza consulta fallida (422).
+13. **REP-08:** Descarga autorizada — `ReporteAutorizacionFiltrosService` + `Gate` en cada GET; filtros ajenos a la empresa → 422.
+14. **REP-09:** Contenido seguro — `ExcelExportSeguro` en celdas de texto de todos los Excel; PDF con `PdfTexto::usuario` (sin bytes de control, recorte); nombres/observaciones no ejecutan fórmulas al abrir Excel.
 
 ---
 
@@ -325,7 +335,7 @@ Valores de **referencia nacional** (MGAP / DIEA) para gráficos, desvíos y aler
 | Coeficiente | Referencia sector Uruguay | Fuente de datos AviCore |
 |-------------|---------------------------|-------------------------|
 | Postura | ~269–278 huevos por gallina al año | Huevos diarios + aves vivas + edad del lote |
-| Conversión alimenticia | ~121–125 g alimento por ave y día | Alimento (kg) + aves vivas |
+| Conversión alimenticia | ~121–125 g alimento por ave y día | **No en v1** con kg entregados; requiere consumo medido (`avicore-defer`) |
 | Mortalidad | ~1,0%–1,1% (tasa aceptada en encuestas) | Muertes acumuladas vs. aves |
 | Ciclo de lote | Postura semana 19–20; descarte semana 86–87 | `fecha_ingreso` del lote + estado |
 
@@ -390,3 +400,40 @@ Referencia: [`mercado-uruguay.md`](../../avicore-contexto/references/mercado-uru
 2. Comparación vía `superaReferenciaMortalidad()`; copy en `referenciaMortalidad()` — **no** diagnóstico automático ni norma universal.
 3. Resumen e Inicio usan etiquetas «Galpones sobre referencia» / «Sobre referencia» y disclaimer al responsable de la empresa.
 4. Tests: `ResumenMetricasCatalogTest`, `AdminResumenTest::test_resumen_muestra_referencia_mortalidad_sin_diagnostico`.
+
+## 23. Comparaciones honestas en Inicio (RES-07)
+
+1. El **%** hoy vs ayer (`delta_huevos_pct`) solo se calcula si **ayer > 0** y todas las capturas productivas D03 del día están cerradas en el scope del pulso.
+2. Con día en curso (omisiones D03), se puede mostrar el delta en huevos pero **no** el porcentaje; copy: «día en curso; % al cerrar capturas».
+3. Sin huevos ayer, el motivo es explícito (`sin_base_ayer`); sin huevos hoy ni ayer, no se compara.
+4. Lógica: `ComparacionHonestaPulso`; etiqueta UI: `AdminHomeService::formatDeltaHuevos`.
+5. Tests: `ComparacionHonestaPulsoTest`, `AdminResumenServiceTest` (RES-07).
+
+## 24. Gráficos y tabla semanal en Resumen (RES-08)
+
+1. `ResumenGraficosSemanalesService` arma **7 días lógicos** con aptos, huevos descarte, muertes y kg de alimento en el scope filtrado.
+2. **Omisión** (sin registro del tipo en el galpón ese día) se muestra como «—»; **no** se grafica como cero.
+3. **Cero confirmado** en campo se muestra como `0 (confirmado)` y sí cuenta en el gráfico.
+4. Tabla accesible (`caption` + encabezados) precede a los cuatro gráficos de línea; `x-ui.line-chart` omite puntos sin valor.
+5. Tests: `ResumenSemanaOperativaTest`, `AdminResumenServiceTest` (RES-08), `LineChartComponentTest`.
+
+## 25. Excepciones primero en Inicio (RES-09)
+
+1. Bloque **«Qué revisar primero»** arriba del pulso cuando hay alertas de mortalidad sobre referencia o capturas D03 pendientes.
+2. Cada ítem incluye enlace a Resumen con filtro `galpon` (`InicioExcepcionesPulso`); copy en lenguaje operativo, no jerga de KPI.
+3. Mortalidad sobre referencia precede a capturas pendientes en la lista.
+4. Tests: `InicioExcepcionesPulsoTest`, `AdminHomeServiceTest` (RES-09).
+
+## 26. Equipo solo lectura (RES-10)
+
+1. Módulo **Equipo** (Dueño): solo lectura; sin alta/edición de usuarios desde esta pantalla.
+2. Filas vía `EquipoLectura` + `AdminHomeService::teamList`: nombre, rol, área (segmento), documento enmascarado (`DatosPersonales`), estado de acceso (`activo` / `pendiente_clave` si `must_change_password`).
+3. **No** se listan correos ni métricas de actividad, ranking ni productividad laboral; aviso fijo en pantalla.
+4. Tests: `AdminEquipoTest`, `AdminHomeServiceTest` (team list / preview).
+
+## 27. Entrega no es consumo (RES-11)
+
+1. Métrica `alimento_kg_hoy` y serie semanal = **SUM de entregas** registradas ese día operativo.
+2. UI Resumen: copy «Alimento entregado», aviso sin conversión alimenticia; columnas «Kg entregados».
+3. Prohibido en v1 inferir consumo, FCR o g/ave/día desde esos kg (`AlimentoEntregaSemantica::METRICAS_PROHIBIDAS_V1`).
+4. Tests: `AlimentoEntregaSemanticaTest`, `AdminResumenTest` (RES-11), catálogo `alimento_kg_hoy`.
